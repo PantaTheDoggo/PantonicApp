@@ -20,3 +20,12 @@ diário de obras do PantonicApp (a ser criado na Fase 5 de P-0721-governanca-sin
   Concern distinto do SGSS (doutrina, não distribuição); ratificado, entra em `GOVERNANCA.md` e o
   SGSS distribui. Decisões DP-G1..DP-G4 resolvidas 2026-07-22 (todas conforme recomendação); hook de
   modelo-por-fase já prototipado; não iniciado (aguarda "go").
+- 2026-07-25 — `P-0725-governanca-tres-camadas` — redefinição do conjunto governado por decisão do
+  dono: `PantonicApp` (base, sempre), `PantonicContainer` (só se containerizado) e
+  `PantonicContainerForAWS` (só se container na AWS) são **três camadas condicionais de
+  governança**; os demais Pantonic\* são consumidores e saem do escopo. Prepara os dois filhos para
+  subir ao GitHub (varredura de credenciais → `.gitattributes`/LF → snapshot fiel → publicação) e
+  extrai o delta por camada. **Rebaseia o P-0721** (§5): Fase 4 `superseded`, DP-8 encerrado, Fase 3
+  preservada. **DP-9 owner-gated e bloqueante**: medido que a camada 3 não tem conteúdo AWS próprio
+  (13/17 artefatos byte-idênticos ao Container; os 4 restantes são só rebordo de linha).
+  Não iniciado.
