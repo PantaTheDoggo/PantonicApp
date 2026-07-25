@@ -5,15 +5,21 @@ a reajustar todos os filhos à mão. Meta: **PantonicApp = fonte única canônic
 afetam todos os filhos; cada filho guarda **só o específico** + **ponteiros** para o comum.
 
 **Planejador:** Opus (fase de arquitetura/planejamento, Regra 7). **Executor:** a definir por fase
-(Fase 0-1 = curadoria/arquitetura → Opus/dono; Fases 2-4 = mecânica de migração → Sonnet).
+(curadoria/arquitetura → Opus/dono; mecânica de migração → Sonnet).
 
-**Estado:** DECISÕES FECHADAS — DP-1..DP-6 resolvidas pelo dono 2026-07-25 (todas conforme a
-recomendação: DP-1=A junção/symlink, DP-2..DP-5 aceitas como redigidas, DP-6=Sim). Fase 0 done;
-Fase 1 dividida em 1a (skills, done — zero promoções) e 1b (agentes + DP-2 + varredura reversa,
-done — 1 promoção em `pantonic-executor.md` + `pantonic-auditor-container.md` criado no canônico).
-Curadoria de Fase 0/1a/1b executada em Sonnet, não Opus/dono como o texto original previa (precedente
-medido nas 3 rodadas: escopo suficientemente mecânico/bounded). Próxima tarefa: **Fase 2**
-(materializar o mecanismo de herança DP-1=A).
+**Estado:** **REVISADO 2026-07-25 (2ª rodada de arquitetura).** O mecanismo central mudou:
+**DP-1 passou de A (junção/symlink em `~/.claude`) para D (distribuição git a partir do hub
+remoto)**, por decisão do dono, depois que a Fase 2 original esbarrou num bloqueio de privilégio
+no Windows (ver `## Achados da execução` → "Fase 2 original abortada"). DP-2..DP-5 seguem como
+redigidas; **DP-6 cumprido** (o hub é repo git publicado em
+`github.com/PantaTheDoggo/PantonicApp`); **DP-7 novo e aberto** (onde os artefatos herdados
+aterrissam dentro do filho).
+
+Fases renumeradas por essa troca: 0, 1a, 1b **done**; **Fase 2 (regularizar o hub como repo
+remoto) done** — ela era a antiga Fase 5 e subiu para a frente porque, em DP-1=D, o hub versionado
+é pré-requisito de toda distribuição. Curadoria de 0/1a/1b executada em Sonnet, não Opus/dono como
+o texto original previa (precedente medido nas 3 rodadas: escopo suficientemente mecânico/bounded).
+**Próxima tarefa: Fase 3** — decidir DP-7 e implementar a distribuição.
 
 ---
 
@@ -63,9 +69,11 @@ Total governado: **7 repositórios** (1 hub + 6 filhos).
   rodar antes de promovê-las ao canônico, ela **apaga a melhoria**. → Fase 0 é pré-requisito
   bloqueante.
 
-**Achado estrutural:** `PantonicApp` **não é um repositório git hoje** (`git rev-parse` → exit 128)
-e não tem `docs/`. Para ser "o repositório referenciado" com histórico/revisão/rollback de
-decisões de governança, provavelmente deve virar um repo git. → DP-6.
+**Achado estrutural (RESOLVIDO na Fase 2, 2026-07-25):** `PantonicApp` **não era um repositório
+git** (`git rev-parse` → exit 128) e não tinha `docs/`. Para ser "o repositório referenciado" com
+histórico/revisão/rollback de decisões de governança, precisava virar repo git → DP-6. Hoje é repo
+git publicado em `github.com/PantaTheDoggo/PantonicApp` (branch `main`). Com DP-1=D essa condição
+deixou de ser só desejável e virou **pré-requisito técnico**: é o remoto que os filhos consomem.
 
 ---
 
@@ -73,41 +81,49 @@ decisões de governança, provavelmente deve virar um repo git. → DP-6.
 
 | id | pergunta | recomendação |
 |---|---|---|
-| **DP-1** | **Mecanismo de "fonte única + herança"** (o coração) | **A — Herança global ancorada no canônico.** O kit comum (skills + agentes) é resolvido a partir de `~/.claude/{skills,agents}`, cujo conteúdo é **junção de diretório (Windows) / symlink (POSIX) apontando para os artefatos canônicos de `PantonicApp/.claude/`**. Editar no PantonicApp = vivo em todos instantaneamente; **zero cópia, zero propagação**. Junção no Windows (`mklink /J`) **não exige admin**. Filho guarda só o específico + ponteiro. **B (fallback robusto a mover repos):** script de deploy que COPIA `PantonicApp/.claude/{skills,agents}` → `~/.claude/` (rodado por um comando de sync/`bootstrap-pantonic`); custo = 1 comando após cada mudança, não 6 edições. **C (rejeitado como default):** manter cópia por filho + só um drift-guard — não atinge single-source. **Escape hatch (vale p/ A e B):** um filho que precise especializar uma skill comum a sobrepõe colocando uma de mesmo nome no seu `.claude/skills/` local (precedência de projeto). |
+| **DP-1** ⟳ **REVISADO 2026-07-25** | **Mecanismo de "fonte única + herança"** (o coração) | **D — Distribuição git a partir do hub remoto** (escolha do dono na 2ª rodada; substitui A). O hub é repo git publicado (`github.com/PantaTheDoggo/PantonicApp`) e cada filho **consome o kit por um comando git rodado pelo dev** (`git subtree pull`), materializando **arquivos nativos versionados no próprio filho** — "atua como se fosse algo nativo do projeto". Mudança comum = **1 commit no hub + 1 comando por filho**, contra 6 edições manuais hoje. Ganhos sobre A: atravessa máquinas (não depende de link local), o filho é **autocontido** (clone numa máquina nova traz o kit sem exigir o hub em disco), e cada atualização fica no histórico do filho (revisável/reversível por commit). Custo: não é instantâneo — exige o comando de pull (aceito pelo dono). **A (REJEITADO — era o default):** junção/symlink `~/.claude` → hub. Junção de *diretório* funciona sem admin (**testado OK**), mas **symlink de *arquivo* exige privilégio de administrador** no Windows sem Developer Mode (**medido: "Administrator privilege required"**) — inviabiliza os 8 agentes, que são `.md` soltos num namespace plano; e nenhuma das duas variantes atravessa máquinas. **B (absorvido por D):** copy-deploy por script — D é exatamente B, com a fonte versionada e a cópia registrada no histórico do filho. **C (rejeitado):** cópia por filho + só drift-guard — não atinge single-source. **Escape hatch (vale p/ D):** filho que precise especializar uma skill comum mantém uma de mesmo nome **fora** do caminho gerenciado pelo subtree (o subtree é dono do seu diretório e sobrescreve o que estiver dentro dele). |
 | **DP-2** | **Home do slot de auditor de domínio variante** (`pyside6` × `container`) | Manter **ambos no canônico** como variantes nomeadas do kit; o filho **declara qual usa** (ponteiro/fato estável), não recria o arquivo. Assim uma melhoria no corpo comum do auditor de arquitetura beneficia os dois sem duplicar. |
 | **DP-3** | **Como os filhos referenciam os docs comuns** (`GOVERNANCA`/`ARQUITETURA_PANTONICA`) | **Ponteiro fino padronizado** `.claude/README.md` em cada filho (5/6 já têm um README — repurpose; `PantonicVideo` ganha um novo): cita o caminho canônico + a regra "não editar cópia; o comum vive no PantonicApp/`~/.claude`; só o específico mora aqui". Mantém a citação por caminho absoluto que já funciona. |
 | **DP-4** | **Tratamento do outlier `PantonicVideo`** | (a) Reconciliar a deriva viva (promover as edições A/B/C + `superseded` ao canônico — Fase 0); (b) realinhar o subconjunto de skills ao kit comum (ganha as 3 que faltam por herança); (c) **classificar o pipeline de integração bespoke como específico** — fica local, fora do kit comum. |
 | **DP-5** | **Guarda de deriva (drift-guard)** | Check leve de conformance que **falha se um artefato comum divergir do canônico** (hash/diff de `~/.claude` ou do filho contra `PantonicApp/.claude`). Complementa DP-1 como rede de segurança — detecta cópia manual acidental ou junção quebrada. |
-| **DP-6** | **`PantonicApp` deve virar repositório git?** | **Sim (recomendado).** Fonte canônica de governança sem histórico/PR/rollback é frágil. `git init` + `.gitignore` mínimo; decisões de governança passam a ter trilha auditável. Alternativa: manter fora do git e confiar em backup — **rejeitada** para o papel de "repositório de referência". |
+| **DP-6** ✅ **CUMPRIDO (Fase 2, 2026-07-25)** | **`PantonicApp` deve virar repositório git?** | **Sim.** Fonte canônica de governança sem histórico/PR/rollback é frágil. Feito: `git init -b main`, `.gitignore`, `.gitattributes` (LF), commit inicial `6068884`, publicado em `github.com/PantaTheDoggo/PantonicApp`. Com DP-1=D deixou de ser "recomendado" e virou **pré-requisito bloqueante** — é o remoto que os filhos consomem. |
+| **DP-7** 🆕 **ABERTO — decidir na Fase 3** | **Onde os artefatos herdados aterrissam dentro do filho.** Tensão real: `.claude/skills/` e `.claude/agents/` são namespaces **planos** que precisam **misturar** comum (do hub) + específico (local), mas `git subtree` **é dono de um diretório inteiro** — ele não sabe mesclar dois donos no mesmo diretório. | **D1 (recomendado) — subtree em `.claude/kit/` + materialização.** O subtree aterrissa em `.claude/kit/` (versionado, nunca editado à mão) e um passo de sync copia para os namespaces planos `.claude/{skills,agents}/`. Custo: duas cópias dentro do filho — e é justamente aí que o **drift-guard (DP-5) ganha função real** (`kit/` × materializado; divergência = alguém editou a cópia). **D2 — um subtree por artefato:** 15 branches `git subtree split` no hub, cada artefato direto no caminho final; zero duplicação, mas 15 `subtree pull` por filho a cada atualização. **D3 — hub dono do `.claude/{skills,agents}` inteiro do filho:** inviável, `PantonicVideo` tem pipeline bespoke local que morreria. |
 
 ---
 
-## 3. Arquitetura alvo (após DP-1 = A)
+## 3. Arquitetura alvo (após DP-1 = D)
 
 ```
-FONTE CANÔNICA (git, revisável)          RUNTIME (resolução de skills/agentes)
-────────────────────────────            ─────────────────────────────────────
-PantonicApp/                             ~/.claude/
-  GOVERNANCA.md            ◄──── cita ─────  CLAUDE.md         (Regras globais 1-7)
-  ARQUITETURA_PANTONICA.md ◄──── cita        skills/
-  .claude/                                     diario-de-obras ─╮ junção/symlink
-    skills/  ◄───────────── junção/symlink ────  proximo-passo   ├─► PantonicApp/.claude/skills/*
-    agents/  ◄───────────── junção/symlink ────  handover ...   ─╯
-                                               agents/  ─► PantonicApp/.claude/agents/*
+FONTE CANÔNICA (git remoto, revisável)        CADA FILHO (git próprio, arquivos nativos)
+──────────────────────────────────────        ──────────────────────────────────────────
+github.com/PantaTheDoggo/PantonicApp          <filho>/
+  GOVERNANCA.md            ◄──── cita ──────    .claude/
+  ARQUITETURA_PANTONICA.md ◄──── cita             README.md   → ponteiro p/ o hub (DP-3)
+  .claude/                                        kit/        ◄─┐ git subtree pull
+    skills/   ──── git subtree split ──────►        skills/     │ (comum; NUNCA editar aqui)
+    agents/   ──── (branch `kit`)   ──────►         agents/    ─┘
+                                                  skills/     → comum materializado + específico
+                                                  agents/     → comum materializado + específico
+                                               (materialização: passo de sync — DP-7=D1)
 
-CADA FILHO/.claude/                       (herda tudo acima de ~/.claude, sem cópia)
-  README.md            → ponteiro: comum vive no PantonicApp; só específico aqui
-  skills/              → APENAS específico do filho (se houver)
-  agents/              → APENAS específico (slot de domínio declarado + bespoke)
+~/.claude/  → permanece SÓ com o genérico não-Pantonic (context-scout, lean-test, onboard, …).
+              Nenhuma junção, nenhum symlink, nenhum privilégio de admin envolvido.
 ```
 
-Uma decisão de governança comum passa a ser **1 edição no PantonicApp** — nenhuma propagação.
+Uma decisão de governança comum passa a ser **1 commit no hub + `git subtree pull` por filho** —
+nenhuma edição manual em filho nenhum. O filho continua **autocontido**: clonado numa máquina
+nova, já traz o kit junto, sem exigir que o hub exista em disco.
 
 ---
 
 ## 4. Tarefas (fases)
 
-### Fase 0 — Reconciliar a deriva viva [PRÉ-REQUISITO, destrava tudo]
+> **Renumeração 2026-07-25 (2ª rodada):** com DP-1=D, o hub versionado deixou de ser o
+> fechamento e virou o alicerce. A antiga **Fase 5** (`git init`/DP-6) subiu para **Fase 2**;
+> a antiga Fase 2 (implementar o mecanismo) virou **Fase 3** e ganhou DP-7; as antigas Fases
+> 3/4/5 viraram **4/5/6**.
+
+### Fase 0 — Reconciliar a deriva viva [PRÉ-REQUISITO, destrava tudo] ✅ DONE (2026-07-25)
 - **Objetivo:** promover ao canônico `PantonicApp/.claude/skills/{diario-de-obras,proximo-passo}` as
   melhorias de 2026-07-21 que hoje só existem em `PantonicVideo` (regra A/B/C de planos derivados,
   status `superseded`, guardrails do picker, guardrail anti-log-narrativo).
@@ -115,7 +131,7 @@ Uma decisão de governança comum passa a ser **1 edição no PantonicApp** — 
   só o que for legitimamente específico (idealmente zero). Sem isso, qualquer centralização apaga a
   melhoria.
 
-### Fase 1 — Congelar o canônico (curadoria)
+### Fase 1 — Congelar o canônico (curadoria) ✅ DONE (2026-07-25, dividida em 1a + 1b)
 - **Objetivo:** auditar as 7 skills + 6 agentes comuns **entre os 6 filhos**, achar todo diff,
   decidir a versão de referência campo a campo, gravar no PantonicApp. Resolver naming do slot de
   auditor (DP-2).
@@ -124,57 +140,87 @@ Uma decisão de governança comum passa a ser **1 edição no PantonicApp** — 
 - **Pronto quando:** `PantonicApp/.claude/{skills,agents}` é a única verdade, sem perda de nenhuma
   melhoria dispersa nos filhos.
 
-### Fase 2 — Implementar o mecanismo (DP-1)
-- **Objetivo:** materializar a herança escolhida — junções/symlinks `~/.claude/{skills,agents}` →
-  `PantonicApp/.claude/` (A) **ou** script de deploy idempotente (B). Estender `bootstrap-pantonic`
-  para instalar a herança em vez de copiar.
-- **Pronto quando:** um projeto novo e um filho existente resolvem o kit comum sem cópia local;
-  smoke test invocando 1 skill comum em 2 projetos distintos.
+### Fase 2 — Regularizar o hub como repositório git remoto (DP-6) ✅ DONE (2026-07-25)
+- **Objetivo:** o canônico deixa de ser uma pasta solta e vira repo git publicado — pré-requisito
+  técnico de DP-1=D (é o remoto que os filhos consomem) e a rede de segurança que faltava para
+  editar o canônico com rollback.
+- **Feito:** `git init -b main`; `.gitignore` (settings locais de máquina, ruído de SO/editor);
+  `.gitattributes` com `* text=auto eol=lf` (sem isso o diff hub×filho infla por CRLF e o
+  drift-guard de DP-5 fica inutilizável — problema já medido na Fase 0); commit inicial `6068884`
+  com os 23 arquivos canônicos; `remote add origin` + `push -u origin main`.
+- **Pronto quando:** ✅ `git ls-remote origin` devolve `refs/heads/main`; working tree limpo;
+  `main` rastreando `origin/main`.
 
-### Fase 3 — Migrar filho a filho
-- **Objetivo:** por filho (ordem sugerida: um piloto de baixo risco primeiro, `PantonicVideo` por
-  último por ser o mais divergente): remover as cópias de skills/agentes comuns, deixar só o
-  específico, gravar o ponteiro `.claude/README.md` (DP-3). Declarar o slot de auditor de domínio.
-- **Pronto quando:** cada filho tem `.claude/` só com específico + ponteiro; kit comum resolvido por
-  herança; nenhuma regressão de invocação de skill.
+### Fase 3 — Decidir DP-7 e implementar a distribuição (DP-1=D)
+- **Objetivo:** fechar **DP-7** (D1 subtree em `.claude/kit/` + materialização × D2 subtree por
+  artefato) e implementar o mecanismo escolhido: no hub, o(s) branch(es) `git subtree split` que
+  expõem o kit; no filho piloto, o `subtree add` + o passo de materialização. Estender
+  `bootstrap-pantonic` para **instalar por distribuição git em vez de copiar à mão**.
+- **Riscos a tratar aqui:** o subtree é dono do diretório — o escape hatch de override local tem
+  que ficar fora dele; e a materialização (se D1) precisa ser idempotente e verificável.
+- **Pronto quando:** um filho piloto (baixo risco, **não** `PantonicVideo`) resolve o kit comum a
+  partir do hub por comando git; smoke test invocando 1 skill comum e 1 agente comum nesse piloto;
+  um `subtree pull` após um commit no hub propaga a mudança sem edição manual.
 
-### Fase 4 — Guardrail + inversão da doutrina
-- **Objetivo:** drift-guard (DP-5); **reescrever GOVERNANCA §9 e o `.claude/README.md` do kit** para
-  inverter a doutrina de *"todo projeto copia o kit"* para *"o comum é herdado do canônico; filho só
-  carrega o específico; mudança comum = 1 edição no PantonicApp"*.
+### Fase 4 — Migrar filho a filho
+- **Objetivo:** por filho (ordem: o piloto da Fase 3 primeiro, `PantonicVideo` por **último** por
+  ser o mais divergente): substituir as cópias manuais de skills/agentes comuns pelo kit
+  distribuído por git, deixar só o específico fora do caminho gerenciado, gravar o ponteiro
+  `.claude/README.md` (DP-3). Declarar o slot de auditor de domínio.
+- **Preservar (decisão do dono, Fase 0/1a):** o bloco backend de `Container`/`ContainerForAWS`/
+  `Patom` (`guardrails-check`, `pantonic-auditor-arch`, `pantonic-fora-da-caixa`, `pantonic-scout`,
+  `integrar-poc`) é **override ESPECÍFICO declarado**, não deriva — a migração **não** o sobrescreve.
+- **Pronto quando:** cada filho tem o comum vindo do hub + o específico local intacto; nenhuma
+  regressão de invocação de skill/agente.
+
+### Fase 5 — Guardrail + inversão da doutrina
+- **Objetivo:** drift-guard (DP-5) — em DP-7=D1 ele compara `.claude/kit/` × o materializado, e o
+  filho × o hub; **reescrever GOVERNANCA §9 e o `.claude/README.md` do kit** para inverter a
+  doutrina de *"todo projeto copia o kit"* para *"o comum vem do hub por git; filho só carrega o
+  específico; mudança comum = 1 commit no hub + pull nos filhos"*.
 - **Pronto quando:** a doutrina escrita reflete o novo modelo; o guarda falha sob divergência
   simulada.
 
-### Fase 5 — Fechamento
-- **Objetivo:** `git init` no PantonicApp se DP-6=sim; PantonicApp ganha diário próprio como dono do
-  backlog de governança comum; decision record cobrindo DP-1..DP-6.
+### Fase 6 — Fechamento
+- **Objetivo:** o hub ganha diário de obras próprio como dono do backlog de governança comum;
+  decision record cobrindo **DP-1..DP-7** (incluindo a troca A→D e o porquê medido).
 - **Pronto quando:** decision record escrito; o hub tem trilha auditável; este plano fecha.
 
 ---
 
 ## 5. Verificação end-to-end
-1. Editar 1 linha numa skill comum **só no PantonicApp** e confirmar que a mudança aparece em 2
-   filhos distintos **sem nenhuma edição neles** (a prova da tese).
+1. Commitar 1 linha numa skill comum **só no hub**, `push`, e confirmar que um `subtree pull` em 2
+   filhos distintos traz a mudança **sem nenhuma edição manual neles** (a prova da tese).
 2. Invocar 1 skill comum e 1 agente comum em `PantonicVideo` e num filho "container" — ambos
-   resolvem da herança.
-3. Um filho consegue **sobrepor** uma skill comum com versão local de mesmo nome (escape hatch).
-4. Drift-guard falha quando uma cópia manual diverge do canônico.
-5. `bootstrap-pantonic` num projeto-sandbox novo instala herança (não cópia).
+   resolvem do kit distribuído.
+3. Um filho consegue **sobrepor** uma skill comum com versão local de mesmo nome, e o
+   `subtree pull` seguinte **não** apaga o override (escape hatch fora do diretório gerenciado).
+4. Drift-guard falha quando alguém edita à mão a cópia materializada em vez do hub.
+5. `bootstrap-pantonic` num projeto-sandbox novo instala o kit por git (não por cópia manual).
+6. **Autocontenção:** clonar um filho já migrado numa pasta limpa, **sem o hub em disco**, e
+   confirmar que as skills/agentes comuns estão lá e são invocáveis.
 
 ## 6. Riscos
-- **Junção/symlink dependente do path do PantonicApp** (DP-1=A): mover o repo quebra a herança.
-  Mitigação: path estável documentado, ou escolher B (copy-deploy) se o repo migra com frequência.
-- **Herança global vaza skills Pantonic para projetos não-Pantonic** em `~/.claude`. Baixo risco:
-  as `description` já se auto-escopam a "projeto Pantonic*"; o agente não as invoca fora de contexto.
+- **Conflito de merge no `subtree pull`** se alguém editar a cópia materializada no filho em vez do
+  hub. Mitigação: `.claude/kit/` declarado read-only por doutrina (Fase 5) + drift-guard (DP-5)
+  pegando a edição indevida antes de virar conflito.
+- **Duplicação interna em DP-7=D1** (`kit/` + materializado no mesmo filho): é o preço de namespace
+  plano. Mitigação: materialização por comando idempotente, nunca à mão; drift-guard compara os dois.
+- **Divergência de line-ending** entre hub (LF) e filhos com `core.autocrlf=true` reintroduzindo
+  ruído de diff. Mitigado na Fase 2 pelo `.gitattributes` do hub; **os filhos precisam do mesmo**
+  na Fase 4.
 - **Perda de melhoria dispersa** se Fase 1 não achar todo diff antes de congelar. Mitigação: Fase 0
-  explícita + diff-matrix completo em Fase 1 antes de qualquer remoção.
+  explícita + diff-matrix completo em Fase 1 antes de qualquer remoção. *(Coberto — 0/1a/1b done.)*
 - **Especialização legítima virar "deriva"**: distinguir override intencional (escape hatch,
   declarado) de cópia acidental (o que o drift-guard pega). Documentar a diferença.
+- **~~Junção/symlink dependente do path do PantonicApp~~** — risco **extinto** pela troca para
+  DP-1=D; nenhum link local no desenho novo.
 
 ## 7. Rollback
-Cada fase é reversível: Fase 2-3 restauram as cópias dos filhos a partir do canônico congelado
-(Fase 1); o estado pré-plano é recuperável enquanto o canônico retém tudo. Fazer o `git init` de
-DP-6 **antes** da Fase 2 dá rollback por commit a partir daí.
+Cada fase é reversível. A partir da **Fase 2** (hub em git, `push` feito) o canônico tem rollback
+por commit — foi exatamente por isso que ela subiu para antes da implementação do mecanismo. Nos
+filhos, a Fase 4 é reversível por `git revert` do commit de `subtree add`, e o estado pré-plano
+continua recuperável enquanto o canônico retém tudo (Fase 1 congelou sem perda).
 
 ## Achados da execução
 (a preencher na execução)
@@ -391,3 +437,59 @@ dos 3 filhos-container.
 Consumo (medido pelo orquestrador via notificação de conclusão): execução inline, 23 tool uses
 (9 diff/leitura + 2 escrita + 1 handover), Sonnet, sessão contínua. Teto informal ~15 turnos
 (Regra 7, tarefa pequena) — dentro do orçamento.
+
+### 2026-07-25 — Fase 2 ORIGINAL abortada (DP-1=A inviável) + troca para DP-1=D
+
+**O que aconteceu:** ao iniciar a Fase 2 original (materializar junções/symlinks de `~/.claude`
+para o hub), a sondagem de viabilidade **derrubou a premissa central de DP-1=A**:
+
+| sonda | resultado |
+|---|---|
+| `New-Item -ItemType Junction` (diretório, C:→D:) | ✅ **OK sem elevação** — junção de diretório funciona |
+| `New-Item -ItemType SymbolicLink` (arquivo, C:→D:) | ❌ **"Administrator privilege required"** |
+| Developer Mode (`HKLM:\...\AppModelUnlock`) | ❌ **não habilitado** nesta máquina |
+
+Consequência: os **7 skills** são pastas → junção resolveria; os **8 agentes** são `.md` soltos num
+namespace plano → exigiriam symlink de arquivo (bloqueado) ou junção da pasta `agents/` inteira —
+o que **sequestraria `~/.claude/agents/context-scout.md`**, um agente genérico não-Pantonic usado
+pela skill global `context-prep`. Hard link foi descartado por não atravessar volumes (C: × D:).
+DP-1=A entregaria, na melhor das hipóteses, metade do kit.
+
+**Decisão do dono (2026-07-25):** abandonar a herança por link e adotar **DP-1=D — distribuição
+git**: hub publicado como repo remoto, filhos consomem por `git subtree pull`, artefatos ficam
+nativos e versionados dentro do filho ("clona só a parte que interessa e atua como se fosse do
+projeto"). O plano inteiro foi revisado nesta rodada para o novo mecanismo: §3 (arquitetura alvo),
+§4 (fases renumeradas), §5 (verificação), §6 (riscos), §7 (rollback), DP-1 reescrito, DP-6 marcado
+cumprido, **DP-7 aberto**.
+
+**Lição (candidata a subir para GOVERNANCA):** decisão de mecanismo owner-gated foi fechada
+(DP-1=A, 2026-07-25) **sem uma sonda de viabilidade de 2 comandos**. A sonda que a derrubou custou
+menos que a redação da própria decisão. Toda DP que escolhe um **mecanismo de plataforma**
+(symlink, junção, permissão, path) deve trazer o resultado da sonda junto da recomendação, não
+depois.
+
+### 2026-07-25 — Fase 2 NOVA concluída (regularizar o hub como repo git remoto, DP-6)
+
+**Feito:** `git init -b main` em `D:\workspaces\PantonicApp`; `.gitignore` (settings locais de
+máquina — `.claude/settings*.json` —, ruído de SO/editor, `*.log`, `scratchpad/`); `.gitattributes`
+com `* text=auto eol=lf`; commit inicial **`6068884`** com **23 arquivos** (2 docs de governança,
+`Base.txt`, 3 docs de plano, 7 skills, 8 agentes, `.claude/README.md`, os 2 arquivos de config);
+`remote add origin https://github.com/PantaTheDoggo/PantonicApp.git`; `push -u origin main`.
+
+**Verificado:** `git ls-remote origin` → `60688845… refs/heads/main`; `git status --short --branch`
+→ `## main...origin/main` (working tree limpo, sem divergência).
+
+**Checagem pré-publicação:** varredura de credenciais (`api_key|secret|token=|sk-|ghp_|AKIA|
+BEGIN .*PRIVATE`) antes do push — os 2 únicos hits eram a **palavra** "secret" no checklist do
+`pantonic-auditor-container.md` (texto que fala *sobre* vazamento de segredo), nenhuma credencial.
+Conteúdo publicado = documentação de governança/arquitetura + definições de skills e agentes.
+
+**Por que `.gitattributes` entrou aqui e não na Fase 5:** a Fase 0 já tinha medido que a mistura
+CRLF (filhos) × LF (hub) inflava o diff a ponto de exigir `--strip-trailing-cr` em toda medição.
+Sem normalização no hub, o drift-guard de DP-5 nasceria comparando terminadores de linha em vez de
+regras. Custo de 4 linhas agora, contra reescrever histórico depois.
+
+Consumo: execução inline pelo orquestrador (Opus — fase de arquitetura/revisão de plano, Regra 7),
+~45 tool uses na sessão contínua, cobrindo sondagem de viabilidade + 2 rodadas de decisão do dono +
+Fase 2 + revisão integral do plano. **Auto-relato, não medido por `<usage>`** (execução inline não
+gera notificação de subagente) — tratar como piso, não como medida.
