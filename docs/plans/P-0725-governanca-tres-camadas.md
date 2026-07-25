@@ -1,5 +1,16 @@
 # P-0725 — Governança Pantonic* em três camadas condicionais
 
+> ## ⛔ SUPERSEDED (2026-07-25, mesmo dia) — não executar
+>
+> Substituído por **`P-0725-governanca-hub-unico.md`**. O dono abortou o
+> `PantonicContainerForAWS` (a medição de §1.1 mostrou que ele não tinha conteúdo próprio) e
+> congelou o `PantonicContainer` como legado — o modelo de três camadas ficou sem as camadas 2 e 3.
+>
+> **Preservado por causa das medições**, que seguem válidas e são citadas pelo plano vivo:
+> §1.1 (a camada 3 era um clone com ruído de formatação), §1.2 (o `ARQUITETURA_PANTONICA.md` do
+> Container é especialização legítima, não deriva — fecha `TK-SGSS-ARQUETIPO`), §1.3 (o
+> `pantonic-auditor-container.md` está na camada errada) e §1.4 (a premissa do P-0721 §1 era falsa).
+
 **Origem:** decisão do dono (2026-07-25), reagindo ao desdobramento do SGSS sobre os filhos
 existentes. Redefine QUEM é governança e QUEM é projeto final:
 

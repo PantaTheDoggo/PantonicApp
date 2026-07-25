@@ -28,4 +28,14 @@ diário de obras do PantonicApp (a ser criado na Fase 5 de P-0721-governanca-sin
   extrai o delta por camada. **Rebaseia o P-0721** (§5): Fase 4 `superseded`, DP-8 encerrado, Fase 3
   preservada. **DP-9 owner-gated e bloqueante**: medido que a camada 3 não tem conteúdo AWS próprio
   (13/17 artefatos byte-idênticos ao Container; os 4 restantes são só rebordo de linha).
+  **SUPERSEDED no mesmo dia** por `P-0725-governanca-hub-unico` — ver linha abaixo.
+- 2026-07-25 — `P-0725-governanca-hub-unico` — segunda simplificação do dono no mesmo dia:
+  `ContainerForAWS` **abortado** (não tinha conteúdo próprio), `Container` **congelado como
+  legado**, escopo restrito a **`PantonicApp` como hub único** com **`PantonicVideo` como prova de
+  aceitação** (o projeto mais maduro: se a transição não quebrar nem causar perda nele, a
+  governança nova está aceita). Medido: só 5 artefatos são compartilhados hub×Video — 3 skills
+  quase sincronizadas (~15 linhas de deriva) e 2 overrides legítimos por desenho
+  (`guardrails-check`, `pantonic-executor`). Inclui **regra nova**: `KIT_VERSION` + tag
+  `kit-v<N>` no hub, checagem de divergência na criação de todo plano, **atualização só por
+  comando do usuário**. DP-12 aberta (o que fazer com os 11 artefatos que só existem no hub).
   Não iniciado.
