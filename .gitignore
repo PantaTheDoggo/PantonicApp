@@ -1,0 +1,16 @@
+# Configuração local de máquina (permissões, overrides de sessão) — nunca canônica
+.claude/settings.local.json
+.claude/settings.json
+
+# Ruído de SO / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# Transcrições e artefatos efêmeros de sessão de agente
+*.log
+scratchpad/

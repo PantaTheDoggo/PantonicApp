@@ -1,0 +1,4 @@
+# O canônico é LF em toda parte. Sem isso, o diff hub x filho infla por terminador de linha
+# (medido na Fase 0 do P-0721: `diff` puro marcava toda linha como divergente por causa do \r),
+# e o drift-guard (DP-5) fica inutilizável.
+* text=auto eol=lf
