@@ -19,7 +19,14 @@ Fases renumeradas por essa troca: 0, 1a, 1b **done**; **Fase 2 (regularizar o hu
 remoto) done** — ela era a antiga Fase 5 e subiu para a frente porque, em DP-1=D, o hub versionado
 é pré-requisito de toda distribuição. Curadoria de 0/1a/1b executada em Sonnet, não Opus/dono como
 o texto original previa (precedente medido nas 3 rodadas: escopo suficientemente mecânico/bounded).
-**Próxima tarefa: Fase 3** — decidir DP-7 e implementar a distribuição.
+
+**DP-7 fechado pelo dono (2026-07-25) = D1** (subtree em `.claude/kit/` + materialização).
+**DP-8 aberto** pela sondagem da mesma rodada: **5 dos 6 filhos não são repositórios git** — trava
+a Fase 4, **não** a Fase 3.
+
+**Próxima tarefa: Fase 3 — implementar e provar o mecanismo D1 em sandbox.** Dossiê pronto para
+execução em **Sonnet**, contexto novo (§4 → "Fase 3"). Não depende de DP-8 nem de mais nenhuma
+decisão do dono.
 
 ---
 
@@ -87,7 +94,8 @@ deixou de ser só desejável e virou **pré-requisito técnico**: é o remoto qu
 | **DP-4** | **Tratamento do outlier `PantonicVideo`** | (a) Reconciliar a deriva viva (promover as edições A/B/C + `superseded` ao canônico — Fase 0); (b) realinhar o subconjunto de skills ao kit comum (ganha as 3 que faltam por herança); (c) **classificar o pipeline de integração bespoke como específico** — fica local, fora do kit comum. |
 | **DP-5** | **Guarda de deriva (drift-guard)** | Check leve de conformance que **falha se um artefato comum divergir do canônico** (hash/diff de `~/.claude` ou do filho contra `PantonicApp/.claude`). Complementa DP-1 como rede de segurança — detecta cópia manual acidental ou junção quebrada. |
 | **DP-6** ✅ **CUMPRIDO (Fase 2, 2026-07-25)** | **`PantonicApp` deve virar repositório git?** | **Sim.** Fonte canônica de governança sem histórico/PR/rollback é frágil. Feito: `git init -b main`, `.gitignore`, `.gitattributes` (LF), commit inicial `6068884`, publicado em `github.com/PantaTheDoggo/PantonicApp`. Com DP-1=D deixou de ser "recomendado" e virou **pré-requisito bloqueante** — é o remoto que os filhos consomem. |
-| **DP-7** 🆕 **ABERTO — decidir na Fase 3** | **Onde os artefatos herdados aterrissam dentro do filho.** Tensão real: `.claude/skills/` e `.claude/agents/` são namespaces **planos** que precisam **misturar** comum (do hub) + específico (local), mas `git subtree` **é dono de um diretório inteiro** — ele não sabe mesclar dois donos no mesmo diretório. | **D1 (recomendado) — subtree em `.claude/kit/` + materialização.** O subtree aterrissa em `.claude/kit/` (versionado, nunca editado à mão) e um passo de sync copia para os namespaces planos `.claude/{skills,agents}/`. Custo: duas cópias dentro do filho — e é justamente aí que o **drift-guard (DP-5) ganha função real** (`kit/` × materializado; divergência = alguém editou a cópia). **D2 — um subtree por artefato:** 15 branches `git subtree split` no hub, cada artefato direto no caminho final; zero duplicação, mas 15 `subtree pull` por filho a cada atualização. **D3 — hub dono do `.claude/{skills,agents}` inteiro do filho:** inviável, `PantonicVideo` tem pipeline bespoke local que morreria. |
+| **DP-7** ✅ **FECHADO 2026-07-25 = D1** (dono aceitou a recomendação) | **Onde os artefatos herdados aterrissam dentro do filho.** Tensão real: `.claude/skills/` e `.claude/agents/` são namespaces **planos** que precisam **misturar** comum (do hub) + específico (local), mas `git subtree` **é dono de um diretório inteiro** — ele não sabe mesclar dois donos no mesmo diretório. | **D1 (recomendado) — subtree em `.claude/kit/` + materialização.** O subtree aterrissa em `.claude/kit/` (versionado, nunca editado à mão) e um passo de sync copia para os namespaces planos `.claude/{skills,agents}/`. Custo: duas cópias dentro do filho — e é justamente aí que o **drift-guard (DP-5) ganha função real** (`kit/` × materializado; divergência = alguém editou a cópia). **D2 — um subtree por artefato:** 15 branches `git subtree split` no hub, cada artefato direto no caminho final; zero duplicação, mas 15 `subtree pull` por filho a cada atualização. **D3 — hub dono do `.claude/{skills,agents}` inteiro do filho:** inviável, `PantonicVideo` tem pipeline bespoke local que morreria. **Consequência operacional de D1:** a materialização sobrescreve o artefato de mesmo nome no filho, então o *escape hatch* de override (já decidido na Fase 0/1a para o bloco backend de `Container`/`ContainerForAWS`/`Patom`) **não pode ser implícito** — vira uma **lista de exclusão declarada** (`.claude/kit-exclude.txt`) que o sync respeita. "Override ESPECÍFICO **declarado**" passa a ser literal. |
+| **DP-8** 🆕 **ABERTO — trava a Fase 4, não a Fase 3** | **Os 5 filhos não-`PantonicVideo` não são repositórios git** (medido 2026-07-25: `.claude/` presente, `.git/` ausente em `Scanlator`, `Monitor`, `Container`, `ContainerForAWS`, `Patom`). DP-1=D pressupõe filho-repo para `git subtree pull`. | **Recomendado: `git init` + remoto por filho**, mesmo racional do DP-6 — código de projeto sem controle de versão não tem rollback nem trilha, e sem isso a distribuição git simplesmente não alcança 5 dos 6 filhos. **Alternativa (fallback):** para filho que o dono queira manter fora do git, o kit chega por cópia a partir do clone local do hub (o `sync-kit.ps1` já faz isso — bastaria apontá-lo para o hub em vez de para `kit/`), abrindo mão de autocontenção e histórico naquele filho. **Decidir antes da Fase 4.** A Fase 3 valida o mecanismo em sandbox e **não** depende desta decisão. |
 
 ---
 
@@ -151,25 +159,97 @@ nova, já traz o kit junto, sem exigir que o hub exista em disco.
 - **Pronto quando:** ✅ `git ls-remote origin` devolve `refs/heads/main`; working tree limpo;
   `main` rastreando `origin/main`.
 
-### Fase 3 — Decidir DP-7 e implementar a distribuição (DP-1=D)
-- **Objetivo:** fechar **DP-7** (D1 subtree em `.claude/kit/` + materialização × D2 subtree por
-  artefato) e implementar o mecanismo escolhido: no hub, o(s) branch(es) `git subtree split` que
-  expõem o kit; no filho piloto, o `subtree add` + o passo de materialização. Estender
-  `bootstrap-pantonic` para **instalar por distribuição git em vez de copiar à mão**.
-- **Riscos a tratar aqui:** o subtree é dono do diretório — o escape hatch de override local tem
-  que ficar fora dele; e a materialização (se D1) precisa ser idempotente e verificável.
-- **Pronto quando:** um filho piloto (baixo risco, **não** `PantonicVideo`) resolve o kit comum a
-  partir do hub por comando git; smoke test invocando 1 skill comum e 1 agente comum nesse piloto;
-  um `subtree pull` após um commit no hub propaga a mudança sem edição manual.
+### Fase 3 — Implementar e provar o mecanismo D1 em sandbox ← **PRÓXIMA TAREFA**
 
-### Fase 4 — Migrar filho a filho
-- **Objetivo:** por filho (ordem: o piloto da Fase 3 primeiro, `PantonicVideo` por **último** por
+> **DOSSIÊ DE EXECUÇÃO — pronto para contexto novo.** Modelo: **Sonnet** (mecânica; Regra 7).
+> Teto: **30 tool uses** — ao atingir, PARE e reporte em vez de continuar.
+> Decisões já fechadas, **não reabrir**: DP-1=D, DP-7=D1.
+> **Não depende de DP-8.** Nenhum filho real é tocado nesta fase.
+
+**Por que sandbox e não um filho piloto:** a sondagem de 2026-07-25 mediu que os 5 filhos
+candidatos a piloto **não são repositórios git** (DP-8) e que o único que é — `PantonicVideo` —
+estava com **258 arquivos não commitados**, e `git subtree add` exige árvore limpa. Validar o
+mecanismo num sandbox descartável separa "o desenho funciona" de "os filhos estão prontos", e não
+gasta uma decisão do dono para começar.
+
+**Proibições (raio de explosão):**
+- **NÃO** rodar `git init` em nenhum filho (isso é DP-8, decisão do dono).
+- **NÃO** tocar em `D:\workspaces\Pantonic*` além do hub — em especial, **não** commitar, stashar
+  ou descartar nada da árvore suja do `PantonicVideo`.
+- O sandbox vive no scratchpad da sessão, nunca em `D:\workspaces\`.
+
+#### T1 — Hub: criar o materializador `.claude/sync-kit.ps1`
+Script PowerShell, versionado no hub (viaja junto com o kit; no filho ele fica em
+`.claude/kit/sync-kit.ps1`). Contrato:
+- **Resolve caminhos por `$PSScriptRoot`**: o script está em `<filho>/.claude/kit/`; o destino é
+  `Split-Path $PSScriptRoot -Parent` (= `<filho>/.claude/`). Sem caminho absoluto hardcoded.
+- **Copia**, de `kit/` para o namespace plano: cada diretório `kit/skills/<nome>/` →
+  `.claude/skills/<nome>/`; cada arquivo `kit/agents/<nome>.md` → `.claude/agents/<nome>.md`.
+- **Lista de exclusão (o escape hatch declarado do DP-7):** lê `<filho>/.claude/kit-exclude.txt`
+  se existir — um nome de artefato por linha, `#` = comentário. Nome casa com diretório de skill
+  ou basename de agente sem `.md`. Artefato excluído é **pulado** (o override local sobrevive ao
+  sync). Arquivo ausente = nenhuma exclusão.
+- **Nunca apaga** nada cujo nome não venha do kit: artefato local que não existe no kit fica
+  intocado. (Dentro de um diretório de skill gerenciado, o espelhamento é total — arquivo removido
+  no hub some no filho.)
+- **Idempotente:** rodar 2× seguidas produz o mesmo estado.
+- **`-Check`:** só compara, não escreve; lista os artefatos gerenciados que divergem e sai com
+  **exit 1** se houver divergência, 0 se limpo. (É a semente do drift-guard da Fase 5 e o critério
+  de aceite desta fase.)
+- Imprime resumo: N copiados, M pulados por exclusão.
+
+#### T2 — Hub: publicar o branch `kit`
+```
+git subtree split --prefix=.claude -b kit
+git push origin kit
+```
+O branch `kit` tem como **raiz** o conteúdo de `.claude/` (`skills/`, `agents/`, `README.md`,
+`sync-kit.ps1`). Confirmar com `git ls-tree --name-only kit`.
+*(`settings.json`/`settings.local.json` já estão no `.gitignore` do hub — não vazam para o kit.)*
+
+#### T3 — Sandbox: provar `add` + materialização
+No scratchpad: `git init` num sandbox limpo, simular um filho com **(a)** um agente local bespoke
+não pertencente ao kit, **(b)** um `kit-exclude.txt` declarando 1 skill do kit como override
+local, e **(c)** uma versão local divergente dessa skill excluída. Então:
+```
+git subtree add --prefix=.claude/kit <URL-do-hub> kit --squash
+pwsh .claude/kit/sync-kit.ps1
+```
+**Aceite:** as skills/agentes do kit aparecem em `.claude/{skills,agents}`; o bespoke (a) segue
+intocado; a skill excluída (c) **não** foi sobrescrita; `sync-kit.ps1 -Check` → exit 0.
+
+#### T4 — Prova da tese (a razão de ser do plano)
+Commitar **1 linha** numa skill comum **só no hub** → `git subtree split -b kit` + `push origin kit`
+→ no sandbox `git subtree pull --prefix=.claude/kit <URL> kit --squash` + sync.
+**Aceite:** a linha aparece no sandbox **sem nenhuma edição manual nele**; `-Check` → exit 0.
+*(Reverter o commit-cobaia no hub ao final, ou usar uma linha de comentário inócua.)*
+
+#### T5 — Registro
+Apensar a `## Achados da execução` o resultado medido de T1-T4 (incluindo o comando exato de
+`split`/`pull` que funcionou — a Fase 4 vai reusá-lo) e o placeholder literal
+`Consumo: (preenchido pelo orquestrador via notificação)`. **Não** editar a célula de índice do
+diário — o orquestrador escreve.
+
+**Fora de escopo (não fazer aqui):** migrar filho real (Fase 4), estender `bootstrap-pantonic`
+(Fase 4/5 — depende de DP-8), drift-guard como gate de conformance (Fase 5).
+
+**Pronto quando:** T1-T5 com os aceites acima verdes; nenhum arquivo fora do hub e do scratchpad
+modificado.
+
+### Fase 4 — Migrar filho a filho  🔒 **BLOQUEADA por DP-8**
+- **Pré-requisito:** DP-8 resolvido — os 5 filhos não-`PantonicVideo` **não são repos git** hoje,
+  e `git subtree pull` exige que sejam. Além disso, `subtree add/pull` exige **árvore limpa**:
+  `PantonicVideo` tinha 258 arquivos não commitados na medição de 2026-07-25 e precisa ser
+  regularizado antes da sua vez.
+- **Objetivo:** por filho (ordem: um de baixo risco primeiro, `PantonicVideo` por **último** por
   ser o mais divergente): substituir as cópias manuais de skills/agentes comuns pelo kit
   distribuído por git, deixar só o específico fora do caminho gerenciado, gravar o ponteiro
   `.claude/README.md` (DP-3). Declarar o slot de auditor de domínio.
 - **Preservar (decisão do dono, Fase 0/1a):** o bloco backend de `Container`/`ContainerForAWS`/
   `Patom` (`guardrails-check`, `pantonic-auditor-arch`, `pantonic-fora-da-caixa`, `pantonic-scout`,
   `integrar-poc`) é **override ESPECÍFICO declarado**, não deriva — a migração **não** o sobrescreve.
+  **Mecanicamente:** esses nomes entram no `.claude/kit-exclude.txt` do filho **antes** do primeiro
+  sync. Sem isso a materialização os sobrescreve silenciosamente.
 - **Pronto quando:** cada filho tem o comum vindo do hub + o específico local intacto; nenhuma
   regressão de invocação de skill/agente.
 
@@ -183,7 +263,10 @@ nova, já traz o kit junto, sem exigir que o hub exista em disco.
 
 ### Fase 6 — Fechamento
 - **Objetivo:** o hub ganha diário de obras próprio como dono do backlog de governança comum;
-  decision record cobrindo **DP-1..DP-7** (incluindo a troca A→D e o porquê medido).
+  decision record cobrindo **DP-1..DP-8** (incluindo a troca A→D e o porquê medido); promover ao
+  `GOVERNANCA.md` a lição de sondagem de viabilidade registrada nos achados (toda DP que escolhe
+  mecanismo de plataforma traz a sonda junto da recomendação) — **duas premissas caíram nesta
+  sprint** pelo mesmo motivo (symlink/admin e filho-não-é-repo), o que a qualifica como regra.
 - **Pronto quando:** decision record escrito; o hub tem trilha auditável; este plano fecha.
 
 ---
@@ -193,14 +276,20 @@ nova, já traz o kit junto, sem exigir que o hub exista em disco.
    filhos distintos traz a mudança **sem nenhuma edição manual neles** (a prova da tese).
 2. Invocar 1 skill comum e 1 agente comum em `PantonicVideo` e num filho "container" — ambos
    resolvem do kit distribuído.
-3. Um filho consegue **sobrepor** uma skill comum com versão local de mesmo nome, e o
-   `subtree pull` seguinte **não** apaga o override (escape hatch fora do diretório gerenciado).
-4. Drift-guard falha quando alguém edita à mão a cópia materializada em vez do hub.
+3. Um filho consegue **sobrepor** uma skill comum declarando-a em `.claude/kit-exclude.txt`, e o
+   `subtree pull` + sync seguintes **não** apagam o override.
+4. Drift-guard (`sync-kit.ps1 -Check`) falha quando alguém edita à mão a cópia materializada em
+   vez do hub.
 5. `bootstrap-pantonic` num projeto-sandbox novo instala o kit por git (não por cópia manual).
 6. **Autocontenção:** clonar um filho já migrado numa pasta limpa, **sem o hub em disco**, e
    confirmar que as skills/agentes comuns estão lá e são invocáveis.
 
 ## 6. Riscos
+- **Filhos não são repos git** (5 de 6, medido) e `PantonicVideo` está com árvore suja — DP-1=D
+  não alcança nenhum deles até DP-8 ser resolvido. **Este é o risco dominante do plano hoje.**
+  Mitigação: Fase 3 valida em sandbox e não fica refém da decisão; Fase 4 declara o bloqueio.
+- **Override local sobrescrito silenciosamente** pela materialização (D1). Mitigação: o
+  `kit-exclude.txt` precede o primeiro sync do filho; `-Check` denuncia divergência.
 - **Conflito de merge no `subtree pull`** se alguém editar a cópia materializada no filho em vez do
   hub. Mitigação: `.claude/kit/` declarado read-only por doutrina (Fase 5) + drift-guard (DP-5)
   pegando a edição indevida antes de virar conflito.
@@ -493,3 +582,34 @@ Consumo: execução inline pelo orquestrador (Opus — fase de arquitetura/revis
 ~45 tool uses na sessão contínua, cobrindo sondagem de viabilidade + 2 rodadas de decisão do dono +
 Fase 2 + revisão integral do plano. **Auto-relato, não medido por `<usage>`** (execução inline não
 gera notificação de subagente) — tratar como piso, não como medida.
+
+### 2026-07-25 — DP-7 fechado (=D1) + DP-8 aberto pela sondagem de prontidão dos filhos
+
+**DP-7 = D1** (subtree em `.claude/kit/` + materialização), aceito pelo dono conforme recomendação.
+Consequência que virou requisito de implementação: como a materialização sobrescreve o artefato de
+mesmo nome, o *escape hatch* de override — já decidido na Fase 0/1a para o bloco backend de
+`Container`/`ContainerForAWS`/`Patom` — **não pode ser implícito**. Vira `.claude/kit-exclude.txt`,
+lista declarada que o `sync-kit.ps1` respeita. "Override ESPECÍFICO **declarado**" passa a ser
+literal, não retórico.
+
+**Sondagem antes de redigir o dossiê da Fase 3 (aplicando a lição da rodada anterior):**
+
+| sonda | resultado |
+|---|---|
+| `git subtree` disponível nesta instalação | ✅ existe (exit 129 = mensagem de uso) |
+| `Scanlator`, `Monitor`, `Container`, `ContainerForAWS`, `Patom` são repos git? | ❌ **nenhum** — `.claude/` presente, `.git/` ausente nos 5 |
+| `PantonicVideo` é repo git? | ✅ sim (`master`, remoto `origin`) — mas **258 arquivos sujos** |
+
+**Segunda premissa derrubada nesta sprint.** DP-1=D pressupõe filho-repo para `git subtree pull`;
+5 dos 6 filhos não são. E `subtree add/pull` exige árvore limpa, o que desqualifica o único filho
+que é repo como piloto. → **DP-8 aberto** (fazer dos filhos repos git, ou fallback por cópia).
+
+**Efeito no desenho das fases:** a Fase 3 foi redesenhada de "piloto num filho real" para
+**"provar o mecanismo em sandbox descartável"**. Isso desacopla *o desenho funciona* de *os filhos
+estão prontos*, e — o ponto prático — deixa a Fase 3 **executável imediatamente, sem gastar uma
+decisão do dono**. DP-8 passa a travar só a Fase 4.
+
+**Reforço da lição de sondagem (agora com 2 ocorrências na mesma sprint):** a primeira derrubou
+DP-1=A (symlink exige admin); a segunda derrubou a premissa de piloto da Fase 3 (filho não é repo).
+Ambas custaram ~2 comandos e teriam evitado, cada uma, uma fase inteira mal desenhada. Promover a
+regra ao `GOVERNANCA.md` está agendado na Fase 6.
