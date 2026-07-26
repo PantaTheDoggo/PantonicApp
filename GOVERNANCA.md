@@ -228,11 +228,14 @@ threshold de severidade que justifique pular essa separação.
 o momento em que se decide trabalho futuro, logo o momento certo de saber se a doutrina base
 usada por esse trabalho está desatualizada.
 
-**Mecanismo.** O hub mantém `KIT_VERSION` na raiz (versão canônica do kit) e, a cada mudança
-canônica, publica uma tag git `kit-v<versão>` na branch `kit` (o subtree de `.claude/`). Cada
-projeto consumidor materializa a versão que recebeu em `.claude/kit/KIT_VERSION`. A checagem
-compara as duas com uma única chamada de rede — `git ls-remote --tags <url> "kit-v*"` — que não
-faz fetch nem toca a árvore de trabalho do consumidor.
+**Mecanismo.** O hub mantém `.claude/KIT_VERSION` (versão canônica do kit) — dentro do prefixo
+`.claude/`, não na raiz do repo, porque é o prefixo que o `git subtree split` publica; a versão
+viaja dentro do próprio artefato que ela versiona, em vez de ficar num arquivo solto que o subtree
+não carrega. A cada mudança canônica, o hub publica uma tag git `kit-v<versão>` na branch `kit` (o
+subtree de `.claude/`). Cada projeto consumidor materializa a versão que recebeu em
+`.claude/kit/KIT_VERSION`. A checagem compara as duas com uma única chamada de rede —
+`git ls-remote --tags <url> "kit-v*"` — que não faz fetch nem toca a árvore de trabalho do
+consumidor.
 
 **Os três resultados possíveis da checagem:**
 - **Versões iguais** → segue em silêncio; não vale o turno do dono para confirmar o óbvio.
@@ -244,5 +247,5 @@ faz fetch nem toca a árvore de trabalho do consumidor.
   reportada, não escondida.
 
 **Critério de pronto.** Qualquer tarefa que edite `.claude/` do hub só está pronta se o bump de
-`KIT_VERSION` acompanhar a mudança. Uma versão que não sobe quando o conteúdo muda deixa a
+`.claude/KIT_VERSION` acompanhar a mudança. Uma versão que não sobe quando o conteúdo muda deixa a
 checagem cega — o guarda vira teatro.
