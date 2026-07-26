@@ -12,8 +12,9 @@ camadas condicionais morreu com a medição de que a camada 3 não tinha conteú
 
 **Planejador:** Opus. **Executor:** Sonnet, exceto a Fase 1 (curadoria de doutrina → Opus).
 
-**Estado:** **NOVO — não iniciado.** Uma decisão do dono em aberto (**DP-12**), não bloqueante para
-a Fase 1.
+**Estado:** **PRONTO PARA EXECUÇÃO — não iniciado.** **Nenhuma decisão do dono em aberto**:
+DP-12 fechada em 2026-07-25 conforme a recomendação. Próxima tarefa = **Fase 1** (reconciliar
+hub × PantonicVideo), em **Opus** por ser curadoria de doutrina.
 
 ---
 
@@ -50,12 +51,12 @@ que já são override por desenho** e devem continuar sendo. A regularização �
 
 ### 1.2. Cada lado tem artefatos que o outro não tem — e está certo assim
 
-**Só no `PantonicVideo` (7 agentes)** — `architect-auditor`, `clean-code`, `domain-expert`,
+**Só no `PantonicVideo` (9 agentes)** — `architect-auditor`, `clean-code`, `domain-expert`,
 `integration-auditor`, `integration-executor`, `integration-expert`, `integration-planer`,
 `poc-inspector`, `service-inspector`. Pipeline de absorção de POC, específico do projeto.
 **Nunca sobem para o hub. Nunca podem ser apagados pela materialização.**
 
-**Só no `PantonicApp` (9 artefatos)** — `README.md`, agentes `pantonic-auditor-arch`,
+**Só no `PantonicApp` (11 artefatos)** — `README.md`, agentes `pantonic-auditor-arch`,
 `pantonic-auditor-cleancode`, `pantonic-auditor-container`, `pantonic-auditor-pyside6`,
 `pantonic-fora-da-caixa`, `pantonic-planner`, `pantonic-scout`, e skills `audit-sweep`,
 `bootstrap-pantonic`, `integrar-poc`. **Vão aterrissar no `PantonicVideo` na materialização** —
@@ -91,13 +92,25 @@ Nenhum dos dois vira decisão do dono — os dois têm solução mecânica na Fa
 - **DP-10 = (a)** — override é de arquivo inteiro.
 - **DP-11 = (a)** — snapshot fiel antes de reconciliar.
 
-### Aberta
+### Fechada nesta rodada
 
-| ID | Questão | Recomendação |
-|---|---|---|
-| **DP-12** | Os 11 artefatos que só existem no hub (§1.2) vão aterrissar no `PantonicVideo`. Aceitar todos, ou excluir alguns? | **Aceitar todos, exceto `skills/integrar-poc`.** Ela colide de frente com os 7 agentes `integration-*` que o `PantonicVideo` já tem e usa — duas doutrinas de absorção de POC no mesmo projeto é ambiguidade, não enriquecimento. Os demais (auditores, planner, `audit-sweep`, `bootstrap-pantonic`) são aditivos e inofensivos: aparecem como opções novas, não substituem nada. |
+**DP-12 ✅ FECHADA 2026-07-25 = aceitar todos os artefatos só-do-hub, exceto
+`skills/integrar-poc`.**
 
-Não bloqueia a Fase 1; precisa estar respondida antes da Fase 4.
+Racional: `integrar-poc` colide de frente com os 9 agentes `integration-*`/`poc-inspector`/
+`service-inspector` que o `PantonicVideo` já tem e usa — duas doutrinas de absorção de POC no
+mesmo projeto é ambiguidade, não enriquecimento. Os demais (4 auditores `pantonic-*`,
+`pantonic-fora-da-caixa`, `pantonic-planner`, `pantonic-scout`, `README`, `audit-sweep`,
+`bootstrap-pantonic`) são **aditivos**: aparecem como opção nova e não substituem nada que já
+exista no projeto.
+
+**Consequência operacional:** `.claude/kit-exclude.txt` do `PantonicVideo` passa a ter **3
+entradas**, não 2 — os 2 overrides legítimos (§1.1) **mais** `integrar-poc`. A exclusão de
+`integrar-poc` é de natureza diferente das outras duas: as duas primeiras protegem conteúdo local
+de ser sobrescrito; esta impede a **chegada** de um artefato indesejado. Ambas as naturezas cabem
+no mesmo arquivo, mas o `kit-exclude.txt` deve dizer qual é qual em comentário — senão, na
+primeira revisão futura, alguém remove a linha do `integrar-poc` achando que protege algo que não
+existe.
 
 ---
 
@@ -153,15 +166,24 @@ do hub — versão que não sobe quando o conteúdo muda transforma o guarda em 
    divergente, decidir de que lado está a regra mais nova e por quê. Resultado: **uma** versão
    canônica no hub que contém o melhor dos dois. Critério: a diferença carrega uma **regra**? Se
    for reformatação, o hub vence por já estar em LF; se for regra, vence quem tem a regra.
-2. **2 overrides legítimos** (`guardrails-check`, `pantonic-executor`): confirmar que continuam
-   locais e **escrever `.claude/kit-exclude.txt` no `PantonicVideo` declarando os dois** — antes de
-   qualquer sync. Essa é a linha de defesa contra a perda que a prova de aceitação quer excluir.
+2. **Escrever `.claude/kit-exclude.txt` no `PantonicVideo` com as 3 entradas** — antes de qualquer
+   sync. Essa é a linha de defesa contra a perda que a prova de aceitação quer excluir:
+
+   ```
+   # PROTEGE conteúdo local de ser sobrescrito pela materializacao:
+   guardrails-check      # perfil PantonicVideo, decidido em 2026-07-25 (P-0721 Fase 1a)
+   pantonic-executor     # carrega os "fatos estaveis" da arquitetura do projeto
+
+   # IMPEDE a chegada de artefato indesejado (DP-12):
+   integrar-poc          # colide com os 9 agentes integration-*/poc-inspector locais
+   ```
 3. Espelhar de volta ao `PantonicVideo` o que foi decidido a favor do hub, para os dois ficarem
    idênticos nos 3 arquivos compartilhados. **É isto que "quando eles forem sincronizados"
    significa** — a partir daqui o hub é fonte, e a cópia do Video é derivada.
 
 **Critério de pronto:** `proximo-passo`, `diario-de-obras` e `handover` byte-idênticos entre hub e
-`PantonicVideo` (a menos de terminador de linha); `kit-exclude.txt` escrito com 2 entradas.
+`PantonicVideo` (a menos de terminador de linha); `kit-exclude.txt` escrito com as 3 entradas
+acima, cada uma com o comentário que diz de que natureza ela é.
 
 ---
 
@@ -192,7 +214,7 @@ mecanismo de checagem do §3 já tem o que checar.
 ---
 
 ### Fase 4 — Prova de aceitação no `PantonicVideo`
-**Modelo: Sonnet. Teto: 35 tool uses.** Depende de DP-12 respondida e da Fase 3.
+**Modelo: Sonnet. Teto: 35 tool uses.** Depende da Fase 3. Sem decisão do dono pendente.
 
 **Resolve os dois riscos mecânicos do §1.4 sem tocar no trabalho em curso do dono:**
 
@@ -215,6 +237,9 @@ mecanismo de checagem do §3 já tem o que checar.
 6. **Verificar as duas metades da aceitação:**
    - **Não perdeu:** os 9 agentes locais e os 2 overrides declarados seguem presentes e com o
      conteúdo de antes. Conferir por hash contra a tag `pre-kit-migration`.
+   - **Não chegou o que foi excluído:** `skills/integrar-poc` **não** existe em
+     `.claude/skills/` depois da materialização (DP-12). Exclusão que não é verificada é
+     exclusão que ninguém sabe se funcionou.
    - **Não quebrou:** Tier 3 verde, contagem ≥ baseline do passo 2; `tests/conformance/` verde.
 7. `git diff --stat` legível — se estourar em arquivos não relacionados ao kit, o passo 3 falhou e
    a prova para.

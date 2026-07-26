@@ -37,5 +37,7 @@ diário de obras do PantonicApp (a ser criado na Fase 5 de P-0721-governanca-sin
   quase sincronizadas (~15 linhas de deriva) e 2 overrides legítimos por desenho
   (`guardrails-check`, `pantonic-executor`). Inclui **regra nova**: `KIT_VERSION` + tag
   `kit-v<N>` no hub, checagem de divergência na criação de todo plano, **atualização só por
-  comando do usuário**. DP-12 aberta (o que fazer com os 11 artefatos que só existem no hub).
-  Não iniciado.
+  comando do usuário**. **DP-12 fechada 2026-07-25** conforme recomendação (todos os 11 artefatos
+  só-do-hub são aceitos, exceto `integrar-poc`, que colide com o pipeline de POC local).
+  **Pronto para execução, sem decisão do dono pendente** — próxima é a Fase 1 (reconciliação
+  hub × Video, em Opus). Não iniciado.
