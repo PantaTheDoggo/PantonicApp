@@ -6,8 +6,11 @@ description: Ponto de entrada de contexto novo para "execute o próximo passo do
 # proximo-passo — retomada de backlog em contexto novo
 
 Ponto de entrada canônico para o fluxo "abro contexto novo, digo 'execute o próximo passo do
-backlog', recebo um relatório". Não substitui GOVERNANCA §4 — orquestra `diario-de-obras` +
-`pantonic-executor` + `handover` numa sequência fixa.
+backlog', recebo um relatório". Não substitui a regra **uma tarefa por contexto**
+(`~/.claude/CLAUDE.md` Regra 2; `GOVERNANCA.md` §4 no hub do kit) — orquestra `diario-de-obras`
++ `pantonic-executor` + `handover` numa sequência fixa. Os "fatos estáveis" da arquitetura de
+cada projeto ficam no arquivo do agente executor daquele projeto (`.claude/agents/*.md`), não
+aqui.
 
 ## Fluxo
 
@@ -30,8 +33,8 @@ backlog', recebo um relatório". Não substitui GOVERNANCA §4 — orquestra `di
    prioridade do dono que dispara execução escreve a linha de Diretiva no mesmo ato, não só
    nota de seção.
 
-3. **Escolher UMA tarefa atômica** — nunca mais de uma por contexto (GOVERNANCA §4.3). Grep pelo
-   ID no diário, ler só a seção correspondente (nunca o diário inteiro).
+3. **Escolher UMA tarefa atômica** — nunca mais de uma por contexto (`~/.claude/CLAUDE.md`,
+   Regra 2). Grep pelo ID no diário, ler só a seção correspondente (nunca o diário inteiro).
 
    Para retomar sprint `in progress`: Grep por `Próxima tarefa da sprint` (`output_mode:
    content`, `-A 2`) e ir direto ao dossiê referenciado — nunca leitura sequencial da seção.
@@ -49,8 +52,8 @@ backlog', recebo um relatório". Não substitui GOVERNANCA §4 — orquestra `di
    disser respeito a um domínio já coberto por um agente mais especializado (ex.: `clean-code`
    para refactor comportamento-preservado, `architect-auditor` para auditoria), delegar a ele em
    vez do executor genérico é aceitável — a escolha do agente certo é critério do orquestrador,
-   não uma etapa mecânica. **Dieta do prompt:** carregar só o dossiê da tarefa — guardrails de arquitetura (regra de camadas, MVVM,
-   ACL) já vivem nos "fatos estáveis" de `pantonic-executor.md` e não devem ser repetidos aqui;
+   não uma etapa mecânica. **Dieta do prompt:** carregar só o dossiê da tarefa — guardrails de
+   arquitetura já vivem nos "fatos estáveis" do arquivo do agente e não devem ser repetidos aqui;
    repetir paga o mesmo texto em todos os turnos do executor. **Levantamento de contexto antes do
    dossiê:** se entender o estado atual exigir ler mais de ~1-2 arquivos de código-fonte
    integrais (mismatch de shape, assinaturas, comportamento vigente), essa varredura vai para o

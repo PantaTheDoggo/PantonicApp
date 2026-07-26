@@ -7,7 +7,7 @@ description: Cria e mantém o diário de obras do projeto Pantonic* — kanban c
 
 O diário de obras (`docs/DIARIO_DE_OBRAS.md`) é o documento centralizado onde todo planejamento
 e tíquete avulso é arquivado, com identificação imediata do trabalho e seu status
-(GOVERNANCA.md §4.2).
+(`GOVERNANCA.md` §4.2 no hub do kit).
 
 ## Estrutura do documento
 
@@ -43,7 +43,7 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
   ao índice (defeito medido: `TK-DIARIO-SANEAMENTO`, célula de `SPRINT-REVEALENV` cresceu de
   ~2.5k para ~5k chars por handovers sucessivos apensando parágrafos). Mesmo mecanismo do
   "Guardrail anti-log-narrativo" abaixo, generalizado para toda tarefa — não só planos derivados.
-- **Diretiva de priorização** é a linha imediatamente abaixo do título (GOVERNANCA §4.2). Guia a
+- **Diretiva de priorização** é a linha imediatamente abaixo do título. Guia a
   skill `proximo-passo` quando o usuário pede para seguir o backlog sem nomear tarefa. Vazia por
   padrão — heurística: destravar `blocked` → concluir `in progress` (WIP de 1 iniciativa por vez)
   → bugs → demais por FIFO (ordem de entrada no índice).
@@ -73,6 +73,10 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
    Plano que antecipa múltiplas rodadas de Q&A mantém tabela única "Decisões" (id → valor → 1
    linha) referenciada pelas seções, em vez de restatar cada regra em prosa em cada seção
    (reduz fan-out de Edits por rodada de confirmação).
+   Ao criar um plano novo, invocar a skill `checar-versao-kit` (`GOVERNANCA.md` §10 no hub) antes
+   de fechar o registro: se a versão local do kit bate com a do hub, segue em silêncio; se
+   divergir, pergunta ao dono "atualizar agora ou postergar?" e registra a resposta no próprio
+   plano; se a rede estiver indisponível, anota "não verificado" e segue sem bloquear.
 2. **Mudar status** — atualizar a linha do índice e o `[status]` da seção; `blocked` exige razão
    registrada em "Notas de execução".
 3. **Condensar** — quando itens `done`/`cancelled` dominarem o documento (ou ele passar de ~500

@@ -5,8 +5,9 @@ description: Encerra uma tarefa Pantonic* com handover limpo — atualiza o diá
 
 # handover — encerramento de tarefa e troca de contexto
 
-Regra de ouro (GOVERNANCA.md §4.3): **uma tarefa por contexto**. Toda tarefa termina com este
-fluxo; a próxima tarefa começa em contexto limpo, invocada pelo usuário.
+Regra de ouro (`~/.claude/CLAUDE.md` Regra 2; `GOVERNANCA.md` §4.3 no hub do kit): **uma tarefa
+por contexto**. Toda tarefa termina com este fluxo; a próxima tarefa começa em contexto limpo,
+invocada pelo usuário.
 
 ## Fluxo
 
@@ -43,8 +44,8 @@ fluxo; a próxima tarefa começa em contexto limpo, invocada pelo usuário.
      (b) linha de índice no diário com âncora apontando para essa seção do plano. Nota em
      prosa não satisfaz o guardrail; piso vermelho não indexado transfere a forense para o
      próximo gate. `TK-*` solto (seção no próprio diário) só quando a tarefa de origem for
-     avulsa, sem plano-pai — achado fora do plano perde o contexto e vira pilha indecidível
-     quando o plano acaba.
+     avulsa, sem plano-pai — decisão do dono 2026-07-16: achado fora do plano perde o
+     contexto e vira pilha indecidível quando o plano acaba.
    - **Gate de triagem no fechamento de sprint:** o flip da sprint para `done` exige triagem
      da seção `## Achados da execução` do plano — cada achado sai com rota: (a) tarefa em
      plano derivado, (b) decisão do dono (`AskUserQuestion` em lote, 1 round-trip), ou
@@ -60,8 +61,8 @@ fluxo; a próxima tarefa começa em contexto limpo, invocada pelo usuário.
    - Incidente com diagnóstico não-óbvio → entrada no doc de lições aprendidas.
 
 4. **Mensagem de handover ao usuário** (última saída do contexto, ≤ ~15 linhas) — **ponteiro +
-   deltas, nunca repete o conteúdo já escrito no diário** (o diário é o registro canônico; pagar o mesmo texto
-   duas vezes é custo composto sem benefício):
+   deltas, nunca repete o conteúdo já escrito no diário** (o diário é o registro canônico; pagar
+   o mesmo texto duas vezes é custo composto sem benefício):
    - Tarefa e status final; o que validar e como (comando/fluxo de teste manual, se aplicável).
    - Iniciativa/plano de origem da tarefa (sprint no diário, ou "tíquete avulso").
    - **Índice de conclusão do plano**: `<done>/<total>` tarefas daquele plano no índice do
