@@ -1,6 +1,6 @@
 ---
 name: checar-versao-kit
-description: Checa se a versão local do kit agêntico (.claude/kit/KIT_VERSION) diverge da versão publicada no hub PantonicApp, sem nunca atualizar sozinho. Usar no momento de criar/registrar um plano novo (chamada pela skill diario-de-obras, operação "Registrar plano").
+description: Checa se a versão local do kit agêntico diverge da versão publicada no hub PantonicApp, sem nunca atualizar sozinho. Resolve a versão local em três modos — consumidor (.claude/kit/KIT_VERSION), hub (.claude/KIT_VERSION sem .claude/kit/) e não-instalado. Usar no momento de criar/registrar um plano novo (chamada pela skill diario-de-obras, operação "Registrar plano").
 ---
 
 # checar-versao-kit — checagem anti-drift do kit agêntico
@@ -15,15 +15,35 @@ Esse é o único gatilho — não roda a cada turno, nem a cada tarefa, só quan
 
 ## Procedimento
 
-1. Ler a versão local materializada em `.claude/kit/KIT_VERSION` do projeto consumidor.
-2. Rodar a checagem remota (1 chamada de rede, sem fetch, sem tocar a árvore de trabalho):
+### 1. Resolver a versão local (três modos, nesta ordem)
 
-   ```
-   git ls-remote --tags https://github.com/PantaTheDoggo/PantonicApp.git "kit-v*"
-   ```
+A skill decide pelo que existe na árvore do repo onde o plano está sendo criado — nunca assume
+que o repo é um consumidor:
 
-3. Comparar a tag mais alta retornada (`kit-v<versão>`) com o conteúdo de
-   `.claude/kit/KIT_VERSION`.
+1. **Existe `.claude/kit/KIT_VERSION`** → **modo consumidor**. É essa a versão local; segue para
+   o passo 2.
+2. **Não existe `.claude/kit/`, mas existe `.claude/KIT_VERSION`** → **modo hub**: este repo *é*
+   a fonte do kit, não há o que atualizar. Reporta "hub canônico — nada a comparar" e, se a rede
+   permitir, roda mesmo assim a checagem remota do passo 2 só para avisar se a tag mais recente
+   publicada não corresponde ao `.claude/KIT_VERSION` local (sinal de que alguém mudou o kit e
+   esqueceu de republicar). Esse aviso não é o fluxo "divergentes" do passo 3 — é um alerta de
+   "republicação pendente", e mesmo com o aviso a skill não atualiza nada (não há para onde
+   atualizar: este repo já é o hub).
+   O modo hub não é hipótese remota: o gatilho da regra é a criação de um plano, e os planos desta
+   iniciativa nascem no próprio `PantonicApp` — logo este modo é esperado, não excepcional.
+3. **Nenhum dos dois existe** → **"kit não instalado"**, segue em silêncio (sem checagem remota,
+   sem bloquear a criação do plano).
+
+### 2. Checagem remota (só nos modos consumidor/hub — 1 chamada de rede, sem fetch, sem tocar a árvore de trabalho)
+
+```
+git ls-remote --tags https://github.com/PantaTheDoggo/PantonicApp.git "kit-v*"
+```
+
+### 3. Comparar
+
+Comparar a tag mais alta retornada (`kit-v<versão>`) com a versão local resolvida no passo 1
+(`.claude/kit/KIT_VERSION` no modo consumidor, `.claude/KIT_VERSION` no modo hub).
 
 ## Os três resultados possíveis
 
