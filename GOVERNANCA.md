@@ -212,3 +212,37 @@ Os agentes (§3) e os fluxos (§4–§6) estão materializados como kit copiáve
 `pantonic-scout`, e skills `bootstrap-pantonic`, `diario-de-obras`, `proximo-passo`,
 `integrar-poc`, `guardrails-check` e `handover`. Todo projeto novo copia esse kit no bootstrap e
 ajusta apenas os "fatos estáveis" dos agentes.
+
+## 10. Versionamento e atualização do kit
+
+O kit agêntico (§9) é versionado e a atualização de um consumidor a partir do hub segue uma
+regra única, sem exceção de severidade.
+
+**(a) Atualização é sempre iniciada pelo usuário.** Nenhum agente sincroniza o kit por conta
+própria em nenhuma circunstância — nem quando a divergência aparenta ser "só um patch". Detectar
+que a versão local diverge da versão do hub e agir sobre essa divergência são dois atos
+distintos: um agente pode fazer o primeiro (reportar), nunca o segundo (atualizar). Não existe
+threshold de severidade que justifique pular essa separação.
+
+**(b) Checagem de versão na criação de todo plano.** O gatilho é a criação de um plano novo — é
+o momento em que se decide trabalho futuro, logo o momento certo de saber se a doutrina base
+usada por esse trabalho está desatualizada.
+
+**Mecanismo.** O hub mantém `KIT_VERSION` na raiz (versão canônica do kit) e, a cada mudança
+canônica, publica uma tag git `kit-v<versão>` na branch `kit` (o subtree de `.claude/`). Cada
+projeto consumidor materializa a versão que recebeu em `.claude/kit/KIT_VERSION`. A checagem
+compara as duas com uma única chamada de rede — `git ls-remote --tags <url> "kit-v*"` — que não
+faz fetch nem toca a árvore de trabalho do consumidor.
+
+**Os três resultados possíveis da checagem:**
+- **Versões iguais** → segue em silêncio; não vale o turno do dono para confirmar o óbvio.
+- **Divergentes** → reporta a versão local, a versão remota, e pergunta *"atualizar agora ou
+  postergar?"*. A resposta do dono é registrada no próprio plano que está sendo criado. O agente
+  nunca atualiza sozinho, seja qual for a resposta.
+- **Sem rede / remote inacessível** → reporta "não verificado" e segue com o trabalho. Falha de
+  rede não bloqueia a tarefa nem é tratada como se fosse "versões iguais" — a incerteza é
+  reportada, não escondida.
+
+**Critério de pronto.** Qualquer tarefa que edite `.claude/` do hub só está pronta se o bump de
+`KIT_VERSION` acompanhar a mudança. Uma versão que não sobe quando o conteúdo muda deixa a
+checagem cega — o guarda vira teatro.

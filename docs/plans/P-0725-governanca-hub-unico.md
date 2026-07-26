@@ -287,6 +287,96 @@ decisão que escolhe **mecanismo de plataforma** exige sonda de viabilidade junt
 
 ---
 
+## Notas de execução
+
+### 2026-07-25 — Fase 1 (reconciliar `PantonicApp` × `PantonicVideo`) — **done**
+
+Executada em Opus, conforme o plano. Entrada = árvore de trabalho do `PantonicVideo` (§1.3), não
+o `HEAD`.
+
+**Critério de curadoria aplicado, com um refinamento medido:** além de "quem tem a regra vence",
+uma divergência foi decidida por **sobrevivência à materialização** — o canônico é materializado
+em N projetos, logo não pode citar artefato que não viaja com ele nem caminho de máquina.
+
+| # | Skill / linha | Vence | Razão |
+|---|---|---|---|
+| D1 | `proximo-passo` preâmbulo | **síntese** | Video acertou ao citar `CLAUDE.md` Regra 2 (resolve em todo consumidor); mas o trecho "cópia local do kit (`D:\workspaces\...`)" foi **descartado** — caminho de máquina + descreve a cópia manual que a Fase 4 substitui por subtree |
+| D2 | `proximo-passo` §3 citação | síntese (idem D1) | — |
+| D3 | `proximo-passo` §4 "Dieta do prompt" | **Video** | carrega REGRA: fraseado agnóstico de agente (DP-2 / `TK-SGSS-ARQUETIPO`) e remove jargão de um projeto só (camadas/MVVM/ACL); wrap também estava correto |
+| D4 | `diario-de-obras` cabeçalho | **hub** | mesma razão de D1 (caminho absoluto + relação "adaptada") |
+| D5 | `diario-de-obras` diretiva | **Video** | citação inline redundante com o cabeçalho |
+| D6 | `diario-de-obras` §3 Condensar `(a)(b)(c)(d)` | **hub** | sem diferença de regra → reformatação; letras são referenciáveis |
+| D7 | `handover` regra de ouro | síntese (idem D1) | — |
+| D8 | `handover` §1 Gate | **hub** | REGRA: aponta para a skill `guardrails-check` (viaja no kit); o Video apontava para a tabela "Test execution tiers" do seu próprio `CLAUDE.md`, que não existe em outro consumidor |
+| D9 | `handover` §2 achado fora de escopo | **Video** | proveniência da regra (decisão do dono 2026-07-16) |
+| D10 | `handover` §2 gate de triagem | **hub** | **verificado**: `docs/plans/P-0714*` não existe mais no `PantonicVideo` → o "precedente" do Video era ponteiro morto |
+| D11 | `handover` §4 | **Video** | linha do hub estourava o wrap; conteúdo idêntico (LF garantido na escrita) |
+
+**Critério de pronto — verificado, 5 pontos:** (1) as 3 skills byte-idênticas hub × Video
+(`diff --strip-trailing-cr` limpo nas 3); (2) zero caminho absoluto de máquina remanescente;
+(3) zero ponteiro `P-0714`; (4) `kit-exclude.txt` com exatamente 3 entradas; (5) os 3 alvos de
+exclusão existem no caminho que a entrada declara.
+
+**Desvio declarado (formato do `kit-exclude.txt`):** o snippet do §4/Fase 1 usa nomes nus
+(`guardrails-check`); foi escrito com **caminho relativo a `.claude/`**
+(`skills/guardrails-check`, `agents/pantonic-executor`, `skills/integrar-poc`). Razão: nome nu é
+ambíguo entre os namespaces `skills/` e `agents/`, e o `sync-kit.ps1` ainda não existe para
+desambiguar — a ambiguidade viraria defeito na Fase 4. As 3 entradas e as duas naturezas
+comentadas seguem exatamente como o plano exige.
+
+**Não feito de propósito:** `KIT_VERSION` não foi bumpado — ele **ainda não existe**; a Fase 2 o
+cria já em `1.0.0`, cobrindo o conteúdo desta fase. Commit também não foi feito: é o passo 1 da
+Fase 3.
+
+---
+
+### 2026-07-26 — Fase 2 (versionamento + regra anti-drift) — **done**
+
+Executada em Sonnet, conforme o plano. Implementado o §3 inteiro:
+
+1. `KIT_VERSION` criado na raiz do hub com `1.0.0`.
+2. `GOVERNANCA.md` §10 novo, com as duas metades (a)/(b), o bloco "Mecanismo" e os três
+   resultados da checagem.
+3. Skill nova `.claude/skills/checar-versao-kit/SKILL.md`, com o procedimento operacional
+   completo (replicado, não reformulado) e a proibição explícita de auto-atualizar mesmo para
+   patch.
+4. `.claude/skills/diario-de-obras/SKILL.md`, operação "1. Registrar plano" — gancho adicionado
+   chamando `checar-versao-kit` na criação de plano, com os três desfechos resumidos.
+
+**Achado da Fase 1 (`GOVERNANCA.md` não viaja no subtree) triado aqui** — ver a marca "TRIADO na
+Fase 2" na seção "Achados da execução": resolvido por replicação do texto normativo nos dois
+lugares, decisão do orquestrador (não do dono).
+
+**Não feito de propósito:** tag `kit-v1.0.0`, commit e push — todos são Fase 3.
+
+Consumo: 15 tool uses, ~57k tokens, sonnet, ~5min.
+
+---
+
 ## Achados da execução
 
-_(vazio — plano não iniciado)_
+### 2026-07-25 — `GOVERNANCA.md` **não viaja** com o subtree (afeta a Fase 2)
+
+**Evidência:** o subtree é `--prefix=.claude` (§4/Fase 3 passo 2), e `GOVERNANCA.md` está na
+**raiz** do hub, fora desse prefixo. Consequência: toda citação a `GOVERNANCA.md §N` dentro de uma
+skill do kit é um ponteiro que **dangla em qualquer consumidor** — foi por isso que a Fase 1
+converteu as 3 citações para a forma dupla (`~/.claude/CLAUDE.md` Regra 2, resolvível em todo
+projeto; `GOVERNANCA.md` §N "no hub do kit", explicitamente marcado como do hub).
+
+**Por que é pertinente agora:** a **Fase 2** manda escrever a regra nova como `GOVERNANCA.md` §10
+e "ganchar a chamada na skill `diario-de-obras`". Se a regra (a)/(b) do §3 viver **só** no
+`GOVERNANCA.md`, o consumidor recebe a skill que manda checar versão e não recebe a regra que
+explica o mecanismo.
+
+**Rota sugerida (decisão do dono na Fase 2, não tomada aqui):** o texto normativo da regra vive na
+skill `checar-versao-kit` (que viaja no kit) e o `GOVERNANCA.md` §10 fica como a versão do hub
+apontando para ela — em vez do inverso. Não implementado nesta fase: está fora do escopo da
+Fase 1 e a Fase 2 tem dono e teto próprios.
+
+**TRIADO na Fase 2 (2026-07-26) — resolvido por replicação, não por ponteiro.** A rota efetivada
+não foi a sugerida acima: em vez de o `GOVERNANCA.md` §10 apontar para a skill, **ambos carregam
+o texto normativo completo** — §10 como doutrina do hub e `checar-versao-kit` como operacional que
+viaja no kit. O consumidor recebe a regra inteira via `.claude/` mesmo sem `GOVERNANCA.md`, que era
+o risco original. **Decisão tomada pelo orquestrador no dossiê de delegação, não pelo dono** — o
+custo é duplicação de texto normativo em dois lugares (drift possível se um for editado sozinho).
+Reverter para a rota "ponteiro" é barato enquanto o kit não foi publicado (Fase 3).

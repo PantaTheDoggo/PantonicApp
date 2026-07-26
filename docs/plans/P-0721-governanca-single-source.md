@@ -466,11 +466,11 @@ melhoria nova — é o canônico já correndo à frente do que a Fase 3 vai empu
   decidir o mesmo naming duas vezes. A Fase 1a fecha sem essa promoção, por decisão, não por
   omissão.
 
-**Achado fora de escopo (não fechado, só anotado):** `bootstrap-pantonic` hub referencia
-`ARQUITETURA_PANTONICA §15` no passo do core; Container/ContainerForAWS referenciam `§16` no
-mesmo ponto — divergência de numeração de seção que pode ser doc desatualizado em um dos lados
-(ou simplesmente doc local diferente por filho); não investigado (fora do escopo desta tarefa,
-que é só as 6 `SKILL.md`).
+**Achado fora de escopo — fechado (TK-SGSS-ARQUETIPO, ver `P-0725-governanca-tres-camadas.md`
+§1.2):** `bootstrap-pantonic` hub referencia `ARQUITETURA_PANTONICA §15` no passo do core;
+Container/ContainerForAWS referenciam `§16` no mesmo ponto. Medido em §1.2: **não é deriva** —
+é especialização legítima (o Container insere um §12 próprio, que desloca a numeração
+subsequente). Sem ação pendente.
 
 **Medição final (re-rodada, `diff --strip-trailing-cr <hub> <filho> | grep -c '^>'`,
 representante por grupo) — idêntica à inicial, porque nenhum merge foi aplicado ao canônico:**
