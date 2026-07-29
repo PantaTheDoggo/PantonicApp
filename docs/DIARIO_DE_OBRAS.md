@@ -147,7 +147,7 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     teto é alarme, a divisão prévia em sub-tarefas é o controle.** Aqui o QC de 21 artefatos em 7
     itens de checklist era divisível por lote (T4..T7 já eram lotes de 5-6) e não foi dividido.
 
-- `V2B-T9` — Normalizar as 29 citações de fonte para URL completa — [Sonnet] — backlog
+- `V2B-T9` — Normalizar as 29 citações de fonte para URL completa — [Sonnet] — done
   - Nasce do achado do `V2B-T8`. **Rota escolhida pelo dono (2026-07-29):** normalização completa
     das 29, e não a correção só das 6 vagas nem o aceite como limitação conhecida. Dimensionamento
     medido no fechamento (222 citações totais; 179 já com URL; 14 `_CORPUS.md` corretas por
@@ -158,6 +158,33 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     `P-0729-V2C` voltou a `blocked`. O `V2B-T8` havia flipado o plano para `done` com este achado
     ainda sem rota triada — a regra da skill `diario-de-obras` ("a sprint só flipa para `done` com
     todos os achados triados") não admite.
+  - Resultado: 29 citações convertidas via script determinístico
+    (`_normalize_dims.py`-like, scratchpad) em `BM-02` (1), `BM-07` (2), `BM-09` (11), `BM-10` (2),
+    `BM-11` (3), `BM-14` (1) e `BM-16` (9) para `https://raw.githubusercontent.com/<full_name>/HEAD/<caminho>`,
+    `full_name` reaproveitado dos já-conformes de cada relatório (`bmad-code-org/BMAD-METHOD`,
+    `github/awesome-copilot`, `PatrickJS/awesome-cursorrules`, `cline/cline`,
+    `coleam00/context-engineering-intro`, `disler/claude-code-hooks-mastery`,
+    `guardrails-ai/guardrails`); todo caminho verificado contra `docs/benchmark/_trees/*.txt` antes
+    de virar URL. Citação com vários arquivos virou uma URL por arquivo (precedente `pyproject.toml,
+    SECURITY_ADVISORY.md` do `BM-16`). Wildcard `docs/README.*.md` (`BM-07`) resolvido contra a
+    árvore para os 6 arquivos reais (`agents/hooks/instructions/plugins/skills/workflows`), não uma
+    URL inventada. `docs/benchmark/INDICE.md` — tíquete fechado com o resultado.
+  - **6 referências vagas sem arquivo checável** viraram citação do artefato local
+    `docs/benchmark/_trees/<slug>.txt` (3 mistas, com outro arquivo real no mesmo campo, mantêm ao
+    menos uma URL; 3 puras — `BM-02` D5, `BM-11` D11, `BM-14` D11 — ficam só com o caminho da árvore,
+    sem `http`, por desenho da decisão fechada). Consequência: `grep -h "Fonte:" docs/benchmark/BM-*.md
+    | grep -v http | grep -vi "_CORPUS"` cai de 29 para **3** linhas, não 0 — resíduo esperado da
+    regra "nunca inventar URL" aplicada a uma referência sem nenhum arquivo específico associado,
+    não um defeito desta tarefa.
+  - **Residual fora de escopo (não corrigido aqui, registrado no `INDICE.md`):** `BM-17`
+    (D7/D11/D12) tem o mesmo padrão de caminho relativo mas não fazia parte da lista de 29
+    citações/7 relatórios dimensionada no dossiê — fica como possível tíquete futuro.
+  - Veredito — V2B-T9
+    Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e
+    `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 
 ### Estágio 2 — `P-0729-v2-confronto` [blocked — depende do `V2B-T9` (ver correção de estado acima)]
 

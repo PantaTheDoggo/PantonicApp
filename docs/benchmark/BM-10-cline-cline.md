@@ -80,7 +80,7 @@ Telemetria: features usadas, taxa de conclusão de tarefas, erros, performance. 
 
 Documentação: site completo em docs/ (mdx), incluindo getting-started, core-workflows, customization, enterprise-solutions. README.md conciso (0 instalação por canal). Exemplos: multi-agent (README), desktop app (ARCHITECTURE.md), quickstart, vscode walkthrough (5 steps). `.clinerules/` inclui padrões específicos (bun-and-node, debug-harness, workflows). Onboarding: decidir exige ler README + 1-2 guias (30min); começar exige npm install + criar task (~5min). Documentação está distribuída mas navegável (docs/docs.json).
 
-*Fonte: README.md; docs/ estrutura via árvore; docs/getting-started/config.mdx*
+*Fonte: https://raw.githubusercontent.com/cline/cline/HEAD/README.md; docs/benchmark/_trees/cline-cline.txt (docs/ estrutura); https://raw.githubusercontent.com/cline/cline/HEAD/docs/getting-started/config.mdx*
 
 ## D15 — Multi-projeto, multi-repo e equipe
 
@@ -92,7 +92,7 @@ Documentação: site completo em docs/ (mdx), incluindo getting-started, core-wo
 
 **Aprovação:** cada ação crítica (edição, comando, dependência) requer aprovação explícita antes de execução (exceto em YOLO mode, opt-in). **Plan mode**: modo "consulta" — estratégia é discutida, sem execução. **Checkpoints**: usuário pode comparar, escolher restauração, ou manter. **Telemetria:** usuário toggle on/off. **Tarefas:** iniciadas via webview → usuário digita prompts, Cline propõe ações em turno-a-turno. Sem automação silenciosa de operações destrutivas; YOLO é explícito.
 
-*Fonte: docs/core-workflows/plan-and-act.mdx; docs/features/auto-approve.mdx; docs/core-workflows/checkpoints.mdx*
+*Fonte: https://raw.githubusercontent.com/cline/cline/HEAD/docs/core-workflows/plan-and-act.mdx; https://raw.githubusercontent.com/cline/cline/HEAD/docs/features/auto-approve.mdx; https://raw.githubusercontent.com/cline/cline/HEAD/docs/core-workflows/checkpoints.mdx*
 
 ---
 

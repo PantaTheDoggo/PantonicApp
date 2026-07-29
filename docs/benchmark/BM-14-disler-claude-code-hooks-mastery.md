@@ -68,7 +68,7 @@ Instalação via `.claude/` (estrutura padrão Claude Code). Configuração em s
 
 Hook system: adicionar matchers e commands em settings.json. Exemplos: 7 crypto agents (haiku/opus/sonnet), 8 output styles, 9 status lines. Sem SDK/plugin explícito confirmado.
 
-**Fonte:** Tree cacheada (131 arquivos)
+**Fonte:** docs/benchmark/_trees/disler-claude-code-hooks-mastery.txt (131 arquivos)
 
 ## D12 — Observabilidade e métricas
 

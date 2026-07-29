@@ -43,7 +43,7 @@ Seis agentes: Mary (Analyst), John (Product Manager), Winston (Architect), Ameli
 
 Unidade mínima é a "skill" — artefato executável com ID, triggers, workflows. Estrutura de skills em `src/bmm-skills/<fase>/`. Não há evidência de rastro requisito→código→teste explícito documentado.
 
-**Fonte:** Árvore cacheada, linhas 220+
+**Fonte:** docs/benchmark/_trees/bmad-code-org-bmad-method.txt (linhas 220+)
 
 ---
 

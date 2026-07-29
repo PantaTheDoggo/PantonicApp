@@ -27,28 +27,28 @@ Unidade: validator customizado ou atualização de dependência. Padrão: `@regi
 
 ## D7 — Memória e estado persistente
 `guard.history` (per-sessão), `guardrails/version.py`, `poetry.lock` (reproduzibilidade), logging estruturado, VectorDB opcional, SQLAlchemy opcional.
-**Fonte:** guardrails_server.ipynb, pyproject.toml
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/docs/examples/guardrails_server.ipynb, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/pyproject.toml
 
 ## D8 — Qualidade e testes
 **Três gates obrigatórios:** `make lint` (Ruff), `make type` (Pyright), `make test` (pytest). Todos passam pré-commit. Sem piso de regressão ou TDD puro explícitos.
-**Fonte:** CLAUDE.md
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/CLAUDE.md
 
 ## D9 — Guardrails e enforcement
 **100% executável.** Regras: `CLAUDE.md` (two-file strategy), `Makefile` (gates), `.github/workflows/` (CI), `pyproject.toml` (paranoia licenças). Pré-commit hooks, CI automático.
-**Fonte:** CLAUDE.md, CONTRIBUTING.md, pyproject.toml
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/CLAUDE.md, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/CONTRIBUTING.md, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/pyproject.toml
 
 ## D10 — Distribuição e versionamento do próprio framework
 **Versão 0.11.0 | Distribuição: PyPI | Versionamento: Semantic | Console: `guardrails` | Python ≥3.10 <3.14 | Gestor: Poetry**
 Instalação: `pip install guardrails-ai` ou `pip install git+...@v0.10.0` (pós-0.10.1). Atualização: `pip --upgrade`. Versão: `guardrails/version.py` ou `pip show`.
-**Fonte:** pyproject.toml, SECURITY_ADVISORY.md
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/pyproject.toml, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/SECURITY_ADVISORY.md
 
 ## D11 — Extensibilidade
 (1) Validators: herança de `Validator`, `@register_validator()`, `_validate()` → `PassResult`/`FailResult`, `ErrorSpan`. (2) Modo local/remoto: `_inference_local()` ou `_inference_remote()`. (3) Integração: `Guard.use(validator)`. (4) Hub: marketplace sem fork.
-**Fonte:** docs/how_to_guides/custom_validator.ipynb
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/docs/how_to_guides/custom_validator.ipynb
 
 ## D12 — Observabilidade e métricas
 `opentelemetry-sdk` com exporters, logging estruturado. `guard.history` por-sessão; sem série histórica persistente. Métricas: taxa aprovação/reprovação, latência, erros/tipo.
-**Fonte:** pyproject.toml, guardrails_server.ipynb
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/pyproject.toml, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/docs/examples/guardrails_server.ipynb
 
 ## D13 — Segurança e permissões
 **Compromisso maio 2026:** v0.10.1 malware (PyPI) via GitHub PAT roubado → 30 repos → deploy tokens. **Resposta:** rotação tokens org-wide, reset accounts, infraestrutura offline, políticas GitHub (verified commits, fine-grained PATs com expiração). **Contact:** security@guardrailsai.com. Paranoia de licenças; sem sandbox explícito para validators locais.
@@ -58,18 +58,18 @@ Instalação: `pip install guardrails-ai` ou `pip install git+...@v0.10.0` (pós
 **Decidir:** README (~2 min), 20+ notebooks (código limpo, chatbot, PII, entidades, estruturado, integrações LLM).
 **Começar:** CONTRIBUTING (`make dev`, `make test`), 6+ how-to guides, 8 API reference docs.
 Volume extenso; prioriza exemplos interativos.
-**Fonte:** README, CONTRIBUTING.md, docs/
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/README.md, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/CONTRIBUTING.md, docs/benchmark/_trees/guardrails-ai-guardrails.txt (docs/)
 
 ## D15 — Multi-projeto, multi-repo e equipe
 Hub centralizado para compartilhar validators sem fork. CLI: `guardrails create`, `install`, `uninstall`. Sem governança cross-repo ou sincronização de doutrina.
-**Fonte:** pyproject.toml, guardrails/cli/hub/
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/pyproject.toml, docs/benchmark/_trees/guardrails-ai-guardrails.txt (guardrails/cli/hub/)
 
 ## D16 — Interação com o humano
 **Automático:** `guard.parse()`, validators (PassResult/FailResult).
 **Humano consulta:** code review (PRs obrigatórias), alertas críticos (segurança), escolha de validators.
 **Nunca automático:** mudanças cross-deps, releases (maintainer gate), deploy malicioso (pós-0.10.1: verify signatures).
 Servidor: HTTP REST; sem aprovação manual explícita.
-**Fonte:** guardrails_server.ipynb, CONTRIBUTING.md, SECURITY_ADVISORY.md
+**Fonte:** https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/docs/examples/guardrails_server.ipynb, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/CONTRIBUTING.md, https://raw.githubusercontent.com/guardrails-ai/guardrails/HEAD/SECURITY_ADVISORY.md
 
 ---
 

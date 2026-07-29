@@ -47,21 +47,28 @@ correção (dimensões, teto de linhas — `BM-02` está exatamente em 160, dent
 e campo "Dimensões Fora da Grade" já vinham corretos). Checklist 3 (URL de raiz de repositório):
 nenhuma ocorrência nos 21. Checklist 5: 1 ocorrência (`BM-16`), corrigida.
 
-## Tíquete aberto — citação de fonte sem URL completa
+## Tíquete fechado — citação de fonte sem URL completa
 
-**Achado fora do escopo desta tarefa, com ação futura recomendada** (não bloqueia o Estágio 2):
-boa parte das seções D3..D16 (fora de D1/D2, que majoritariamente citam URL completa ou
-`_CORPUS.md`) cita a fonte por **caminho de arquivo relativo** (`` **Fonte:** `package.json` ``,
-`` **Fonte:** árvore cacheada ``, `` [Árvore](docs/benchmark/_trees/...) ``) em vez da URL exata
-(`raw.githubusercontent.com/...` ou `github.com/.../blob/...`) exigida literalmente por
-`_ESQUEMA.md` linhas 39-42. Ocorre em pelo menos `BM-07`, `BM-09` (quase todas as 16 dimensões),
-`BM-10`, `BM-11`, `BM-14`, `BM-16` (D7-D16), `BM-17` (D7/D11/D12) — um padrão sistêmico do
-coletor em vários lotes/sessões distintas, não um erro isolado. Corrigir cada citação exigiria
-reconstruir a URL RAW específica por arquivo em ~40+ pontos, o que excede o orçamento desta
-tarefa (~45 tool uses) e configura busca transversal — registrado aqui como tíquete em vez de
-corrigido inline. **Recomendação:** tarefa dedicada (`V2B-T9` ou item do backlog geral) para
-normalizar todas as citações de fonte para o formato URL completo, reaproveitando o padrão já
-usado em D1/D2 da maioria dos relatórios.
+**Origem:** boa parte das seções D3..D16 (fora de D1/D2, que majoritariamente citam URL completa
+ou `_CORPUS.md`) citava a fonte por **caminho de arquivo relativo** em vez da URL exata
+(`raw.githubusercontent.com/...`) exigida literalmente por `_ESQUEMA.md` linhas 39-42.
+
+**Fechado por `V2B-T9`:** normalizadas as 29 citações não-conformes em `BM-02` (1), `BM-07` (2),
+`BM-09` (11), `BM-10` (2), `BM-11` (3), `BM-14` (1) e `BM-16` (9) para
+`https://raw.githubusercontent.com/<full_name>/HEAD/<caminho>`, com `<full_name>` resolvido
+conforme `_CORPUS.md`. Citação com vários arquivos virou uma URL por arquivo. 6 referências vagas
+sem arquivo checável viraram citação do artefato local `docs/benchmark/_trees/<slug>.txt`; nenhum
+caminho ausente da árvore foi convertido em URL inventada. `grep -h "Fonte:" docs/benchmark/BM-*.md
+| grep -v http | grep -vi "_CORPUS"` cai de 29 para 3 linhas residuais — as 3 referências
+puramente vagas sem nenhum arquivo real associado (`BM-02` D5, `BM-11` D11, `BM-14` D11), que por
+desenho da decisão fechada do dossiê (citar o artefato local da árvore, nunca uma URL) não podem
+carregar `http`; não é defeito da tarefa, é o resultado esperado de "nunca inventar URL" aplicado
+a uma referência que não aponta nenhum arquivo específico.
+
+**Residual fora do escopo de `V2B-T9` (não corrigido aqui):** `BM-17` (D7/D11/D12) tem o mesmo
+padrão de caminho relativo e não fazia parte da lista de 29 citações/7 relatórios dimensionada no
+dossiê `P-0729-v2-benchmarking.md` §5 `T9`. Fica como possível tíquete futuro, não reaberto nesta
+sessão.
 
 ## Dimensões Fora da Grade — agregado dos 21 relatórios
 

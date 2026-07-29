@@ -68,12 +68,12 @@ Agent Workflow Firewall (para agentic workflows). Sandboxing: sim. Validação: 
 ## D14 — Onboarding humano e documentação
 
 Site com busca completa, filtragem por categoria (agentes, instructions, skills, plugins, hooks, workflows). Hub de Aprendizado com guias e tutoriais. Tabelas no README com links. Botões VS Code/Insiders para instalação direta (deep links). CONTRIBUTING.md com passos. Sem documentação de "por que escolher este recurso vs. aquele".
-- Fonte: README.md, docs/README.*.md
+- Fonte: https://raw.githubusercontent.com/github/awesome-copilot/HEAD/README.md, https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.agents.md, https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.hooks.md, https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.instructions.md, https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.plugins.md, https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.skills.md, https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.workflows.md
 
 ## D15 — Multi-projeto, multi-repo e equipe
 
 Marketplace.json sugere suporte a múltiplos plugins. Documentação de como compartilhar doutrina entre projetos: NÃO ENCONTRADO. Cada plugin agrupa agentes/skills, mas sem modelo explícito de sincronização ou propagação de padrão.
-- Fonte: docs/README.plugins.md
+- Fonte: https://raw.githubusercontent.com/github/awesome-copilot/HEAD/docs/README.plugins.md
 
 ## D16 — Interação com o humano
 
