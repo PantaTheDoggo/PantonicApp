@@ -89,4 +89,4 @@ Servidor: HTTP REST; sem aprovação manual explícita.
 Nenhuma. Framework alinhado D1..D16; sem preocupações relevantes fora da grade.
 
 ---
-**Repositório:** guardrails-ai/guardrails | **BM:** 16 | **Coleta:** 2026-07-29 | **Buscas:** 10/12 | **Gerador:** PANTONIC-V2 Estágio 1
+**Repositório:** guardrails-ai/guardrails | **BM:** 16 | **Coleta:** 2026-07-29 | **Buscas:** 10/12 | **Gerador:** Coletor de benchmarking, Estágio 1

@@ -6,7 +6,7 @@ Fonte: https://raw.githubusercontent.com/SuperClaude-Org/SuperClaude_Framework/H
 
 ## D2 — Vitalidade
 Stars: 23.613 | Push: 2026-07-22T06:02:09Z | Licença: MIT | Contribuidores: NÃO ENCONTRADO
-Fonte: metadados T3
+Fonte: `docs/benchmark/_CORPUS.md` linha 49 (cache do `V2B-T3`)
 
 ## D3 — Ciclo de vida do trabalho
 PDCA contínuo: Plan (hipóteses em docs/temp/hypothesis-*.md) → Do (checkpoints via TodoWrite em docs/temp/experiment-*.md) → Check (auto-avaliação, lições em docs/temp/lessons-*.md) → Act (sucesso→docs/patterns/, falha→docs/mistakes/, atualiza CLAUDE.md). Gates de qualidade entre fases.

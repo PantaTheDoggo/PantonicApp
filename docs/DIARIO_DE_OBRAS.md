@@ -13,8 +13,8 @@ benchmarking → confronto → melhoria → documentação).
 | ID | Título | Status | Âncora |
 |---|---|---|---|
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
-| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T8) | in progress | `docs/plans/P-0729-v2-benchmarking.md` |
-| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | blocked | `docs/plans/P-0729-v2-confronto.md` |
+| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T8) | done | `docs/plans/P-0729-v2-benchmarking.md` |
+| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | backlog | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | blocked | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking | por nascer | autorado fechado por `V2C-T6` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
@@ -31,10 +31,9 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T8` (`docs/plans/P-0729-v2-benchmarking.md` §5) — controle de
-qualidade e índice do corpus, fechando o Estágio 1 (21/21 relatórios emitidos). Inclui a variante
-nova do `V2B-T7`: conferir que todo ponteiro de fonte de `D2` usa o número real de linha do arquivo
-`_CORPUS.md`, não a coluna de índice da tabela.
+**Próxima tarefa da sprint:** `V2C-T1` (`docs/plans/P-0729-v2-confronto.md` §5) — auto-retrato do
+PantonicApp no esquema do corpus, criando `docs/benchmark/BM-00-pantonicapp.md`. Estágio 1
+(`P-0729-V2B`) fechou `done` no `V2B-T8`; Estágio 2 (`P-0729-V2C`) está destravado.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -110,11 +109,39 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
   - Consumo: 136 tool uses em 6 subagentes Haiku (incl. 4 retomadas de condensação), ~310k tokens Haiku, ~11,5k s de parede somados (medido nos blocos `<usage>` das 10 notificações); orquestrador ~28 tool uses em Sonnet.
-- `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — backlog
+- `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — done
+  - Resultado: QC adversarial nos 21 relatórios contra o checklist de 7 itens do plano.
+    `docs/benchmark/INDICE.md` criado com veredito por relatório, trilha, `owner/repo`, e a lista
+    agregada de "Dimensões Fora da Grade" dos 21 (insumo do Estágio 2). **21/21 aprovados** após 5
+    correções pontuais via Edit: 4× citação de fonte do `D2` sem linha real de `_CORPUS.md`
+    (`BM-01` sem nenhuma fonte → linha 44; `BM-03` citava o rótulo `BM-03` em vez da linha real →
+    linha 47; `BM-04` citava só "metadados T3" → linha 49; `BM-13` sem nenhuma fonte → linha 61) e
+    1× menção a "Pantonic" no rodapé (`BM-16`: `Gerador: PANTONIC-V2 Estágio 1` → `Coletor de
+    benchmarking, Estágio 1`). `BM-17` e `BM-21` (variante nova do `V2B-T7`) já conferiam
+    corretamente contra a linha real de `_CORPUS.md` (65 e 69) — não reincidiram.
+  - Achados de checklist limpos nos 21 sem correção: dimensões D1..D16 na ordem e título canônico
+    exato; teto de 160 linhas (`BM-02` está exatamente em 160 — o `wc -l` real corrigiu um falso
+    positivo do primeiro passe de checagem, que contava uma linha fantasma por causa do `\n` final
+    do arquivo); rodapé com as 3 seções obrigatórias e 3 itens em cada lista; campo "Dimensões
+    Fora da Grade" presente nos 21 (2 responderam "nenhuma": `BM-11`, `BM-16`); nenhuma URL de raiz
+    de repositório (item 3) nos 21.
+  - **Desvio registrado (tíquete no `INDICE.md`, não corrigido nesta tarefa):** boa parte das
+    seções D3..D16 cita a fonte por caminho de arquivo relativo (ex.: `` **Fonte:** `package.json` ``)
+    em vez da URL exata exigida por `_ESQUEMA.md` — padrão sistêmico em pelo menos `BM-07`, `BM-09`,
+    `BM-10`, `BM-11`, `BM-14`, `BM-16`, `BM-17`, presente em várias sessões/lotes distintos.
+    Corrigir os ~40+ pontos excede o orçamento desta tarefa e é busca transversal — recomendada
+    tarefa dedicada (`V2B-T9` ou item do backlog geral) para normalizar as citações para URL
+    completa.
+  - Veredito — V2B-T8
+    Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e
+    `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 
-### Estágio 2 — `P-0729-v2-confronto` [blocked — depende de `P-0729-v2-benchmarking` done]
+### Estágio 2 — `P-0729-v2-confronto` [backlog — destravado pelo `V2B-T8` done]
 
-- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — blocked
+- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — backlog
 - `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — blocked
 - `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — blocked
 - `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked

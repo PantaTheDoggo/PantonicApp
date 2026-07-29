@@ -13,7 +13,7 @@ https://raw.githubusercontent.com/Fission-AI/OpenSpec/HEAD/README.md
 **Contribuidores:** NÃO ENCONTRADO  
 **Licença:** MIT
 
-Fonte dos metadados: cache do `V2B-T3` — `docs/benchmark/_CORPUS.md` (linha `BM-03`).
+Fonte dos metadados: cache do `V2B-T3` — `docs/benchmark/_CORPUS.md` (linha 47).
 
 ## D3 — Ciclo de vida do trabalho
 

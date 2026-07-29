@@ -8,6 +8,7 @@ https://raw.githubusercontent.com/hesreallyhim/awesome-claude-code/HEAD/README.m
 
 ## D2 — Vitalidade
 Stars: 51.192 | Push: 2026-07-29T06:57:05Z | Contribuidores: NÃO ENCONTRADO | Licença: NOASSERTION
+**Fonte:** `docs/benchmark/_CORPUS.md` linha 61
 
 ## D3 — Ciclo de vida do trabalho
 Fases: (1) Descoberta → (2) Issue + formulário → (3) Validação automática (labels) → (4) Revisão manual → (5) Aceitação discricionária. Artefatos: issue template YAML, labels (validation-passed/failed), comentário automático. Gates: CoC, descrição 1 linha, licença válida, features únicas Claude Code.

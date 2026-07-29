@@ -14,6 +14,7 @@ Framework open-source que implementa Spec-Driven Development (SDD): inverte flux
 
 ## D2 — Vitalidade
 **Stars:** 124.381 | **Licença:** MIT | **Último push:** 2026-07-28T22:29:28Z | **Contribuidores:** NÃO ENCONTRADO
+**Fonte:** `docs/benchmark/_CORPUS.md` linha 44
 
 ---
 
