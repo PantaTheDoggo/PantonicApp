@@ -31,13 +31,13 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2C-T3` (`docs/plans/P-0729-v2-confronto.md`) — relatório
-consolidado de forças, fraquezas e dimensões novas, a partir de
-`docs/benchmark/MATRIZ_DIMENSOES.md` (`V2C-T2`, done em 2026-07-29: matriz 16×22 completa, listas
-(a)/(b)/(c) derivadas). O **Estágio 1 fechou em 2026-07-29** (9/9) e o **Estágio 2 está em
-execução** com 2/6 tarefas concluídas (`V2C-T1` auto-retrato + `V2C-T2` matriz); `V2C-T3` é a
-primeira tarefa Opus do estágio — interpreta as listas derivadas que `V2C-T2` deliberadamente
-não julgou.
+**Próxima tarefa da sprint:** `V2C-T4` (`docs/plans/P-0729-v2-confronto.md`) — backlog priorizado
+de candidatos (`C-NN`), a partir de `docs/benchmark/RELATORIO_CONSOLIDADO.md` (`V2C-T3`, done em
+2026-07-29: 808 linhas, 16 vereditos — 5 `MANTER` / 5 `ADOTAR` / 5 `ADAPTAR` / 1 `REJEITAR` —,
+6 dimensões novas D17..D22, 8 descartes justificados). O **Estágio 1 fechou em 2026-07-29** (9/9) e
+o **Estágio 2 está em execução** com 3/6 tarefas concluídas (`V2C-T1` auto-retrato + `V2C-T2`
+matriz + `V2C-T3` relatório consolidado). O `T4` converte vereditos em candidatos — atenção ao
+juízo do `T3` de que os 5 `ADOTAR` consolidam em **3** peças de trabalho, não 5.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -197,7 +197,7 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     uses junto com a aplicação. Reforça a decisão de 2026-07-16: **o controle é a divisão prévia,
     não o número.**
 
-### Estágio 2 — `P-0729-v2-confronto` [in progress — 2/6 tarefas, `V2C-T2` done em 2026-07-29]
+### Estágio 2 — `P-0729-v2-confronto` [in progress — 3/6 tarefas, `V2C-T3` done em 2026-07-29]
 
 - `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — done
   - Resultado: `docs/benchmark/BM-00-pantonicapp.md` criado (156 linhas, D1..D16 completas, todas
@@ -236,8 +236,41 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     campo "contribuidores" quase nunca é confirmado, então ninguém pontua `+` em `D2`). O `T3`
     deve ler a lista (a) vazia como "nenhuma lacuna de consenso pela régua mecânica", não como
     "nenhuma lacuna".
-- `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — backlog
-- `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked
+- `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — done
+  - Resultado: `docs/benchmark/RELATORIO_CONSOLIDADO.md` criado (808 linhas, 239 citações `BM-NN`;
+    zero afirmação sobre externo sem `BM-NN`, zero afirmação sobre o Pantonic sem `arquivo:linha`
+    via `BM-00`). **16 vereditos:** 5 `MANTER` (D1, D3, D4, D10, D16), 5 `ADOTAR` (D8, D9, D11,
+    D13, D14), 5 `ADAPTAR` (D5, D6, D7, D12, D15), 1 `REJEITAR` (D2 — publicação pública do hub,
+    com motivo escrito ancorado em `BM-09` anti-prática 2 e `BM-13` anti-prática 1). **6 dimensões
+    novas propostas** (D17 precedência entre mecanismos de doutrina; D18 registro de consumidores e
+    versões instaladas; D19 recuperação de sessão **não planejada**; D20 reversibilidade do
+    trabalho do agente; D21 vida útil/deprecação da própria doutrina; D22 integridade da cadeia de
+    suprimentos da doutrina) — 3 vêm da lista (c) do `MATRIZ_DIMENSOES.md`, 3 de leitura direta do
+    corpus. **8 descartes justificados** (matriz formal de rastreabilidade, adapter multi-harness,
+    marketplace público, Monte Carlo por commit, meta de % de cobertura, multi-agente com message
+    bus, auto-update no consumidor, modo YOLO). **8 vieses do corpus** documentados.
+    Juízos não óbvios: (1) os 5 `ADOTAR` consolidam em **3 peças de trabalho** para o `T4`, não 5 —
+    D9+D11+D14 são um único checador/gerador do kit; (2) a recomendação nº 1 é converter a **forma**
+    do enforcement (texto → código), explicitamente **não** criar guardrail nova — as 5 do `P-0722`
+    já estão decididas e apontadas para o Estágio 3A, e o alvo inicial do checador é um defeito que
+    já existe (drift do `.claude/README.md`, `BM-00§D4`); (3) achado de D15: dois diferenciais do
+    framework (orçamento de contexto e telemetria de consumo) citam `CLAUDE.md` global do usuário —
+    não viajam no kit por `git subtree`; (4) premissa do corpus contrariada: parte dos `—` da
+    matriz é orçamento de coleta e não ausência real — `BM-08§D6` admite literalmente
+    "existe (não buscado no orçamento)".
+    Desvio de calibração: alvo do dossiê era ~400-550 linhas; entregue 808 (+47%) — densidade de
+    citação exigida pelo guardrail duro (16 dimensões × 3 blocos + 6 D17+ + 8 descartes + 8 vieses,
+    cada um com `BM-NN` colado). Não é gate de aceite; registrado para o `T4` dimensionar a leitura.
+  - Veredito — V2C-T3
+    Suítes: não aplicável — tarefa não toca código (só `docs/benchmark/RELATORIO_CONSOLIDADO.md` e
+    `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: 37 tool uses, ~183k tokens, Opus, ~698s (medido no `<usage>` da notificação).
+  - Verificado pelo orquestrador em disco: 808 linhas; 236 linhas com citação `BM-NN`; 16 linhas
+    `**Veredito — X.**` (5 `MANTER`, 5 `ADOTAR`, 5 `ADAPTAR`, 1 `REJEITAR` — a única `REJEITAR`,
+    `D2`, traz *Motivo escrito*); §3 (D17..D22), §4 (8 descartes) e §5 (8 vieses) não-vazias.
+- `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — backlog
 - `V2C-T5` — Ratificação do dono (decisão por candidato) — [dono] — blocked
 - `V2C-T6` — Autorar `P-0729-v2-melhoria-candidatos.md` **já fechado** (Estágio 3B) — [Opus] — blocked
 
