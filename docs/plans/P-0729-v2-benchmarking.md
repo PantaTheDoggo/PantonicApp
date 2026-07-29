@@ -245,3 +245,17 @@ de cobertura (`P-0729-v2-confronto` T2). Dimensão sem evidência recebe literal
 | **DV-4** | Mecanismo de coleta | Híbrido: `api.github.com` só para metadados/árvore em lote (T3); conteúdo por `raw.githubusercontent.com` | Medido: `gh` ausente e cota de 60 req/h (§1) |
 | **DV-5** | Coletor é agente do kit, não prompt avulso | `pantonic-benchmarker` em `.claude/agents/` | A campanha se repete; e o esquema precisa estar fora do prompt para não derivar entre lotes |
 | **DV-6** | Sequenciamento com o Estágio 3 | Estágios 1-2 correm agora (só escrevem em `docs/benchmark/`); o P-0722 foi **mesclado** ao Estágio 3 por decisão do dono | Nenhum conflito de arquivo com a doutrina; ver `P-0729-v2-melhoria` §1 |
+
+## Achados da execução
+
+- **`V2B-T3` (2026-07-29) — trilha F abaixo do piso de 3 (DV-3).** A tabela de 25 candidatos em
+  §2 sempre teve só **2** candidatos para a trilha F (gestão de projeto com IA — `#24
+  sdi2200262/agentic-project-management`, `#25 Wirasm/PRPs-agentic-eng`). O critério de corte de
+  §2 (min. 3 por trilha) é estruturalmente impossível de cumprir para F com o pool dado — não há
+  um 6º candidato de F para preferir por `pushed_at`, nem um substituto para um eventual 404
+  (Fase B do T3 só autoriza WebSearch para reconfirmar 404, não para descobrir candidato novo).
+  Resolução aplicada em `docs/benchmark/_CORPUS.md`: os 2 disponíveis de F foram mantidos
+  `confirmado` (`BM-19`, `BM-20`); os 20 confirmados fecham com A=4, B=4, C=4, D=3, E=3, F=2.
+  **Ação futura (triagem pendente):** antes do fechamento do Estágio 1 (`V2B-T8`), decidir entre
+  (a) buscar e adicionar um 3º candidato de trilha F ao corpus, ou (b) registrar decisão
+  consciente do dono de aceitar F com 2. Rota ainda não escolhida — não tratar como resolvido.

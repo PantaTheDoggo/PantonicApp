@@ -31,7 +31,7 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T3` (`docs/plans/P-0729-v2-benchmarking.md` §5).
+**Próxima tarefa da sprint:** `V2B-T4` (`docs/plans/P-0729-v2-benchmarking.md` §5).
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -55,8 +55,14 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
   - Consumo: 13 tool uses, ~44k tokens, Sonnet, ~100s (medido no `<usage>` da notificação).
 - `V2B-T2` — Agente `pantonic-benchmarker` + esquema D1..D16 — [Sonnet] — done
   - Resultado: agente `pantonic-benchmarker` (Haiku, sem Bash/Edit) e `docs/benchmark/_ESQUEMA.md` (D1..D16 + rodapé) criados; `.claude/README.md` atualizado; `VERSION`/`.claude/KIT_VERSION` em `1.2.0`; commit + tag `kit-v1.2.0` (sem push).
+  - Consumo: 20 tool uses, ~57k tokens, Sonnet, ~128s (medido no `<usage>` da notificação; autoestimativa do executor dizia 13).
+- `V2B-T3` — Curadoria e cache do corpus (25 candidatos → 20 confirmados) — [Sonnet] — done
+  - Resultado: `docs/benchmark/_CORPUS.md` criado (25 linhas, 20 `confirmado` numeradas BM-01..BM-20, cobrindo A=4/B=4/C=4/D=3/E=3/F=2) + `docs/benchmark/_trees/` com 20 árvores de arquivos cacheadas; 45 requisições GitHub API gastas (25 metadados + 20 árvores, 0 reconfirmações), sem 403/429. Achado registrado em `docs/plans/P-0729-v2-benchmarking.md` §"Achados da execução": trilha F só tinha 2 candidatos na origem, abaixo do piso de 3 — triagem pendente para `V2B-T8`.
+  - Veredito — V2B-T3
+    Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e `docs/plans/*`); nenhum teste/conformance relevante.
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
   - Consumo: (preenchido pelo orquestrador via notificação)
-- `V2B-T3` — Curadoria e cache do corpus (25 candidatos → 20 confirmados) — [Sonnet] — backlog
 - `V2B-T4` — Relatórios do lote 1 (repos 1-5) — [Haiku ×5] — backlog
 - `V2B-T5` — Relatórios do lote 2 (repos 6-10) — [Haiku ×5] — backlog
 - `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — backlog
