@@ -57,16 +57,17 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
   - Resultado: agente `pantonic-benchmarker` (Haiku, sem Bash/Edit) e `docs/benchmark/_ESQUEMA.md` (D1..D16 + rodapé) criados; `.claude/README.md` atualizado; `VERSION`/`.claude/KIT_VERSION` em `1.2.0`; commit + tag `kit-v1.2.0` (sem push).
   - Consumo: 20 tool uses, ~57k tokens, Sonnet, ~128s (medido no `<usage>` da notificação; autoestimativa do executor dizia 13).
 - `V2B-T3` — Curadoria e cache do corpus (25 candidatos → 20 confirmados) — [Sonnet] — done
-  - Resultado: `docs/benchmark/_CORPUS.md` criado (25 linhas, 20 `confirmado` numeradas BM-01..BM-20, cobrindo A=4/B=4/C=4/D=3/E=3/F=2) + `docs/benchmark/_trees/` com 20 árvores de arquivos cacheadas; 45 requisições GitHub API gastas (25 metadados + 20 árvores, 0 reconfirmações), sem 403/429. Achado registrado em `docs/plans/P-0729-v2-benchmarking.md` §"Achados da execução": trilha F só tinha 2 candidatos na origem, abaixo do piso de 3 — triagem pendente para `V2B-T8`.
+  - Resultado: `docs/benchmark/_CORPUS.md` criado (26 linhas, **21 `confirmado`** numeradas BM-01..BM-21, cobrindo A=4/B=4/C=4/D=3/E=3/F=3) + `docs/benchmark/_trees/` com 21 árvores de arquivos cacheadas; 50 requisições GitHub API gastas, sem 403/429.
+  - Desvio resolvido no mesmo turno: o executor achou a trilha F com só 2 candidatos na origem (piso de 3 da DV-3 inatingível) e propôs triar no `V2B-T8`; o orquestrador antecipou a decisão porque a numeração `BM-*` congela no `V2B-T4`. **Decisão do dono: ampliar o corpus de 20 para 21** — `snarktank/ai-dev-tasks` entra como `BM-21`. `DV-3` emendada; `V2B-T7` passa a 6 subagentes e `V2B-T8` valida 21/21.
   - Veredito — V2B-T3
     Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e `docs/plans/*`); nenhum teste/conformance relevante.
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 24 tool uses, ~79k tokens, Sonnet, ~357s (medido no `<usage>` da notificação).
 - `V2B-T4` — Relatórios do lote 1 (repos 1-5) — [Haiku ×5] — backlog
 - `V2B-T5` — Relatórios do lote 2 (repos 6-10) — [Haiku ×5] — backlog
 - `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — backlog
-- `V2B-T7` — Relatórios do lote 4 (repos 16-20) — [Haiku ×5] — backlog
+- `V2B-T7` — Relatórios do lote 4 (repos 16-21) — [Haiku ×6] — backlog
 - `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — backlog
 
 ### Estágio 2 — `P-0729-v2-confronto` [blocked — depende de `P-0729-v2-benchmarking` done]

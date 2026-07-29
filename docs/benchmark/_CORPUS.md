@@ -1,21 +1,36 @@
-# Corpus de benchmarking — 20 confirmados (V2B-T3)
+# Corpus de benchmarking — 21 confirmados (V2B-T3)
 
 **Data da coleta:** 2026-07-29 (janela de cota GitHub API não-autenticada, reset 05:31 local).
-**Requisições gastas:** 45 (25 metadados + 0 reconfirmações + 20 árvores de arquivos). Teto: 55.
+**Requisições gastas:** 50 (25 metadados + 0 reconfirmações + 20 árvores de arquivos = 45 no lote
+principal; + 4 metadados de candidatos F novos + 1 árvore na ampliação para 21). Teto: 55.
 **Método:** dois scripts PowerShell em lote (não requisição-a-requisição), `GET /repos/{o}/{r}`
 e `GET /repos/{o}/{r}/git/trees/HEAD?recursive=1`, sem autenticação. Nenhum 404/403/429
 recebido — nenhuma reconfirmação via WebSearch foi necessária.
 
-**Numeração BM-01..BM-20** (usada por `V2B-T4..T7` para mapear relatórios): ver coluna `#BM`
-abaixo, atribuída apenas às linhas `confirmado`, na ordem original da tabela de 25 candidatos.
+**Numeração BM-01..BM-21** (usada por `V2B-T4..T7` para mapear relatórios): ver coluna `#BM`
+abaixo, atribuída apenas às linhas `confirmado`, na ordem original da tabela de 25 candidatos —
+`BM-21` é o acréscimo da ampliação (ver abaixo) e entra num lote extra do `V2B-T7`.
 
-**Desvio registrado — trilha F abaixo do piso de 3:** a lista de 25 candidatos do plano
-(`docs/plans/P-0729-v2-benchmarking.md` §2) só continha **2** candidatos para a trilha F
-(gestão de projeto com IA) desde a origem — não há um terceiro candidato para cortar/substituir
-nem para completar o piso dentro do escopo desta tarefa (Fase B autoriza WebSearch só para
-reconfirmar um 404, não para descobrir candidato novo). Os 2 disponíveis foram mantidos como
-`confirmado`. Ação futura: tíquete aberto no diário de obras para escolher um 3º candidato de
-trilha F antes do fechamento do Estágio 1, ou aceitar F com 2 como decisão consciente.
+**Desvio resolvido — trilha F abaixo do piso de 3 → corpus ampliado para 21:** a lista de 25
+candidatos do plano (`docs/plans/P-0729-v2-benchmarking.md` §2) só continha **2** candidatos para
+a trilha F (gestão de projeto com IA) desde a origem, tornando o piso de 3 da `DV-3`
+estruturalmente inatingível. **Decisão do dono, 2026-07-29:** ampliar o corpus para **21
+repositórios** em vez de cortar um confirmado de outra trilha — as trilhas A–E ficam intactas e F
+sobe a 3. A `DV-3` fica emendada nesse ponto (20 → 21; o piso de ≥3 por trilha permanece e agora é
+cumprido em todas). Resolvido antes do `V2B-T4` de propósito: a numeração `BM-*` congela quando os
+relatórios começam a ser emitidos.
+
+**Escolha do 3º candidato de trilha F** (4 candidatos sondados na API em 2026-07-29):
+`snarktank/ai-dev-tasks` (7786 stars, `pushed_at` 2025-11-05, Apache-2.0). Descartados:
+`pabg92/Claude-Code-agentic-project-management` (25 stars — adaptação derivada do `BM-19`, geraria
+relatório redundante), `danielrosehill/Agent-Handover-Demo` (6 stars, ativo, mas é demo mínima —
+superfície insuficiente para 16 dimensões), `andyrewlee/awesome-agent-orchestrators` (1151 stars,
+ativo, mas é lista de ecossistema — perfil de trilha D, não gestão de projeto).
+**Tensão declarada:** o escolhido está parado desde nov/2025 (~9 meses), a mesma condição que
+cortou `humanlayer/12-factor-agents` da trilha D. Aceito aqui porque a alternativa era deixar o
+piso descumprido, e porque o repositório *é* a prática de trilha F com maior adoção pública
+(PRD → lista de tarefas → uma sub-tarefa por vez com aprovação humana). A estagnação não é
+escondida: aparece em `D2 — Vitalidade` do `BM-21` e deve ser pesada no confronto do Estágio 2.
 
 **Renomeações/transferências de owner detectadas pela API** (a resposta HTTP 200 veio via
 redirecionamento, não é correção de 404): `openai/agents.md` → `agentsmd/agents.md` (candidato
@@ -51,9 +66,10 @@ cortado, motivo abaixo, independente da renomeação); `davidkimai/Context-Engin
 | 23 | BM-18 | E | `promptfoo/promptfoo` | `promptfoo/promptfoo` | 23715 | 2026-07-29T01:30:49Z | MIT | confirmado | trilha E já no piso mínimo |
 | 24 | BM-19 | F | `sdi2200262/agentic-project-management` | `sdi2200262/agentic-project-management` | 2368 | 2026-06-08T13:30:29Z | NOASSERTION | confirmado | trilha F só tinha 2 candidatos na origem — ambos mantidos (ver desvio registrado acima) |
 | 25 | BM-20 | F | `Wirasm/PRPs-agentic-eng` | `Wirasm/prp` (renomeado/transferido) | 2226 | 2026-07-27T13:48:33Z | MIT | confirmado | trilha F só tinha 2 candidatos na origem — ambos mantidos (ver desvio registrado acima) |
+| 26 | BM-21 | F | *(fora da lista de origem — ampliação)* | `snarktank/ai-dev-tasks` | 7786 | 2025-11-05T19:42:09Z | Apache-2.0 | confirmado | 3º candidato de trilha F descoberto na ampliação para 21 (decisão do dono); repositório parado desde nov/2025 — tensão declarada acima |
 
-**Resumo por trilha (confirmados):** A=4, B=4, C=4, D=3, E=3, F=2 (total 20). Piso de 3 respeitado
-em A–E; F abaixo do piso por limitação da lista de origem (ver desvio acima).
+**Resumo por trilha (confirmados):** A=4, B=4, C=4, D=3, E=3, F=3 (total 21). Piso de ≥3 por trilha
+respeitado em todas, após a ampliação de 20 para 21.
 
 **Árvores cacheadas:** `docs/benchmark/_trees/<slug>.txt`, um arquivo por confirmado, `slug` =
 `full_name` resolvido em minúsculas com `/` → `-`. Nenhuma árvore veio truncada

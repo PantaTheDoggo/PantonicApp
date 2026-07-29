@@ -208,16 +208,17 @@ de cobertura (`P-0729-v2-confronto` T2). Dimensão sem evidência recebe literal
 
 ### T5 — Relatórios do lote 2 (repos 6-10) [Haiku] — idem T4
 ### T6 — Relatórios do lote 3 (repos 11-15) [Haiku] — idem T4
-### T7 — Relatórios do lote 4 (repos 16-20) [Haiku] — idem T4
+### T7 — Relatórios do lote 4 (repos 16-21) [Haiku] — idem T4, com **6** subagentes
+O lote 4 carrega o `BM-21` acrescentado pela ampliação do corpus (ver "Achados da execução").
 
 ### T8 — Controle de qualidade e índice do corpus [Sonnet]
-- **Objetivo:** garantir que o Estágio 2 receba 20 relatórios **comparáveis** — um relatório fora do
+- **Objetivo:** garantir que o Estágio 2 receba 21 relatórios **comparáveis** — um relatório fora do
   esquema envenena a matriz e o consolidado.
 - **Arquivos-alvo:** `docs/benchmark/INDICE.md` (novo), reemissão de relatórios reprovados.
 - **Checklist de reprovação (qualquer item reprova):** dimensão ausente ou renomeada; afirmação sem
   URL; URL apontando para o repositório em vez do arquivo; relatório > 160 linhas; juízo sobre o
   PantonicApp; rodapé incompleto; "Dimensões fora da grade" ausente.
-- **Pronto quando:** 20/20 aprovados; `INDICE.md` lista os 20 com trilha, `owner/repo`, veredito do
+- **Pronto quando:** 21/21 aprovados; `INDICE.md` lista os 21 com trilha, `owner/repo`, veredito do
   QC e as "dimensões fora da grade" agregadas numa lista única (o insumo mais valioso do estágio);
   este plano fecha e o Estágio 2 é destravado no diário.
 
@@ -241,7 +242,7 @@ de cobertura (`P-0729-v2-confronto` T2). Dimensão sem evidência recebe literal
 |---|---|---|---|
 | **DV-1** | Esquema de versão do framework | `VERSION` (raiz) + `.claude/KIT_VERSION` com **o mesmo valor**; semver com MAJOR/MINOR/PATCH definidos em T1 | O subtree só publica o prefixo `.claude/`, mas a doutrina vive fora dele — dois arquivos são inevitáveis; um número só elimina a ambiguidade de "qual é a versão" |
 | **DV-2** | Onde a campanha começa a numeração | Framework em `1.0.1` hoje → `1.1.0` (T1) → `1.2.0` (T2); Estágios 1-2 não bumpam além disso | Relatório de benchmarking é evidência, não framework — não muda o que o consumidor consome |
-| **DV-3** | Tamanho do corpus | 20 repositórios, ≥3 por trilha (decisão do dono, 2026-07-29) | Cobertura suficiente para descoberta de dimensões sem inflar custo |
+| **DV-3** | Tamanho do corpus | ~~20~~ **21** repositórios, ≥3 por trilha (decisão do dono, 2026-07-29; **emendada no mesmo dia** de 20 para 21 pelo dono, para tornar o piso de 3 atingível na trilha F — ver "Achados da execução") | Cobertura suficiente para descoberta de dimensões sem inflar custo |
 | **DV-4** | Mecanismo de coleta | Híbrido: `api.github.com` só para metadados/árvore em lote (T3); conteúdo por `raw.githubusercontent.com` | Medido: `gh` ausente e cota de 60 req/h (§1) |
 | **DV-5** | Coletor é agente do kit, não prompt avulso | `pantonic-benchmarker` em `.claude/agents/` | A campanha se repete; e o esquema precisa estar fora do prompt para não derivar entre lotes |
 | **DV-6** | Sequenciamento com o Estágio 3 | Estágios 1-2 correm agora (só escrevem em `docs/benchmark/`); o P-0722 foi **mesclado** ao Estágio 3 por decisão do dono | Nenhum conflito de arquivo com a doutrina; ver `P-0729-v2-melhoria` §1 |
@@ -256,6 +257,11 @@ de cobertura (`P-0729-v2-confronto` T2). Dimensão sem evidência recebe literal
   (Fase B do T3 só autoriza WebSearch para reconfirmar 404, não para descobrir candidato novo).
   Resolução aplicada em `docs/benchmark/_CORPUS.md`: os 2 disponíveis de F foram mantidos
   `confirmado` (`BM-19`, `BM-20`); os 20 confirmados fecham com A=4, B=4, C=4, D=3, E=3, F=2.
-  **Ação futura (triagem pendente):** antes do fechamento do Estágio 1 (`V2B-T8`), decidir entre
-  (a) buscar e adicionar um 3º candidato de trilha F ao corpus, ou (b) registrar decisão
-  consciente do dono de aceitar F com 2. Rota ainda não escolhida — não tratar como resolvido.
+  **RESOLVIDO no mesmo dia, antes do `V2B-T4`** (e não no `V2B-T8` como proposto acima: a
+  numeração `BM-*` congela assim que o primeiro relatório é emitido, então mexer no corpus depois
+  obrigaria a renumerar). **Decisão do dono, 2026-07-29:** ampliar o corpus de 20 para **21**
+  repositórios — rota (c), que não estava entre as duas propostas: nenhuma trilha perde um
+  confirmado e F sobe a 3. Terceiro candidato escolhido pelo orquestrador entre 4 sondados:
+  `snarktank/ai-dev-tasks` (`BM-21`), com a tensão de estagnação declarada em `_CORPUS.md`.
+  **Emenda à `DV-3`:** tamanho do corpus passa a **21**; o piso de ≥3 por trilha permanece e agora
+  é cumprido em A–F. `V2B-T7` emite um relatório a mais (`BM-21`) e o `V2B-T8` valida **21/21**.
