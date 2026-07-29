@@ -31,9 +31,9 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2K-T1` (`docs/plans/P-0729-v2-melhoria-candidatos.md`, §3 T1) —
-**[Sonnet]**, validador estrutural do kit (`.claude/checks/kit_check.ps1`, modo `-Mode validate`),
-primeira tarefa do **Bloco A**. A ordem entre os dois planos do Estágio 3 é **normativa** (DK-1, §2
+**Próxima tarefa da sprint:** `V2K-T2` (`docs/plans/P-0729-v2-melhoria-candidatos.md`, §3 T2) —
+**[Sonnet]**, gerador do `.claude/README.md` + detecção de deriva, segunda tarefa do **Bloco A**
+(`V2K-T1` fechou `done` nesta sessão). A ordem entre os dois planos do Estágio 3 é **normativa** (DK-1, §2
 daquele plano) e não é escolha da `proximo-passo`: **Bloco A** = `V2K-T1..T4` (enforcement
 executável do kit + régua de residência da doutrina) → **Bloco B** = Estágio 3A inteiro
 (`V2M-T1..T5`, com `V2M-T3` depois de `V2K-T4`) → **Bloco C** = `V2K-T5..T19` → **Estágio 4**.
@@ -359,7 +359,10 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
 §2 — **Bloco A** (`T1..T4`) antes do Estágio 3A; **Bloco C** (`T5..T19`) depois dele.
 
 **Bloco A — enforcement executável e régua de residência**
-- `V2K-T1` — Validador estrutural do kit (`.claude/checks/kit_check.ps1 -Mode validate`) — [Sonnet] — backlog *(`C-01`a)*
+- `V2K-T1` — Validador estrutural do kit (`.claude/checks/kit_check.ps1 -Mode validate`) — [Sonnet] — done *(`C-01`a)*
+  - Resultado: `.claude/checks/kit_check.ps1` criado com `-Mode validate` (parâmetro já aceita `generate`/`check-drift`, não implementados — reservados p/ `V2K-T2`). Valida: frontmatter `name`+`description` de cada `.claude/agents/*.md` (`tools` opcional e só sintático, por causa de `pantonic-executor.md` sem essa linha); frontmatter `name`+`description` de cada `.claude/skills/*/SKILL.md` com `name` == diretório; paridade `VERSION` == `.claude/KIT_VERSION`. Execução real: exit 0, "kit_check: OK - 9 agente(s) e 8 skill(s) validados; VERSION == KIT_VERSION ('1.2.0')." Execução negativa (cópia sintética no scratchpad, agente sem `description`): exit 1, "Agente sem campo 'description' no frontmatter: ...\kit_copy_v2kt1\.claude\agents\synthetic-bad.md" — cópia removida após o teste.
+  - Veredito: suítes — não aplicável (hub sem pytest/app Python); piso de regressão — sem mudança (nenhum teste existente tocado).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 - `V2K-T2` — Gerador do `.claude/README.md` + detecção de deriva — [Sonnet] — backlog *(`C-01`b; defeito medido: 8/9 agentes, 6/8 skills)*
 - `V2K-T3` — Doutrina do enforcement em §9 + entrada no `guardrails-check` + bump `1.3.0` — [Opus] — backlog *(`C-01`c)*
 - `V2K-T4` — Tabela de precedência e residência da doutrina (`GOVERNANCA.md` §3) — [Opus] — backlog *(`C-03`; destrava `T6`, `T10`, `T16` e `V2M-T3`)*
