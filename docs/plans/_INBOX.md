@@ -83,3 +83,14 @@ diário de obras do PantonicApp (a ser criado na Fase 5 de P-0721-governanca-sin
   `T6` nova do `P-0729-v2-confronto`, depois da ratificação do dono). A Fase 4 do `P-0722`
   (distribuição) foi remapeada para `P-0729-v2-documentacao` T4 — propagação acontece uma vez, no
   fechamento da iniciativa. **Próximo id de plano da iniciativa: nenhum a criar agora.**
+- **[drenado]** 2026-07-29 — `P-0729-v2-melhoria-candidatos` — **Estágio 3B**: as mudanças que só o
+  benchmarking podia revelar. Autorado **já fechado** pela `V2C-T6` (última tarefa do Estágio 2),
+  conforme o gate de publicação — a linha só existe aqui porque o plano nasceu completo. **19
+  tarefas** (`V2K-T1..T19`) cobrindo os **14 candidatos ratificados** em
+  `docs/benchmark/CANDIDATOS.md` (12 `adotar` + 2 `adaptar`); `C-15` `adiar` não gera tarefa, com
+  motivo em §4. Ordem parcial normativa (DK-1): Bloco A = `V2K-T1..T4` (enforcement executável do
+  kit + régua de residência da doutrina) → Bloco B = Estágio 3A inteiro → Bloco C = `V2K-T5..T19`
+  → Estágio 4. Dois bumps MINOR (`1.3.0` no fim do Bloco A, `1.4.0` no fim do Bloco C); a
+  distribuição continua única, no `P-0729-v2-documentacao` T4. `backlog` — desbloqueado pelo
+  fechamento do Estágio 2. **Checagem de versão do kit:** modo hub, `1.2.0`, paridade OK, sem
+  divergência.

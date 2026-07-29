@@ -14,9 +14,9 @@ benchmarking → confronto → melhoria → documentação).
 |---|---|---|---|
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
-| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | in progress | `docs/plans/P-0729-v2-confronto.md` |
-| P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | blocked | `docs/plans/P-0729-v2-melhoria.md` |
-| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking | por nascer | autorado fechado por `V2C-T6` |
+| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
+| P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | backlog | `docs/plans/P-0729-v2-melhoria.md` |
+| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19) | backlog | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
@@ -31,14 +31,18 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2C-T6` (`docs/plans/P-0729-v2-confronto.md`, §T6) — **[Opus]**,
-autorar `docs/plans/P-0729-v2-melhoria-candidatos.md` (Estágio 3B) **já fechado**, a partir dos 14
-candidatos ratificados em `docs/benchmark/CANDIDATOS.md` (`V2C-T5`, done em 2026-07-29:
-12 `adotar` + 2 `adaptar` + 1 `adiar`, ~19 tarefas atômicas estimadas). Insumo fechado — nenhuma
-decisão pendente. Gate de publicação bloqueante (G-PLANREADY, 5 condições) antes de apensar ao
-`_INBOX.md`. Última tarefa do Estágio 2: fechá-la desbloqueia os Estágios 3A e 3B.
-O **Estágio 1 fechou em 2026-07-29** (9/9) e o **Estágio 2 está com 5/6** (`V2C-T1` auto-retrato +
-`V2C-T2` matriz + `V2C-T3` consolidado + `V2C-T4` candidatos + `V2C-T5` ratificação).
+**Próxima tarefa da sprint:** `V2K-T1` (`docs/plans/P-0729-v2-melhoria-candidatos.md`, §3 T1) —
+**[Sonnet]**, validador estrutural do kit (`.claude/checks/kit_check.ps1`, modo `-Mode validate`),
+primeira tarefa do **Bloco A**. A ordem entre os dois planos do Estágio 3 é **normativa** (DK-1, §2
+daquele plano) e não é escolha da `proximo-passo`: **Bloco A** = `V2K-T1..T4` (enforcement
+executável do kit + régua de residência da doutrina) → **Bloco B** = Estágio 3A inteiro
+(`V2M-T1..T5`, com `V2M-T3` depois de `V2K-T4`) → **Bloco C** = `V2K-T5..T19` → **Estágio 4**.
+Motivo: `C-01` é precondição declarada (enforcement vira código antes de qualquer adição textual) e
+`C-03` é a régua de residência de que a própria `V2M-T3` depende; o resto evita conflito de edição
+em `GOVERNANCA.md` §3/§7.
+O **Estágio 1 fechou em 2026-07-29** (9/9) e o **Estágio 2 fechou em 2026-07-29** (6/6) —
+`V2C-T1` auto-retrato + `V2C-T2` matriz + `V2C-T3` consolidado + `V2C-T4` candidatos +
+`V2C-T5` ratificação + `V2C-T6` autoria do plano 3B.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -51,9 +55,11 @@ o Estágio 3A inteiro vem do `P-0722` (decisões fechadas em 2026-07-22) e pode 
 dono quiser paralelismo.
 
 **Gate de publicação (decisão do dono, 2026-07-29):** nenhum plano desta iniciativa é publicado em
-aberto. O Estágio 3B — as mudanças que só o benchmarking pode revelar — **ainda não existe, e é
-correto que não exista**: ele é autorado já fechado por `V2C-T6`, a última tarefa do Estágio 2, e só
-então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLANREADY item 5).
+aberto. O Estágio 3B — as mudanças que só o benchmarking podia revelar — **nasceu fechado em
+2026-07-29**, autorado pela `V2C-T6` (última tarefa do Estágio 2) a partir do `CANDIDATOS.md` já
+ratificado, e só então entrou no inbox e neste índice: 19 tarefas, 14 candidatos cobertos, nenhuma
+questão pendente. O ciclo do gate está fechado na prática antes de virar doutrina em `V2M-T1`
+(G-PLANREADY item 5).
 
 ### Estágio 1 — `P-0729-v2-benchmarking` [done — 9/9 tarefas, 2026-07-29]
 
@@ -308,20 +314,72 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     sem `C-NN` de origem".
   - Consumo: 12 tool uses (contados), tokens **NÃO MEDIDOS** — executada *inline* pelo orquestrador
     em Opus (tarefa do dono, não delegável), sem subagente e portanto sem bloco `<usage>`.
-- `V2C-T6` — Autorar `P-0729-v2-melhoria-candidatos.md` **já fechado** (Estágio 3B) — [Opus] — backlog *(desbloqueada pelo `T5`)*
+- `V2C-T6` — Autorar `P-0729-v2-melhoria-candidatos.md` **já fechado** (Estágio 3B) — [Opus] — done
+  - Resultado: `docs/plans/P-0729-v2-melhoria-candidatos.md` criado (**19 tarefas**, `V2K-T1..T19`),
+    linha `[drenado]` no `_INBOX.md`, linha no índice deste diário e a seção do Estágio 3B abaixo.
+    Cobertura: os 14 candidatos ratificados (12 `adotar` + 2 `adaptar`) têm tarefa; `C-15` (`adiar`)
+    não gera nenhuma, com motivo em §4; nenhuma tarefa sem `C-NN` de origem. As 19 tarefas batem
+    exatamente com o esforço somado ratificado em `CANDIDATOS.md:20`.
+  - Tensão do dossiê resolvida como o `T5` mandou: prevalece a regra (a) (doutrina × mecânica são
+    fases de modelo diferentes) e a (b) lê-se como "≥1 tarefa". A inflação que a leitura literal
+    produziria (27 tarefas, uma linha de doutrina virando tarefa própria) foi evitada por **DK-3**:
+    quando uma tarefa [Sonnet] encosta em uma linha de doutrina, **o texto é redigido no plano** e a
+    tarefa apenas transcreve — 4 blocos de doutrina já vêm escritos verbatim (`T5`, `T8`, `T11`,
+    `T18`).
+  - 11 decisões novas fechadas no ato (`DK-1..DK-11`), incluindo a pergunta que a ficha do `C-01`
+    deixava aberta (um script com dois checks ou dois scripts → **três** scripts, um ponto de
+    invocação) e a ordem parcial normativa entre 3A e 3B.
+  - Fatos re-derivados agora, não copiados do plano: `.claude/README.md` lista **8** agentes
+    (`:12-19`) contra 9 em `.claude/agents/` e **6** skills (`:39-44`) contra 8 — a anti-prática 1
+    do `BM-00` está **viva**, e é o alvo medido da `V2K-T2`; o único agente com `Bash` é o
+    `pantonic-executor`, e por omissão de `tools:` (os outros 8 declaram lista explícita sem
+    `Bash`), o que manda o controle do `C-02` para `.claude/settings.json` (inexistente hoje);
+    `git config --get user.signingkey` **vazio**, o que fixa o ramo B da `V2K-T11`; `docs/telemetria.tsv`
+    nasce com semente de **14** linhas `Consumo:`; o hub não tem `tests/` (confirma a anti-prática 2).
+  - Veredito — V2C-T6
+    Suítes: não aplicável — tarefa não toca código (só `docs/plans/*` e este diário).
+    Piso: sem mudança de piso. Checklist de review: não aplicável.
+    Pronto-quando verificado: o plano passa nas 5 condições de G-PLANREADY (checklist no rodapé do
+    próprio plano); os dois pontos que exigem ato do dono (`V2K-T11` ramo B, `V2K-T16`) são tarefas
+    com entregável e critério de parada, **não** questões em aberto.
+  - Consumo: ~28 tool uses (contados), tokens **NÃO MEDIDOS** — executada *inline* pelo orquestrador
+    em Opus (fase intelectual: autoria de plano), sem subagente e portanto sem bloco `<usage>`.
 
-### Estágio 3A — `P-0729-v2-melhoria` [blocked — depende de `P-0729-v2-confronto` done; antecipável por DM-4]
+### Estágio 3A — `P-0729-v2-melhoria` [backlog — desbloqueado pelo Estágio 2 em 2026-07-29; executado como **Bloco B**, depois de `V2K-T1..T4`]
 
-- `V2M-T1` — Redigir a doutrina nova em `GOVERNANCA.md` §7 — 5 guardrails + **gate de publicação** (G-PLANREADY item 5) — [Opus] — blocked *(herdado de `P-0722` Fase 1)*
-- `V2M-T2` — Skill global `modelo-por-fase` — [Sonnet] — blocked *(herdado de `P-0722` Fase 2)*
-- `V2M-T3` — Promover G-PLANFIDELITY/G-EXECREADY ao CLAUDE.md global — [Sonnet] — blocked *(herdado de `P-0722` DP-G4)*
-- `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — blocked *(herdado de `P-0722` DP-G5)*
-- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — blocked *(herdado de `P-0722` Fase 3)*
+- `V2M-T1` — Redigir a doutrina nova em `GOVERNANCA.md` §7 — 5 guardrails + **gate de publicação** (G-PLANREADY item 5) — [Opus] — backlog *(herdado de `P-0722` Fase 1; abre o Bloco B)*
+- `V2M-T2` — Skill global `modelo-por-fase` — [Sonnet] — backlog *(herdado de `P-0722` Fase 2)*
+- `V2M-T3` — Promover G-PLANFIDELITY/G-EXECREADY ao CLAUDE.md global — [Sonnet] — backlog *(herdado de `P-0722` DP-G4; **depois de `V2K-T4`**, que é a régua de residência)*
+- `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — backlog *(herdado de `P-0722` DP-G5)*
+- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
 
-### Estágio 3B — `P-0729-v2-melhoria-candidatos` [por nascer — autorado fechado por `V2C-T6`]
+### Estágio 3B — `P-0729-v2-melhoria-candidatos` [backlog — nascido fechado em 2026-07-29 pela `V2C-T6`]
 
-Sem tarefas listadas **por desenho**, não por omissão: o plano não existe até o `CANDIDATOS.md` estar
-ratificado. Não é backlog invisível — tem dono nomeado (`V2C-T6`) e critério de pronto.
+19 tarefas, cada uma com o `C-NN` de origem. Ordem normativa em `docs/plans/P-0729-v2-melhoria-candidatos.md`
+§2 — **Bloco A** (`T1..T4`) antes do Estágio 3A; **Bloco C** (`T5..T19`) depois dele.
+
+**Bloco A — enforcement executável e régua de residência**
+- `V2K-T1` — Validador estrutural do kit (`.claude/checks/kit_check.ps1 -Mode validate`) — [Sonnet] — backlog *(`C-01`a)*
+- `V2K-T2` — Gerador do `.claude/README.md` + detecção de deriva — [Sonnet] — backlog *(`C-01`b; defeito medido: 8/9 agentes, 6/8 skills)*
+- `V2K-T3` — Doutrina do enforcement em §9 + entrada no `guardrails-check` + bump `1.3.0` — [Opus] — backlog *(`C-01`c)*
+- `V2K-T4` — Tabela de precedência e residência da doutrina (`GOVERNANCA.md` §3) — [Opus] — backlog *(`C-03`; destrava `T6`, `T10`, `T16` e `V2M-T3`)*
+
+**Bloco C — o resto, por dependência e I÷E**
+- `V2K-T5` — Allowlist de subcomandos destrutivos (`.claude/settings.json` + §7) — [Sonnet] — backlog *(`C-02`)*
+- `V2K-T6` — Teto de contexto graduado por classe de tarefa — [Opus] — backlog *(`C-04`; depende de `T4` e `V2M-T1`)*
+- `V2K-T7` — Checkpoint de perda de contexto não planejada — [Opus] — backlog *(`C-05`; depende de `T6`)*
+- `V2K-T8` — `file:line` + comando de validação no dossiê — [Sonnet] — backlog *(`C-06`; depende de `V2M-T1`)*
+- `V2K-T9` — Gatilho de revisão e deprecação da doutrina — [Opus] — backlog *(`C-07`; depende do Estágio 3A inteiro)*
+- `V2K-T10` — Inbox de memória: fila + promoção pelo dono — [Opus] — backlog *(`C-10` adaptar; depende de `T4`)*
+- `V2K-T11` — Commits assinados + verificação no sync (versão mínima) — [Sonnet] — backlog *(`C-08` adaptar; ramo B medido)*
+- `V2K-T12` — Registro de consumidores e versões (`docs/CONSUMIDORES.md`) — [Sonnet] — backlog *(`C-09`)*
+- `V2K-T13` — Compatibilidade por major kit × consumidor — [Sonnet] — backlog *(`C-14`; contíguo a `T11`/`T12` por DK-11)*
+- `V2K-T14` — Doutrina do piso de regressão **comportamental** (§4.4) — [Opus] — backlog *(`C-11`a; nunca percentual)*
+- `V2K-T15` — Receita executável de ratchet do piso — [Sonnet] — backlog *(`C-11`b)*
+- `V2K-T16` — Decisão de residência item a item + ratificação do dono — [Opus + dono] — backlog *(`C-12`a; depende de `T4`)*
+- `V2K-T17` — Mover o texto e corrigir os ponteiros — [Sonnet] — backlog *(`C-12`b; depende da ratificação em `T16`)*
+- `V2K-T18` — Formato e arquivo da série de telemetria (`docs/telemetria.tsv`) — [Sonnet] — backlog *(`C-13`a)*
+- `V2K-T19` — Escrita da série nos dois pontos de fechamento + bump `1.4.0` — [Sonnet] — backlog *(`C-13`b)*
 
 ### Estágio 4 — `P-0729-v2-documentacao` [blocked — depende do Estágio 3 inteiro done]
 
