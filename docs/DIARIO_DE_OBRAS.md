@@ -13,7 +13,7 @@ benchmarking → confronto → melhoria → documentação).
 | ID | Título | Status | Âncora |
 |---|---|---|---|
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
-| P-0729-V2B | Estágio 1 — benchmarking de 20 frameworks públicos (T1..T8) | backlog | `docs/plans/P-0729-v2-benchmarking.md` |
+| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T8) | in progress | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | blocked | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | blocked | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking | por nascer | autorado fechado por `V2C-T6` |
@@ -109,7 +109,7 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e `docs/DIARIO_DE_OBRAS.md`).
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 136 tool uses em 6 subagentes Haiku (incl. 4 retomadas de condensação), ~310k tokens Haiku, ~11,5k s de parede somados (medido nos blocos `<usage>` das 10 notificações); orquestrador ~28 tool uses em Sonnet.
 - `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — backlog
 
 ### Estágio 2 — `P-0729-v2-confronto` [blocked — depende de `P-0729-v2-benchmarking` done]
