@@ -196,7 +196,20 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
 
 ### Estágio 2 — `P-0729-v2-confronto` [backlog — desbloqueado em 2026-07-29 pelo fechamento do `V2B-T9`]
 
-- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — backlog
+- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — done
+  - Resultado: `docs/benchmark/BM-00-pantonicapp.md` criado (156 linhas, D1..D16 completas, todas
+    com `arquivo:linha`); 0 dimensões `NÃO ENCONTRADO` puras (D2/D13 têm campos parciais
+    `NÃO ENCONTRADO` dentro de uma dimensão majoritariamente respondida); 2 dimensões com
+    trecho `PARCIAL — decidido, não escrito` (D9 — as 5 guardrails do `P-0722` + D9 nota a
+    skill `modelo-por-fase` só como referência em D6, não como PARCIAL própria). Achado de
+    escopo (README do kit desatualizado, falta `pantonic-auditor-container` na tabela) já
+    virou anti-prática registrada no rodapé do próprio `BM-00`, não tíquete separado.
+  - Veredito — V2C-T1
+    Suítes: não aplicável — tarefa não toca código (só `docs/benchmark/*` e
+    `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 - `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — blocked
 - `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — blocked
 - `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked
