@@ -137,7 +137,12 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     `docs/DIARIO_DE_OBRAS.md`).
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 67 tool uses, ~159k tokens, Sonnet, ~13,5 min (medido no `<usage>` da notificação).
+    **Teto estourado:** o dossiê fixou `~45 tool uses` com "PARE e reporte ao atingir o teto"; o
+    executor foi a 67 (+49%) sem parar — quarto caso da série (UXROUND3 T3/T4/T5 no PantonicVideo,
+    agora `V2B-T8`). Confirma a decisão do dono de 2026-07-16: **executores não param no teto — o
+    teto é alarme, a divisão prévia em sub-tarefas é o controle.** Aqui o QC de 21 artefatos em 7
+    itens de checklist era divisível por lote (T4..T7 já eram lotes de 5-6) e não foi dividido.
 
 ### Estágio 2 — `P-0729-v2-confronto` [backlog — destravado pelo `V2B-T8` done]
 
