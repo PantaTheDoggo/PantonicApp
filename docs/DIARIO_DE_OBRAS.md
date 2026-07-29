@@ -13,8 +13,8 @@ benchmarking → confronto → melhoria → documentação).
 | ID | Título | Status | Âncora |
 |---|---|---|---|
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
-| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | in progress | `docs/plans/P-0729-v2-benchmarking.md` |
-| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | blocked | `docs/plans/P-0729-v2-confronto.md` |
+| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
+| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | backlog | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | blocked | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking | por nascer | autorado fechado por `V2C-T6` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
@@ -31,12 +31,10 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T9` (`docs/plans/P-0729-v2-benchmarking.md` §5) — normalizar as
-29 citações de fonte para URL completa (dossiê fechado, teto de 30 tool uses). O Estágio 1 **não**
-está `done`: o `V2B-T8` o fechou com um achado sem rota triada, e a rota decidida pelo dono
-(2026-07-29) foi normalização completa antes do Estágio 2 — `P-0729-V2B` voltou a `in progress` e
-`P-0729-V2C` voltou a `blocked`. Depois do `V2B-T9`: `V2C-T1` (auto-retrato do PantonicApp,
-`BM-00`).
+**Próxima tarefa da sprint:** `V2C-T1` (`docs/plans/P-0729-v2-confronto.md`) — auto-retrato do
+PantonicApp no esquema D1..D16 (`BM-00`). O **Estágio 1 fechou em 2026-07-29** com o `V2B-T9`
+(9/9 tarefas): o achado de citações do `V2B-T8` foi triado e normalizado, então `P-0729-V2B` passou
+a `done` e o Estágio 2 saiu de `blocked` para `backlog`.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -53,7 +51,7 @@ aberto. O Estágio 3B — as mudanças que só o benchmarking pode revelar — *
 correto que não exista**: ele é autorado já fechado por `V2C-T6`, a última tarefa do Estágio 2, e só
 então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLANREADY item 5).
 
-### Estágio 1 — `P-0729-v2-benchmarking` [backlog]
+### Estágio 1 — `P-0729-v2-benchmarking` [done — 9/9 tarefas, 2026-07-29]
 
 - `V2B-T1` — Instituir o controle de versão do framework (`VERSION` + `KIT_VERSION` + `CHANGELOG`) — [Sonnet] — done
   - Resultado: `VERSION` e `.claude/KIT_VERSION` em `1.1.0` (paridade obrigatória); `CHANGELOG.md` criado na raiz; `GOVERNANCA.md` §10 ganhou parágrafo final com a regra de paridade e MAJOR/MINOR/PATCH; commit + tag anotada `kit-v1.1.0` (sem push).
@@ -184,11 +182,21 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     `docs/DIARIO_DE_OBRAS.md`).
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - **Defeito de dossiê (não de execução), para o Estágio 3:** o critério "Pronto quando" do `T9`
+    (`grep ... → 0 linhas`) contradiz a decisão fechada nº 3 do próprio `T9` (referência vaga cita
+    `_trees/<slug>.txt`, que não tem `http`). Plano fechado pode conter critério de aceite
+    internamente inconsistente — o executor acertou ao seguir a decisão fechada e reportar, mas o
+    gate `G-PLANREADY` deveria exigir que o "Pronto quando" seja derivado das decisões fechadas.
+  - Consumo: 49 tool uses, ~117k tokens, Sonnet, ~9,0 min (medido no `<usage>` da notificação).
+    **Teto estourado:** dossiê fixou 30 com "PARE ao atingir"; executor foi a 49 (+63%) — quinto
+    caso da série (UXROUND3 T3/T4/T5, `V2B-T8`, agora `V2B-T9`). Aqui o teto foi mal dimensionado:
+    a fase de reconhecimento (29 citações em 3 formatos distintos × 7 árvores) não cabe em 30 tool
+    uses junto com a aplicação. Reforça a decisão de 2026-07-16: **o controle é a divisão prévia,
+    não o número.**
 
-### Estágio 2 — `P-0729-v2-confronto` [blocked — depende do `V2B-T9` (ver correção de estado acima)]
+### Estágio 2 — `P-0729-v2-confronto` [backlog — desbloqueado em 2026-07-29 pelo fechamento do `V2B-T9`]
 
-- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — blocked
+- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — backlog
 - `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — blocked
 - `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — blocked
 - `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked
