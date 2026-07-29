@@ -31,9 +31,10 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T6` (`docs/plans/P-0729-v2-benchmarking.md` §5) — repos `BM-11..BM-15`,
-mesmo método do `V2B-T5`, que rodou limpo (0 desvios). **Despacho já preparado no bullet do `V2B-T6`**
-— não re-derivar do `_CORPUS.md`. Fechar o lote no mesmo contexto do despacho (telemetria).
+**Próxima tarefa da sprint:** `V2B-T7` (`docs/plans/P-0729-v2-benchmarking.md` §5) — repos `BM-16..BM-21`,
+**6 subagentes** (lote maior, por causa da ampliação do corpus para 21). **Despacho já preparado no bullet
+do `V2B-T7`** — não re-derivar do `_CORPUS.md`. Fechar o lote no mesmo contexto do despacho (telemetria),
+e aplicar os 3 pós-processamentos do orquestrador — eles reincidiram no lote 3 depois de um lote 2 limpo.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -87,19 +88,32 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
   - Consumo: **PARCIAL — só `BM-08` medido** (28 tool uses, ~40k tokens, Haiku, ~201 s, do `<usage>` da notificação). As notificações de `BM-06/07/09/10` foram consumidas na sessão anterior ao `/clear` e os `.output` das tarefas estão vazios — **NÃO MEDIDO**, sem autoestimativa disponível. Orçamento do lote 2 aparentemente ~⅓ do lote 1 (que gastou 122 tool uses/282k tokens com 3 retomadas de condensação); a comparação fica sem base medida. Orquestrador: ~14 tool uses em Opus.
   - **Lição de telemetria:** `/clear` entre o despacho e a conclusão dos subagentes **perde o `<usage>` dos que já haviam notificado**. Fechar o lote no mesmo contexto do despacho, ou aceitar telemetria parcial.
-- `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — backlog
-  - **Despacho preparado (2026-07-29).** Idem `V2B-T5`, que rodou limpo: 5 subagentes `pantonic-benchmarker` na mesma mensagem, um repo por subagente, prompt com só as 3 linhas da tabela (dieta — esquema e guardrails vivem no arquivo do agente). **Não re-derivar do `_CORPUS.md`.**
+- `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — done
+  - Resultado: `docs/benchmark/BM-11..BM-15` emitidos (context-engineering-intro 71 linhas, agent-rules 137, awesome-claude-code 92, claude-code-hooks-mastery 125, wshobson/agents 90); 5/5 com D1..D16 completas e rodapé, todos abaixo do teto de 160.
+  - **Desvio 1 (novo) — queda coletiva por limite de sessão da conta.** Os 5 subagentes morreram ao mesmo tempo com `You've hit your session limit`, não por falha própria: 2 já tinham gravado o arquivo (`BM-11`, `BM-12`), 3 pararam com a coleta feita e o relatório por escrever. **Nenhum foi re-delegado a frio** — os 5 foram retomados por `SendMessage` ao mesmo `agentId`, a partir do próprio transcript, com a instrução "feche com o que já coletou, sem busca nova". Custo da recuperação: 12 tool uses somados, **0 buscas de conteúdo novas**. **Regra: queda por limite de sessão é retomável — re-despacho a frio joga fora a coleta já paga.**
+  - **Desvio 2 do `V2B-T4` reincidiu** (auto-relato de tamanho não confiável): `BM-14` relatou "~75 linhas" e tinha 125; `BM-15` relatou 154 e tinha 90; `BM-13` relatou "~130" e tinha 92. Dois estouros reais do teto (`BM-11` com 318, `BM-13` com 201) foram condensados por `SendMessage` ao mesmo agente, sem busca nova.
+  - **Desvio 3 do `V2B-T4` reincidiu** (deriva dos títulos): 4 dos 5 truncaram `D10` para "Distribuição e versionamento"; `_normalize_dims.py` corrigiu os 4 (o lote 2 tinha normalizado 0).
+  - **Desvio 4 do `V2B-T4` reincidiu** (`D2` sem fonte): `BM-14` gravou `D2 — Vitalidade` inteiro como `NÃO ENCONTRADO` com o dado disponível em cache; `BM-12` gravou os números sem ponteiro de fonte. Corrigidos inline pelo orquestrador contra `_CORPUS.md` (linhas 62 e 59). `D2` dos outros 3 confere com o corpus (stars/`pushed_at`/licença).
+  - **Leitura dos 3 reincidentes:** o lote 2 limpo **não** provou que o agente resolveu o problema — provou que aquele lote teve sorte. Os pós-processamentos do orquestrador (contagem em disco, `_normalize_dims.py`, conferência de `D2`) são **permanentes**, não transitórios, e entram no `V2B-T8` como parte do QC.
+  - Veredito — V2B-T6
+    Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: **PARCIAL — só o trecho de retomada foi medido** (~190,5k tokens Haiku, 12 tool uses, ~6,5 min de parede somados, dos blocos `<usage>` das 5 notificações de conclusão). O trecho **pré-queda** — 8 a 12 buscas de conteúdo por coletor — está **NÃO MEDIDO**: notificação de falha não traz `<usage>`. Orquestrador: ~31 tool uses em Opus.
+- `V2B-T7` — Relatórios do lote 4 (repos 16-21) — [Haiku ×6] — backlog
+  - **Despacho preparado (2026-07-29).** Mesmo método do `V2B-T6`: **6** subagentes `pantonic-benchmarker` na mesma mensagem, um repo por subagente, prompt com só as 3 linhas da tabela (dieta — esquema e guardrails vivem no arquivo do agente). **Não re-derivar do `_CORPUS.md`.**
 
     | BM | full_name | árvore cacheada (`docs/benchmark/_trees/`) | saída (`docs/benchmark/`) |
     |---|---|---|---|
-    | BM-11 | `coleam00/context-engineering-intro` | `coleam00-context-engineering-intro.txt` | `BM-11-coleam00-context-engineering-intro.md` |
-    | BM-12 | `steipete/agent-rules` | `steipete-agent-rules.txt` | `BM-12-steipete-agent-rules.md` |
-    | BM-13 | `hesreallyhim/awesome-claude-code` | `hesreallyhim-awesome-claude-code.txt` | `BM-13-hesreallyhim-awesome-claude-code.md` |
-    | BM-14 | `disler/claude-code-hooks-mastery` | `disler-claude-code-hooks-mastery.txt` | `BM-14-disler-claude-code-hooks-mastery.md` |
-    | BM-15 | `wshobson/agents` | `wshobson-agents.txt` | `BM-15-wshobson-agents.md` |
+    | BM-16 | `guardrails-ai/guardrails` | `guardrails-ai-guardrails.txt` | `BM-16-guardrails-ai-guardrails.md` |
+    | BM-17 | `NVIDIA/NeMo-Guardrails` | `nvidia-nemo-guardrails.txt` | `BM-17-nvidia-nemo-guardrails.md` |
+    | BM-18 | `promptfoo/promptfoo` | `promptfoo-promptfoo.txt` | `BM-18-promptfoo-promptfoo.md` |
+    | BM-19 | `sdi2200262/agentic-project-management` | `sdi2200262-agentic-project-management.txt` | `BM-19-sdi2200262-agentic-project-management.md` |
+    | BM-20 | `Wirasm/PRPs-agentic-eng` | `wirasm-prp.txt` | `BM-20-wirasm-prps-agentic-eng.md` |
+    | BM-21 | `snarktank/ai-dev-tasks` | `snarktank-ai-dev-tasks.txt` | `BM-21-snarktank-ai-dev-tasks.md` |
 
-  - **Pós-lote, pelo orquestrador (não pelo coletor):** (a) `(Get-Content <arquivo>).Count` por relatório — teto 160; (b) `python docs/benchmark/_normalize_dims.py <relatórios>`; (c) conferir `D2 — Vitalidade` contra `_CORPUS.md`; (d) commit do lote. Fechar **no mesmo contexto do despacho** para não perder a telemetria.
-- `V2B-T7` — Relatórios do lote 4 (repos 16-21) — [Haiku ×6] — backlog
+  - **Pós-lote, pelo orquestrador (não pelo coletor) — os 3 reincidiram no lote 3, trate como obrigatórios:** (a) contagem de linhas **em disco** por relatório, teto 160 (nunca o auto-relato); (b) `python docs/benchmark/_normalize_dims.py <relatórios>`; (c) conferir `D2 — Vitalidade` contra `_CORPUS.md`, incluindo o ponteiro de fonte; (d) commit do lote. Fechar **no mesmo contexto do despacho** para não perder a telemetria.
+  - **Se um coletor cair por limite de sessão:** retomar por `SendMessage` ao mesmo `agentId` ("feche com o que já coletou, sem busca nova"), nunca re-delegar a frio (`V2B-T6` Desvio 1).
 - `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — backlog
 
 ### Estágio 2 — `P-0729-v2-confronto` [blocked — depende de `P-0729-v2-benchmarking` done]
