@@ -31,7 +31,9 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T4` (`docs/plans/P-0729-v2-benchmarking.md` §5).
+**Próxima tarefa da sprint:** `V2B-T5` (`docs/plans/P-0729-v2-benchmarking.md` §5) — repos `BM-06..BM-10`,
+mesmo método do `V2B-T4`, com os 4 desvios daquele lote já tratados no despacho (ver bullet do `V2B-T4`).
+**Despacho já preparado no bullet do `V2B-T5`** — não re-derivar do `_CORPUS.md`.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -64,8 +66,30 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
   - Consumo: 24 tool uses, ~79k tokens, Sonnet, ~357s (medido no `<usage>` da notificação).
-- `V2B-T4` — Relatórios do lote 1 (repos 1-5) — [Haiku ×5] — backlog
+- `V2B-T4` — Relatórios do lote 1 (repos 1-5) — [Haiku ×5] — done
+  - Resultado: `docs/benchmark/BM-01..BM-05` emitidos (spec-kit 146 linhas, BMAD-METHOD 160, OpenSpec 115, SuperClaude 80, claude-code 102); 5/5 com D1..D16 completas e rodapé (3 transplantáveis / 3 anti-práticas / dimensões fora da grade); 58 buscas de conteúdo no total, nenhuma chamada a `api.github.com`.
+  - Desvio 1 — **agente do kit não invocável na sessão em que nasce.** O registro de subagentes do CLI é carregado na inicialização do processo, então `pantonic-benchmarker` (criado no `V2B-T2`, mesmo processo) devolveu `Agent type not found`. Contornado com o tipo genérico + `model: haiku` + leitura da própria definição em disco (doutrina verbatim; restrição de ferramentas aplicada por instrução em vez de pelo harness). **RESOLVIDO — decisão do dono, 2026-07-29:** reiniciar o CLI. O contorno **não** vira doutrina; os lotes 2-4 (`V2B-T5..T7`) usam o agente real `pantonic-benchmarker`, com a restrição de ferramentas aplicada pelo harness. Confirmado em 2026-07-29 que `/clear` **não** basta (o registro é carregado na inicialização do processo, não da conversa) — é preciso fechar e reabrir o CLI.
+  - Desvio 2 — **auto-relato de tamanho não é confiável.** Os 5 coletores reportaram contagens de linha que não bateram com `wc -l` (BM-05 reportou 157, tinha 253; BM-03 reportou 78, tinha 113). Três estouraram o teto de 160 (162/211/253) e foram condensados por `SendMessage` ao mesmo agente, sem gastar busca nova. **Regra para `V2B-T5..T7`: o teto de 160 é verificado pelo orquestrador em disco, nunca pelo relatório do coletor.**
+  - Desvio 3 — **deriva dos títulos das dimensões** (o checklist do `V2B-T8` reprova dimensão renomeada): D10 truncado para "Distribuição e versionamento" em 4 dos 5, D14 truncado em 1, capitalização divergente em 2. Normalizado pelos títulos canônicos do `_ESQUEMA.md` via script determinístico (`scratchpad/normalize_dims.py`) — 32 títulos corrigidos, sem tocar conteúdo. Reaplicar o mesmo script ao fim de cada lote.
+  - Desvio 4 — **guardrail 1 violado no BM-03**: "Contribuidores: 30+" sem URL e fora do cache do T3. Corrigido inline para `NÃO ENCONTRADO`, com a fonte dos metadados de D2 apontada para `_CORPUS.md`.
+  - Veredito — V2B-T4
+    Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: 122 tool uses em 5 subagentes Haiku (incl. 3 retomadas de condensação), ~282k tokens Haiku, ~2,3k s de parede em paralelo (medido nos blocos `<usage>` das notificações); orquestrador ~20 tool uses em Opus.
 - `V2B-T5` — Relatórios do lote 2 (repos 6-10) — [Haiku ×5] — backlog
+  - **Despacho preparado (2026-07-29, sessão encerrada para reinício do CLI — ver Desvio 1 do `V2B-T4`).** 5 subagentes `pantonic-benchmarker` na mesma mensagem, um repo por subagente; prompt carrega só as 3 linhas abaixo (dieta: esquema e guardrails já vivem no arquivo do agente).
+
+    | BM | full_name | árvore cacheada (`docs/benchmark/_trees/`) | saída (`docs/benchmark/`) |
+    |---|---|---|---|
+    | BM-06 | `anthropics/skills` | `anthropics-skills.txt` | `BM-06-anthropics-skills.md` |
+    | BM-07 | `github/awesome-copilot` | `github-awesome-copilot.txt` | `BM-07-github-awesome-copilot.md` |
+    | BM-08 | `google-gemini/gemini-cli` | `google-gemini-gemini-cli.txt` | `BM-08-google-gemini-gemini-cli.md` |
+    | BM-09 | `PatrickJS/awesome-cursorrules` | `patrickjs-awesome-cursorrules.txt` | `BM-09-patrickjs-awesome-cursorrules.md` |
+    | BM-10 | `cline/cline` | `cline-cline.txt` | `BM-10-cline-cline.md` |
+
+  - **Pós-lote, pelo orquestrador (não pelo coletor):** (a) `(Get-Content <arquivo>).Count` por relatório — teto 160, auto-relato do coletor não vale (usar `.Count`, não `Measure-Object -Line`, que ignora linhas vazias); (b) `python docs/benchmark/_normalize_dims.py <relatórios>` (títulos D1..D16 derivam); (c) conferir `D2 — Vitalidade` contra `_CORPUS.md` (stars/`pushed_at`/licença; nº de contribuidores é `NÃO ENCONTRADO` — não está no cache).
+  - **Commit pendente herdado:** `BM-01..BM-05` + `_normalize_dims.py` do `V2B-T4` seguem não commitados. Decisão do dono 2026-07-29: no fechamento do `V2B-T5`, um commit por tarefa — primeiro o do lote 1 (`V2B-T4`), depois o do lote 2.
 - `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — backlog
 - `V2B-T7` — Relatórios do lote 4 (repos 16-21) — [Haiku ×6] — backlog
 - `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — backlog

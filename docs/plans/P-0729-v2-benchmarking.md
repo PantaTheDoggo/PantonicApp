@@ -207,6 +207,14 @@ de cobertura (`P-0729-v2-confronto` T2). Dimensão sem evidência recebe literal
   rodapé completo, ≤160 linhas, e nenhuma afirmação sem URL de arquivo.
 
 ### T5 — Relatórios do lote 2 (repos 6-10) [Haiku] — idem T4
+**Emenda ao "idem T4", medida no próprio T4** (detalhe no diário, bullet `V2B-T4`): (a) o teto de 160
+linhas é verificado pelo orquestrador com `wc -l` em disco — o auto-relato do coletor erra por até
++96 linhas; (b) rodar `docs/benchmark/_normalize_dims.py <relatórios>` ao fim de cada lote — os títulos das dimensões derivam
+(D10/D14 truncados); (c) conferir `D2 — Vitalidade` contra o cache do T3 — o coletor tende a
+inventar nº de contribuidores; (d) os lotes 2-4 usam o agente **real** `pantonic-benchmarker` —
+o contorno com tipo genérico do T4 **não** virou doutrina (decisão do dono, 2026-07-29: reiniciar
+o CLI, porque o registro de subagentes é carregado na inicialização do processo e `/clear` não o
+recarrega).
 ### T6 — Relatórios do lote 3 (repos 11-15) [Haiku] — idem T4
 ### T7 — Relatórios do lote 4 (repos 16-21) [Haiku] — idem T4, com **6** subagentes
 O lote 4 carrega o `BM-21` acrescentado pela ampliação do corpus (ver "Achados da execução").
