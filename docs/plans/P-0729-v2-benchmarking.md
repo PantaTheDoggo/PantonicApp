@@ -230,6 +230,50 @@ O lote 4 carrega o `BM-21` acrescentado pela ampliação do corpus (ver "Achados
   QC e as "dimensões fora da grade" agregadas numa lista única (o insumo mais valioso do estágio);
   este plano fecha e o Estágio 2 é destravado no diário.
 
+### T9 — Normalizar as citações de fonte para URL completa [Sonnet]
+Nascida do achado do `V2B-T8` (ver "Achados da execução"); **rota escolhida pelo dono em
+2026-07-29: normalização completa antes do Estágio 2**, e não correção parcial nem aceite como
+limitação conhecida. Enquanto esta tarefa não fechar, `P-0729-V2B` **não** está `done` e o
+Estágio 2 volta a `blocked`.
+
+- **Objetivo:** fazer as 29 citações de fonte que hoje apontam caminho de arquivo relativo (ou
+  referência vaga à árvore) cumprirem a regra de evidência do `_ESQUEMA.md` linhas 39-42 — URL
+  exata do arquivo, não do repositório.
+- **Arquivos-alvo (29 citações em 8 relatórios, medidos no fechamento do `V2B-T8`):**
+  `BM-02` (1: linha 46), `BM-07` (2: 71, 76), `BM-09` (11: 27, 33, 43, 49, 55, 61, 67, 77, 83,
+  89, 95), `BM-10` (2: 83, 95), `BM-11` (3: 34, 37, 46), `BM-14` (1: 71), `BM-16` (9: 30, 34, 38,
+  43, 47, 51, 61, 65, 72). As demais 193 citações já estão conformes (179 com URL completa + 14
+  apontando `_CORPUS.md`, que é a fonte prescrita de `D2` e **não** deve ser convertida).
+- **Formato-alvo:** `https://raw.githubusercontent.com/<full_name>/HEAD/<caminho>`, com
+  `<full_name>` **resolvido** (pós-redirecionamento) conforme `_CORPUS.md` — atenção a
+  `NVIDIA-NeMo/Guardrails` e `Wirasm/prp`. É o mesmo formato das 179 já conformes.
+- **Decisões fechadas (não reabrir em execução):**
+  1. **Citação com vários arquivos** (`pyproject.toml, SECURITY_ADVISORY.md`) vira uma URL por
+     arquivo, separadas por `, ` — precedente já usado no `D9` do `BM-01`.
+  2. **Verificação obrigatória antes de escrever a URL:** o caminho tem de existir na árvore
+     cacheada `docs/benchmark/_trees/<slug>.txt`. Caminho ausente na árvore vira literalmente
+     `NÃO ENCONTRADO` — **nunca inventar URL**. Este item é o guardrail central da tarefa: o
+     defeito que ela corrige não pode ser trocado por um defeito pior (URL plausível e falsa).
+  3. **Referência vaga sem arquivo checável** (6 casos: "Árvore cacheada, linhas 220+";
+     "árvore cacheada (277 arquivos em `/rules/`)"; "Árvore linhas 1-2, 12, 30-31, 43-44,
+     236-242"; "Tree cacheada (131 arquivos)"; "docs/ estrutura via árvore"; "README,
+     CONTRIBUTING.md, docs/") cita o artefato local real: `docs/benchmark/_trees/<slug>.txt`.
+     Diretório (`docs/`, `ISSUE_TEMPLATE/`, `guardrails/cli/hub/`) não tem URL raw — também vira
+     citação da árvore. `README` sem extensão resolve para `README.md` **se** existir na árvore.
+  4. **Tarefa offline:** nenhuma busca nova na web, nenhuma chamada a `api.github.com`. A árvore
+     cacheada é a autoridade — a cota do `V2B-T3` já foi gasta e não se repõe.
+  5. **Teto de 160 linhas não é afetado:** a conversão alonga linhas, não as multiplica. Não
+     condensar conteúdo a pretexto do teto; se algum arquivo passar de 160 linhas por quebra
+     automática, reportar em vez de cortar evidência.
+- **Método prescrito:** script determinístico no scratchpad (mesmo padrão do
+  `_normalize_dims.py`, que resolveu a deriva de títulos): carrega a árvore de cada slug, faz o
+  casamento caminho→URL, aplica e imprime o diff por linha. 29 edições à mão é retrabalho e erra.
+- **Teto:** **30 tool uses.** Ao atingir, PARE e reporte o que falta — não continue. (O `V2B-T8`
+  estourou o teto de 45 em +49%; esta tarefa é mecânica e homogênea, o teto é real.)
+- **Pronto quando:** `grep -h "Fonte:" BM-*.md | grep -v http | grep -vi "_CORPUS"` devolve **0
+  linhas**; nenhuma URL nova aponta caminho ausente da árvore cacheada; `INDICE.md` tem o tíquete
+  fechado com o resultado; os 21 relatórios seguem aprovados no checklist de 7 itens do `V2B-T8`.
+
 ## 6. Riscos
 
 - **Cota de 60 req/h estourada por retrabalho no T3** (candidatos errados forçando rebuscas).
@@ -273,3 +317,21 @@ O lote 4 carrega o `BM-21` acrescentado pela ampliação do corpus (ver "Achados
   `snarktank/ai-dev-tasks` (`BM-21`), com a tensão de estagnação declarada em `_CORPUS.md`.
   **Emenda à `DV-3`:** tamanho do corpus passa a **21**; o piso de ≥3 por trilha permanece e agora
   é cumprido em A–F. `V2B-T7` emite um relatório a mais (`BM-21`) e o `V2B-T8` valida **21/21**.
+
+- **`V2B-T8` (2026-07-29) — citação de fonte por caminho relativo em vez de URL exata.** O QC
+  aprovou 21/21 no checklist de 7 itens, mas registrou um padrão sistêmico fora do escopo daquele
+  item: parte das citações `**Fonte:**` aponta caminho de arquivo (`` `pyproject.toml` ``) ou
+  referência vaga ("Tree cacheada (131 arquivos)") em vez da URL exata que o `_ESQUEMA.md`
+  linhas 39-42 exige. **Dimensionamento medido no fechamento** (o executor estimou "~40+ pontos,
+  busca transversal"; o número real é menor e heterogêneo): das 222 citações dos 21 relatórios,
+  **179 (81%) já têm URL completa**; das 43 restantes, **14 apontam `_CORPUS.md` e estão corretas
+  por desenho** (é a fonte prescrita de `D2`, não é defeito), **23 nomeiam caminho concreto** no
+  repo alvo (reconstruível para `raw.githubusercontent.com`, já que o `owner/repo` é conhecido) e
+  **6 são genuinamente vagas** (nada checável — é onde a regra anti-alucinação de fato falha).
+  **Rota decidida pelo dono, 2026-07-29:** normalização **completa** das 29 (23 + 6) antes do
+  Estágio 2, e não a correção só das 6 nem o aceite como limitação conhecida. Materializada na
+  tarefa **`V2B-T9`** (§5, dossiê fechado). Consequência de estado: `P-0729-V2B` **reverte de
+  `done` para `in progress`** e o Estágio 2 volta a `blocked` até o `V2B-T9` fechar — o `V2B-T8`
+  havia fechado o plano com este achado ainda sem rota triada, o que a regra do diário
+  (skill `diario-de-obras`: "a sprint só flipa para `done` com todos os achados triados") não
+  admite.

@@ -13,8 +13,8 @@ benchmarking → confronto → melhoria → documentação).
 | ID | Título | Status | Âncora |
 |---|---|---|---|
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
-| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T8) | done | `docs/plans/P-0729-v2-benchmarking.md` |
-| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | backlog | `docs/plans/P-0729-v2-confronto.md` |
+| P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | in progress | `docs/plans/P-0729-v2-benchmarking.md` |
+| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | blocked | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | blocked | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking | por nascer | autorado fechado por `V2C-T6` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
@@ -31,9 +31,12 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2C-T1` (`docs/plans/P-0729-v2-confronto.md` §5) — auto-retrato do
-PantonicApp no esquema do corpus, criando `docs/benchmark/BM-00-pantonicapp.md`. Estágio 1
-(`P-0729-V2B`) fechou `done` no `V2B-T8`; Estágio 2 (`P-0729-V2C`) está destravado.
+**Próxima tarefa da sprint:** `V2B-T9` (`docs/plans/P-0729-v2-benchmarking.md` §5) — normalizar as
+29 citações de fonte para URL completa (dossiê fechado, teto de 30 tool uses). O Estágio 1 **não**
+está `done`: o `V2B-T8` o fechou com um achado sem rota triada, e a rota decidida pelo dono
+(2026-07-29) foi normalização completa antes do Estágio 2 — `P-0729-V2B` voltou a `in progress` e
+`P-0729-V2C` voltou a `blocked`. Depois do `V2B-T9`: `V2C-T1` (auto-retrato do PantonicApp,
+`BM-00`).
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -144,9 +147,21 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     teto é alarme, a divisão prévia em sub-tarefas é o controle.** Aqui o QC de 21 artefatos em 7
     itens de checklist era divisível por lote (T4..T7 já eram lotes de 5-6) e não foi dividido.
 
-### Estágio 2 — `P-0729-v2-confronto` [backlog — destravado pelo `V2B-T8` done]
+- `V2B-T9` — Normalizar as 29 citações de fonte para URL completa — [Sonnet] — backlog
+  - Nasce do achado do `V2B-T8`. **Rota escolhida pelo dono (2026-07-29):** normalização completa
+    das 29, e não a correção só das 6 vagas nem o aceite como limitação conhecida. Dimensionamento
+    medido no fechamento (222 citações totais; 179 já com URL; 14 `_CORPUS.md` corretas por
+    desenho; 23 caminhos reconstruíveis; 6 vagas) e dossiê fechado em
+    `docs/plans/P-0729-v2-benchmarking.md` §5 `T9` — inclui o guardrail central: caminho ausente
+    da árvore cacheada vira `NÃO ENCONTRADO`, nunca URL inventada.
+  - **Correção de estado aplicada junto:** `P-0729-V2B` reverteu de `done` para `in progress` e
+    `P-0729-V2C` voltou a `blocked`. O `V2B-T8` havia flipado o plano para `done` com este achado
+    ainda sem rota triada — a regra da skill `diario-de-obras` ("a sprint só flipa para `done` com
+    todos os achados triados") não admite.
 
-- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — backlog
+### Estágio 2 — `P-0729-v2-confronto` [blocked — depende do `V2B-T9` (ver correção de estado acima)]
+
+- `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — blocked
 - `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — blocked
 - `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — blocked
 - `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked
