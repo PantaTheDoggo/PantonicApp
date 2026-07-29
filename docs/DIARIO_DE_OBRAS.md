@@ -14,7 +14,7 @@ benchmarking → confronto → melhoria → documentação).
 |---|---|---|---|
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
-| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | backlog | `docs/plans/P-0729-v2-confronto.md` |
+| P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | in progress | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | blocked | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking | por nascer | autorado fechado por `V2C-T6` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
@@ -31,10 +31,10 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2C-T1` (`docs/plans/P-0729-v2-confronto.md`) — auto-retrato do
-PantonicApp no esquema D1..D16 (`BM-00`). O **Estágio 1 fechou em 2026-07-29** com o `V2B-T9`
-(9/9 tarefas): o achado de citações do `V2B-T8` foi triado e normalizado, então `P-0729-V2B` passou
-a `done` e o Estágio 2 saiu de `blocked` para `backlog`.
+**Próxima tarefa da sprint:** `V2C-T2` (`docs/plans/P-0729-v2-confronto.md`) — matriz de cobertura
+dimensão × framework (16 × 22, com o `BM-00` como coluna do próprio PantonicApp). O **Estágio 1
+fechou em 2026-07-29** (9/9) e o **Estágio 2 entrou em execução no mesmo dia** com o `V2C-T1`
+(`BM-00` emitido, 156 linhas): o auto-retrato existe, então a matriz do `T2` já tem as 22 colunas.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -194,14 +194,15 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     uses junto com a aplicação. Reforça a decisão de 2026-07-16: **o controle é a divisão prévia,
     não o número.**
 
-### Estágio 2 — `P-0729-v2-confronto` [backlog — desbloqueado em 2026-07-29 pelo fechamento do `V2B-T9`]
+### Estágio 2 — `P-0729-v2-confronto` [in progress — 1/6 tarefas, `V2C-T1` done em 2026-07-29]
 
 - `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — done
   - Resultado: `docs/benchmark/BM-00-pantonicapp.md` criado (156 linhas, D1..D16 completas, todas
     com `arquivo:linha`); 0 dimensões `NÃO ENCONTRADO` puras (D2/D13 têm campos parciais
     `NÃO ENCONTRADO` dentro de uma dimensão majoritariamente respondida); 2 dimensões com
-    trecho `PARCIAL — decidido, não escrito` (D9 — as 5 guardrails do `P-0722` + D9 nota a
-    skill `modelo-por-fase` só como referência em D6, não como PARCIAL própria). Achado de
+    1 dimensão com trecho `PARCIAL — decidido, não escrito` (D9 — as 5 guardrails do `P-0722`,
+    com ponteiro para o Estágio 3A; a skill `modelo-por-fase` aparece só como referência em
+    D6/D9, sem marcação própria, pois a doutrina já existe em prosa e só a skill falta). Achado de
     escopo (README do kit desatualizado, falta `pantonic-auditor-container` na tabela) já
     virou anti-prática registrada no rodapé do próprio `BM-00`, não tíquete separado.
   - Veredito — V2C-T1
@@ -209,8 +210,11 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     `docs/DIARIO_DE_OBRAS.md`).
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
-  - Consumo: (preenchido pelo orquestrador via notificação)
-- `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — blocked
+  - Consumo: 28 tool uses, ~111k tokens, Sonnet, ~305s (medido no `<usage>` da notificação).
+  - Verificado pelo orquestrador em disco: 156 linhas (teto 170) e os 16 títulos `## D1..D16`
+    idênticos aos canônicos do `_ESQUEMA.md` — sem deriva de título (o desvio 3 do `V2B-T4` não
+    se repetiu).
+- `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — backlog
 - `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — blocked
 - `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked
 - `V2C-T5` — Ratificação do dono (decisão por candidato) — [dono] — blocked
