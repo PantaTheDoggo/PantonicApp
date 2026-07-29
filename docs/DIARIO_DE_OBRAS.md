@@ -31,9 +31,9 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T5` (`docs/plans/P-0729-v2-benchmarking.md` §5) — repos `BM-06..BM-10`,
-mesmo método do `V2B-T4`, com os 4 desvios daquele lote já tratados no despacho (ver bullet do `V2B-T4`).
-**Despacho já preparado no bullet do `V2B-T5`** — não re-derivar do `_CORPUS.md`.
+**Próxima tarefa da sprint:** `V2B-T6` (`docs/plans/P-0729-v2-benchmarking.md` §5) — repos `BM-11..BM-15`,
+mesmo método do `V2B-T5`, que rodou limpo (0 desvios). **Despacho já preparado no bullet do `V2B-T6`**
+— não re-derivar do `_CORPUS.md`. Fechar o lote no mesmo contexto do despacho (telemetria).
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -77,20 +77,28 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     Piso: sem mudança de piso.
     Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
   - Consumo: 122 tool uses em 5 subagentes Haiku (incl. 3 retomadas de condensação), ~282k tokens Haiku, ~2,3k s de parede em paralelo (medido nos blocos `<usage>` das notificações); orquestrador ~20 tool uses em Opus.
-- `V2B-T5` — Relatórios do lote 2 (repos 6-10) — [Haiku ×5] — backlog
-  - **Despacho preparado (2026-07-29, sessão encerrada para reinício do CLI — ver Desvio 1 do `V2B-T4`).** 5 subagentes `pantonic-benchmarker` na mesma mensagem, um repo por subagente; prompt carrega só as 3 linhas abaixo (dieta: esquema e guardrails já vivem no arquivo do agente).
+- `V2B-T5` — Relatórios do lote 2 (repos 6-10) — [Haiku ×5] — done
+  - Resultado: `docs/benchmark/BM-06..BM-10` emitidos (anthropics/skills 136 linhas, awesome-copilot 104, gemini-cli 141, awesome-cursorrules 118, cline 119); 5/5 com D1..D16 completas e rodapé, todos abaixo do teto de 160.
+  - **Lote limpo — nenhum dos 4 desvios do `V2B-T4` reapareceu.** Os 5 subagentes rodaram com o agente **real** `pantonic-benchmarker` (CLI reiniciado antes do despacho, conforme Desvio 1 do `V2B-T4`) — confirmação prática de que a restrição de ferramentas pelo harness + doutrina no arquivo do agente elimina a deriva: (a) teto verificado em disco por `(Get-Content).Count` — 0 estouros, 0 condensações; (b) `_normalize_dims.py` rodado nos 5 — **0 títulos normalizados** (contra 32 no lote 1); (c) `D2 — Vitalidade` conferida contra `_CORPUS.md` — stars/`pushed_at`/licença batem nos 5, todos com `NÃO ENCONTRADO` em contribuidores e ponteiro de linha do corpus como fonte.
+  - Commits: dois, um por tarefa (decisão do dono 2026-07-29) — `5e9f228` liquida o pendente herdado do lote 1 (`BM-01..BM-05` + `_normalize_dims.py`), seguido do commit do lote 2. Sem push.
+  - Veredito — V2B-T5
+    Suítes: não aplicável — tarefa não tocou código (só `docs/benchmark/*` e `docs/DIARIO_DE_OBRAS.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: **PARCIAL — só `BM-08` medido** (28 tool uses, ~40k tokens, Haiku, ~201 s, do `<usage>` da notificação). As notificações de `BM-06/07/09/10` foram consumidas na sessão anterior ao `/clear` e os `.output` das tarefas estão vazios — **NÃO MEDIDO**, sem autoestimativa disponível. Orçamento do lote 2 aparentemente ~⅓ do lote 1 (que gastou 122 tool uses/282k tokens com 3 retomadas de condensação); a comparação fica sem base medida. Orquestrador: ~14 tool uses em Opus.
+  - **Lição de telemetria:** `/clear` entre o despacho e a conclusão dos subagentes **perde o `<usage>` dos que já haviam notificado**. Fechar o lote no mesmo contexto do despacho, ou aceitar telemetria parcial.
+- `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — backlog
+  - **Despacho preparado (2026-07-29).** Idem `V2B-T5`, que rodou limpo: 5 subagentes `pantonic-benchmarker` na mesma mensagem, um repo por subagente, prompt com só as 3 linhas da tabela (dieta — esquema e guardrails vivem no arquivo do agente). **Não re-derivar do `_CORPUS.md`.**
 
     | BM | full_name | árvore cacheada (`docs/benchmark/_trees/`) | saída (`docs/benchmark/`) |
     |---|---|---|---|
-    | BM-06 | `anthropics/skills` | `anthropics-skills.txt` | `BM-06-anthropics-skills.md` |
-    | BM-07 | `github/awesome-copilot` | `github-awesome-copilot.txt` | `BM-07-github-awesome-copilot.md` |
-    | BM-08 | `google-gemini/gemini-cli` | `google-gemini-gemini-cli.txt` | `BM-08-google-gemini-gemini-cli.md` |
-    | BM-09 | `PatrickJS/awesome-cursorrules` | `patrickjs-awesome-cursorrules.txt` | `BM-09-patrickjs-awesome-cursorrules.md` |
-    | BM-10 | `cline/cline` | `cline-cline.txt` | `BM-10-cline-cline.md` |
+    | BM-11 | `coleam00/context-engineering-intro` | `coleam00-context-engineering-intro.txt` | `BM-11-coleam00-context-engineering-intro.md` |
+    | BM-12 | `steipete/agent-rules` | `steipete-agent-rules.txt` | `BM-12-steipete-agent-rules.md` |
+    | BM-13 | `hesreallyhim/awesome-claude-code` | `hesreallyhim-awesome-claude-code.txt` | `BM-13-hesreallyhim-awesome-claude-code.md` |
+    | BM-14 | `disler/claude-code-hooks-mastery` | `disler-claude-code-hooks-mastery.txt` | `BM-14-disler-claude-code-hooks-mastery.md` |
+    | BM-15 | `wshobson/agents` | `wshobson-agents.txt` | `BM-15-wshobson-agents.md` |
 
-  - **Pós-lote, pelo orquestrador (não pelo coletor):** (a) `(Get-Content <arquivo>).Count` por relatório — teto 160, auto-relato do coletor não vale (usar `.Count`, não `Measure-Object -Line`, que ignora linhas vazias); (b) `python docs/benchmark/_normalize_dims.py <relatórios>` (títulos D1..D16 derivam); (c) conferir `D2 — Vitalidade` contra `_CORPUS.md` (stars/`pushed_at`/licença; nº de contribuidores é `NÃO ENCONTRADO` — não está no cache).
-  - **Commit pendente herdado:** `BM-01..BM-05` + `_normalize_dims.py` do `V2B-T4` seguem não commitados. Decisão do dono 2026-07-29: no fechamento do `V2B-T5`, um commit por tarefa — primeiro o do lote 1 (`V2B-T4`), depois o do lote 2.
-- `V2B-T6` — Relatórios do lote 3 (repos 11-15) — [Haiku ×5] — backlog
+  - **Pós-lote, pelo orquestrador (não pelo coletor):** (a) `(Get-Content <arquivo>).Count` por relatório — teto 160; (b) `python docs/benchmark/_normalize_dims.py <relatórios>`; (c) conferir `D2 — Vitalidade` contra `_CORPUS.md`; (d) commit do lote. Fechar **no mesmo contexto do despacho** para não perder a telemetria.
 - `V2B-T7` — Relatórios do lote 4 (repos 16-21) — [Haiku ×6] — backlog
 - `V2B-T8` — Controle de qualidade e índice do corpus — [Sonnet] — backlog
 
