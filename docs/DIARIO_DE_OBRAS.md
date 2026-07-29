@@ -31,13 +31,14 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2C-T4` (`docs/plans/P-0729-v2-confronto.md`) — backlog priorizado
-de candidatos (`C-NN`), a partir de `docs/benchmark/RELATORIO_CONSOLIDADO.md` (`V2C-T3`, done em
-2026-07-29: 808 linhas, 16 vereditos — 5 `MANTER` / 5 `ADOTAR` / 5 `ADAPTAR` / 1 `REJEITAR` —,
-6 dimensões novas D17..D22, 8 descartes justificados). O **Estágio 1 fechou em 2026-07-29** (9/9) e
-o **Estágio 2 está em execução** com 3/6 tarefas concluídas (`V2C-T1` auto-retrato + `V2C-T2`
-matriz + `V2C-T3` relatório consolidado). O `T4` converte vereditos em candidatos — atenção ao
-juízo do `T3` de que os 5 `ADOTAR` consolidam em **3** peças de trabalho, não 5.
+**Próxima tarefa da sprint:** `V2C-T6` (`docs/plans/P-0729-v2-confronto.md`, §T6) — **[Opus]**,
+autorar `docs/plans/P-0729-v2-melhoria-candidatos.md` (Estágio 3B) **já fechado**, a partir dos 14
+candidatos ratificados em `docs/benchmark/CANDIDATOS.md` (`V2C-T5`, done em 2026-07-29:
+12 `adotar` + 2 `adaptar` + 1 `adiar`, ~19 tarefas atômicas estimadas). Insumo fechado — nenhuma
+decisão pendente. Gate de publicação bloqueante (G-PLANREADY, 5 condições) antes de apensar ao
+`_INBOX.md`. Última tarefa do Estágio 2: fechá-la desbloqueia os Estágios 3A e 3B.
+O **Estágio 1 fechou em 2026-07-29** (9/9) e o **Estágio 2 está com 5/6** (`V2C-T1` auto-retrato +
+`V2C-T2` matriz + `V2C-T3` consolidado + `V2C-T4` candidatos + `V2C-T5` ratificação).
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -270,9 +271,44 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
   - Verificado pelo orquestrador em disco: 808 linhas; 236 linhas com citação `BM-NN`; 16 linhas
     `**Veredito — X.**` (5 `MANTER`, 5 `ADOTAR`, 5 `ADAPTAR`, 1 `REJEITAR` — a única `REJEITAR`,
     `D2`, traz *Motivo escrito*); §3 (D17..D22), §4 (8 descartes) e §5 (8 vieses) não-vazias.
-- `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — backlog
-- `V2C-T5` — Ratificação do dono (decisão por candidato) — [dono] — blocked
-- `V2C-T6` — Autorar `P-0729-v2-melhoria-candidatos.md` **já fechado** (Estágio 3B) — [Opus] — blocked
+- `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — done
+  - Resultado: `docs/benchmark/CANDIDATOS.md` (471 linhas) — **15 candidatos** `C-01..C-15`, 100%
+    rastreáveis a seção+linhas do consolidado. Conversão: 5 `ADOTAR` → 3 (D9+D11+D14 no `C-01`,
+    conforme juízo do `T3`), 5 `ADAPTAR` → 1 cada, D17..D22 → 1 cada, D10 → `C-14`. Recomendações
+    11/2/2 (`adotar`/`adaptar`/`adiar`); zero decisões tomadas — são do `T5`.
+  - Deltas que o `T5`/`T6` precisam ver (detalhe nas próprias seções do arquivo): **override da
+    ordem I÷E** no `C-01`, explicitado em `CANDIDATOS.md` §2 (é precondição, não melhor candidato);
+    **tensão `C-11` × `G-DEADCODE`** registrada na ficha do `C-11` (piso comportamental, não
+    percentual); `C-03` promovido por ser a régua de residência de que `C-04`/`C-10`/`C-12` e a
+    `V2M-T3` dependem; resíduo de D2 (licença) **não** virou `C-NN` (§4, item 1).
+  - Veredito — V2C-T4
+    Suítes: não aplicável — tarefa não toca código (só `docs/benchmark/CANDIDATOS.md` e este diário).
+    Piso: sem mudança de piso. Checklist de review: não aplicável.
+    Pronto-quando verificado mecanicamente: 15/15 fichas com os 7 campos obrigatórios; IDs da
+    tabela-índice idênticos e na mesma ordem das fichas; 6 blocos do `T5` cobrindo cada `C-NN` 1×.
+  - Consumo: 28 tool uses (contados), tokens **NÃO MEDIDOS** — executada *inline* pelo orquestrador
+    em Opus, sem subagente e portanto sem bloco `<usage>`; inline por volume (1 write-cluster).
+- `V2C-T5` — Ratificação do dono (decisão por candidato) — [dono] — done
+  - Resultado: **15/15 decididos** em 2026-07-29, gravados na linha `Decisão do dono` de cada ficha
+    (fonte única) + bloco-resumo no cabeçalho do `CANDIDATOS.md`. `adotar` 12 · `adaptar` 2
+    (`C-08`, `C-10`) · `adiar` 1 (`C-15`) · `rejeitar` 0. Esforço somado dos 14 ativos:
+    **19 tarefas atômicas estimadas**.
+  - Método: 6 blocos temáticos conforme `CANDIDATOS.md` §2, 1 round-trip por bloco (6 no total,
+    não 15), recomendação do planejador visível em cada linha.
+  - **Única divergência da recomendação: `C-14`** (recomendado `adiar`, decidido **`adotar`**) —
+    o delta é barato e toca os mesmos arquivos-alvo de `C-08`/`C-09`, então o `V2C-T6` deve
+    agrupá-los. Os 3 candidatos ≠ `adotar` têm linha de motivo registrada, como exige o dossiê.
+  - Vínculos que o `V2C-T6` herda fechados: `C-11` só é redigível como piso **comportamental**
+    (nunca percentual — trava a tensão com `G-DEADCODE`); `C-08` e `C-10` entram só na versão
+    mínima descrita no motivo; `C-03` antes de `C-04`/`C-10`/`C-12` e da `V2M-T3`.
+  - Tensão a resolver **no `V2C-T6`**, não aqui: a regra de decomposição (b) do dossiê do `T6` diz
+    "todo `C-NN` `adotar`/`adaptar` gera **exatamente uma** tarefa", mas 4 candidatos foram
+    estimados em 2-3 tarefas (`C-01` 3; `C-11`, `C-12`, `C-13` 2 cada) e a regra (a) obriga a
+    dividir doutrina × mecânica. Prevalece (a) — a regra (b) deve ser lida como "≥1 tarefa, nenhuma
+    sem `C-NN` de origem".
+  - Consumo: 12 tool uses (contados), tokens **NÃO MEDIDOS** — executada *inline* pelo orquestrador
+    em Opus (tarefa do dono, não delegável), sem subagente e portanto sem bloco `<usage>`.
+- `V2C-T6` — Autorar `P-0729-v2-melhoria-candidatos.md` **já fechado** (Estágio 3B) — [Opus] — backlog *(desbloqueada pelo `T5`)*
 
 ### Estágio 3A — `P-0729-v2-melhoria` [blocked — depende de `P-0729-v2-confronto` done; antecipável por DM-4]
 
