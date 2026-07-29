@@ -31,10 +31,13 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2C-T2` (`docs/plans/P-0729-v2-confronto.md`) — matriz de cobertura
-dimensão × framework (16 × 22, com o `BM-00` como coluna do próprio PantonicApp). O **Estágio 1
-fechou em 2026-07-29** (9/9) e o **Estágio 2 entrou em execução no mesmo dia** com o `V2C-T1`
-(`BM-00` emitido, 156 linhas): o auto-retrato existe, então a matriz do `T2` já tem as 22 colunas.
+**Próxima tarefa da sprint:** `V2C-T3` (`docs/plans/P-0729-v2-confronto.md`) — relatório
+consolidado de forças, fraquezas e dimensões novas, a partir de
+`docs/benchmark/MATRIZ_DIMENSOES.md` (`V2C-T2`, done em 2026-07-29: matriz 16×22 completa, listas
+(a)/(b)/(c) derivadas). O **Estágio 1 fechou em 2026-07-29** (9/9) e o **Estágio 2 está em
+execução** com 2/6 tarefas concluídas (`V2C-T1` auto-retrato + `V2C-T2` matriz); `V2C-T3` é a
+primeira tarefa Opus do estágio — interpreta as listas derivadas que `V2C-T2` deliberadamente
+não julgou.
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -194,7 +197,7 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
     uses junto com a aplicação. Reforça a decisão de 2026-07-16: **o controle é a divisão prévia,
     não o número.**
 
-### Estágio 2 — `P-0729-v2-confronto` [in progress — 1/6 tarefas, `V2C-T1` done em 2026-07-29]
+### Estágio 2 — `P-0729-v2-confronto` [in progress — 2/6 tarefas, `V2C-T2` done em 2026-07-29]
 
 - `V2C-T1` — Auto-retrato do PantonicApp no esquema do corpus (`BM-00`) — [Sonnet] — done
   - Resultado: `docs/benchmark/BM-00-pantonicapp.md` criado (156 linhas, D1..D16 completas, todas
@@ -214,8 +217,26 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
   - Verificado pelo orquestrador em disco: 156 linhas (teto 170) e os 16 títulos `## D1..D16`
     idênticos aos canônicos do `_ESQUEMA.md` — sem deriva de título (o desvio 3 do `V2B-T4` não
     se repetiu).
-- `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — backlog
-- `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — blocked
+- `V2C-T2` — Matriz de cobertura dimensão × framework — [Sonnet] — done
+  - Resultado: `docs/benchmark/MATRIZ_DIMENSOES.md` criado (matriz 16×22 = 352 células, nenhuma
+    vazia — 182 `+`, 114 `~`, 56 `—`); lista (a) Lacuna de consenso **vazia** (só `D2` tem
+    `BM-00`=`—`, e nenhum framework externo marca `+` em `D2`, todos `~`); lista (b) Diferencial
+    ou excentricidade com **1 item** (`D6` — Contexto e custo, `BM-00`=`+` com 2 frameworks em
+    `+`: `BM-04`, `BM-12`); lista (c) Candidatas a D17+ com **3 grupos** de 2 citações cada
+    (orçamento/teto de contexto-turnos-custo: `BM-05`+`BM-20`; marketplace/registro canônico com
+    lacuna de governança: `BM-07`+`BM-15`; precedência entre hooks/rules/skills/plugins:
+    `BM-10`+`BM-14`).
+  - Veredito — V2C-T2
+    Suítes: não aplicável — tarefa não toca código (só `docs/benchmark/MATRIZ_DIMENSOES.md`).
+    Piso: sem mudança de piso.
+    Checklist de review: não aplicável (sem import/camada/MVVM/UI thread tocados).
+  - Consumo: 32 tool uses, ~178k tokens, Sonnet, ~449s (medido no `<usage>` da notificação).
+  - Verificado pelo orquestrador em disco: 83 linhas; linha `D2` da matriz é `BM-00`=`—` com os 21
+    externos em `~` — a lista (a) vazia é resultado legítimo da rubrica, não célula esquecida (o
+    campo "contribuidores" quase nunca é confirmado, então ninguém pontua `+` em `D2`). O `T3`
+    deve ler a lista (a) vazia como "nenhuma lacuna de consenso pela régua mecânica", não como
+    "nenhuma lacuna".
+- `V2C-T3` — Relatório consolidado de forças, fraquezas e dimensões novas — [Opus] — backlog
 - `V2C-T4` — Backlog priorizado de candidatos (`C-NN`) — [Opus] — blocked
 - `V2C-T5` — Ratificação do dono (decisão por candidato) — [dono] — blocked
 - `V2C-T6` — Autorar `P-0729-v2-melhoria-candidatos.md` **já fechado** (Estágio 3B) — [Opus] — blocked
