@@ -31,7 +31,7 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2B-T1` (`docs/plans/P-0729-v2-benchmarking.md` §5).
+**Próxima tarefa da sprint:** `V2B-T2` (`docs/plans/P-0729-v2-benchmarking.md` §5).
 
 **Origem:** pedido do dono, 2026-07-29. **Planejamento:** Opus, 2026-07-29 (4 planos registrados no
 mesmo ato, com a cadeia de dependência declarada).
@@ -50,7 +50,9 @@ então entra no inbox e neste índice. A regra vira doutrina em `V2M-T1` (G-PLAN
 
 ### Estágio 1 — `P-0729-v2-benchmarking` [backlog]
 
-- `V2B-T1` — Instituir o controle de versão do framework (`VERSION` + `KIT_VERSION` + `CHANGELOG`) — [Sonnet] — backlog
+- `V2B-T1` — Instituir o controle de versão do framework (`VERSION` + `KIT_VERSION` + `CHANGELOG`) — [Sonnet] — done
+  - Resultado: `VERSION` e `.claude/KIT_VERSION` em `1.1.0` (paridade obrigatória); `CHANGELOG.md` criado na raiz; `GOVERNANCA.md` §10 ganhou parágrafo final com a regra de paridade e MAJOR/MINOR/PATCH; commit + tag anotada `kit-v1.1.0` (sem push).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 - `V2B-T2` — Agente `pantonic-benchmarker` + esquema D1..D16 — [Sonnet] — backlog
 - `V2B-T3` — Curadoria e cache do corpus (25 candidatos → 20 confirmados) — [Sonnet] — backlog
 - `V2B-T4` — Relatórios do lote 1 (repos 1-5) — [Haiku ×5] — backlog

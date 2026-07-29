@@ -266,3 +266,12 @@ consumidor.
 **Critério de pronto.** Qualquer tarefa que edite `.claude/` do hub só está pronta se o bump de
 `.claude/KIT_VERSION` acompanhar a mudança. Uma versão que não sobe quando o conteúdo muda deixa a
 checagem cega — o guarda vira teatro.
+
+**Paridade `VERSION` × `.claude/KIT_VERSION` (V2B-T1).** `VERSION` (raiz — o framework: doutrina +
+kit) e `.claude/KIT_VERSION` (o que o subtree publica) carregam **sempre o mesmo valor**;
+divergência entre eles é defeito, não estado válido. Semver com significado declarado: **MAJOR** =
+exige ação do consumidor (artefato removido/renomeado, doutrina invertida); **MINOR** = artefato ou
+guardrail novo compatível com o que já existe; **PATCH** = correção redacional, sem mudança de
+comportamento. Toda tarefa que edite `.claude/` ou a doutrina bumpa os dois arquivos **e** escreve
+uma linha correspondente no `CHANGELOG.md` (raiz) — os três se movem juntos, nunca um sem os
+outros dois.
