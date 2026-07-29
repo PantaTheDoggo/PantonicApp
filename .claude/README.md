@@ -16,6 +16,7 @@ blocos de "fatos estáveis" dos agentes. Fundamentos: `GOVERNANCA.md` e
 | `pantonic-auditor-cleancode` | Sonnet | Auditoria de code smells (coesão/acoplamento) → checklist + correções |
 | `pantonic-fora-da-caixa` | Opus | Redesenho "do zero, hoje" de procedimentos inchados por remendos |
 | `pantonic-auditor-pyside6` | Sonnet | Auditoria de melhores práticas Qt (threading, signals, ownership, perf) |
+| `pantonic-benchmarker` | Haiku | Coletor de benchmarking de frameworks públicos → relatório D1..D16 em `docs/benchmark/` (um repositório por invocação) |
 
 Os auditores são invocados pelo usuário, produzem relatórios em `docs/audits/` e **não alteram
 código** — apontamentos aceitos viram tíquetes no diário de obras via `pantonic-planner`.
