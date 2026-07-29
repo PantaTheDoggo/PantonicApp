@@ -24,9 +24,13 @@ o texto original previa (precedente medido nas 3 rodadas: escopo suficientemente
 **DP-8 aberto** pela sondagem da mesma rodada: **5 dos 6 filhos não são repositórios git** — trava
 a Fase 4, **não** a Fase 3.
 
-**Próxima tarefa: Fase 3 — implementar e provar o mecanismo D1 em sandbox.** Dossiê pronto para
-execução em **Sonnet**, contexto novo (§4 → "Fase 3"). Não depende de DP-8 nem de mais nenhuma
-decisão do dono.
+**FECHADO 2026-07-28**, via `P-0725-governanca-hub-unico.md` Fase 5. A partir da Fase 3, este
+plano foi absorvido pelo sucessor com mapeamento tarefa a tarefa (ver `P-0725` §5 "Relação com os
+planos anteriores"): Fase 3 (T2→Fase 3, T3/T4→Fase 4 de `P-0725`), Fase 4 (migrar 6 filhos)
+superseded (1 virou prova de aceitação, 1 legado, 1 abortado, 3 adiados), DP-8 encerrado (nenhum
+projeto que ele travava seguiu em escopo). Registro final de DP-1..DP-8 (deste plano) e DP-9..DP-13
+(do sucessor) consolidado em `P-0725` §Fase 5 / "Notas de execução". Nenhuma tarefa deste plano
+segue em aberto.
 
 ---
 

@@ -11,9 +11,19 @@ Pantonic\***.
 **Planejador:** Opus (fase de doutrina/arquitetura de governança, Regra 7). **Executor:** por fase
 (ratificação/redação de doutrina = Opus/dono; mecânica de check/skill = Sonnet).
 
-**Estado:** DECISÕES FECHADAS — DP-G1..DP-G4 resolvidas pelo dono 2026-07-22 (§4), todas conforme a
-recomendação. Não iniciado: nenhuma tarefa começa antes do "go" explícito do dono (Regra 1). O
-protótipo do hook de modelo-por-fase já foi instalado a pedido do dono (ver §6).
+**Estado:** **`superseded` em 2026-07-29 — mesclado em `P-0729-v2-melhoria.md`** por decisão do
+dono ("faça a mescla dos planos, mantendo um só, já que eles são complementares"). Nenhuma tarefa
+sai mais deste plano; ele permanece como **registro da evidência e das decisões** (§1 e §4 seguem
+sendo a fonte do porquê de cada guardrail). A absorção é **tarefa a tarefa** — as 4 fases mais
+DP-G4 e DP-G5 estão mapeadas, sem sobra, na tabela de `P-0729-v2-melhoria.md` §1
+(Fase 1→T2/T5, DP-G4→T4, Fase 2→T3, Fase 3→T6, Fase 4→TZ). As decisões DP-G1..DP-G5 **não são
+reabertas** pelo benchmarking da iniciativa `PANTONIC-V2` (`P-0729-v2-melhoria` DM-2): nasceram de
+um incidente medido, e evidência pública não revoga evidência local.
+
+**Estado anterior (2026-07-22 a 2026-07-29):** DECISÕES FECHADAS — DP-G1..DP-G4 resolvidas pelo
+dono 2026-07-22 (§4), todas conforme a recomendação. Não iniciado: nenhuma tarefa começa antes do
+"go" explícito do dono (Regra 1). O protótipo do hook de modelo-por-fase já foi instalado a pedido
+do dono (ver §6) e **segue instalado** — a mescla não o remove.
 
 **Relação com `P-0721-governanca-single-source` (SPRINT-GOVSINGLESOURCE):** concerns distintos e
 complementares. **Aquele** plano é o *veículo de distribuição* (kit comum herdado do canônico, zero

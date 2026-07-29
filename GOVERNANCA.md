@@ -67,6 +67,18 @@ Regras de operação:
 - **Orçamento de turnos por tarefa atômica**: ~≤40 tool uses esperado no agente de execução.
   Estourar é sinal de tarefa mal decomposta ou de thrashing (editar-testar-editar sem plano
   interno) — reportar no handover, não só continuar.
+- **Decisão que escolhe mecanismo de plataforma exige sonda de viabilidade junto da
+  recomendação, não só depois.** Medido na iniciativa do hub único de governança (`P-0721`/
+  `P-0725`, 2026-07): três premissas caíram por sondagem curta demais antes de escolher o
+  mecanismo — symlink de arquivo exige privilégio elevado no Windows, os filhos não eram
+  repositórios git, e os filhos já tinham cópia manual dos docs de doutrina. Cada uma exigiu
+  retrabalho de plano que uma sonda de 1-2 comandos, feita antes da recomendação, teria evitado.
+- **Um plano que absorve uma fase de outro herda as tarefas, não o título da fase.** "Fase X
+  absorvida pela Fase Y" é uma afirmação numa granularidade mais grossa que o objeto afirmado;
+  medido em `P-0725` (2026-07-26) quando uma fase de quatro tarefas do plano de origem se
+  espalhou por duas fases do plano sucessor e uma tarefa (autorar o materializador) não caiu em
+  nenhuma das duas — só apareceu quando um passo posterior tentou consumi-la e o insumo não
+  existia. Rebase que absorve fase de outro plano mapeia tarefa a tarefa, não fase a fase.
 
 ## 4. Fluxo de desenvolvimento
 
@@ -207,11 +219,16 @@ desde o primeiro dia; CLAUDE.md do projeto ≤ 200 linhas, só regras que mudam 
 
 ## 9. Kit agêntico reusável
 
-Os agentes (§3) e os fluxos (§4–§6) estão materializados como kit copiável em
+Os agentes (§3) e os fluxos (§4–§6) estão materializados como kit em
 [.claude/](.claude/README.md): agentes `pantonic-planner`, `pantonic-executor` e
 `pantonic-scout`, e skills `bootstrap-pantonic`, `diario-de-obras`, `proximo-passo`,
-`integrar-poc`, `guardrails-check` e `handover`. Todo projeto novo copia esse kit no bootstrap e
-ajusta apenas os "fatos estáveis" dos agentes.
+`integrar-poc`, `guardrails-check` e `handover`. Cada projeto consumidor **materializa** esse kit
+a partir do hub via `git subtree` — nunca copia manualmente. `.claude/kit/` é o subtree do branch
+`kit` deste repo; `.claude/kit/sync-kit.ps1` aplica a versão publicada sobre a árvore local,
+respeitando os overrides declarados em `kit-exclude.txt`. O consumidor ajusta apenas os "fatos
+estáveis" dos agentes — nunca os artefatos do próprio subtree (eles vêm do hub). Mecanismo de
+versionamento e atualização: §10. Provado ponta a ponta em `PantonicVideo`
+(`P-0725-governanca-hub-unico.md` Fase 4/5).
 
 ## 10. Versionamento e atualização do kit
 
