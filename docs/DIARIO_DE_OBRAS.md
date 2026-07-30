@@ -44,17 +44,17 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** **decisão do dono pendente — nenhuma tarefa é delegável antes dela.**
-A `V2M-T5` esgotou o que era decidível dentro do PantonicApp: as três rodadas de ajuste do check
-rodaram (baseline do `PantonicVideo` 412 → 131 → 95 → **86**, 2026-07-30) e **não há 4ª rodada**
-(decisão do dono, definitiva). O fecho da T5 é por **gate bloqueante** (baseline em `exit 0`, sem
-allowlist), então ela depende agora de uma **campanha de limpeza dos 86 achados no
-`PantonicVideo`** — que não existe no backlog daquele projeto nem foi orçada. Com isso o Estágio 3A
-está 4/5 e o **Bloco B não fecha por dependência externa**. O dono precisa escolher entre abrir a
-campanha no `PantonicVideo` agora (T5 no caminho crítico da `PANTONIC-V2`) ou marcar a `V2M-T5`
-como bloqueada por dependência externa e liberar o **Bloco C** (`V2K-T5..T19`) em paralelo — ver o
-bullet `V2M-T5` deste diário. **Sem essa decisão a `proximo-passo` não escolhe tarefa**: a ordem
-DK-1 é normativa e diz "Bloco A → Estágio 3A **inteiro** → Bloco C".
+**Próxima tarefa da sprint:** **planejar a campanha de limpeza dos 86 achados no `PantonicVideo`**
+— **[Opus]**, e **no backlog daquele projeto**, não neste. A `V2M-T5` esgotou o que era decidível
+dentro do PantonicApp: as três rodadas de ajuste do check rodaram (baseline do `PantonicVideo`
+412 → 131 → 95 → **86**, 2026-07-30) e **não há 4ª rodada** (decisão do dono, definitiva). Como o
+fecho da T5 é por **gate bloqueante** (`exit 0`, allowlist descartada), ela depende dessa campanha.
+**Decisão do dono, 2026-07-30:** abrir a campanha **agora**, com a `PANTONIC-V2` parada até ela
+concluir — a alternativa de liberar o Bloco C em paralelo (exceção à DK-1) e a de rever o gate de
+fecho foram **descartadas**. Consequência aceita: os 86 achados entram no caminho crítico da
+iniciativa e precisam ser triados um a um (órfão real × categoria de despacho ainda não nomeada),
+em prazo desconhecido. A ordem DK-1 permanece **sem exceção**: Bloco A → Estágio 3A **inteiro** →
+Bloco C → Estágio 4. Estágio 3A em 4/5.
 **Destravada:** `V2M-T4` fechou em
 2026-07-30 (contador sequencial de planos materializado, `_INBOX.md` com próximo id `P-0730`). O
 **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
@@ -558,6 +558,14 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     residual). Falta só a campanha de limpeza no `PantonicVideo` — sem entrada no backlog daquele
     projeto ainda — e, depois dela, o fechamento formal da T5 (gate bloqueante: baseline em
     exit 0, sem allowlist de 86 entradas).
+  - **Decisão do dono, 2026-07-30 (fecho da rodada 3):** a premissa sob a qual o risco havia sido
+    assumido mudou — o residual esperado era ~33 (95 − ~62 estimados) e o medido é **86**. Com o
+    fato novo à mesa, o dono **reafirmou a rota**: abrir a campanha de limpeza no `PantonicVideo`
+    **agora**, com a `PANTONIC-V2` parada até ela concluir. Descartadas explicitamente: (a)
+    bloquear a `V2M-T5` por dependência externa e liberar o Bloco C em paralelo (seria exceção à
+    DK-1); (b) rever o gate de fecho e aceitar baseline não-zero como dívida registrada (seria o
+    próprio modo de falha que a `G-DEADCODE` existe para impedir). A próxima tarefa, portanto, é
+    de **planejamento [Opus] no backlog do `PantonicVideo`**, não deste projeto.
   - Consumo: 31 tool uses, ~94k tokens, Sonnet, ~19min32s (medido pela notificação de conclusão;
     dentro do teto de 30 na prática — as 31 chamadas incluem o commit final). Acumulado da `V2M-T5`
     nas duas sessões anteriores: 81 tool uses, ~237k tokens, ~92min.
