@@ -61,11 +61,12 @@ Regras de operação:
   numa única tarefa atômica, ~30% do limite de 5h — ver auditoria de consumo referenciada em
   `~/.claude/docs/RECOMENDACOES_CONSUMO_GLOBAL.md`).
 - **Gatilho operacional do modelo por fase:** a regra acima é vinculante, mas precisa de gatilho —
-  a skill global `modelo-por-fase` (`~/.claude/skills/`) detecta a fase da tarefa e o modelo ativo,
-  **para** e pede o `/model` correto ao dono (fato técnico medido: um agente não troca o próprio
-  modelo — só o dono, via `/model`, ou o harness, via hook). A **regra** mora aqui, versionada
-  (§3.1); a skill é só o gatilho e o hook em `settings.json` é enforcement — nenhum dos dois é
-  superfície de doutrina.
+  a skill `modelo-por-fase` **do kit versionado** (`.claude/skills/modelo-por-fase/`; `DM-7`,
+  2026-07-30, rebaseia `DP-G3` — skill que só existisse em `~/.claude` não viajaria no subtree)
+  detecta a fase da tarefa e o modelo ativo, **para** e pede o `/model` correto ao dono (fato
+  técnico medido: um agente não troca o próprio modelo — só o dono, via `/model`, ou o harness,
+  via hook global). A **regra** mora aqui, versionada (§3.1); a skill é só o gatilho e o **hook**
+  em `settings.json` continua global — nenhum dos dois é superfície de doutrina.
 - **Delegar a um subagente protege o contexto do orquestrador (Regra 2 do CLAUDE.md), não reduz
   o consumo total.** O subagente parte frio e paga de novo CLAUDE.md + definição do agente +
   skills carregadas em todos os seus turnos. Tarefa pequena (< ~15 turnos estimados) prefere
@@ -253,12 +254,11 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    (alcançabilidade por AST a partir dos entry points, allowlist explícita e mínima) no kit de
    conformance; o handover declara os chamadores de produção de cada símbolo novo; review de
    fechamento rejeita módulo novo sem chamador não-teste.
-10. **G-PLANFIDELITY — a rota é do dono** — o executor **não** substitui a arquitetura/rota aprovada
-   por uma alternativa sob pressão de obstáculo técnico. Ao bater num obstáculo que ameaça a rota do
-   plano, **para**, registra o achado e escala para replanejamento (Opus/dono); não improvisa uma
-   segunda arquitetura na mesma execução. Bifurcar a rota exige decision record aprovado **antes** de
-   codar a alternativa. *Enforcement:* gate de review — o handover cita a rota do plano e confirma que
-   nenhuma bifurcação arquitetural ocorreu sem decision record.
+10. **G-PLANFIDELITY — a rota é do dono** — conduta universal de executor (não doutrina específica
+   de Pantonic), promovida ao `CLAUDE.md` global (Regra 8, `V2M-T3`, 2026-07-30): o executor não
+   substitui a arquitetura/rota aprovada por uma alternativa própria sob pressão de obstáculo
+   técnico — ver texto normativo lá. *Enforcement:* gate de review — o handover cita a rota do
+   plano e confirma que nenhuma bifurcação arquitetural ocorreu sem decision record.
 11. **G-PREMISE — premissa que embasa abandono exige prova, não asserção** — afirmar *"a informação X
    não existe / não é obtível"* só sustenta abandono ou bifurcação de rota com um **spike que a
    comprove**, revisável pelo dono, **antes** do abandono. Um achado não **reverte** achado anterior
@@ -293,12 +293,12 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    plano que viole qualquer uma; o executor recusa performar (G-EXECREADY); o `_INBOX.md` é o
    registro do contador sequencial.
 13. **G-EXECREADY — o executor não decide, não pergunta e recusa plano não-pronto** (dever do
-   **executor**) — ele **nunca inicia o trabalho fazendo perguntas ao dono**: se precisaria
-   perguntar, o plano está incompleto → devolve ao planejamento, não improvisa nem decide. E
-   **recusa performar** enquanto o plano não estiver pronto por G-PLANREADY — kicka de volta, não
-   começa. Complementa G-PLANFIDELITY (não muda rota) e o modelo por fase (§3): a decisão nunca
-   desce para o modelo barato. *Enforcement:* instrução no arquivo do agente `pantonic-executor`;
-   a `proximo-passo` só delega tarefa de plano fechado; gate de review.
+   **executor**) — conduta universal de executor (não doutrina específica de Pantonic), promovida
+   ao `CLAUDE.md` global (Regra 8, `V2M-T3`, 2026-07-30): nunca inicia o trabalho fazendo perguntas
+   ao dono, e recusa performar enquanto o plano não estiver pronto por G-PLANREADY — ver texto
+   normativo lá. Complementa G-PLANFIDELITY (não muda rota) e o modelo por fase (§3): a decisão
+   nunca desce para o modelo barato. *Enforcement:* instrução no arquivo do agente
+   `pantonic-executor`; a `proximo-passo` só delega tarefa de plano fechado; gate de review.
 
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra

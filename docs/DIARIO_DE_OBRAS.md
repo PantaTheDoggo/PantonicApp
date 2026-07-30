@@ -22,19 +22,19 @@ benchmarking → confronto → melhoria → documentação).
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
 | P-0725-HU | Hub único: PantonicApp canônico, PantonicVideo como prova | done | `docs/plans/P-0725-governanca-hub-unico.md` |
-| TK-01 | Corrigir residência de `modelo-por-fase` em `GOVERNANCA.md` §3 e no bullet `V2M-T1` do `CHANGELOG.md` (ainda apontam `~/.claude/skills/`, superado por `DM-7`) | backlog | `## Tíquetes avulsos` |
+| TK-01 | Corrigir residência de `modelo-por-fase` em `GOVERNANCA.md` §3 e no bullet `V2M-T1` do `CHANGELOG.md` (ainda apontam `~/.claude/skills/`, superado por `DM-7`) | done *(absorvido pela `V2M-T3`)* | `## Tíquetes avulsos` |
 
 ---
 
 ## Tíquetes avulsos
 
-- `TK-01` — **Achado fora de escopo (`V2M-T2`, 2026-07-30):** `GOVERNANCA.md` §3 (linha ~64) e o
-  bullet da `V2M-T1` em `CHANGELOG.md` 1.4.0 ainda descrevem a skill `modelo-por-fase` como
-  "global" em `~/.claude/skills/`. `DM-7` (mesmo dia, commit posterior a `V2M-T1`) rebaseia essa
-  decisão: a skill nasceu no kit versionado (`.claude/skills/modelo-por-fase/`, feito nesta
-  tarefa). Fora do escopo de arquivos-alvo da `V2M-T2` (que lista só a skill nova, o hook global e
-  `CHANGELOG.md`/`VERSION`) — corrigir os dois ponteiros residuais numa tarefa própria, sem
-  reabrir a decisão em si.
+- `TK-01` — **done, absorvido pela `V2M-T3` (2026-07-30).** Achado fora de escopo (`V2M-T2`,
+  2026-07-30): `GOVERNANCA.md` §3 (linha ~64) e o bullet da `V2M-T1` em `CHANGELOG.md` 1.4.0 ainda
+  descreviam a skill `modelo-por-fase` como "global" em `~/.claude/skills/`. `DM-7` (mesmo dia,
+  commit posterior a `V2M-T1`) rebaseia essa decisão: a skill nasceu no kit versionado
+  (`.claude/skills/modelo-por-fase/`). Corrigido pelo dono no mesmo ato da `V2M-T3` (decisão
+  2026-07-30, mesma superfície de doutrina) em vez de tarefa própria — grep de confirmação em
+  ambos os arquivos registrado no fechamento da `V2M-T3`.
 
 ---
 
@@ -44,11 +44,9 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2M-T3` (`docs/plans/P-0729-v2-melhoria.md`, T3) — **[Sonnet]**,
-promover G-PLANFIDELITY e G-EXECREADY ao `~/.claude/CLAUDE.md` global em forma condensada.
-**Destravada:** dependia da `V2K-T4` (régua de residência §3.1), fechada em 2026-07-30. Candidato a
-absorver o `TK-01` no mesmo ato (as duas edições tocam a mesma superfície de doutrina) — decisão do
-dono. O **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
+**Próxima tarefa da sprint:** `V2M-T4` (`docs/plans/P-0729-v2-melhoria.md`, T4) — **[Sonnet]**,
+contador sequencial de planos (`P-NNNN`). **Destravada:** `V2M-T3` fechou em 2026-07-30 (Regra 8
+promovida ao `~/.claude/CLAUDE.md` global, `TK-01` absorvido no mesmo ato). O **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
 três artefatos do kit + `1.4.0`) e seguiu com a `V2M-T2` em 2026-07-30 (skill `modelo-por-fase` no
 kit — 9ª skill — + carve-out do falso positivo do hook global; sem bump, o Bloco B inteiro é a
 release `1.4.0`, tag recriada sobre o commit novo). O **Bloco A fechou em 2026-07-30** (4/4:
@@ -407,7 +405,33 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     parte do excedente veio de uma falha de ambiente recuperável: `python3` ausente no shell,
     retry com `python` resolveu em 1 chamada extra).
   - Consumo: 25 tool uses, ~78k tokens, Sonnet, ~49min (medido no `<usage>` da notificação; teto informado era 22 — estouro de 3, coerente com o "~23" autorrelatado, mas o medido é o que entra na série).
-- `V2M-T3` — Promover G-PLANFIDELITY/G-EXECREADY ao CLAUDE.md global — [Sonnet] — backlog *(herdado de `P-0722` DP-G4; **depois de `V2K-T4`**, que é a régua de residência)*
+- `V2M-T3` — Promover G-PLANFIDELITY/G-EXECREADY ao CLAUDE.md global — [Sonnet] — done *(herdado de `P-0722` DP-G4; **depois de `V2K-T4`**, que é a régua de residência; `TK-01` absorvido no mesmo ato)*
+  - Resultado: `~/.claude/CLAUDE.md` ganhou a **Regra 8** — condensação de G-PLANFIDELITY (rota é
+    do dono) e G-EXECREADY (executor não decide, não pergunta, recusa plano não-pronto) numa
+    única regra (15 linhas), por serem conduta universal de executor e não doutrina específica de
+    Pantonic. Arquivo passa de 150 para 165 linhas (medido: `wc -l` → 165) — abaixo do teto de
+    200. `GOVERNANCA.md` itens
+    10 e 13 (§7) reescritos como ponteiro para a Regra 8 (nome do item e *Enforcement* mantidos,
+    corpo normativo não duplicado). `TK-01` absorvido: `GOVERNANCA.md` §3 (linha ~64) e o bullet
+    `V2M-T1` do `CHANGELOG.md` 1.4.0 corrigidos — a skill `modelo-por-fase` passa a ser descrita
+    como residente no kit versionado (`.claude/skills/modelo-por-fase/`), não `~/.claude/skills/`;
+    o hook segue global. `CHANGELOG.md` 1.4.0 ganhou bullet próprio da `V2M-T3`.
+  - Grep de confirmação (pronto-quando item 3): `Grep "modelo-por-fase" GOVERNANCA.md CHANGELOG.md`
+    → única ocorrência restante de "global" associada à skill é a frase "o hook (global) é
+    enforcement" / "hook global" — sobre o **hook**, não a skill; nenhuma menção residual da
+    skill como global.
+  - Memória de origem (Regra 6 do CLAUDE.md global): grep `executor.*rota|nao decide|plano
+    incompleto|não decide|plano incompleto` em todos os `~/.claude/projects/*/memory/` → zero
+    hits (complementa o grep prévio de `planfidelity|execready|...`, também zero). Nenhuma
+    memória a remover.
+  - Veredito — V2M-T3
+    Não aplicável: mudança é só doutrina/texto (`~/.claude/CLAUDE.md`, `GOVERNANCA.md`,
+    `CHANGELOG.md`) — sem código de aplicação, sem suíte pytest, sem gate `kit_check.ps1` (nenhum
+    agente/skill tocado). G-DEADCODE não se aplica (nenhum símbolo novo). Escopo estrito: só os
+    4 arquivos-alvo listados na delegação foram tocados; G-DEADCODE/G-PREMISE não tocados em
+    `GOVERNANCA.md` (DP-G4 preservada); nenhum outro item de §7 renumerado ou reescrito.
+    Piso: sem mudança de piso (nenhuma suíte de teste nesta tarefa).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 - `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — backlog *(herdado de `P-0722` DP-G5)*
 - `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
 

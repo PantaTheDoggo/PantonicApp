@@ -27,9 +27,9 @@ compatível, PATCH corrige redação.
   de plano aberto) e da skill `diario-de-obras` (operação "Registrar plano" verifica o gate antes
   de apensar) (`V2M-T1`).
 - `GOVERNANCA.md` §3 ganhou o **gatilho operacional do modelo por fase**: ponteiro para a skill
-  global `modelo-por-fase`, com a residência declarada sob a régua de §3.1 — a regra mora na
-  doutrina versionada, a skill é gatilho e o hook é enforcement (`V2M-T1`; a skill em si é a
-  `V2M-T2`).
+  `modelo-por-fase` do kit versionado, com a residência declarada sob a régua de §3.1 — a regra
+  mora na doutrina versionada, a skill é gatilho e o hook (global) é enforcement (`V2M-T1`; a
+  skill em si é a `V2M-T2`).
 - Criada a skill `.claude/skills/modelo-por-fase/SKILL.md` — gatilho operacional da regra de
   modelo por fase: três gatilhos (início de tarefa/subagente, troca de fase na mesma sessão,
   nudge do hook global), gate de parada (pedir `/model` explícito ao dono, nunca decidir/trocar
@@ -40,6 +40,12 @@ compatível, PATCH corrige redação.
   falso positivo medido (prompt de retomada de backlog classificado como "execução mecânica"
   quando o trabalho real era orquestração/delegação) corrigido com uma lista de exclusão
   checada antes da classificação (`V2M-T2`).
+- **G-PLANFIDELITY e G-EXECREADY promovidas ao `~/.claude/CLAUDE.md` global** como Regra 8
+  (conduta universal de executor, não doutrina específica de Pantonic): `GOVERNANCA.md` itens 10
+  e 13 passam a apontar para o texto normativo global em vez de duplicá-lo (nome do item e
+  *Enforcement* preservados). Absorvido no mesmo ato o `TK-01` (achado fora de escopo da
+  `V2M-T2`): `GOVERNANCA.md` §3 e o bullet acima corrigidos para descrever a skill
+  `modelo-por-fase` como residente no kit versionado, não `~/.claude/skills/` (`V2M-T3`).
 
 ## 1.3.0 — 2026-07-30
 
