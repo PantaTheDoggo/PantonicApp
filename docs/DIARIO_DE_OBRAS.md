@@ -44,8 +44,27 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** **planejar a campanha de limpeza dos 86 achados no `PantonicVideo`**
-— **[Opus]**, e **no backlog daquele projeto**, não neste. A `V2M-T5` esgotou o que era decidível
+**Próxima tarefa da sprint:** **executar a `SPRINT-DEADCODE` no `PantonicVideo`** — **[Sonnet]**, e
+**no backlog daquele projeto**, não neste: `D:\workspaces\PantonicVideo\docs\plans\P-0730-limpeza-codigo-morto.md`,
+15 tarefas (T1..T15), uma por contexto. Nada da `PANTONIC-V2` avança antes de aquele baseline chegar
+a `exit 0`.
+
+**Planejamento da campanha: feito em 2026-07-30 [Opus].** O plano nasceu **fechado** (gate de
+publicação, `G-PLANREADY` item 5) com 6 decisões: **DL-1** achado comprovadamente vivo → tornar o
+código honesto (nunca allowlist, nunca 4ª rodada; se exigir mudança de desenho, o executor PARA e
+escala); **DL-2** apagar `tools/integration_agent/` (5 stubs `NotImplementedError`, sem o teste que
+o `ARCHITECTURE.md` promete) + os docs que o descrevem, seguindo o precedente `D-FC09-1`;
+**DL-3** apagar as 2 POCs já absorvidas em `integrations/poc/`; **DL-4** `SPRINT-BACKUP` parqueada
+em `blocked` (gate T6 é do dono) e a campanha vira a iniciativa ativa do `PantonicVideo`, WIP=1
+preservado; **DL-5** o piso de regressão cai por deleção **nominal** de teste (a campanha apaga
+teste de propósito — é o alvo do `G-DEADCODE`), nunca em silêncio; **DL-6** os deltas por tarefa são
+expectativa, não promessa (as 3 estimativas anteriores erraram para menos). Três sondas feitas no
+planejamento mudaram o quadro antes de virar tarefa: `infracore/ui_shell/resources_rc.py` é gerado
+**e nunca importado** (pipeline `.qrc` morto inteiro, não 2 símbolos); os 5 achados de
+`tools/integration_agent` são stubs sem teste algum; e **não existe `.ui` nem `.qml` no repo** — as
+15 properties de `view_model.py` não têm binding declarativo que as sustente.
+
+A `V2M-T5` esgotou o que era decidível
 dentro do PantonicApp: as três rodadas de ajuste do check rodaram (baseline do `PantonicVideo`
 412 → 131 → 95 → **86**, 2026-07-30) e **não há 4ª rodada** (decisão do dono, definitiva). Como o
 fecho da T5 é por **gate bloqueante** (`exit 0`, allowlist descartada), ela depende dessa campanha.
