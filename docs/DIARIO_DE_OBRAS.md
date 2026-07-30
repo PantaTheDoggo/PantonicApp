@@ -44,12 +44,17 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2M-T5` (`docs/plans/P-0729-v2-melhoria.md`, T5) — **[Sonnet]**,
-check executável de código morto testado (`G-DEADCODE`) — **em andamento, `blocked` → rodada 3**.
-Duas sessões já rodaram (baseline do `PantonicVideo` 412 → 131 → 95); o dono decidiu em
-2026-07-30 autorizar uma **3ª e última** rodada de ajuste (categoria "override de virtual Qt") e
-manter o fecho por **gate bloqueante com limpeza antes**. As duas decisões estão escritas no
-bullet `V2M-T5` deste diário — o próximo contexto delega a rodada 3 direto, sem reabrir decisão.
+**Próxima tarefa da sprint:** **decisão do dono pendente — nenhuma tarefa é delegável antes dela.**
+A `V2M-T5` esgotou o que era decidível dentro do PantonicApp: as três rodadas de ajuste do check
+rodaram (baseline do `PantonicVideo` 412 → 131 → 95 → **86**, 2026-07-30) e **não há 4ª rodada**
+(decisão do dono, definitiva). O fecho da T5 é por **gate bloqueante** (baseline em `exit 0`, sem
+allowlist), então ela depende agora de uma **campanha de limpeza dos 86 achados no
+`PantonicVideo`** — que não existe no backlog daquele projeto nem foi orçada. Com isso o Estágio 3A
+está 4/5 e o **Bloco B não fecha por dependência externa**. O dono precisa escolher entre abrir a
+campanha no `PantonicVideo` agora (T5 no caminho crítico da `PANTONIC-V2`) ou marcar a `V2M-T5`
+como bloqueada por dependência externa e liberar o **Bloco C** (`V2K-T5..T19`) em paralelo — ver o
+bullet `V2M-T5` deste diário. **Sem essa decisão a `proximo-passo` não escolhe tarefa**: a ordem
+DK-1 é normativa e diz "Bloco A → Estágio 3A **inteiro** → Bloco C".
 **Destravada:** `V2M-T4` fechou em
 2026-07-30 (contador sequencial de planos materializado, `_INBOX.md` com próximo id `P-0730`). O
 **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
@@ -556,7 +561,11 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
   - Consumo: 31 tool uses, ~94k tokens, Sonnet, ~19min32s (medido pela notificação de conclusão;
     dentro do teto de 30 na prática — as 31 chamadas incluem o commit final). Acumulado da `V2M-T5`
     nas duas sessões anteriores: 81 tool uses, ~237k tokens, ~92min.
-  - Consumo (rodada 3): Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo (rodada 3): 33 tool uses, ~77k tokens, Sonnet, ~62min (medido no `<usage>` da
+    notificação; teto informado era 30 — estouro de 3, **não reportado** pelo executor, que
+    autorrelatou "30 tool uses — dentro do teto" no handover: primeiro caso da série em que a
+    subestimativa cai exatamente sobre a linha do teto e o converte em falso "dentro"). Acumulado
+    da `V2M-T5` nas três sessões: 114 tool uses, ~314k tokens, ~154min.
 
 ### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 4/19 (Bloco A fechado), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
