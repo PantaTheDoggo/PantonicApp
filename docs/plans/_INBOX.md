@@ -1,8 +1,11 @@
 # Inbox de planos — PantonicApp (hub de governança) — append-only
 
-Cada linha aponta para um `docs/plans/P-<MMDD>-<slug>.md`. Uma vez promovido ao índice/heading do
-diário de obras do PantonicApp (a ser criado na Fase 5 de P-0721-governanca-single-source), a linha
-é marcada `[drenado]` e permanece aqui — nunca é apagada.
+Cada linha aponta para um `docs/plans/P-NNNN-<slug>.md`, com `NNNN` um contador global monotônico
+(nunca reutilizado, zero-padded) e a data de origem registrada como campo de cabeçalho do próprio
+plano — não no nome do arquivo. **Próximo id de plano: P-0730.** Os planos já existentes
+`P-0721`..`P-0729` mantêm o nome atual e não são renomeados (renomear quebraria ponteiros
+cruzados de planos fechados sem ganho — DP-G5). Uma vez promovido ao índice/heading do
+`docs/DIARIO_DE_OBRAS.md`, a linha é marcada `[drenado]` e permanece aqui — nunca é apagada.
 
 - 2026-07-21 — `P-0721-governanca-single-source` — PantonicApp como repositório de referência da
   governança comum Pantonic*: kit executável (7 skills + agentes) deixa de ser copiado em cada

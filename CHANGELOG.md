@@ -21,6 +21,13 @@ compatível, PATCH corrige redação.
 - **G-PLANREADY item 5 — gate de publicação** (decisão do dono 2026-07-29, doutrina nova): plano
   não se publica em aberto; trabalho que depende de insumo futuro divide-se em dois planos, e o
   dependente é autorado já fechado como a última tarefa do plano que produz o insumo.
+- **Contador sequencial de planos materializado** (`V2M-T4`): a regra já normativa no
+  `GOVERNANCA.md` §7 (`G-PLANREADY` item 1, `P-NNNN-<slug>.md` com `NNNN` monotônico global,
+  nunca reutilizado) ganha registro executável — `docs/plans/_INBOX.md` passa a ser o registro do
+  contador, com o próximo id declarado no cabeçalho (`P-0730`); elimina a colisão de nomenclatura
+  por data que gerou dois `P-0722` e quatro `P-0729`. Superfícies do kit alinhadas
+  (`.claude/skills/diario-de-obras/SKILL.md`, `.claude/skills/bootstrap-pantonic/SKILL.md`); os
+  planos existentes `P-0721`..`P-0729` são grandfathered — mantêm o nome atual, não renomeados.
 - Materializado o enforcement nos três artefatos do kit que executam essas regras: `G-EXECREADY`
   virou o **passo 1** do protocolo do agente `pantonic-executor` (recusa plano não-pronto antes de
   qualquer edição), `G-PLANREADY` virou gate explícito da skill `proximo-passo` (não delega tarefa

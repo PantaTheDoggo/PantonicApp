@@ -44,9 +44,10 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2M-T4` (`docs/plans/P-0729-v2-melhoria.md`, T4) — **[Sonnet]**,
-contador sequencial de planos (`P-NNNN`). **Destravada:** `V2M-T3` fechou em 2026-07-30 (Regra 8
-promovida ao `~/.claude/CLAUDE.md` global, `TK-01` absorvido no mesmo ato). O **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
+**Próxima tarefa da sprint:** `V2M-T5` (`docs/plans/P-0729-v2-melhoria.md`, T5) — **[Sonnet]**,
+check executável de código morto testado (`G-DEADCODE`). **Destravada:** `V2M-T4` fechou em
+2026-07-30 (contador sequencial de planos materializado, `_INBOX.md` com próximo id `P-0730`). O
+**Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
 três artefatos do kit + `1.4.0`) e seguiu com a `V2M-T2` em 2026-07-30 (skill `modelo-por-fase` no
 kit — 9ª skill — + carve-out do falso positivo do hook global; sem bump, o Bloco B inteiro é a
 release `1.4.0`, tag recriada sobre o commit novo). O **Bloco A fechou em 2026-07-30** (4/4:
@@ -432,7 +433,23 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     `GOVERNANCA.md` (DP-G4 preservada); nenhum outro item de §7 renumerado ou reescrito.
     Piso: sem mudança de piso (nenhuma suíte de teste nesta tarefa).
   - Consumo: 29 tool uses, ~71k tokens, Sonnet, ~3h13min (medido pelo `<usage>` da notificação).
-- `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — backlog *(herdado de `P-0722` DP-G5)*
+- `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — done *(herdado de `P-0722` DP-G5)*
+  - Resultado: `GOVERNANCA.md` §7 (`G-PLANREADY` item 1) já continha a regra completa desde a
+    `V2M-T1` — confirmado por `Grep "P-NNNN" GOVERNANCA.md`, não reescrito. `docs/plans/_INBOX.md`
+    ganhou o cabeçalho de registro do contador (`P-NNNN-<slug>.md`, data como campo do plano, não
+    do nome do arquivo) com a linha literal **Próximo id de plano: P-0730** (maior id registrado
+    era `P-0729`); grandfathering explícito dos planos `P-0721`..`P-0729` (mantêm o nome atual,
+    não renomeados — DP-G5); cláusula obsoleta sobre o `DIARIO_DE_OBRAS.md` "a ser criado" trocada
+    pelo ponteiro direto ao arquivo (já existe). Superfícies do kit alinhadas:
+    `.claude/skills/diario-de-obras/SKILL.md` (linhas ~105 e ~153, `P-<MMDD>` → `P-NNNN`, e a
+    operação "Drenar inbox de planos" ganhou a regra de alocação do id: maior registrado + 1,
+    atualizando a linha de próximo id do `_INBOX.md` no mesmo ato) e
+    `.claude/skills/bootstrap-pantonic/SKILL.md` (linha ~41, árvore de diretórios). `CHANGELOG.md`
+    1.4.0 ganhou bullet próprio da `V2M-T4`. Nenhum arquivo em `docs/plans/` renomeado.
+  - Verificação de aceite: (1) `Grep "P-<MMDD>"` em `.claude/` e `docs/plans/_INBOX.md` → zero
+    ocorrências. (2) `kit_check.ps1 -Mode check-drift` → sem drift (nenhuma skill/agente
+    adicionado ou removido). (3) `git status --short` → só `M`, nenhum `R`/rename.
+  - Consumo: (preenchido pelo orquestrador via notificação)
 - `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
 
 ### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 4/19 (Bloco A fechado), nascido fechado em 2026-07-29 pela `V2C-T6`]

@@ -38,7 +38,7 @@ serviços de expressão → 4. UI shell mínima → 5. PluginRegistry + plugin "
 ### 5. Estrutura inicial do repositório
 ```
 docs/            PRD, ARCHITECTURE, SPEC, DIARIO_DE_OBRAS, AS-IS (baseline), LICOES_APRENDIDAS
-docs/plans/      P-<MMDD>-<slug>.md (planos completos) + _INBOX.md (append-only, drenado
+docs/plans/      P-NNNN-<slug>.md (planos completos) + _INBOX.md (append-only, drenado
                  para o diário pela skill diario-de-obras) — destino de planos de agentes
                  paralelos, nunca escritos direto no diário (GOVERNANCA §4.2)
 infracore/  contracts/src/contracts/  services/  plugins/  tests/  tools/

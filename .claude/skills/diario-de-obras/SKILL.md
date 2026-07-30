@@ -102,11 +102,13 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
    quando o usuário não nomeou prioridade (heurística padrão assume).
 5. **Drenar inbox de planos** — no início de qualquer sessão que vá tocar o diário (em especial
    ao abrir a skill `proximo-passo`), ler `docs/plans/_INBOX.md`. Cada linha não drenada aponta
-   para um `docs/plans/P-<MMDD>-<slug>.md` gravado por um agente de planejamento (possivelmente em
+   para um `docs/plans/P-NNNN-<slug>.md` gravado por um agente de planejamento (possivelmente em
    paralelo com outros); promover cada plano ainda não promovido para uma entrada no índice +
    heading do diário (ou manter o heading no próprio `docs/plans/P-*.md` com só a linha de índice
    apontando para lá, se o plano for grande), e marcar a linha do inbox como drenada (ex.:
-   riscar/prefixar `[drenado]`) sem apagá-la — `_INBOX.md` é append-only.
+   riscar/prefixar `[drenado]`) sem apagá-la — `_INBOX.md` é append-only. O `NNNN` do novo plano
+   vem do contador declarado no cabeçalho do `_INBOX.md` (alocar = maior id já registrado + 1);
+   atualizar a linha de próximo id do `_INBOX.md` no mesmo ato de registrar o plano.
 
 ## Planos derivados de uma investigação em curso (reconciliação obrigatória)
 
@@ -150,7 +152,7 @@ frase** + status + ponteiro. Cada handover da saga escreve no satélite, nunca e
 - Nunca deletar itens: estados finais são `done` ou `cancelled`, e depois condensação para o
   histórico.
 - Planos de agentes de planejamento paralelos nunca são escritos direto no diário: cada agente
-  grava seu plano completo em `docs/plans/P-<MMDD>-<slug>.md` e apensa uma linha a
+  grava seu plano completo em `docs/plans/P-NNNN-<slug>.md` e apensa uma linha a
   `docs/plans/_INBOX.md` — evita conflito de edição concorrente no mesmo arquivo.
 - Tíquete nascido de achado durante a execução de um plano vive na seção
   `## Achados da execução` apensada ao FINAL do próprio `docs/plans/P-*.md` (nunca fora do
