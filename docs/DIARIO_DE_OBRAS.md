@@ -45,7 +45,12 @@ o confronto apontar, e entregar um `README.md` a partir do qual um humano decida
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
 **Próxima tarefa da sprint:** `V2M-T5` (`docs/plans/P-0729-v2-melhoria.md`, T5) — **[Sonnet]**,
-check executável de código morto testado (`G-DEADCODE`). **Destravada:** `V2M-T4` fechou em
+check executável de código morto testado (`G-DEADCODE`) — **em andamento, `blocked` → rodada 3**.
+Duas sessões já rodaram (baseline do `PantonicVideo` 412 → 131 → 95); o dono decidiu em
+2026-07-30 autorizar uma **3ª e última** rodada de ajuste (categoria "override de virtual Qt") e
+manter o fecho por **gate bloqueante com limpeza antes**. As duas decisões estão escritas no
+bullet `V2M-T5` deste diário — o próximo contexto delega a rodada 3 direto, sem reabrir decisão.
+**Destravada:** `V2M-T4` fechou em
 2026-07-30 (contador sequencial de planos materializado, `_INBOX.md` com próximo id `P-0730`). O
 **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
 três artefatos do kit + `1.4.0`) e seguiu com a `V2M-T2` em 2026-07-30 (skill `modelo-por-fase` no
@@ -489,12 +494,28 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     referenciado só de `tests/`): reproduzido após as 2 rodadas — exit 1, 1 achado exato, sem
     regressão.
   - Sem gate `kit_check.ps1` rodado (nada de agente/skill mudou) e sem commit de fechamento
-    formal. **Falta**: decisão do dono sobre o residual (aceitar 95 como baseline case-C
-    classificado, ou nomear categoria de despacho dinâmico adicional — override Qt é o candidato
-    óbvio para `plugins/*/adhoc`, `plugins/*` e `infracore/ui_shell`, ~62 dos 95) + fechamento
-    formal (entrada em `guardrails-check/SKILL.md`, `CHANGELOG.md`, bump de versão, tag) — nenhum
-    dos dois nesta tarefa, por escopo. Detalhe completo das 2 rodadas em
+    formal (entrada em `guardrails-check/SKILL.md`, `CHANGELOG.md`, bump de versão, tag ficam
+    todos para o fechamento). Detalhe completo das 2 rodadas em
     `docs/plans/P-0729-v2-melhoria.md` §"Achados da execução".
+  - **Decisões do dono (2026-07-30), tomadas sobre o residual de 95:**
+    1. **Rodada 3 autorizada, e é a ÚLTIMA.** Nomear "override de virtual Qt" como categoria de
+       despacho dinâmico (auto-vivo) — mesma forma das regras que o script já tem para validator
+       Pydantic e plugin registry, logo não é allowlist de conveniência. Motivo: é defeito
+       sistemático **do check**, não do `PantonicVideo`; sem isso ele desfoca em todo projeto
+       PySide6 da família. Alvo estimado ~62 dos 95 (`plugins/*/adhoc` 30 + `infracore/ui_shell`
+       17 + `plugins/*` 15) — tratar 62 como **teto, não promessa**: as duas estimativas
+       anteriores erraram para menos (−30→−20, −57→−16). Qualquer que seja o residual, **não há
+       4ª rodada**.
+    2. **Fecho por gate bloqueante, com limpeza antes.** O "Pronto quando" original da T5 fica
+       **inalterado**: o check só é aceito com o baseline do `PantonicVideo` em `exit 0`. Zerar
+       por allowlist está descartado (95 entradas negariam o próprio check). **Consequência
+       registrada:** a limpeza dos achados reais remanescentes no `PantonicVideo` entra no
+       caminho crítico da `PANTONIC-V2` e **não está planejada nem orçada** — precisa de entrada
+       própria no backlog daquele projeto antes de a `V2M-T5` poder fechar. Risco declarado ao
+       dono na tomada de decisão e por ele assumido.
+  - **Próximo passo:** rodada 3 (delegável já — dossiê fechado pelas duas decisões acima); depois,
+    inspeção do residual para separar órfão real de categoria não nomeada; só então a campanha de
+    limpeza no `PantonicVideo` e o fechamento formal da T5.
   - Consumo: 31 tool uses, ~94k tokens, Sonnet, ~19min32s (medido pela notificação de conclusão;
     dentro do teto de 30 na prática — as 31 chamadas incluem o commit final). Acumulado da `V2M-T5`
     nas duas sessões: 81 tool uses, ~237k tokens, ~92min.
