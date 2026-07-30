@@ -70,6 +70,12 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
 
 1. **Registrar plano** — apensar a seção do sprint com o checklist completo; inserir cada tarefa
    no índice como `backlog`.
+   **Gate de publicação (G-PLANREADY, `GOVERNANCA.md` §7 item 12) — verificar ANTES de apensar:**
+   o plano está fechado (id sequencial; `T1..Tn` em ordem de dependência, com objetivo/"pronto
+   quando"/modelo; nenhuma decisão owner-gated postergada; linear, sem "TBD" nem referência para
+   frente)? Se não, o registro **não acontece**: devolve ao planejamento o que falta fechar. Quando
+   uma parte depende de insumo futuro, registra-se o plano fechado agora e o dependente nasce como
+   **a última tarefa** do plano que produz o insumo — nunca um plano com vão.
    Plano que antecipa múltiplas rodadas de Q&A mantém tabela única "Decisões" (id → valor → 1
    linha) referenciada pelas seções, em vez de restatar cada regra em prosa em cada seção
    (reduz fan-out de Edits por rodada de confirmação).

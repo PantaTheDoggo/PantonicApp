@@ -71,6 +71,13 @@ aqui.
    conhecidos, ou trechos via Grep+offset. A mesma régua vale FORA deste fluxo: pedido direto
    de planejamento/análise cuja exploração estimada passe de ~15 tool uses usa `context-prep`.
 
+   **Gate G-PLANREADY (`GOVERNANCA.md` §7 item 12) — antes do gate de delegação:** só se delega
+   tarefa de plano **fechado**. Se o plano da tarefa escolhida tem questão pendente, bloco a
+   preencher, ramo condicional não resolvido ou tarefa cujo conteúdo depende de artefato
+   inexistente, a `proximo-passo` **não delega**: reporta ao dono o que falta fechar e para. Delegar
+   plano aberto empurra a decisão para o executor, no modelo mais barato e sem o contexto de quem
+   decidiu — é o defeito que o item 5 (gate de publicação) proíbe na origem.
+
    **Gate de delegação — rodar ANTES de despachar o executor:**
    1. Alvo único, sem cláusula "investigue X" (nem introduzida pelo orquestrador ao
       transcrever); bifurcação prevista resolvida por verificação barata, dossiê de scout ou

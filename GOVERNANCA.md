@@ -60,6 +60,12 @@ Regras de operação:
   de uma memória genérica (custo real medido: executor em Opus com 71 turnos e ~189k de contexto
   numa única tarefa atômica, ~30% do limite de 5h — ver auditoria de consumo referenciada em
   `~/.claude/docs/RECOMENDACOES_CONSUMO_GLOBAL.md`).
+- **Gatilho operacional do modelo por fase:** a regra acima é vinculante, mas precisa de gatilho —
+  a skill global `modelo-por-fase` (`~/.claude/skills/`) detecta a fase da tarefa e o modelo ativo,
+  **para** e pede o `/model` correto ao dono (fato técnico medido: um agente não troca o próprio
+  modelo — só o dono, via `/model`, ou o harness, via hook). A **regra** mora aqui, versionada
+  (§3.1); a skill é só o gatilho e o hook em `settings.json` é enforcement — nenhum dos dois é
+  superfície de doutrina.
 - **Delegar a um subagente protege o contexto do orquestrador (Regra 2 do CLAUDE.md), não reduz
   o consumo total.** O subagente parte frio e paga de novo CLAUDE.md + definição do agente +
   skills carregadas em todos os seus turnos. Tarefa pequena (< ~15 turnos estimados) prefere
@@ -238,6 +244,61 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    registro de decisão no doc de estado vigente do projeto.
 8. **Disciplina de contexto** — uma tarefa por contexto; varreduras amplas só via agente de
    coleta; docs grandes acessados via índice/DOC_MAP, nunca lidos integralmente.
+9. **G-DEADCODE — nada de código morto testado** — todo símbolo de produção (função/classe/módulo
+   fora de `tests/`) precisa de **ao menos um chamador de produção** alcançável a partir de um entry
+   point real (plugin registrado, superfície de serviço no contrato, bootstrap). Cobertura por teste
+   **não** confere "vivo": símbolo testado sem chamador é o pior caso, porque a suíte verde o
+   **mascara**. Ao abandonar uma rota, os módulos da rota abandonada morrem **no mesmo commit** —
+   nunca ficam como fantasmas testados. *Enforcement:* check executável de símbolo de produção órfão
+   (alcançabilidade por AST a partir dos entry points, allowlist explícita e mínima) no kit de
+   conformance; o handover declara os chamadores de produção de cada símbolo novo; review de
+   fechamento rejeita módulo novo sem chamador não-teste.
+10. **G-PLANFIDELITY — a rota é do dono** — o executor **não** substitui a arquitetura/rota aprovada
+   por uma alternativa sob pressão de obstáculo técnico. Ao bater num obstáculo que ameaça a rota do
+   plano, **para**, registra o achado e escala para replanejamento (Opus/dono); não improvisa uma
+   segunda arquitetura na mesma execução. Bifurcar a rota exige decision record aprovado **antes** de
+   codar a alternativa. *Enforcement:* gate de review — o handover cita a rota do plano e confirma que
+   nenhuma bifurcação arquitetural ocorreu sem decision record.
+11. **G-PREMISE — premissa que embasa abandono exige prova, não asserção** — afirmar *"a informação X
+   não existe / não é obtível"* só sustenta abandono ou bifurcação de rota com um **spike que a
+   comprove**, revisável pelo dono, **antes** do abandono. Um achado não **reverte** achado anterior
+   de outra sprint sem reconciliação explícita registrada. Corolário: se a solução do obstáculo
+   apareceu na rota alternativa, verifique **primeiro** se ela cabe na rota original — normalmente
+   cabe. *Enforcement:* gate de review no fechamento da tarefa que abandona/bifurca; o decision record
+   cita o spike e reconcilia qualquer achado contraditório.
+12. **G-PLANREADY — plano só é executável quando fechado** (dever do **planejador**) — antes de um
+   plano ser registrado como pronto, cinco condições:
+   1. **Nomenclatura sequencial.** `P-NNNN-<slug>.md`, com `NNNN` contador global monotônico
+      (não a data), zero-padded, **nunca reusado**; próximo id = maior registrado no `_INBOX.md` + 1.
+      A data de origem vira campo de cabeçalho. Motivo: `P-<MMDD>` colide — houve dois `P-0722` no
+      mesmo dia.
+   2. **Tarefas `T1..Tn` sequenciais**, em ordem de dependência, cada uma com objetivo, "pronto
+      quando" e modelo da fase. Uma tarefa por contexto.
+   3. **Todas as decisões tomadas no fechamento — nada postergado.** Nenhuma escolha owner-gated
+      fica "a resolver na execução": decisão adiada acaba tomada pelo executor, no modelo mais
+      barato e sem o contexto de quem decidiu — a fase intelectual vazando para a fase de execução.
+   4. **Linear.** Sem referência para frente, sem ramo condicional não resolvido, sem "TBD". O
+      executor lê de cima a baixo e sabe o que fazer sem inferir.
+   5. **Gate de publicação — plano não se publica em aberto.** Um plano só é registrado no
+      `_INBOX.md` e no diário quando está **fechado**: sem questão pendente, sem bloco a preencher,
+      sem tarefa cujo conteúdo dependa de artefato que ainda não existe. Plano aberto é escolhível
+      pela `proximo-passo` e **para o executor no meio**, forçando o retrabalho de revisitar a
+      questão no pior momento. Revisar um plano publicado é legítimo e esperado; publicá-lo
+      incompleto não é. **Consequência operacional:** quando parte do trabalho depende de um insumo
+      futuro, não se publica um plano com um vão — **divide-se em dois**: o fechado agora, e o
+      dependente, autorado **já fechado** como a última tarefa do plano que produz o insumo. Um
+      plano por nascer não é backlog invisível: ele tem dono, é uma tarefa nomeada de outro plano.
+   *Enforcement:* checklist de fechamento de plano (as 5 condições); a skill `diario-de-obras`
+   ("Registrar plano") verifica o gate antes de apensar; a `proximo-passo` recusa delegar tarefa de
+   plano que viole qualquer uma; o executor recusa performar (G-EXECREADY); o `_INBOX.md` é o
+   registro do contador sequencial.
+13. **G-EXECREADY — o executor não decide, não pergunta e recusa plano não-pronto** (dever do
+   **executor**) — ele **nunca inicia o trabalho fazendo perguntas ao dono**: se precisaria
+   perguntar, o plano está incompleto → devolve ao planejamento, não improvisa nem decide. E
+   **recusa performar** enquanto o plano não estiver pronto por G-PLANREADY — kicka de volta, não
+   começa. Complementa G-PLANFIDELITY (não muda rota) e o modelo por fase (§3): a decisão nunca
+   desce para o modelo barato. *Enforcement:* instrução no arquivo do agente `pantonic-executor`;
+   a `proximo-passo` só delega tarefa de plano fechado; gate de review.
 
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra

@@ -8,6 +8,29 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 `GOVERNANCA.md` §10 — MAJOR exige ação do consumidor, MINOR adiciona artefato/guardrail
 compatível, PATCH corrige redação.
 
+## 1.4.0 — 2026-07-30
+
+- `GOVERNANCA.md` §7 passa de **8 para 13 guardrails**: **G-DEADCODE** (proibição de código morto
+  testado — cobertura por teste não confere "vivo"; rota abandonada morre no mesmo commit),
+  **G-PLANFIDELITY** (executor não troca a rota arquitetural aprovada; para e escala),
+  **G-PREMISE** (premissa que embasa abandono de rota exige spike, não asserção),
+  **G-PLANREADY** (dever do planejador — 5 condições de fechamento de plano) e **G-EXECREADY**
+  (dever do executor — não decide, não pergunta, recusa plano não-pronto). Cada uma nasce com
+  enforcement declarado (`V2M-T1`, `docs/plans/P-0729-v2-melhoria.md` §3; doutrina herdada do
+  `P-0722`, ratificada em 2026-07-22).
+- **G-PLANREADY item 5 — gate de publicação** (decisão do dono 2026-07-29, doutrina nova): plano
+  não se publica em aberto; trabalho que depende de insumo futuro divide-se em dois planos, e o
+  dependente é autorado já fechado como a última tarefa do plano que produz o insumo.
+- Materializado o enforcement nos três artefatos do kit que executam essas regras: `G-EXECREADY`
+  virou o **passo 1** do protocolo do agente `pantonic-executor` (recusa plano não-pronto antes de
+  qualquer edição), `G-PLANREADY` virou gate explícito da skill `proximo-passo` (não delega tarefa
+  de plano aberto) e da skill `diario-de-obras` (operação "Registrar plano" verifica o gate antes
+  de apensar) (`V2M-T1`).
+- `GOVERNANCA.md` §3 ganhou o **gatilho operacional do modelo por fase**: ponteiro para a skill
+  global `modelo-por-fase`, com a residência declarada sob a régua de §3.1 — a regra mora na
+  doutrina versionada, a skill é gatilho e o hook é enforcement (`V2M-T1`; a skill em si é a
+  `V2M-T2`).
+
 ## 1.3.0 — 2026-07-30
 
 - Criado o validador estrutural do kit `.claude/checks/kit_check.ps1 -Mode validate`: confere a

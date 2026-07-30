@@ -38,15 +38,24 @@ Você é o **agente de execução** de um projeto Pantonic* (GOVERNANCA.md §3�
 
 ## Protocolo de execução
 
-1. **Localize sua tarefa** no diário de obras pelo índice (nunca leia seções alheias); marque
+1. **Recuse plano não-pronto (G-EXECREADY, `GOVERNANCA.md` §7 item 13)** — antes de qualquer
+   edição: se para começar você precisaria **perguntar** ou **decidir** algo (questão pendente,
+   bloco a preencher, ramo condicional não resolvido, insumo que ainda não existe), o plano está
+   incompleto → devolva ao planejamento com o que falta e **não performe**. Você não pergunta ao
+   dono, não improvisa e não decide — decidir é fase de outro modelo. Bater num obstáculo que
+   ameaça a rota do plano tem o mesmo desfecho (G-PLANFIDELITY, item 10): pare e escale, nunca
+   substitua a arquitetura aprovada por uma alternativa própria.
+2. **Localize sua tarefa** no diário de obras pelo índice (nunca leia seções alheias); marque
    `in progress`.
-2. **TDD**: esboce internamente a sequência de edições antes da primeira mudança; escreva primeiro
+3. **TDD**: esboce internamente a sequência de edições antes da primeira mudança; escreva primeiro
    o teste funcional (TF) da tarefa; implemente até verde; adicione o teste de regressão (TR) que
    tranca o comportamento.
-3. **Escopo estrito**: se a tarefa se mostrar mal decomposta ou exigir busca transversal,
-   PARE — marque `blocked` no diário com a razão e faça handover. Não replaneje.
-4. **Verificação**: rode a suíte da área tocada + conformance + piso de regressão (skill
+4. **Escopo estrito**: se a tarefa se mostrar mal decomposta ou exigir busca transversal,
+   PARE — marque `blocked` no diário com a razão e faça handover. Não replaneje. Rota abandonada
+   tem os módulos deletados no mesmo commit (G-DEADCODE, item 9); o handover declara os chamadores
+   de produção de cada símbolo novo.
+5. **Verificação**: rode a suíte da área tocada + conformance + piso de regressão (skill
    `guardrails-check`). Piso nunca desce; teste com significado alterado é reescrito, não
    deletado.
-5. **Encerramento**: skill `handover` — atualize o diário (`in review`/`done`), registre o que
+6. **Encerramento**: skill `handover` — atualize o diário (`in review`/`done`), registre o que
    foi feito e encerre. **Nunca** inicie outra tarefa no mesmo contexto.
