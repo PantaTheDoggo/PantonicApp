@@ -44,13 +44,14 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2M-T2` (`docs/plans/P-0729-v2-melhoria.md`, T2) — **[Sonnet]**,
-skill `modelo-por-fase` + revisão do hook já prototipado. **Pronta para despacho:** a residência foi
-decidida pelo dono em 2026-07-30 (**DM-7** no plano) — a skill nasce **no kit**
-(`.claude/skills/modelo-por-fase/`, versionada e distribuída), o hook segue global; DP-G3 de
-2026-07-22 foi rebaseada pela régua de §3.1, e a `V2K-T16` não trata mais desse item. O
-**Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os três
-artefatos do kit + `1.4.0`). O **Bloco A fechou em 2026-07-30** (4/4:
+**Próxima tarefa da sprint:** `V2M-T3` (`docs/plans/P-0729-v2-melhoria.md`, T3) — **[Sonnet]**,
+promover G-PLANFIDELITY e G-EXECREADY ao `~/.claude/CLAUDE.md` global em forma condensada.
+**Destravada:** dependia da `V2K-T4` (régua de residência §3.1), fechada em 2026-07-30. Candidato a
+absorver o `TK-01` no mesmo ato (as duas edições tocam a mesma superfície de doutrina) — decisão do
+dono. O **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
+três artefatos do kit + `1.4.0`) e seguiu com a `V2M-T2` em 2026-07-30 (skill `modelo-por-fase` no
+kit — 9ª skill — + carve-out do falso positivo do hook global; sem bump, o Bloco B inteiro é a
+release `1.4.0`, tag recriada sobre o commit novo). O **Bloco A fechou em 2026-07-30** (4/4:
 `V2K-T1..T3` = enforcement do kit como código pendurado no gate; `V2K-T4` = régua de residência da
 doutrina em `GOVERNANCA.md` §3.1, com os três casos em disputa resolvidos por escrito).
 A ordem entre os dois planos do Estágio 3 é **normativa** (DK-1, §2
@@ -365,7 +366,7 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
   - Consumo: ~28 tool uses (contados), tokens **NÃO MEDIDOS** — executada *inline* pelo orquestrador
     em Opus (fase intelectual: autoria de plano), sem subagente e portanto sem bloco `<usage>`.
 
-### Estágio 3A — `P-0729-v2-melhoria` [in progress — 1/5, Bloco B aberto em 2026-07-30 depois de `V2K-T1..T4`]
+### Estágio 3A — `P-0729-v2-melhoria` [in progress — 2/5, Bloco B aberto em 2026-07-30 depois de `V2K-T1..T4`]
 
 - `V2M-T1` — Redigir a doutrina nova em `GOVERNANCA.md` §7 — 5 guardrails + **gate de publicação** (G-PLANREADY item 5) — [Opus] — done *(herdado de `P-0722` Fase 1; abre o Bloco B)*
   - Resultado: `GOVERNANCA.md` §7 passou de **8 para 13 guardrails** (386 linhas, era 325) — itens 9-13 = `G-DEADCODE`, `G-PLANFIDELITY`, `G-PREMISE`, `G-PLANREADY` (5 condições) e `G-EXECREADY`, cada um com regra + `*Enforcement:*` explícito, transcritos do `P-0722` §2 sem reabrir a discussão. O **item 5 de G-PLANREADY** (gate de publicação, decisão do dono 2026-07-29) entrou com as três partes: regra, consequência operacional (plano com vão divide-se em dois; o dependente nasce como última tarefa do plano que produz o insumo) e enforcement nas três superfícies.
@@ -405,7 +406,7 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     Desvio de orçamento: ~23 tool uses contra teto de 22 — sinalizado, não escondido (a maior
     parte do excedente veio de uma falha de ambiente recuperável: `python3` ausente no shell,
     retry com `python` resolveu em 1 chamada extra).
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 25 tool uses, ~78k tokens, Sonnet, ~49min (medido no `<usage>` da notificação; teto informado era 22 — estouro de 3, coerente com o "~23" autorrelatado, mas o medido é o que entra na série).
 - `V2M-T3` — Promover G-PLANFIDELITY/G-EXECREADY ao CLAUDE.md global — [Sonnet] — backlog *(herdado de `P-0722` DP-G4; **depois de `V2K-T4`**, que é a régua de residência)*
 - `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — backlog *(herdado de `P-0722` DP-G5)*
 - `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
