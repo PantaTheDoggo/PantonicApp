@@ -451,7 +451,51 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     adicionado ou removido). (3) `git status --short` → só `M`, nenhum `R`/rename.
   - Consumo: 24 tool uses, ~55k tokens, Sonnet, ~7min26s (medido pela notificação de conclusão;
     o autorrelato do executor dizia 14 tool uses — subestimativa de ~42%, mesmo padrão da Regra 7).
-- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
+- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — blocked *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B; continuação 2026-07-30: 2 rodadas de ajuste estrutural aprovadas pelo dono — decisão sobre o residual e fechamento formal ainda pendentes)*
+  - Método do check (inalterado desde a sessão anterior): alcançabilidade por AST a partir de
+    entry points (`contracts/`, `__main__`/bootstrap, `entry_point` de `manifest.json`),
+    propagação por grafo de import, casamento por nome simples para referência
+    (`Name`/`Attribute`/decorator/anotação), auto-vivo para dunder e decorador Pydantic invisível
+    ao AST.
+  - **Rodada 1** (`integrations/poc/**` vira seed de alcançabilidade por construção de diretório,
+    mesmo desenho de `contracts/` — POCs standalone sem bootstrap comum): família caiu de 30 para
+    10 achados (delta −20; não −30 como hipotetizado — os 10 residuais são símbolos sem nenhuma
+    referência textual mesmo com o módulo já enraizado).
+  - **Rodada 2** (causa raiz corrigida em `_resolve_import_targets`): para
+    `from .adhoc.X import Y` (import relativo, `node.level>0`) o código descartava `node.module`
+    ("adhoc.X") e resolvia o alvo só para o pacote-pai — o submódulo nunca entrava em
+    `reachable_modules`. Caso de controle confere: `ProjectRepository.read_metadata` e
+    `ScriptStore.get_script` saíram da lista. Efeito real menor que a hipótese de −57: só
+    `services/*/adhoc/**` usa import relativo (27 → 11, delta −16); `plugins/*/adhoc/**` sempre
+    importou por caminho absoluto (confirmado em `plugins/screenwriter/view_model.py:42`,
+    `from plugins.screenwriter.adhoc import ...`) — já estava alcançável antes da correção e
+    ficou **inalterado em 30** (bug diferente do hipotetizado; a estimativa original juntou duas
+    causas sob o mesmo rótulo `*/adhoc/*`).
+  - **Baseline: 131 → 95** (`python .claude/checks/dead_code.py --root D:\workspaces\PantonicVideo`,
+    medido agora). Residual **95 > teto de 30** desta continuação — parei conforme critério
+    explícito, sem abrir 3ª rodada. Classificação por área:
+
+    | achados | área | leitura |
+    |---|---|---|
+    | 30 | `plugins/*/adhoc/**` | não tocada pela rodada 2 (import absoluto); mistura de overrides Qt por despacho de framework (`paint`/`columnCount`/`headerData`/`mimeData`/`fixup`) com possíveis órfãos reais |
+    | 17 | `infracore/ui_shell` | untouched pelas 2 rodadas; mesmo padrão de override Qt (`DockManager`, `TitleBar`, `MainWindow`) — candidato a nova categoria de despacho dinâmico, não a bug de propagação |
+    | 15 | `plugins/*` (fora de `adhoc/`) | `view_model.py` de vários plugins — properties/métodos Qt-bindáveis sem uso textual encontrado (mesmo padrão do exemplo já verificado na sessão anterior, `AssetsManagerViewModel.results`) |
+    | 11 | `services/*/adhoc/**` | residual pós-rodada 2 — módulo já alcançável, símbolo específico sem referência textual (órfão real ou uso só dinâmico) |
+    | 10 | `integrations/poc/**` | residual pós-rodada 1 — módulo já enraizado, símbolo sem referência (órfão real na POC, ou duplicação não cruzada entre `dehydrator/` e `desidratar_subtitle/`) |
+    | 7 | `infracore/*` (fora de `ui_shell`) | bootstrap/manifest/components — `_check_first_run`, `caret_match`, `ServiceManifest`, `unobserve_*`/`evict_idle_locks`/`_record_loaded` |
+    | 5 | `tools/integration_agent/*.py:4 .run` | mesmo achado da sessão anterior, não investigado (fora do escopo das 2 rodadas aprovadas) |
+
+  - Caso negativo sintético (fixture em scratchpad, `services/service.py` com `orphan_helper`
+    referenciado só de `tests/`): reproduzido após as 2 rodadas — exit 1, 1 achado exato, sem
+    regressão.
+  - Sem gate `kit_check.ps1` rodado (nada de agente/skill mudou) e sem commit de fechamento
+    formal. **Falta**: decisão do dono sobre o residual (aceitar 95 como baseline case-C
+    classificado, ou nomear categoria de despacho dinâmico adicional — override Qt é o candidato
+    óbvio para `plugins/*/adhoc`, `plugins/*` e `infracore/ui_shell`, ~62 dos 95) + fechamento
+    formal (entrada em `guardrails-check/SKILL.md`, `CHANGELOG.md`, bump de versão, tag) — nenhum
+    dos dois nesta tarefa, por escopo. Detalhe completo das 2 rodadas em
+    `docs/plans/P-0729-v2-melhoria.md` §"Achados da execução".
+  - Consumo: (preenchido pelo orquestrador via notificação)
 
 ### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 4/19 (Bloco A fechado), nascido fechado em 2026-07-29 pela `V2C-T6`]
 

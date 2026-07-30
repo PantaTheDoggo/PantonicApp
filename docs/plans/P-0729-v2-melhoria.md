@@ -194,3 +194,49 @@ hook como mecanismo de enforcement, não superfície de doutrina. Consequência 
 | **DM-4** | Ordem de execução | Este plano pode ser **antecipado** ao Estágio 2 a critério do dono | Não depende do benchmarking; única consequência é o auto-retrato registrar as guardrails como escritas |
 | **DM-5** | Home do gate de publicação | **Item 5 de G-PLANREADY**, não guardrail própria | G-PLANREADY já é a guardrail de prontidão de plano; uma 14ª entrada em §7 para a mesma preocupação fragmentaria a busca |
 | **DM-6** | Distribuição aos consumidores | Uma vez só, no fechamento da iniciativa (`P-0729-v2-documentacao` T4) | Reportar divergência a cada estágio gastaria o turno do dono repetidamente pelo mesmo motivo (`GOVERNANCA.md` §10a: agente reporta, nunca atualiza) |
+
+## Achados da execução
+
+- **`V2M-T5` (2026-07-30) — baseline do `PantonicVideo` com 132 achados após 1 rodada de ajuste,
+  ramo (D).** `.claude/checks/dead_code.py` (alcançabilidade por AST) rodou contra
+  `--root D:\workspaces\PantonicVideo` (só leitura): rodada 0 (script cru) → 412 achados; ajuste
+  1/3 (fallback de import para script standalone que importa módulo irmão do próprio diretório —
+  categoria descoberta nos POCs `integrations/poc/dehydrator/capcut_dehydrate.py` e afins) → 132
+  achados. Ainda acima do teto de 30 do dossiê da tarefa; o executor parou ao atingir o orçamento
+  de ~45 tool uses verificando 1 amostra (`plugins/assets_manager/view_model.py:282
+  AssetsManagerViewModel.results`, `@property` sem nenhuma referência textual em produção fora de
+  `__pycache__` — não bate com nenhuma categoria de despacho dinâmico já tratada: Qt
+  slot-por-nome/plugin registry/Pydantic validator/`entry_points`/import dinâmico/`__main__`).
+  Grande parte dos 132 concentra-se em diretórios `*/adhoc/*` (helpers "compostos, não
+  DI-registrados" — ver docstring de `services/project_service/adhoc/repository.py`) e em
+  `@property` de ViewModels sem consumidor textual encontrado. **Decisão pendente do dono**:
+  (a) aceitar como baseline case-C — N achados reais registrados, ticket de limpeza no diário do
+  `PantonicVideo` — sem alterar aquele repo nesta tarefa; ou (b) autorizar as 2 rodadas de ajuste
+  de categoria restantes (ex.: uma regra para `*/adhoc/*` composto-não-DI, ou para `@property`
+  de ViewModel exposta a binding futuro) antes de aceitar o baseline. Lista completa de 132 linhas
+  em `docs/DIARIO_DE_OBRAS.md` (bullet `V2M-T5`) → arquivo bruto ficou só no scratchpad da sessão
+  (não versionado); reproduzível com o comando acima a qualquer momento (script já está em
+  `.claude/checks/dead_code.py`, não commitado).
+
+- **`V2M-T5` (2026-07-30, continuação) — 2 rodadas de ajuste estrutural dirigidas, baseline caiu
+  de 131 para 95.** Dono aprovou rota (b) da decisão pendente acima, restrita a duas rodadas
+  **estruturais** (sem heurística de nome/categoria nova, sem allowlist de diretório de
+  conveniência). **Rodada 1** — todo módulo sob `integrations/poc/**` virou seed de
+  alcançabilidade por construção de diretório (mesmo desenho de `contracts/`), já que são POCs
+  standalone sem bootstrap comum: `integrations/poc/**` caiu de 30 para 10 achados (delta −20,
+  não −30 — os 10 residuais são símbolos sem nenhuma referência textual mesmo com o módulo já
+  enraizado, candidatos a código morto real dentro da POC ou a duplicação não cruzada entre
+  `dehydrator/` e `desidratar_subtitle/`). **Rodada 2** — causa raiz diagnosticada e corrigida em
+  `_resolve_import_targets`: para `from .adhoc.X import Y` (import relativo, `node.level>0`), o
+  código descartava o `node.module` (a parte "`adhoc.X`" depois dos pontos) e resolvia o alvo só
+  para o pacote-pai, então o submódulo nunca entrava em `reachable_modules` — falso positivo em
+  massa. Caso de controle confirma: `ProjectRepository.read_metadata` e `ScriptStore.get_script`
+  saíram da lista. Mas o efeito real ficou menor que a hipótese de −57: só
+  `services/*/adhoc/**` usa esse padrão de import relativo (27 → 11, delta −16, residual =
+  símbolos sem referência mesmo com o módulo já alcançável); `plugins/*/adhoc/**` sempre importou
+  com caminho absoluto (`from plugins.X.adhoc import Y`, confirmado em
+  `plugins/screenwriter/view_model.py:42`) — já estava alcançável antes da rodada 2 e ficou
+  **inalterado em 30** (não é o mesmo bug; a hipótese original juntou duas causas diferentes sob
+  o mesmo rótulo `*/adhoc/*`). Residual final = 95, acima do teto de 30 do dossiê desta
+  continuação — parada conforme critério explícito (nenhuma 3ª rodada aberta). Classificação por
+  área e decisão pendente do dono: ver bullet `V2M-T5` em `docs/DIARIO_DE_OBRAS.md`.
