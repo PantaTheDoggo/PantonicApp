@@ -32,10 +32,10 @@ o confronto apontar, e entregar um `README.md` a partir do qual um humano decida
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
 **Próxima tarefa da sprint:** `V2M-T2` (`docs/plans/P-0729-v2-melhoria.md`, T2) — **[Sonnet]**,
-skill global `modelo-por-fase` + revisão do hook já prototipado. **Decisão pendente antes de
-despachá-la:** a residência da skill (global em `~/.claude/skills/`, como decidido em DP-G3 de
-2026-07-22, versus skill do kit, versionada e distribuída) — a régua de §3.1, escrita *depois*
-daquela decisão, diz que o que só existe no `~/.claude` do dono não chega a consumidor nenhum. O
+skill `modelo-por-fase` + revisão do hook já prototipado. **Pronta para despacho:** a residência foi
+decidida pelo dono em 2026-07-30 (**DM-7** no plano) — a skill nasce **no kit**
+(`.claude/skills/modelo-por-fase/`, versionada e distribuída), o hook segue global; DP-G3 de
+2026-07-22 foi rebaseada pela régua de §3.1, e a `V2K-T16` não trata mais desse item. O
 **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os três
 artefatos do kit + `1.4.0`). O **Bloco A fechou em 2026-07-30** (4/4:
 `V2K-T1..T3` = enforcement do kit como código pendurado no gate; `V2K-T4` = régua de residência da

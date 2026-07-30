@@ -112,16 +112,28 @@ escolhível e tem um dono explícito para nascer.
 ### T2 — Skill global `modelo-por-fase` [Sonnet] — *herdado de `P-0722` Fase 2 (DP-G2/DP-G3)*
 - **Objetivo:** dar gatilho operacional à regra de modelo por fase, hoje vinculante
   (`GOVERNANCA.md` §3) mas lembrada só por disciplina.
-- **Arquivos-alvo:** `~/.claude/skills/modelo-por-fase/SKILL.md` (novo — home global, DP-G3);
-  revisão de `~/.claude/hooks/modelo_por_fase_userpromptsubmit.py` (protótipo instalado em
-  2026-07-22).
+- **Arquivos-alvo:** `.claude/skills/modelo-por-fase/SKILL.md` (novo — **skill do kit, versionada**;
+  ver DM-7 abaixo, que rebaseia DP-G3); revisão de
+  `~/.claude/hooks/modelo_por_fase_userpromptsubmit.py` (protótipo instalado em 2026-07-22, segue
+  global — hook é enforcement local, não doutrina);
+  `VERSION` + `.claude/KIT_VERSION` + `CHANGELOG.md` (bump MINOR, dentro do `1.4.0` do Bloco B).
 - **Conteúdo:** regra de decisão (intelectual→Opus / execução→Sonnet / varredura→Haiku), gate de
   parada e a convenção de anúncio da Regra 5. **Fato técnico já medido, não reinvestigar:** o agente
   não troca o próprio modelo — o schema de saída de hook não tem campo de modelo; a skill
   institucionaliza a parada e o pedido explícito de `/model`.
-- **Pronto quando:** a skill existe e descreve os três gatilhos; o hook foi revisado (falsos
-  positivos da heurística de palavra-chave corrigidos, ou registrados como aceitos com motivo);
-  nada no repo do hub muda — registrar na nota de execução que skill global não bumpa `VERSION`.
+- **Pronto quando:** a skill existe **em `.claude/skills/` do hub** e descreve os três gatilhos; o
+  hook global foi revisado (falsos positivos da heurística de palavra-chave corrigidos, ou
+  registrados como aceitos com motivo); `kit_check.ps1 -Mode generate` regerou o `.claude/README.md`
+  com a skill nova e `-Mode check-drift` passa; `VERSION`/`.claude/KIT_VERSION`/`CHANGELOG.md`
+  atualizados.
+
+**DM-7 (decisão do dono, 2026-07-30) — residência da skill `modelo-por-fase`: kit versionado, não
+global.** Rebaseia DP-G3 (2026-07-22), que escolheu `~/.claude/skills/` antes de a régua existir. A
+régua de residência (`GOVERNANCA.md` §3.1, escrita pela `V2K-T4` em 2026-07-30) decide o contrário
+pela precedência 2: skill que só existe no `~/.claude` do dono não viaja no subtree e não chega a
+consumidor nenhum, logo não é procedimento do framework. O **hook** continua global — §3.1 declara
+hook como mecanismo de enforcement, não superfície de doutrina. Consequência para a `V2K-T16`
+(residência item a item): a skill já está decidida, sai da lista daquela tarefa.
 
 ### T3 — Promover G-PLANFIDELITY e G-EXECREADY ao CLAUDE.md global [Sonnet] — *herdado de `P-0722` DP-G4*
 - **Objetivo:** as duas são conduta universal de executor, não doutrina específica de Pantonic.
