@@ -449,7 +449,8 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
   - Verificação de aceite: (1) `Grep "P-<MMDD>"` em `.claude/` e `docs/plans/_INBOX.md` → zero
     ocorrências. (2) `kit_check.ps1 -Mode check-drift` → sem drift (nenhuma skill/agente
     adicionado ou removido). (3) `git status --short` → só `M`, nenhum `R`/rename.
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 24 tool uses, ~55k tokens, Sonnet, ~7min26s (medido pela notificação de conclusão;
+    o autorrelato do executor dizia 14 tool uses — subestimativa de ~42%, mesmo padrão da Regra 7).
 - `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
 
 ### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 4/19 (Bloco A fechado), nascido fechado em 2026-07-29 pela `V2C-T6`]
