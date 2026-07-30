@@ -495,7 +495,9 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     formal (entrada em `guardrails-check/SKILL.md`, `CHANGELOG.md`, bump de versão, tag) — nenhum
     dos dois nesta tarefa, por escopo. Detalhe completo das 2 rodadas em
     `docs/plans/P-0729-v2-melhoria.md` §"Achados da execução".
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 31 tool uses, ~94k tokens, Sonnet, ~19min32s (medido pela notificação de conclusão;
+    dentro do teto de 30 na prática — as 31 chamadas incluem o commit final). Acumulado da `V2M-T5`
+    nas duas sessões: 81 tool uses, ~237k tokens, ~92min.
 
 ### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 4/19 (Bloco A fechado), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
