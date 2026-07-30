@@ -108,6 +108,14 @@ aqui.
    - Próxima tarefa sugerida pela mesma heurística/diretiva, **sem iniciá-la**.
    - Recomendação de `/clear`/`/compact` antes do próximo "execute o próximo passo".
 
+   **Decisão pendente é o próximo passo** (regra do dono, 2026-07-30): se a tarefa executada
+   deixou qualquer ponto para o dono decidir, o "próximo passo sugerido" é **a decisão**, não a
+   próxima tarefa do backlog — a tarefa seguinte só aparece depois, como consequência. Cada ponto
+   é apresentado com: (1) o **fato medido** que o originou, (2) o que **cada opção implica** na
+   prática, (3) o que **fica bloqueado ou nasce errado** se ficar sem resposta, e (4) uma
+   **recomendação** com o motivo. Decidir depois de a tarefa dependente já ter começado é
+   retrabalho — é o mesmo modo de falha do gate de publicação (G-PLANREADY item 5).
+
    **Telemetria pós-notificação:** a linha `Consumo:` é do orquestrador. O dossiê instrui o
    executor a gravar o placeholder literal "Consumo: (preenchido pelo orquestrador via
    notificação)" — ou a não editar o diário (orquestrador escreve o bullet inteiro). Preencher

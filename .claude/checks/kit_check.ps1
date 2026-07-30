@@ -3,19 +3,19 @@
     Validador estrutural do kit agêntico Pantonic* (.claude/).
 
 .DESCRIPTION
-    V2K-T1 (docs/plans/P-0729-v2-melhoria-candidatos.md §3 T1, candidato C-01).
+    V2K-T1/V2K-T2 (docs/plans/P-0729-v2-melhoria-candidatos.md §3, candidato C-01).
     Falha (exit != 0) quando um artefato de extensão do kit está estruturalmente
-    inválido. NÃO interpreta semântica de doutrina — só forma sintática do
-    frontmatter YAML e paridade de versão (ver risco registrado na ficha C-01 /
-    BM-14§D9: validar semântica de doutrina é fora de escopo deste script).
-
-    Modos previstos: -generate e -check-drift são reservados para V2K-T2 e ainda
-    não implementados; o parâmetro já aceita os três valores para não exigir
-    mudança de assinatura depois.
+    inválido, ou quando o `.claude/README.md` versionado diverge do regenerado a
+    partir do disco. NÃO interpreta semântica de doutrina — só forma sintática do
+    frontmatter YAML, paridade de versão e deriva do índice (ver risco registrado
+    na ficha C-01 / BM-14§D9: validar semântica de doutrina é fora de escopo deste
+    script; padrão de referência BM-15§D9/BM-07§D8, não BM-14§D9).
 
 .PARAMETER Mode
-    'validate' (único implementado nesta tarefa), 'generate' ou 'check-drift'
-    (reservados, V2K-T2).
+    'validate' — checagem estrutural (V2K-T1). 'generate' — regenera as tabelas de
+    agentes/skills do `.claude/README.md` entre marcadores de região a partir do
+    frontmatter em disco. 'check-drift' — regenera em memória e falha se divergir
+    do arquivo versionado (não escreve).
 
 .PARAMETER KitRoot
     Raiz do kit (equivalente a .claude/) a validar. Default: resolvida a partir
@@ -39,12 +39,76 @@ if (-not $KitRoot) {
 }
 $KitRoot = (Resolve-Path -LiteralPath $KitRoot).Path
 
-if ($Mode -ne 'validate') {
-    Write-Host "kit_check: modo '$Mode' reservado para V2K-T2 — ainda não implementado nesta tarefa (V2K-T1)."
-    exit 1
+function Get-AgentsTableMarkdown {
+    # Gera as linhas da tabela "Agentes" a partir de .claude/agents/*.md
+    # (frontmatter: name/model/description). Ordem determinística (Sort-Object
+    # Name) — é o que faz -Mode check-drift significar algo.
+    param([Parameter(Mandatory)][string]$KitRoot)
+    $agentsDir = Join-Path $KitRoot 'agents'
+    $files = @(Get-ChildItem -LiteralPath $agentsDir -Filter '*.md' -File -ErrorAction SilentlyContinue) | Sort-Object Name
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $lines.Add('| Agente | Modelo | Papel |')
+    $lines.Add('|---|---|---|')
+    foreach ($f in $files) {
+        $fm = Get-Frontmatter -Path $f.FullName
+        $name = [System.IO.Path]::GetFileNameWithoutExtension($f.Name)
+        $fmName = if ($fm) { Get-FieldValue -FrontmatterLines $fm -Field 'name' } else { $null }
+        if (-not [string]::IsNullOrWhiteSpace($fmName)) { $name = $fmName }
+        $model = if ($fm) { Get-FieldValue -FrontmatterLines $fm -Field 'model' } else { $null }
+        $modelDisplay = if ([string]::IsNullOrWhiteSpace($model)) { '' } else { (Get-Culture).TextInfo.ToTitleCase($model) }
+        $description = if ($fm) { Get-FieldValue -FrontmatterLines $fm -Field 'description' } else { '' }
+        $lines.Add("| ``$name`` | $modelDisplay | $description |")
+    }
+    return $lines
 }
 
-$errors = [System.Collections.Generic.List[string]]::new()
+function Get-SkillsTableMarkdown {
+    # Gera as linhas da tabela "Skills" a partir de .claude/skills/*/SKILL.md
+    # (frontmatter: description). Ordem determinística (Sort-Object Name).
+    param([Parameter(Mandatory)][string]$KitRoot)
+    $skillsDir = Join-Path $KitRoot 'skills'
+    $dirs = @(Get-ChildItem -LiteralPath $skillsDir -Directory -ErrorAction SilentlyContinue) | Sort-Object Name
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $lines.Add('| Skill | Quando usar |')
+    $lines.Add('|---|---|')
+    foreach ($d in $dirs) {
+        $skillMd = Join-Path $d.FullName 'SKILL.md'
+        $description = ''
+        if (Test-Path -LiteralPath $skillMd) {
+            $fm = Get-Frontmatter -Path $skillMd
+            if ($fm) { $description = Get-FieldValue -FrontmatterLines $fm -Field 'description' }
+        }
+        $lines.Add("| ``$($d.Name)`` | $description |")
+    }
+    return $lines
+}
+
+function Set-MarkedRegion {
+    # Substitui o conteúdo ENTRE os marcadores por $NewBody; os marcadores em si
+    # e tudo fora deles (prosa autoral) são preservados intactos. Falha
+    # (throw) se um marcador estiver ausente ou desbalanceado — isso é o que
+    # torna -Mode generate seguro contra README sem os marcadores esperados.
+    param(
+        [Parameter(Mandatory)][AllowEmptyString()][string[]]$Content,
+        [Parameter(Mandatory)][string]$BeginMarker,
+        [Parameter(Mandatory)][string]$EndMarker,
+        [Parameter(Mandatory)][AllowEmptyCollection()][AllowEmptyString()][string[]]$NewBody
+    )
+    $beginIdx = -1
+    $endIdx = -1
+    for ($i = 0; $i -lt $Content.Count; $i++) {
+        if ($beginIdx -lt 0 -and $Content[$i].Trim() -eq $BeginMarker) { $beginIdx = $i }
+        elseif ($Content[$i].Trim() -eq $EndMarker) { $endIdx = $i }
+    }
+    if ($beginIdx -lt 0) { throw "Marcador de início ausente: '$BeginMarker'" }
+    if ($endIdx -lt 0) { throw "Marcador de fim ausente: '$EndMarker'" }
+    if ($endIdx -le $beginIdx) { throw "Marcadores desbalanceados ('$BeginMarker' ... '$EndMarker')" }
+    $result = [System.Collections.Generic.List[string]]::new()
+    $result.AddRange([string[]]$Content[0..$beginIdx])
+    $result.AddRange([string[]]$NewBody)
+    $result.AddRange([string[]]$Content[$endIdx..($Content.Count - 1)])
+    return $result.ToArray()
+}
 
 function Get-Frontmatter {
     param([Parameter(Mandatory)][string]$Path)
@@ -69,6 +133,10 @@ function Get-FieldValue {
     }
     return $null
 }
+
+if ($Mode -eq 'validate') {
+
+$errors = [System.Collections.Generic.List[string]]::new()
 
 # --- 1. Agentes: .claude/agents/*.md -------------------------------------
 # Campos exigidos derivados do estado vigente (2026-07-29): todos os 9 agentes
@@ -159,3 +227,55 @@ if ($errors.Count -gt 0) {
 
 Write-Host "kit_check: OK - $($agentFiles.Count) agente(s) e $($skillDirs.Count) skill(s) validados; VERSION == KIT_VERSION ('$versionSummary')."
 exit 0
+
+}
+elseif ($Mode -eq 'generate') {
+    $readmePath = Join-Path $KitRoot 'README.md'
+    if (-not (Test-Path -LiteralPath $readmePath)) {
+        Write-Host "kit_check: generate FALHOU - README.md não encontrado em: $readmePath"
+        exit 1
+    }
+    $content = @(Get-Content -LiteralPath $readmePath)
+    $agentsBody = Get-AgentsTableMarkdown -KitRoot $KitRoot
+    $skillsBody = Get-SkillsTableMarkdown -KitRoot $KitRoot
+    try {
+        $content = Set-MarkedRegion -Content $content -BeginMarker '<!-- kit:agents:begin -->' -EndMarker '<!-- kit:agents:end -->' -NewBody $agentsBody
+        $content = Set-MarkedRegion -Content $content -BeginMarker '<!-- kit:skills:begin -->' -EndMarker '<!-- kit:skills:end -->' -NewBody $skillsBody
+    }
+    catch {
+        Write-Host "kit_check: generate FALHOU - $($_.Exception.Message)"
+        exit 1
+    }
+    Set-Content -LiteralPath $readmePath -Value $content -Encoding utf8NoBOM
+    Write-Host "kit_check: generate OK - README.md regenerado: $($agentsBody.Count - 2) agente(s), $($skillsBody.Count - 2) skill(s)."
+    exit 0
+}
+elseif ($Mode -eq 'check-drift') {
+    $readmePath = Join-Path $KitRoot 'README.md'
+    if (-not (Test-Path -LiteralPath $readmePath)) {
+        Write-Host "kit_check: check-drift FALHOU - README.md não encontrado em: $readmePath"
+        exit 1
+    }
+    $current = @(Get-Content -LiteralPath $readmePath)
+    $agentsBody = Get-AgentsTableMarkdown -KitRoot $KitRoot
+    $skillsBody = Get-SkillsTableMarkdown -KitRoot $KitRoot
+    try {
+        $regenerated = Set-MarkedRegion -Content $current -BeginMarker '<!-- kit:agents:begin -->' -EndMarker '<!-- kit:agents:end -->' -NewBody $agentsBody
+        $regenerated = Set-MarkedRegion -Content $regenerated -BeginMarker '<!-- kit:skills:begin -->' -EndMarker '<!-- kit:skills:end -->' -NewBody $skillsBody
+    }
+    catch {
+        Write-Host "kit_check: check-drift FALHOU - $($_.Exception.Message)"
+        exit 1
+    }
+    $diff = Compare-Object -ReferenceObject $current -DifferenceObject $regenerated
+    if ($diff) {
+        Write-Host "kit_check: check-drift FALHOU - .claude/README.md diverge do regenerado ($($diff.Count) linha(s) diferente(s)):"
+        foreach ($d in $diff) {
+            $side = if ($d.SideIndicator -eq '<=') { 'versionado' } else { 'regenerado' }
+            Write-Host "  [$side] $($d.InputObject)"
+        }
+        exit 1
+    }
+    Write-Host "kit_check: check-drift OK - .claude/README.md == regenerado ($($agentsBody.Count - 2) agente(s), $($skillsBody.Count - 2) skill(s))."
+    exit 0
+}

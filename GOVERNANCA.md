@@ -80,6 +80,45 @@ Regras de operação:
   nenhuma das duas — só apareceu quando um passo posterior tentou consumi-la e o insumo não
   existia. Rebase que absorve fase de outro plano mapeia tarefa a tarefa, não fase a fase.
 
+### 3.1 Residência e precedência da doutrina
+
+A doutrina Pantonic vive em quatro superfícies. Esta tabela **decide** o que mora em cada uma e
+quem vence quando duas dizem coisas diferentes sobre o mesmo assunto — não descreve a topologia
+atual, prescreve a correta.
+
+| Superfície | Mora aqui | Não mora aqui | Versionada |
+|---|---|---|---|
+| `~/.claude/CLAUDE.md` — global do dono | Regra sempre-ativa que vale para **qualquer** projeto do dono, Pantonic ou não | Qualquer regra que só faça sentido dentro do framework Pantonic | Não |
+| `GOVERNANCA.md` / `ARQUITETURA_PANTONICA.md` — kit | Regra sempre-ativa **do framework**: identidade, camadas, operações agênticas, guardrails, versionamento | Passo a passo de procedimento; preferência pessoal do dono; estado de trabalho | Sim |
+| Skill — `.claude/skills/*/SKILL.md` | Procedimento reexecutável, com gatilho declarado e passos na ordem de execução | Regra que precisa valer sem ninguém invocar a skill; estado volátil (backlog, versões, progresso) | Sim |
+| Agente — `.claude/agents/*.md` | Papel (o que faz e o que não faz) + fatos estáveis que ele precisa saber a frio | Doutrina geral copiada do `GOVERNANCA.md`; estado volátil; dossiê de tarefa | Sim |
+
+Hook (`settings.json`) **não é uma quinta superfície**: é mecanismo de enforcement de uma regra que
+já mora em uma das quatro. Hook sem regra escrita atrás dele é doutrina invisível — e não viaja.
+
+**Precedência, quando duas superfícies colidem:**
+
+1. **Específico vence geral.** Dentro de um projeto Pantonic, `GOVERNANCA.md` vence o CLAUDE.md
+   global; dentro de uma tarefa, o dossiê vence a skill, que vence o agente. O geral só vale onde
+   o específico é silencioso.
+2. **Empate → versionado vence não-versionado.** Se as duas superfícies têm a mesma
+   especificidade, ganha a que viaja no kit. Um consumidor que recebe o kit por `git subtree`
+   **não recebe** o que está fora do repositório (achado `BM-00§D15`): regra que só existe no
+   `~/.claude` do dono não chega a consumidor nenhum e, por isso, não é doutrina do framework.
+
+Colisão não se resolve com as duas cópias vivas: quem aplica a regra 1 ou 2 **apaga a cópia
+perdedora ou a reduz a ponteiro**, no mesmo ato. Duplicata é a próxima divergência.
+
+**Teste de residência — quatro perguntas na ordem; a primeira que der "sim" decide:**
+
+1. Vale para um projeto **não-Pantonic** do dono? → `~/.claude/CLAUDE.md` global.
+2. É regra **sempre-ativa do framework**, que precisa valer sem ninguém invocar nada? →
+   `GOVERNANCA.md` (ou `ARQUITETURA_PANTONICA.md`, se for regra de arquitetura).
+3. É **procedimento reexecutável com gatilho** ("quando acontecer X, fazer estes passos")? → skill.
+4. É **papel + fatos estáveis** de quem executa? → agente.
+
+Nenhuma das quatro: não é doutrina. É estado de trabalho, e o lar é o diário de obras.
+
 ## 4. Fluxo de desenvolvimento
 
 ### 4.1 Regra básica
@@ -229,6 +268,15 @@ respeitando os overrides declarados em `kit-exclude.txt`. O consumidor ajusta ap
 estáveis" dos agentes — nunca os artefatos do próprio subtree (eles vêm do hub). Mecanismo de
 versionamento e atualização: §10. Provado ponta a ponta em `PantonicVideo`
 (`P-0725-governanca-hub-unico.md` Fase 4/5).
+
+**Enforcement do kit é executável.** `.claude/README.md` é artefato **derivado** do conteúdo real
+de `.claude/` (agentes, skills, checks) e **não se edita à mão** — regenerá-lo a partir do disco é
+a única forma legítima de mudá-lo. O comando canônico do enforcement é
+`pwsh .claude/checks/kit_check.ps1 -Mode validate` (estrutura do kit, incluindo a paridade de
+versão de §10) e `pwsh .claude/checks/kit_check.ps1 -Mode check-drift` (índice derivado versus
+disco), ambos pendurados no gate `guardrails-check` que roda ao fim de toda tarefa. O enforcement
+do kit é **código**, não convenção escrita: regra do kit que não puder ser verificada por esse
+script nasce com o motivo escrito de por que não pode.
 
 ## 10. Versionamento e atualização do kit
 

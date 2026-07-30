@@ -28,6 +28,12 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    **recomenda** o passe completo no handover, com a razão (raio de explosão). Nas demais
    tarefas o gate é Tier 2, e o piso é conferido no gate de sprint. Piso subiu → nada a fazer;
    desceu → tarefa **não está pronta**.
+5. **Kit agêntico (projeto que tem `.claude/checks/kit_check.ps1`) — bloqueante como o Tier 2** —
+   `pwsh .claude/checks/kit_check.ps1 -Mode validate` (estrutura do kit + paridade
+   `VERSION` == `.claude/KIT_VERSION`) e `pwsh .claude/checks/kit_check.ps1 -Mode check-drift`
+   (índice derivado `.claude/README.md` versus o disco); ambos precisam sair `0`. Deriva →
+   regenerar com `-Mode generate`, **nunca** editar o `.claude/README.md` à mão
+   (`GOVERNANCA.md` §9).
 
 Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sumário) — nunca
 `pytest` puro despejando o log inteiro no contexto (`CLAUDE.md` global, Regra 3).
@@ -72,6 +78,7 @@ Suítes: <tier rodado, ex. "Tier 2 (tests/conformance/)"> — <resultado, ex. "5
   tocou contracts/, infracore/ ou serviço compartilhado — critério (a) — recomendação de passe
   completo para o dono/orquestrador decidir>
 Piso: <antes> → <depois> (ou "sem mudança de piso")
+Kit: <kit_check -Mode validate / -Mode check-drift — exit 0 | n/a (projeto sem kit_check.ps1)>
 Checklist de review: <ok | desvio path:line — descrição> (uma linha por item verificado)
 ```
 
