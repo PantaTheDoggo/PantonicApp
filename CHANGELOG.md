@@ -30,6 +30,16 @@ compatível, PATCH corrige redação.
   global `modelo-por-fase`, com a residência declarada sob a régua de §3.1 — a regra mora na
   doutrina versionada, a skill é gatilho e o hook é enforcement (`V2M-T1`; a skill em si é a
   `V2M-T2`).
+- Criada a skill `.claude/skills/modelo-por-fase/SKILL.md` — gatilho operacional da regra de
+  modelo por fase: três gatilhos (início de tarefa/subagente, troca de fase na mesma sessão,
+  nudge do hook global), gate de parada (pedir `/model` explícito ao dono, nunca decidir/trocar
+  sozinho) e a convenção de anúncio da Regra 5. Reside **no kit versionado**, não em
+  `~/.claude/skills/` — `DM-7` (2026-07-30) rebaseia a `DP-G3` de 2026-07-22 pela régua de
+  residência de `GOVERNANCA.md` §3.1 (skill que só existe fora do repo não viaja no subtree).
+  Revisado também `~/.claude/hooks/modelo_por_fase_userpromptsubmit.py` (global, fora do kit):
+  falso positivo medido (prompt de retomada de backlog classificado como "execução mecânica"
+  quando o trabalho real era orquestração/delegação) corrigido com uma lista de exclusão
+  checada antes da classificação (`V2M-T2`).
 
 ## 1.3.0 — 2026-07-30
 

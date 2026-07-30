@@ -22,6 +22,19 @@ benchmarking → confronto → melhoria → documentação).
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
 | P-0725-HU | Hub único: PantonicApp canônico, PantonicVideo como prova | done | `docs/plans/P-0725-governanca-hub-unico.md` |
+| TK-01 | Corrigir residência de `modelo-por-fase` em `GOVERNANCA.md` §3 e no bullet `V2M-T1` do `CHANGELOG.md` (ainda apontam `~/.claude/skills/`, superado por `DM-7`) | backlog | `## Tíquetes avulsos` |
+
+---
+
+## Tíquetes avulsos
+
+- `TK-01` — **Achado fora de escopo (`V2M-T2`, 2026-07-30):** `GOVERNANCA.md` §3 (linha ~64) e o
+  bullet da `V2M-T1` em `CHANGELOG.md` 1.4.0 ainda descrevem a skill `modelo-por-fase` como
+  "global" em `~/.claude/skills/`. `DM-7` (mesmo dia, commit posterior a `V2M-T1`) rebaseia essa
+  decisão: a skill nasceu no kit versionado (`.claude/skills/modelo-por-fase/`, feito nesta
+  tarefa). Fora do escopo de arquivos-alvo da `V2M-T2` (que lista só a skill nova, o hook global e
+  `CHANGELOG.md`/`VERSION`) — corrigir os dois ponteiros residuais numa tarefa própria, sem
+  reabrir a decisão em si.
 
 ---
 
@@ -364,7 +377,35 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     Piso: sem mudança de piso.
     Checklist de review: sem import/camada/MVVM/UI thread tocados. G-DEADCODE não se aplica (nenhum símbolo novo). `GOVERNANCA.md` em 386 linhas — abaixo do gatilho de 500 do DOC_MAP.
   - Consumo: **NÃO MEDIDO** — execução inline no orquestrador (Opus), sem notificação de subagente e portanto sem bloco `<usage>`; contagem própria ~40 tool uses, marcada como autoestimativa.
-- `V2M-T2` — Skill global `modelo-por-fase` — [Sonnet] — backlog *(herdado de `P-0722` Fase 2)*
+- `V2M-T2` — Skill `modelo-por-fase` do kit — [Sonnet] — done *(herdado de `P-0722` Fase 2)*
+  - Resultado: `.claude/skills/modelo-por-fase/SKILL.md` criada **no kit versionado**, não global
+    (`DM-7` rebaseia `DP-G3`): três gatilhos (início de tarefa/subagente, troca de fase na mesma
+    sessão, nudge do hook), gate de parada (`/model` explícito ao dono, nunca decisão/troca
+    própria) e a convenção de anúncio da Regra 5 — ponteiro para `GOVERNANCA.md` §3/§3.1 em vez de
+    recopiar a doutrina. Hook global (`~/.claude/hooks/modelo_por_fase_userpromptsubmit.py`)
+    revisado: falso positivo medido (prompt de retomada de backlog — "execute a próxima tarefa" —
+    classificado como execução mecânica quando o trabalho real era orquestração/delegação, fase
+    intelectual) corrigido com lista de exclusão `_ORCHESTRATION_ENTRYPOINT` checada antes da
+    classificação de execução; verificado com 4 casos manuais via subprocess (carve-out, execução,
+    intelectual, leitura) — todos batendo a fase esperada.
+    Achado fora de escopo indexado como `TK-01` (seção `## Tíquetes avulsos`): `GOVERNANCA.md` §3
+    e o bullet `V2M-T1` do `CHANGELOG.md` ainda apontam a skill como global — resíduo do rebase
+    `DM-7`, fora dos arquivos-alvo desta tarefa.
+  - Bump: nenhum (paridade `1.4.0` mantida — Bloco B é uma única release); bullet novo apensado à
+    seção `## 1.4.0 — 2026-07-30` já existente do `CHANGELOG.md`; tag anotada `kit-v1.4.0` apagada
+    e recriada sobre o commit desta tarefa (nunca publicada — sem `-f`, sem push).
+  - Veredito — V2M-T2
+    Gate executável rodado: `kit_check.ps1 -Mode generate` → "9 agente(s), 9 skill(s)"; `-Mode
+    check-drift` → exit 0 ("README.md == regenerado"); `-Mode validate` → exit 0 ("9 agente(s) e 9
+    skill(s) validados; VERSION == KIT_VERSION ('1.4.0')"). Hook: 4 casos manuais (subprocess),
+    todos OK — sem suíte pytest aplicável (hook fora da árvore de testes do repo).
+    Piso: sem mudança de piso (hub sem suíte de aplicação).
+    Checklist de review: sem import/camada/MVVM/UI thread tocados. G-DEADCODE não se aplica
+    (nenhum símbolo deletado). Nenhum arquivo fora dos arquivos-alvo foi reescrito.
+    Desvio de orçamento: ~23 tool uses contra teto de 22 — sinalizado, não escondido (a maior
+    parte do excedente veio de uma falha de ambiente recuperável: `python3` ausente no shell,
+    retry com `python` resolveu em 1 chamada extra).
+  - Consumo: (preenchido pelo orquestrador via notificação)
 - `V2M-T3` — Promover G-PLANFIDELITY/G-EXECREADY ao CLAUDE.md global — [Sonnet] — backlog *(herdado de `P-0722` DP-G4; **depois de `V2K-T4`**, que é a régua de residência)*
 - `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — backlog *(herdado de `P-0722` DP-G5)*
 - `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
