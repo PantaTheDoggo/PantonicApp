@@ -431,7 +431,7 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     4 arquivos-alvo listados na delegação foram tocados; G-DEADCODE/G-PREMISE não tocados em
     `GOVERNANCA.md` (DP-G4 preservada); nenhum outro item de §7 renumerado ou reescrito.
     Piso: sem mudança de piso (nenhuma suíte de teste nesta tarefa).
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 29 tool uses, ~71k tokens, Sonnet, ~3h13min (medido pelo `<usage>` da notificação).
 - `V2M-T4` — Contador sequencial de planos (`P-NNNN`) — [Sonnet] — backlog *(herdado de `P-0722` DP-G5)*
 - `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — backlog *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B)*
 
