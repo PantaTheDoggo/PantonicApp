@@ -240,3 +240,24 @@ hook como mecanismo de enforcement, não superfície de doutrina. Consequência 
   o mesmo rótulo `*/adhoc/*`). Residual final = 95, acima do teto de 30 do dossiê desta
   continuação — parada conforme critério explícito (nenhuma 3ª rodada aberta). Classificação por
   área e decisão pendente do dono: ver bullet `V2M-T5` em `docs/DIARIO_DE_OBRAS.md`.
+
+- **`V2M-T5` (2026-07-30, rodada 3 — a última) — nova categoria estrutural "override de virtual
+  Qt", baseline caiu de 95 para 86.** Dono autorizou a 3ª rodada e declarou-a definitiva
+  (qualquer que fosse o residual, sem 4ª). Regra: um método `M` de classe `C` é `auto_alive` se
+  `C` é Qt-derivada (base direta ou transitiva casa `^Q[A-Z]`, resolvida globalmente sobre todas
+  as `trees` do `--root` varrido — mapa `nome_de_classe -> {bases}` construído uma vez em
+  `check()`, não por arquivo — com proteção contra ciclo e casamento por atributo terminal, então
+  `QWidget` e `QtWidgets.QWidget` casam igual) **e** o nome simples de `M` está no conjunto novo
+  `_QT_VIRTUAL_METHODS` (ao lado de `_INVISIBLE_DISPATCH_DECORATORS`, mesma forma da regra de
+  validator Pydantic: entry point por framework, não allowlist de conveniência). Os 9 casos de
+  controle do dossiê (`mimeData`, `columnCount`/`headerData` em dois models, `paint` em três
+  itens gráficos, `fixup` de um `QValidator`) saíram todos da lista, confirmados por grep
+  individual. Delta real (−9, 95→86) ficou na ponta baixa da faixa esperada (~9–15): a
+  estimativa-teto de ~62 do dono não se confirmou — só `plugins/*/adhoc/**` moveu (30→21);
+  `infracore/ui_shell` (17), `plugins/*` fora de `adhoc` (15), `services/*/adhoc` (11),
+  `integrations/poc` (10), `infracore/*` (7) e `tools/*` (5) ficaram inalterados — terceira rodada
+  seguida em que a estimativa erra para menos. Piso de regressão reconfirmado (fixture sintética
+  no scratchpad, `orphan_helper` referenciado só de `tests/` → exit 1, 1 achado exato);
+  `PantonicVideo` permaneceu somente leitura. Não há 4ª rodada. Residual de 86, classificação por
+  área e próximo passo (campanha de limpeza no `PantonicVideo`, ainda sem entrada no backlog
+  daquele projeto): ver bullet `V2M-T5` em `docs/DIARIO_DE_OBRAS.md`.

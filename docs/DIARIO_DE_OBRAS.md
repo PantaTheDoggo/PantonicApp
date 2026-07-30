@@ -456,7 +456,7 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     adicionado ou removido). (3) `git status --short` → só `M`, nenhum `R`/rename.
   - Consumo: 24 tool uses, ~55k tokens, Sonnet, ~7min26s (medido pela notificação de conclusão;
     o autorrelato do executor dizia 14 tool uses — subestimativa de ~42%, mesmo padrão da Regra 7).
-- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — blocked *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B; continuação 2026-07-30: 2 rodadas de ajuste estrutural aprovadas pelo dono — decisão sobre o residual e fechamento formal ainda pendentes)*
+- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — blocked *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B; continuação 2026-07-30: 3 rodadas de ajuste estrutural — a 3ª é a última, autorizada pelo dono — concluídas; bloqueado agora só pela campanha de limpeza no `PantonicVideo`, ainda sem entrada no backlog daquele projeto)*
   - Método do check (inalterado desde a sessão anterior): alcançabilidade por AST a partir de
     entry points (`contracts/`, `__main__`/bootstrap, `entry_point` de `manifest.json`),
     propagação por grafo de import, casamento por nome simples para referência
@@ -513,12 +513,50 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
        caminho crítico da `PANTONIC-V2` e **não está planejada nem orçada** — precisa de entrada
        própria no backlog daquele projeto antes de a `V2M-T5` poder fechar. Risco declarado ao
        dono na tomada de decisão e por ele assumido.
-  - **Próximo passo:** rodada 3 (delegável já — dossiê fechado pelas duas decisões acima); depois,
-    inspeção do residual para separar órfão real de categoria não nomeada; só então a campanha de
-    limpeza no `PantonicVideo` e o fechamento formal da T5.
+  - **Rodada 3 (a última, executada 2026-07-30)** — nova categoria de despacho dinâmico "override
+    de virtual Qt", mesma forma estrutural das regras de validator Pydantic e entry class de
+    `manifest.json` (não allowlist de diretório/classe): um método `M` de classe `C` é
+    `auto_alive` se `C` é Qt-derivada (alguma base direta ou transitiva casa `^Q[A-Z]`, resolvida
+    globalmente sobre todas as `trees` do `--root`, por nome simples/atributo terminal — não por
+    arquivo) **e** o nome simples de `M` está em `_QT_VIRTUAL_METHODS` (conjunto novo em
+    `dead_code.py`, ao lado de `_INVISIBLE_DISPATCH_DECORATORS`: virtuais de model/view, delegate,
+    validator, item gráfico e eventos de widget). Aplicado só no cálculo de `method_auto`
+    (`dead_code.py`, dentro do laço de classe) — caminho de `function`/`class` intocado.
+    **Delta medido:** 95 → 86 achados (`python .claude/checks/dead_code.py --root
+    D:\workspaces\PantonicVideo`, exit 1) — os 9 casos de controle (`AssetsIndexModel.mimeData`,
+    `RowImageTableModel.columnCount`/`headerData`, `TargetRectItem.paint`,
+    `SubtitleTableModel.columnCount`/`headerData`, `ClipItem.paint`,
+    `LenientDoubleSpinBox.fixup`, `PlacementSpanItem.paint`) confirmados fora da saída por grep,
+    zero hits cada. Delta real (−9) ficou na ponta baixa da faixa esperada (~9 a ~15) — a
+    estimativa-teto de ~62 do dono (explicitamente rotulada teto, não promessa) não se
+    confirmou: `infracore/ui_shell` (17), `plugins/*` fora de `adhoc` (15), `services/*/adhoc`
+    (11), `integrations/poc` (10), `infracore/*` (7) e `tools/*` (5) ficaram **inalterados** —
+    só `plugins/*/adhoc` moveu (30 → 21), terceira vez que uma estimativa de rodada erra para
+    menos (mesmo padrão de −30→−20 na rodada 1 e −57→−16 na rodada 2).
+  - **Classificação do residual (86) por área**, medida agora, para a campanha de limpeza:
+
+    | achados | área |
+    |---|---|
+    | 21 | `plugins/*/adhoc/**` |
+    | 17 | `infracore/ui_shell` |
+    | 15 | `plugins/*` (fora de `adhoc/`) |
+    | 11 | `services/*/adhoc/**` |
+    | 10 | `integrations/poc/**` |
+    | 7 | `infracore/*` (fora de `ui_shell`) |
+    | 5 | `tools/*` |
+
+  - **Piso de regressão confirmado**: fixture sintética recriada no scratchpad
+    (`services/service.py` com `orphan_helper` referenciado só de `tests/test_service.py`) →
+    `dead_code.py` ainda dá exit 1 com exatamente 1 achado. `PantonicVideo` permaneceu somente
+    leitura — nenhum arquivo daquele repositório tocado.
+  - **Próximo passo:** não há 4ª rodada (decisão do dono é definitiva, qualquer que fosse o
+    residual). Falta só a campanha de limpeza no `PantonicVideo` — sem entrada no backlog daquele
+    projeto ainda — e, depois dela, o fechamento formal da T5 (gate bloqueante: baseline em
+    exit 0, sem allowlist de 86 entradas).
   - Consumo: 31 tool uses, ~94k tokens, Sonnet, ~19min32s (medido pela notificação de conclusão;
     dentro do teto de 30 na prática — as 31 chamadas incluem o commit final). Acumulado da `V2M-T5`
-    nas duas sessões: 81 tool uses, ~237k tokens, ~92min.
+    nas duas sessões anteriores: 81 tool uses, ~237k tokens, ~92min.
+  - Consumo (rodada 3): Consumo: (preenchido pelo orquestrador via notificação)
 
 ### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 4/19 (Bloco A fechado), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
