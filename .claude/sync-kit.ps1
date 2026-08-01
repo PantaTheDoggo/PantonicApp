@@ -42,6 +42,13 @@
     Running the script twice in a row with no kit changes produces no
     further writes (idempotent).
 
+    Sync stamp: on every effective (non -Check) run, once the copy pass
+    completes, the script writes <kitRoot>/SYNC_STATE — version=<KIT_VERSION
+    content, or "unknown" if absent>, synced_at=<UTC ISO 8601>,
+    mode=subtree|copia (subtree when an origin commit was resolved, copia
+    otherwise). -Check never writes it: both -Check exit paths return before
+    this point.
+
     Origin signature verification: before any copy or comparison, the
     script resolves the "origin commit" — the last commit in this repo
     that touched the kit path ($PSScriptRoot) — and runs
@@ -354,3 +361,28 @@ if ($Check) {
 }
 
 Write-Host "sync-kit: $copied copied, $skipped skipped by exclusion."
+
+# ---------------------------------------------------------------------------
+# Sync stamp (only reached on an effective sync: both -Check branches above
+# exit before this point, so this write never happens under -Check)
+# ---------------------------------------------------------------------------
+
+$versionFile = Join-Path $kitRoot 'KIT_VERSION'
+$version = 'unknown'
+if (Test-Path -LiteralPath $versionFile -PathType Leaf) {
+    $versionContent = (Get-Content -LiteralPath $versionFile -Raw).Trim()
+    if ($versionContent.Length -gt 0) {
+        $version = $versionContent
+    }
+}
+
+$syncedAt = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+$mode     = if ($originSha) { 'subtree' } else { 'copia' }
+
+$syncStatePath  = Join-Path $kitRoot 'SYNC_STATE'
+$syncStateLines = @(
+    "version=$version"
+    "synced_at=$syncedAt"
+    "mode=$mode"
+)
+Set-Content -LiteralPath $syncStatePath -Value $syncStateLines -Encoding utf8NoBOM

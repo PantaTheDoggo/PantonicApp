@@ -91,11 +91,28 @@ handle da árvore do hub; ele **não tem** passo que aplique versão (zero refer
 `KIT_VERSION` (5/6 nem são repositórios git). Rota escolhida pelo dono: **carimbo no consumidor
 (`SYNC_STATE`, escrito pelo `sync-kit.ps1`) + coletor no hub (`kit_check.ps1 -Mode consumers`)**.
 **Contagem de write-clusters já derivada (não re-derivar): 8** — `sync-kit.ps1` 3, `kit_check.ps1`
-3, `docs/CONSUMIDORES.md` 1, `GOVERNANCA.md` §10 1. Está **no limite** do gate de delegação;
-avaliar partir em duas sub-tarefas (carimbo × registro+coletor+§10) antes de despachar. **Pré-
-requisito resolvido em 2026-08-01:** o `TK-02` (achatamento de `Get-ExcludedKeys` em
-`.claude/sync-kit.ps1`) foi corrigido antes e sozinho, porque a `V2K-T12` verifica executando o
-script e o exige funcional — ver nota de fechamento em `## Tíquetes avulsos`.
+3, `docs/CONSUMIDORES.md` 1, `GOVERNANCA.md` §10 1. **Pré-requisito resolvido em 2026-08-01:** o
+`TK-02` (achatamento de `Get-ExcludedKeys` em `.claude/sync-kit.ps1`) foi corrigido antes e sozinho,
+porque a `V2K-T12` verifica executando o script e o exige funcional — ver nota de fechamento em
+`## Tíquetes avulsos`.
+
+**Partida em duas no pickup de 2026-08-01** (a própria ficha mandava avaliar; 8 clusters
+comportamentais é o teto do gate, e a série medida diz que executor não para no teto — T3 56/35,
+T4 61/40, T5 112/50). Corte na fronteira produtor × consumidor do carimbo, detalhado em
+`docs/plans/P-0729-v2-melhoria-candidatos.md` §T12:
+- **`V2K-T12a`** (a tarefa da vez) — `sync-kit.ps1` escreve `<child>/.claude/kit/SYNC_STATE`;
+  `docs/CONSUMIDORES.md` nasce semeado com 6 linhas. ~4 clusters.
+- **`V2K-T12b`** — `kit_check.ps1 -Mode consumers` + `GOVERNANCA.md` §10. ~4 clusters; verifica
+  contra o `SYNC_STATE` real da `T12a`.
+
+**`DK-13` fechada no mesmo pickup** (era plano aberto pelo `G-PLANREADY`): a coluna `modo` do
+carimbo deriva de `$originSha` — não-nulo ⇒ `subtree`, nulo ⇒ `copia`. O valor já é computado em
+`sync-kit.ps1:166`; zero chamadas de git adicionais.
+
+**Roster re-derivado no pickup** (gate de delegação item 3 — número de aceite não se copia do
+plano): 6 consumidores, **0/6** com `.claude/kit/` ou qualquer `KIT_VERSION`; skills 7/7/7/7/0/4
+(`ContainerForAWS`, `Container`, `Scanlator`, `Patom`, `Monitor`, `Video`); só o `PantonicVideo` é
+repositório git. Confere com o medido na abertura da ficha.
 
 **Depois dela:** `V2K-T13` — Compatibilidade por major entre kit e consumidor (`C-14`) — **[Sonnet]**
 — `docs/plans/P-0729-v2-melhoria-candidatos.md` (§T13). Arquivos-alvo: `.claude/skills/
@@ -416,7 +433,49 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     pré-existente do `kit-exclude.txt` (`TK-02`) só apareceu como crash dentro do sandbox e consumiu
     turnos de diagnóstico até ser isolado como anterior à tarefa — custo de descoberta, não de
     retrabalho do alvo.)
-- `V2K-T12` — Registro de consumidores e versões (`docs/CONSUMIDORES.md`) — [Sonnet] — backlog *(`C-09`)*
+- `V2K-T12a` — Carimbo `SYNC_STATE` no consumidor + registro semeado (`docs/CONSUMIDORES.md`) — [Sonnet] — done *(`C-09`; partição de `T12` no pickup de 2026-08-01)*
+  - Mudou: `.claude/sync-kit.ps1:365-388` — bloco novo após o `Write-Host` de resumo do sync
+    efetivo (`:363`), inalcançável sob `-Check` porque os dois ramos `-Check` já saem antes
+    (`exit 1` em `:357`, `exit 0` em `:360`). Lê `Join-Path $kitRoot 'KIT_VERSION'` trimado (`unknown` se ausente),
+    monta `synced_at` UTC ISO 8601 (`(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')`),
+    deriva `mode` de `$originSha` (já calculado em `:166`, reusado — nenhuma chamada git nova):
+    `subtree` se não-nulo, `copia` se nulo. Escreve as 3 linhas via `Set-Content -Encoding
+    utf8NoBOM` em `Join-Path $kitRoot 'SYNC_STATE'`. `.DESCRIPTION` (`:45-50`) ganhou parágrafo
+    documentando o carimbo. `docs/CONSUMIDORES.md` (novo) — cabeçalho de 4 colunas literal +
+    parágrafo de proveniência + as 6 linhas semeadas do roster medido em 2026-08-01, coluna
+    `Consumidor` com caminho absoluto de cada um dos 6 projetos em `D:\workspaces\`.
+  - Verificação (sandbox no scratchpad, `.claude/kit/` com `sync-kit.ps1` editado + `KIT_VERSION`
+    (`1.4.0`) + skill dummy + agent dummy, sem `kit-exclude.txt`, sem git):
+    - Passo 1 (sem `-Check`):
+      ```
+      WARN: sync-kit - origin commit <unresolved: no commit found for this kit path, git missing, or not a git repo> is not signature-verified (git verify-commit failed or unavailable). Proceeding without signature verification. Re-run with -RequireSignature to enforce.
+      sync-kit: 2 copied, 0 skipped by exclusion.
+      ---SYNC_STATE---
+      version=1.4.0
+      synced_at=2026-08-01T22:38:45Z
+      mode=copia
+      ```
+      (`mode=copia` porque o sandbox não é repositório git ⇒ `$originSha` nulo — esperado.)
+    - Passo 2 (apagado o `SYNC_STATE` do sandbox, rodado com `-Check`):
+      ```
+      WARN: sync-kit - origin commit <unresolved: no commit found for this kit path, git missing, or not a git repo> is not signature-verified (git verify-commit failed or unavailable). Proceeding without signature verification. Re-run with -RequireSignature to enforce.
+      sync-kit -Check: clean, 2 managed artifact(s) match the kit (0 excluded).
+      exitcode=0
+      ---SYNC_STATE exists?---
+      False
+      ```
+      Confirma que `-Check` não recria o carimbo.
+  - Veredito: as 3 chaves nascem no sync efetivo no formato prescrito; `-Check` não escreve;
+    `docs/CONSUMIDORES.md` existe com cabeçalho e 6 linhas semeadas. Sem mudança de piso de
+    regressão (hub sem suíte pytest/app Python, sem `tests/conformance/`; escopo é PowerShell +
+    doc). Gates bloqueantes do kit rodados no repo real: `kit_check.ps1 -Mode validate` →
+    `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION == KIT_VERSION ('1.4.0').` (exit
+    `0`); `-Mode check-drift` → `kit_check: check-drift OK - .claude/README.md == regenerado (9
+    agente(s), 9 skill(s)).` (exit `0`); `dead_code.py` →
+    `dead_code: OK - 0 achado(s) sob 'D:\workspaces\PantonicApp'.` (exit `0`). Nada tocado em
+    `.claude/checks/kit_check.ps1` nem `GOVERNANCA.md` (reservado à `V2K-T12b`).
+  - Consumo: (preenchido pelo orquestrador via notificação)
+- `V2K-T12b` — Coletor `kit_check.ps1 -Mode consumers` + `GOVERNANCA.md` §10 — [Sonnet] — backlog *(`C-09`; depende de `T12a`)*
 - `V2K-T13` — Compatibilidade por major kit × consumidor — [Sonnet] — backlog *(`C-14`; contíguo a `T11`/`T12` por DK-11)*
 - `V2K-T14` — Doutrina do piso de regressão **comportamental** (§4.4) — [Opus] — backlog *(`C-11`a; nunca percentual)*
 - `V2K-T15` — Receita executável de ratchet do piso — [Sonnet] — backlog *(`C-11`b)*

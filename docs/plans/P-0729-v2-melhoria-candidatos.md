@@ -313,17 +313,55 @@ arquivos-alvo de `C-08`/`C-09`"*. As três formam o bloco contíguo da cadeia de
   repositório.
 - **Arquivos-alvo:** `docs/CONSUMIDORES.md` (**novo**); `.claude/sync-kit.ps1` (escrita
   automática); `GOVERNANCA.md` §10 (uma linha).
-- **Método:** colunas — consumidor (caminho ou repo) · versão instalada · data do último sync ·
-  modo (`subtree`/cópia). Quem escreve é o **`sync-kit.ps1`**, no mesmo passo que aplica a versão:
-  registro mantido à mão recria o defeito do `.claude/README.md` (mente em silêncio), que é o
-  risco escrito na ficha. **Semente:** o roster de consumidores é fato volátil com dona única (a
-  memória `kit-pantonic-propagacao`); a tarefa semeia a partir dela e do disco e marca cada linha
-  como `semeada — não verificada por sync` até o primeiro sync real sobrescrevê-la.
-- **Verificação:** executar o `sync-kit.ps1` sobre uma cópia sandbox no scratchpad e conferir que a
-  linha do consumidor foi escrita/atualizada com versão e data; **não deletar** nenhum artefato de
-  saída existente.
-- **Pronto quando:** o arquivo existe com as 4 colunas; o script escreve; §10 declara que o
-  registro é derivado do sync; as linhas semeadas estão marcadas como tal.
+- **Método (revisto por `DK-12`, decisão do dono 2026-08-01 — a ficha original assumia que o
+  `sync-kit.ps1` escreveria o arquivo do hub, o que os fatos medidos contradizem):** colunas —
+  consumidor (caminho ou repo) · versão instalada · data do último sync · modo (`subtree`/cópia).
+  A escrita é **duas peças**:
+  1. **Carimbo, no consumidor** — o `sync-kit.ps1` (que roda de `<child>/.claude/kit/`) escreve
+     `<child>/.claude/kit/SYNC_STATE` ao fim de um sync efetivo: versão aplicada, data (UTC, ISO
+     8601) e modo. É a única escrita que o script pode fazer de onde ele roda.
+  2. **Coletor, no hub** — modo novo `-Mode consumers` em `.claude/checks/kit_check.ps1` (junta-se a
+     `validate`/`generate`/`check-drift`): lê a coluna `consumidor` de `docs/CONSUMIDORES.md` como
+     **entrada**, visita cada caminho e reescreve `versão`/`data`/`modo` a partir do `SYNC_STATE`
+     encontrado. Caminho sem carimbo **preserva** a linha semeada e a marca — nunca a apaga nem
+     inventa versão.
+  Registro mantido à mão recria o defeito do `.claude/README.md` (mente em silêncio), que é o risco
+  escrito na ficha; por isso nenhuma das duas colunas derivadas é editável à mão.
+  **Semente:** o roster é fato volátil com dona única (a memória `kit-pantonic-propagacao`); a
+  tarefa semeia a partir dela e do disco e marca cada linha `semeada — não verificada por sync` até
+  um sync real sobrescrevê-la. **Estado medido em 2026-08-01 (semente esperada, 6 linhas, todas
+  semeadas):** `PantonicContainerForAWS`, `PantonicContainer`, `PantonicScanlator`, `PantonicPatom`
+  (7 skills cada, cópia de 2026-07-07), `PantonicMonitor` (0 skills), `PantonicVideo` (4 skills,
+  único repositório git). **0/6 têm `.claude/kit/` ou qualquer `KIT_VERSION`** — nenhum consumidor
+  foi instalado por subtree ainda, então o coletor não encontrará carimbo algum nesta rodada e as 6
+  linhas permanecem semeadas. Isso é o resultado **esperado**, não falha da verificação.
+- **Verificação:** sandbox no scratchpad com um consumidor sintético (`.claude/kit/` + 1 skill +
+  1 agent, como o sandbox da `V2K-T11`); rodar o `sync-kit.ps1` e conferir que o `SYNC_STATE`
+  nasceu com versão e data; depois rodar `kit_check.ps1 -Mode consumers` com o registro apontando
+  para esse caminho e conferir que a linha foi atualizada, e que um caminho sem carimbo permanece
+  semeado. **Não deletar** nenhum artefato de saída existente. `TK-02` (defeito do
+  `kit-exclude.txt`) é resolvido em tarefa própria **antes** desta — não contornar aqui.
+- **Pronto quando:** o arquivo existe com as 4 colunas e as 6 linhas semeadas marcadas como tais; o
+  `sync-kit.ps1` escreve o carimbo; o `kit_check.ps1 -Mode consumers` deriva as colunas do carimbo e
+  preserva a linha sem carimbo; §10 declara que o registro é derivado do sync (nunca mantido à mão).
+- **Partição em `T12a`/`T12b` (orquestrador, 2026-08-01, no pickup):** a ficha acima soma **8
+  write-clusters** de perfil comportamental (edit-run-debug com sandbox), exatamente no teto do gate
+  de delegação, e a própria ficha mandava avaliar a divisão antes de despachar. Cortada na fronteira
+  natural do dado — quem **produz** o carimbo × quem o **consome**:
+  - **`T12a` — produtor:** `.claude/sync-kit.ps1` escreve o `SYNC_STATE`; `docs/CONSUMIDORES.md`
+    nasce com as 4 colunas e as 6 linhas semeadas. (~4 clusters)
+  - **`T12b` — consumidor:** `kit_check.ps1 -Mode consumers` (modo novo) deriva as colunas do
+    carimbo e preserva a linha sem carimbo; `GOVERNANCA.md` §10 declara o registro derivado do sync.
+    (~4 clusters). Verifica contra o `SYNC_STATE` **real** produzido pela `T12a`, não sintético.
+  O "Pronto quando" acima permanece o critério da **tarefa inteira**: só com `T12a` **e** `T12b`
+  `done` o `C-09` está entregue.
+- **`DK-13` — derivação da coluna `modo` (fechada pelo orquestrador no mesmo pickup):** o
+  `sync-kit.ps1` não tinha como saber se o kit chegou por subtree ou por cópia, e a ficha pedia a
+  coluna sem dizer de onde ela vem — plano aberto pelo gate `G-PLANREADY`. Fechado: `mode=subtree`
+  quando `$originSha` (já calculado em `sync-kit.ps1:166` para a verificação de assinatura) é
+  não-nulo, `mode=copia` quando é nulo. Reusa um valor que o script já computa — zero chamadas de
+  git adicionais — e a leitura é honesta: `git log` só resolve um commit para aquele caminho se o
+  kit veio versionado junto com o repo do consumidor.
 
 ### T13 — Compatibilidade por major entre kit e consumidor [Sonnet] — *`C-14`*
 - **Objetivo:** divergência de **MAJOR** entre kit e consumidor deixa de ser tratada como
@@ -500,13 +538,14 @@ Registrado para que a ausência seja legível como decisão.
 | **DK-2** | Residência da tabela de precedência (`C-03`) | `GOVERNANCA.md` **§3**, não §7 | §7 são guardrails *de agente*; esta é a régua da própria doutrina |
 | **DK-3** | Doutrina em tarefa mecânica | Quando uma tarefa [Sonnet] encosta em uma linha de doutrina, **o texto é redigido neste plano** e a tarefa apenas o transcreve verbatim | Honra a regra (a) do `V2C-T6` (doutrina e mecânica são fases de modelo diferentes) sem inflar 14 candidatos em 27 tarefas; é o mesmo padrão com que o Estágio 3A absorveu o `P-0722` |
 | **DK-4** | Classes e tetos de contexto (`C-04`) | 15 / 40 / 60 / prescrito / 25, com a classe escolhida **antes** de delegar | Calibrado pela série medida do próprio diário (14 linhas `Consumo:`), não por estimativa; a verificação retroativa da `T6` pode corrigir os números, e aí manda a série |
-| **DK-5** | Gatilho de deprecação (`C-07`) | Fechamento de versão **MINOR** do kit; escopo = guardrails com ≥2 MINORs; transição de 1 MINOR | Pendurar em algo que já roda, nunca em calendário — o risco de cerimônia está escrito na ficha |
+| **DK-5** | Gatilho de deprecação (`C-07`) | Fechamento de versão **MINOR** do kit; escopo = guardrails com ≥2 MINORs; transição de 1 MINOR. **Emenda do dono, 2026-08-01 (`DK-5a`):** guardrail com **check executável ativo e nomeado** é **isenta** da pergunta — o check verde é a evidência de vida | Pendurar em algo que já roda, nunca em calendário — o risco de cerimônia está escrito na ficha. A emenda vem do defeito medido na primeira aplicação (`V2K-T9`): regra preventiva enforçada por código só gera caso citável quando é violada, então a pergunta a condenaria por sucesso |
 | **DK-6** | Residência do inbox de memória (`C-10`) | **Global** (`~/.claude/docs/GOVERNANCA_MEMORIAS.md`); o repo recebe ponteiro; fila em `<memory-dir>/_INBOX.md` | Memória por projeto existe em projeto não-Pantonic do dono — o teste de residência da `T4` manda para o global |
 | **DK-7** | `kit_check.ps1` × `ratchet_piso.py` × `dead_code.py` (`V2M-T5`) | **Três scripts**, um único ponto de invocação (`guardrails-check`) | Alvos e runtimes diferentes (kit do hub em PowerShell × código do consumidor em Python); unificar acoplaria o gate do hub ao runtime do consumidor. Fecha a pergunta deixada aberta na ficha do `C-01` |
 | **DK-8** | Formato da série de telemetria (`C-13`) | TSV append-only com coluna obrigatória `fonte ∈ {usage, contado, nao_medido}`; semente das 14 linhas já registradas | TSV agrega com `Import-Csv` sem parser; a coluna `fonte` preserva a distinção medido×autorrelato, que nenhum framework do corpus faz |
 | **DK-9** | Bump de versão | **Dois** bumps MINOR: `1.3.0` no fim do Bloco A (`T3`) e `1.4.0` no fim do Bloco C (`T19`); as demais tarefas apendam ao `## [Não lançado]` do `CHANGELOG.md` | 19 tags para uma iniciativa que fecha em `2.0.0` no Estágio 4 seria ruído; a rastreabilidade fica no `[Não lançado]` |
 | **DK-10** | `C-04` esperar a série de `C-13`? | **Não** — `T6` vem antes de `T18` | A série histórica já existe medida no diário (14 linhas, 5 estouros); esperar a série nova custaria dezenas de tarefas para calibrar o que o dado atual já calibra |
 | **DK-11** | Posição de `C-14` na ordem I÷E | Sobe para `T13`, contíguo a `C-08`/`C-09` | Motivo dado pelo próprio dono ao divergir da recomendação `adiar` em `V2C-T5`: custo marginal menor na mesma rodada, arquivos-alvo compartilhados |
+| **DK-12** | Mecanismo de escrita do registro de consumidores (`T12`/`C-09`) — **decisão do dono, 2026-08-01** | **Carimbo no consumidor + coletor no hub**, duas peças: (1) o `sync-kit.ps1`, rodando no consumidor, escreve `<child>/.claude/kit/SYNC_STATE` (versão + data + modo); (2) no hub, um coletor lê a coluna `consumidor` de `docs/CONSUMIDORES.md` como **entrada**, visita cada caminho e reescreve as colunas `versão`/`data` a partir do carimbo. Descartados: `-Registry <path>` (depende de co-localização em disco) e registro só semeado (adia a escrita automática) | A ficha original dizia "quem escreve é o `sync-kit.ps1`, no mesmo passo que aplica a versão" — **três fatos medidos em 2026-08-01 contradizem essa premissa**: (a) o script roda a partir de `<child>/.claude/kit/sync-kit.ps1` com raízes resolvidas de `$PSScriptRoot` (`sync-kit.ps1:7-14,74-75`), logo não tem handle da árvore do hub e **não pode escrever um arquivo do hub**; (b) o script **não tem passo que aplique versão** — zero referências a `KIT_VERSION`, e suas únicas escritas são `Copy-Item` (`sync-kit.ps1:244,336`); (c) **nenhum consumidor está instalado por subtree** — 0/6 têm `.claude/kit/` ou qualquer `KIT_VERSION`, e 5/6 nem são repositórios git, então `git subtree add` sequer é possível neles hoje. O carimbo é a única escrita que o script pode fazer de onde ele roda; o coletor é a única leitura que o hub pode fazer sem mentir. Hoje o coletor não acha carimbo nenhum e o arquivo fica 100% `semeada — não verificada por sync` — mesmo resultado visível do registro só semeado, mas com a máquina pronta no primeiro sync real |
 
 ---
 
