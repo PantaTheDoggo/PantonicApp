@@ -16,7 +16,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
-| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 7/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
+| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 9/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
@@ -36,14 +36,18 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2K-T8` — `file:line` e comando de validação no dossiê da tarefa
-(`C-06`), quarta tarefa do Bloco C — **[Sonnet]** —
-`docs/plans/P-0729-v2-melhoria-candidatos.md` (§T8). Dependência única (`V2M-T1`, que escreve
-`G-EXECREADY`) fechada com o Estágio 3A inteiro. Toca três arquivos: template de tarefa atômica em
-`.claude/skills/diario-de-obras/SKILL.md`, campo correspondente em
-`.claude/skills/handover/SKILL.md` e o texto de §4.2 já **redigido no plano** (DK-3, transcrever
-verbatim). A verificação é auto-referente: as 19 tarefas do próprio `P-0729-v2-melhoria-candidatos`
-têm de satisfazer o template novo — se não satisfizerem, muda o template, não as tarefas.
+**Próxima tarefa da sprint:** `V2K-T10` — Inbox de memória: separar descobrir de aprovar (`C-10`,
+adaptar), sexta tarefa do Bloco C — **[Opus]** — `docs/plans/P-0729-v2-melhoria-candidatos.md`
+(§T10). Destravada pela `V2K-T4` (régua de residência) e sem outra dependência aberta. Residência
+já decidida pelo dono em 2026-07-30 pela régua de §3.1: **fora do kit** — a fila e a promoção vão
+para `~/.claude/docs/GOVERNANCA_MEMORIAS.md` + skill global, não para `GOVERNANCA.md` nem para as
+skills versionadas; **não entra na distribuição do Estágio 4**.
+
+**Decisão pendente do dono, aberta pela `V2K-T9` (2026-08-01) — precede a `V2K-T10`:** a primeira
+aplicação do gatilho de revisão mediu que a pergunta de `DK-5` não distingue *regra morta* de
+*regra preventiva que ninguém violou* — ACL, egress G6 e namespace de estado ficaram sem caso
+citável e a aplicação literal os marcaria `OBSOLETA desde 1.4.0`, removendo-os em `1.6.0`. Os três
+estão **retidos sem marcação** até o dono calibrar a régua. Detalhe e opções na nota da `V2K-T9`.
 
 **Planejamento da campanha: feito em 2026-07-30 [Opus].** O plano nasceu **fechado** (gate de
 publicação, `G-PLANREADY` item 5) com 6 decisões: **DL-1** achado comprovadamente vivo → tornar o
@@ -106,7 +110,7 @@ ratificado, e só então entrou no inbox e neste índice: 19 tarefas, 14 candida
 questão pendente. O ciclo do gate está fechado na prática antes de virar doutrina em `V2M-T1`
 (G-PLANREADY item 5).
 
-### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 6/19 (Bloco A fechado, Bloco C em andamento), nascido fechado em 2026-07-29 pela `V2C-T6`]
+### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 9/19 (Bloco A fechado, Bloco C em andamento), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
 19 tarefas, cada uma com o `C-NN` de origem. Ordem normativa em `docs/plans/P-0729-v2-melhoria-candidatos.md`
 §2 — **Bloco A** (`T1..T4`) antes do Estágio 3A; **Bloco C** (`T5..T19`) depois dele.
@@ -223,8 +227,46 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
   - Consumo: ~14 tool uses (contados), tokens **NÃO MEDIDOS** — **execução inline no orquestrador**
     (Opus), sem notificação de subagente e portanto sem bloco `<usage>`; contagem é autoestimativa
     e está marcada como tal. Classe "redação de doutrina" (**≤30**), registrada antes de começar.
-- `V2K-T8` — `file:line` + comando de validação no dossiê — [Sonnet] — backlog *(`C-06`; depende de `V2M-T1`)*
-- `V2K-T9` — Gatilho de revisão e deprecação da doutrina — [Opus] — backlog *(`C-07`; depende do Estágio 3A inteiro)*
+- `V2K-T8` — `file:line` + comando de validação no dossiê — [Sonnet] — **done** (2026-08-01) *(`C-06`)*
+  - `.claude/skills/diario-de-obras/SKILL.md:55-70` — "Arquivos-alvo" agora pede `caminho:linha`
+    (com `§seção`/`(novo)` como formas mais fracas); campo novo "Verificação" (comando colado do
+    terminal). `.claude/skills/handover/SKILL.md:22-25` — mesma exigência no fechamento, sem
+    tocar Consumo/checkpoint. `GOVERNANCA.md` §4.2 (~linha 181) recebeu o texto DK-3 verbatim.
+  - Verificação auto-referente (**Ramo B**): as 19 tarefas do próprio plano **não** satisfazem
+    `caminho:linha` estrito — usam âncora de seção/`linha X+`/`(novo)` (forma do ponteiro, caso
+    previsto) → template ajustado, tarefas não reescritas.
+  - **Ratificado pelo dono em 2026-08-01:** o afrouxamento fica como está — `caminho:linha` é
+    preferência, `§seção`/`(novo)` são formas aceitas, e o requisito estrito do `C-06` é o
+    **comando colado** no campo "Verificação". Motivo: 0/19 tarefas de um planejador Opus
+    produziram a forma estrita, e a própria doutrina DK-3 diz que `caminho:linha` envelhece e não
+    se mantém. Reabrir a exigência exige tíquete avulso, não revisão da `V2K-T8`.
+  - Gate: `pwsh .claude/checks/kit_check.ps1 -Mode validate` → `kit_check: OK - 9 agente(s) e
+    9 skill(s) validados; VERSION == KIT_VERSION ('1.4.0').` (exit 0); `-Mode check-drift` →
+    `kit_check: check-drift OK - .claude/README.md == regenerado (9 agente(s), 9 skill(s)).`
+    (exit 0). Suítes — não aplicável; piso de regressão — sem mudança. Sem bump.
+  - Consumo: 18 tool uses, ~99k tokens, Sonnet, ~6,6 min (medido no `<usage>` da notificação).
+    Classe "redação de doutrina" (**≤30**), declarada no dossiê antes de delegar — dentro do teto,
+    checkpoint de 20 não chegou a disparar. Autorrelato do executor: 19 tool uses (medido 18) —
+    primeira divergência da série **para mais**; as anteriores subestimavam.
+- `V2K-T9` — Gatilho de revisão e deprecação da doutrina — [Opus] — **done** (2026-08-01) *(`C-07`; instituída a porta de saída de um guardrail — nenhuma regra jamais havia saído do framework)*
+  - Resultado: `GOVERNANCA.md` ganhou a subseção **`### 7.1 Revisão e deprecação de guardrails`** ao fim do §7, com os quatro elementos de `DK-5`: **gatilho** (fechamento de MINOR do kit, nunca calendário), **escopo** (guardrails com ≥2 MINORs de idade, i.e. introduzidas em MINOR ≤ corrente − 2), **pergunta única** (*"esta regra mudou algum comportamento nos últimos 2 MINORs? cite o caso"*) e **prazo** (sem caso → `OBSOLETA desde <versão>` → 1 MINOR de transição → remoção no seguinte, desfeita por qualquer caso citável surgido na transição). Mais a lista **"Registro das rodadas"**, que é o estado que o gatilho lê.
+  - Definições acrescentadas na redação (detalhe interno de `DK-5`, não mudança de rota): **caso citável** = ocorrência *registrada* na janela (diário do hub **ou de um consumidor**, `CHANGELOG.md`, nota de fechamento, decision record) em que a regra bloqueou, forçou correção ou embasou decisão; com duas exclusões que são o modo de falha da pergunta — **suíte verde não é caso** e **lembrança sem registro não é caso**. Sem fixar a base de evidência a pergunta era inaplicável: o hub não tem código de produção, então avaliar guardrail de arquitetura só pelo registro dele responde "não" por construção.
+  - Gatilho na skill `.claude/skills/checar-versao-kit/SKILL.md`: seção nova **"Gatilho de revisão da doutrina (§7.1)"** — a skill já resolve a versão local, então compara o MINOR corrente com o da última rodada registrada em §7.1 e, se avançou, **reporta a revisão como pendente sem executá-la** (a revisão é tarefa nomeada, com registro próprio). Corrigido no mesmo ato o "esse é o **único** gatilho" da seção "Quando roda", que a adição tornava falso: o gatilho de *invocação* continua único (criação de plano); o que passa a haver são duas checagens dentro dele. Atraso aceito por desenho (um MINOR pode fechar sem plano novo logo depois) — troca pontualidade por custo zero de cerimônia. `description` do frontmatter atualizada e `.claude/README.md` **regenerado** (`-Mode generate`, a única correção legítima de deriva).
+  - **Primeira aplicação, executada no ato** (a verificação exigida pelo dossiê) — 14 guardrails, janela `1.3.0`+`1.4.0`:
+    - **Fora de escopo por idade (6):** itens **9-13** (`G-DEADCODE`, `G-PLANFIDELITY`, `G-PREMISE`, `G-PLANREADY`, `G-EXECREADY`) nasceram em `1.4.0` — idade 0; item **14** (allowlist destrutiva, `V2K-T5`) ainda não foi lançada. A régua dos ≥2 MINORs as exclui corretamente.
+    - **Em escopo com caso citável (5):** **1 (regra de dependência)** — `P-0730` do `PantonicVideo` (2026-07-30) usa a direção das camadas como critério de parada (`DL-1`: se tornar o símbolo honesto exigir mover responsabilidade entre camadas, o executor PARA e escala) e ordena a campanha núcleo→bordas por causa dela (§ linhas 76 e 157-158); **3 (MVVM)** — sonda do planejamento de 2026-07-30 mediu 15 properties de ViewModel sem binding declarativo (não há `.ui` nem `.qml` no repo), achado que só existe porque a regra prescreve a camada; **6 (gate de conformance)** — o fecho da `V2M-T5` ficou **bloqueado** até o baseline do consumidor sair `exit 0` (`CHANGELOG.md` 1.4.0); **7 (piso de regressão)** — `DL-5` (2026-07-30): o piso cai por deleção **nominal** de teste, nunca em silêncio; **8 (disciplina de contexto)** — `V2K-T6` (teto graduado) e `V2K-T7` (checkpoint) existem por causa dela, e a `V2K-T4` decidiu execução inline citando §3.
+    - **Em escopo sem caso citável (3):** **2 (ACL)**, **4 (egress único de filesystem, G6)** e **5 (namespace de estado)**.
+    - **Resultado: 0 marcações.** Os três sem caso ficam **retidos sem marcação**, pendentes de decisão do dono — ver ponto de decisão abaixo. Registrado em `GOVERNANCA.md` §7.1, lista "Registro das rodadas".
+  - **Ponto de decisão para o dono (defeito de calibragem medido na primeira aplicação):** a pergunta de `DK-5` **não distingue "regra morta" de "regra preventiva que ninguém violou"**. Guardrail enforçado por teste automático só gera caso citável quando alguém o **viola**; funcionando perfeitamente, ele fica silencioso e a pergunta o condena. Foi exatamente o que aconteceu com ACL, egress G6 e namespace de estado — três regras de arquitetura que a aplicação literal marcaria `OBSOLETA desde 1.4.0` e removeria em `1.6.0`. Agravante medido: os dois MINORs da janela (`1.3.0` e `1.4.0`) fecharam **no mesmo dia** (2026-07-30), então "2 MINORs" hoje valem ~2 dias de relógio, não um período de observação. Não alterei `DK-5` (a rota é do dono — `G-PLANFIDELITY`); retive e escalei.
+  - Veredito: suítes/conformance — não aplicável (tarefa só de doutrina + skill, nenhum código de produção no hub). Gate do kit — `validate` → `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION == KIT_VERSION ('1.4.0').` (exit 0); `check-drift` → falhou primeiro (exit 1, 2 linhas divergentes, pela `description` nova), corrigido com `-Mode generate` e reconferido → `kit_check: check-drift OK - .claude/README.md == regenerado (9 agente(s), 9 skill(s)).` (exit 0). Piso de regressão — sem mudança. Sem bump (o `1.5.0` fecha o Bloco C). Nenhum arquivo deletado.
+  - Consumo: 30 tool uses, ~120k tokens (estimado), Opus, ~12 min — **execução inline no
+    orquestrador**, mesmo critério da `V2K-T4` (2 write-clusters em 2 arquivos + registro; `<15`
+    turnos estimados ⇒ inline, `GOVERNANCA.md` §3 "delegar protege contexto, não reduz consumo").
+    Não há `<usage>` de subagente: a contagem de tool uses é exata (do próprio contexto), a de
+    tokens é **estimativa do orquestrador** e está marcada como tal — não entra na série como dado
+    medido. Classe "redação de doutrina" (**≤30**): exatamente no teto, sem estouro; 5 das 30
+    chamadas foram a varredura de evidência no consumidor (`PantonicVideo`), que não estava
+    prevista no dossiê e sem a qual a pergunta de `DK-5` era inrespondível para os itens 1-5.
 - `V2K-T10` — Inbox de memória: fila + promoção pelo dono — [Opus] — backlog *(`C-10` adaptar; `T4` já cumprida)*
   - **Residência decidida (dono, 2026-07-30, pela régua do `GOVERNANCA.md` §3.1):** **fora do kit** — a fila e a promoção vão para `~/.claude/docs/GOVERNANCA_MEMORIAS.md` + skill global, não para `GOVERNANCA.md` nem para as skills versionadas. Não entra na distribuição do Estágio 4.
 - `V2K-T11` — Commits assinados + verificação no sync (versão mínima) — [Sonnet] — backlog *(`C-08` adaptar; ramo B medido)*

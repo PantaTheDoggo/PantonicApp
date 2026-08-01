@@ -20,7 +20,9 @@ invocada pelo usuário.
    - Status: `in review` (pronto para validação do usuário), `done` (validado/trivial),
      `blocked` (com razão) ou `in progress` (interrompida — anotar ponto de parada).
    - Preencher "Notas de execução" da tarefa (≤ ~5 linhas + ponteiros): o que foi feito, arquivos
-     tocados, testes criados (TF/TR), desvios do plano, piso de regressão anterior × atual.
+     tocados (`caminho:linha`), o **comando de verificação colado do terminal** (não a intenção de
+     verificar — `GOVERNANCA.md` §4.2) com os testes criados (TF/TR), desvios do plano, piso de
+     regressão anterior × atual.
      **Nunca na célula do índice** (guardrail generalizado em `diario-de-obras`): se a tarefa
      pertence a um `### <ID>` do diário, o destino é a "Notas de execução" daquela seção; se a
      sprint vive inteiramente em `docs/plans/P-*.md` (índice com linha única, sem heading no

@@ -178,6 +178,10 @@ também como um kanban adaptado:
   nenhum escreve plano completo direto no diário (risco de conflito de edição). Cada um grava seu
   plano em `docs/plans/P-<MMDD>-<slug>.md` e apensa **uma linha** a `docs/plans/_INBOX.md`
   (append-only). O inbox é drenado para o índice do diário na próxima sessão que o utilizar.
+- **Dossiê de tarefa aponta e verifica.** "Arquivos-alvo" carrega `caminho:linha`; "Verificação"
+  carrega o **comando**, copiado do terminal, não a intenção de verificar. `caminho:linha` é
+  ponteiro de leitura — envelhece e **não** se mantém; tratá-lo como contrato custa mais do que
+  entrega.
 
 ### 4.3 Execução em contexto limpo
 
@@ -333,6 +337,52 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra
 que não é testável por código deve, no mínimo, constar como checklist de review.
+
+### 7.1 Revisão e deprecação de guardrails
+
+Um framework que só adiciona regra apodrece: o custo de ler a doutrina cresce a cada MINOR e
+nenhuma regra jamais sai. Esta seção é a **porta de saída** — e é a única forma legítima de remover
+um guardrail de §7.
+
+**Gatilho.** A revisão pendura-se no **fechamento de uma versão MINOR do kit**, nunca em
+calendário. Data no calendário vira cerimônia executada sem material novo para julgar; o fechamento
+de MINOR é exatamente o momento em que há material. Operacionalizada pela skill `checar-versao-kit`,
+que já resolve a versão local: quando o MINOR corrente é maior que o da **última revisão
+registrada** abaixo, a revisão está pendente e a skill reporta ao dono.
+
+**Escopo.** Entram só as guardrails com **≥2 MINORs de idade** — introduzidas em MINOR ≤ (corrente
+− 2). Regra recém-adicionada não teve tempo de agir; cobrar evidência dela é medir ruído.
+
+**Pergunta única, aplicada a cada guardrail em escopo:**
+
+> Esta regra mudou algum comportamento nos últimos 2 MINORs? Cite o caso.
+
+**Caso citável** é uma ocorrência **registrada** no intervalo — diário de obras (do hub **ou de um
+consumidor**), `CHANGELOG.md`, nota de fechamento de tarefa, decision record — em que a regra
+bloqueou algo, forçou uma correção ou embasou uma decisão. Duas exclusões, porque são o modo de
+falha da pergunta: **suíte verde não é caso** (é a regra sendo satisfeita, não agindo) e
+**lembrança sem registro não é caso** (se ninguém escreveu, não conta). A evidência de guardrail de
+arquitetura mora no consumidor, não no hub — o hub não tem código de produção, e avaliar essas
+regras só pelo registro dele responde "não" por construção.
+
+**Resultado.** Sem caso citável, a guardrail é marcada **`OBSOLETA desde <versão>`** no próprio
+item, **permanece em vigor** por **um MINOR** de transição e é **removida no MINOR seguinte** — a
+remoção é uma tarefa nomeada como qualquer outra, com registro no diário. Um único caso citável
+durante a transição desfaz a marcação. **Zero marcações numa rodada é resultado legítimo; não
+registrar a rodada não é** — revisão sem registro não aconteceu.
+
+**Registro das rodadas:**
+
+- **`1.4.0` — 2026-08-01** (primeira aplicação, `V2K-T9`): 14 guardrails avaliadas, 8 em escopo
+  (itens 1-8, doutrina original), 6 fora por idade (itens 9-13 nascidos em `1.4.0`; item 14 ainda
+  não lançado). Casos citáveis encontrados para os itens **1, 3, 6, 7, 8**; **sem caso** para os
+  itens **2 (ACL)**, **4 (egress G6)** e **5 (namespace de estado)**. **0 marcações** — os três
+  ficam **retidos sem marcação**, pendentes de decisão do dono, porque a rodada mediu um defeito de
+  calibragem da própria pergunta: guardrail **preventivo** enforçado por teste automático só produz
+  caso citável quando alguém o **viola**, de modo que a pergunta não distingue "regra morta" de
+  "regra que funcionou tão bem que ninguém a violou". Reter é a leitura conservadora do resultado;
+  a alternativa (marcar) removeria em `1.6.0` três regras de arquitetura sem evidência de que estão
+  mortas. Resultado item a item em `docs/DIARIO_DE_OBRAS.md` (`V2K-T9`).
 
 ## 8. Documentação mínima de um projeto Pantonic*
 

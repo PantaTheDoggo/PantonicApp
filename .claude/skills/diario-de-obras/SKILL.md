@@ -57,14 +57,21 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
 ```markdown
 ### S1-T3 — <título>  [status]
 - **Objetivo:** <uma frase>
-- **Arquivos-alvo:** <caminhos exatos>
+- **Arquivos-alvo:** <caminho:linha (âncora já conhecida); caminho §seção quando o alvo ainda não
+  tem linha fixa no momento do planejamento; caminho (novo) para arquivo que a própria tarefa cria>
 - **Contratos/classes:** <Protocols, classes envolvidas>
 - **Testes:** TF-<id> (novo), TR-<id> (tranca), suítes a rodar
+- **Verificação:** <comando copiado do terminal — não a intenção de verificar; para tarefa sem
+  artefato executável, a ação concreta aplicada e o resultado registrado>
 - **Pronto quando:** <critério objetivo>
 - **Notas de execução:** <≤ ~5 linhas + ponteiros (decision record, commit); preenchido pelo
   executor no handover — custo composto: nota extensa é relida por todo agente em toda tarefa
   futura>
 ```
+
+`caminho:linha` é a forma preferida — mas é ponteiro de leitura, envelhece e não se mantém como
+contrato (`GOVERNANCA.md` §4.2). `§seção` e `(novo)` são as formas mais fracas ainda aceitas,
+quando a linha exata não existe no momento do planejamento (`C-06`, padrão de `BM-20§D5`).
 
 ## Operações
 

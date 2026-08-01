@@ -1,6 +1,6 @@
 ---
 name: checar-versao-kit
-description: Checa se a versão local do kit agêntico diverge da versão publicada no hub PantonicApp, sem nunca atualizar sozinho. Resolve a versão local em três modos — consumidor (.claude/kit/KIT_VERSION), hub (.claude/KIT_VERSION sem .claude/kit/) e não-instalado. Usar no momento de criar/registrar um plano novo (chamada pela skill diario-de-obras, operação "Registrar plano").
+description: Checa se a versão local do kit agêntico diverge da versão publicada no hub PantonicApp, sem nunca atualizar sozinho, e arma o gatilho de revisão da doutrina (GOVERNANCA.md §7.1) quando o MINOR avançou desde a última rodada. Resolve a versão local em três modos — consumidor (.claude/kit/KIT_VERSION), hub (.claude/KIT_VERSION sem .claude/kit/) e não-instalado. Usar no momento de criar/registrar um plano novo (chamada pela skill diario-de-obras, operação "Registrar plano").
 ---
 
 # checar-versao-kit — checagem anti-drift do kit agêntico
@@ -11,7 +11,9 @@ procedimento que a executa. Em caso de dúvida sobre a regra, §10 é a fonte, n
 ## Quando roda
 
 Na criação/registro de todo plano novo (skill `diario-de-obras`, operação "1. Registrar plano").
-Esse é o único gatilho — não roda a cada turno, nem a cada tarefa, só quando um plano é criado.
+Esse é o único gatilho de invocação — não roda a cada turno, nem a cada tarefa, só quando um plano
+é criado. Uma vez invocada, executa **duas** checagens independentes: a de versão (passos 1-3
+abaixo) e a de revisão da doutrina (última seção), que aproveita a mesma leitura de versão.
 
 ## Procedimento
 
@@ -53,6 +55,28 @@ Comparar a tag mais alta retornada (`kit-v<versão>`) com a versão local resolv
   sozinho.**
 - **Sem rede / remote inacessível** → reporta "não verificado" e segue. Falha de rede não
   bloqueia o trabalho nem vira silêncio — a incerteza é reportada.
+
+## Gatilho de revisão da doutrina (`GOVERNANCA.md` §7.1)
+
+A porta de saída de um guardrail está pendurada no **fechamento de MINOR do kit** — e esta skill é
+quem a arma, porque já leu a versão local no passo 1. A doutrina mora em §7.1; aqui está só o
+procedimento.
+
+Rodar **depois** da checagem de versão, em qualquer modo exceto "kit não instalado":
+
+1. Ler o MINOR corrente da versão local resolvida no passo 1 (`X.Y.Z` → `Y`).
+2. Ler a **última revisão registrada** na lista "Registro das rodadas" de `GOVERNANCA.md` §7.1
+   (Grep por `Registro das rodadas`, sem ler a seção inteira).
+3. **MINOR corrente > MINOR da última revisão** → a revisão está **pendente**. Reportar ao dono:
+   versão da última rodada, versão corrente, e quantas guardrails de §7 entram em escopo
+   (introduzidas em MINOR ≤ corrente − 2). **Não executar a revisão aqui** — ela é uma tarefa
+   nomeada, com registro próprio no diário; esta skill só a torna visível no momento em que há
+   material para julgar.
+4. **MINOR igual** → segue em silêncio, como no caso "versões iguais" da checagem de versão.
+
+Um MINOR pode fechar sem que nenhum plano novo seja criado logo depois; nesse caso o aviso aparece
+na próxima criação de plano. O atraso é aceito por desenho — o gatilho troca pontualidade por
+custo zero de cerimônia (§7.1, "nunca em calendário").
 
 ## Proibição
 
