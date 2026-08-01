@@ -71,9 +71,27 @@ Regras de operação:
   o consumo total.** O subagente parte frio e paga de novo CLAUDE.md + definição do agente +
   skills carregadas em todos os seus turnos. Tarefa pequena (< ~15 turnos estimados) prefere
   execução inline a abrir um subagente.
-- **Orçamento de turnos por tarefa atômica**: ~≤40 tool uses esperado no agente de execução.
-  Estourar é sinal de tarefa mal decomposta ou de thrashing (editar-testar-editar sem plano
-  interno) — reportar no handover, não só continuar.
+- **Orçamento de turnos por tarefa atômica — teto graduado por classe.** O teto único de ~≤40 tool
+  uses tratava tarefas de naturezas diferentes como se custassem o mesmo. Cada classe tem teto
+  próprio, calibrado pela série medida das linhas `Consumo:` deste repositório (26 registros em
+  2026-08-01), nunca por estimativa:
+
+  | Classe de tarefa | Teto | Como reconhecer |
+  |---|---|---|
+  | Mecânica / pontual | **≤15** | 1 write-cluster, arquivo(s) já conhecido(s), sem contrato novo |
+  | Implementação padrão | **≤40** | vários write-clusters numa camada; contrato novo mas verificação direta |
+  | Comportamental multi-camada | **≤60**, com **teto numérico por ramo obrigatório no dossiê** | muda contrato ou fluxo; ciclo editar-rodar-depurar (sync→async, timing de teste) |
+  | Investigação / mapeamento | **sem default** — o teto é **prescrito no dossiê** junto do método de sondagem | o entregável é descoberta, não mudança de código |
+  | Redação de doutrina / planejamento | **≤30** | edita `GOVERNANCA.md`/plano/skill; o custo é decisão, não build |
+
+  A **classe é escolhida no dossiê, antes de delegar**, e fica registrada nele. Estourar o teto da
+  classe é sinal de decomposição errada — **replanejar, não continuar** (reportar no handover, não
+  só seguir). Escolher classe mais generosa **depois** do estouro é falsificação da série: vale a
+  classe registrada antes da delegação.
+
+  O **≤30** da última classe é correção da série sobre a estimativa inicial de ≤25: das 7 tarefas de
+  redação já medidas, 5 estouravam ≤25 e só 2 estouram ≤30. Quando série medida e estimativa
+  divergem, manda a série.
 - **Decisão que escolhe mecanismo de plataforma exige sonda de viabilidade junto da
   recomendação, não só depois.** Medido na iniciativa do hub único de governança (`P-0721`/
   `P-0725`, 2026-07): três premissas caíram por sondagem curta demais antes de escolher o
@@ -299,6 +317,14 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    normativo lá. Complementa G-PLANFIDELITY (não muda rota) e o modelo por fase (§3): a decisão
    nunca desce para o modelo barato. *Enforcement:* instrução no arquivo do agente
    `pantonic-executor`; a `proximo-passo` só delega tarefa de plano fechado; gate de review.
+14. **Allowlist de subcomandos destrutivos** — **Comando destrutivo não é decisão de agente.**
+   Reescrita de histórico, descarte de trabalho não commitado e remoção de branch/repositório
+   ficam negados em `.claude/settings.json` (`permissions.deny`) para todo agente com `Bash`. O
+   modo de falha correto é **ruidoso** — comando negado, agente reporta ao dono — nunca
+   silencioso. Ampliar a lista é rotina; encurtá-la exige ato explícito do dono registrado no
+   diário. *Enforcement:* `permissions.deny` em `.claude/settings.json` (`Bash(git push
+   --force*)`, `Bash(git push -f*)`, `Bash(git reset --hard*)`, `Bash(git branch -D*)`,
+   `Bash(git clean -fdx*)`, `Bash(gh repo delete*)`).
 
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra
