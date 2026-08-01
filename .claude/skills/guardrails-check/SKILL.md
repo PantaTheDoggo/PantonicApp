@@ -34,6 +34,12 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    (índice derivado `.claude/README.md` versus o disco); ambos precisam sair `0`. Deriva →
    regenerar com `-Mode generate`, **nunca** editar o `.claude/README.md` à mão
    (`GOVERNANCA.md` §9).
+6. **Código morto testado (`.claude/checks/dead_code.py`) — bloqueante, mesmo padrão do item 5** —
+   `python .claude/checks/dead_code.py` (usa o `--root` default do próprio projeto); exit 0
+   obrigatório. Cobertura por teste não confere "vivo" (`GOVERNANCA.md` §7, G-DEADCODE) — um
+   achado é órfão real (remover no mesmo commit) ou dispatch dinâmico ainda não coberto pelas
+   categorias auto-vivas do script (Pydantic validator, entry class de `manifest.json`, override
+   de virtual Qt), nunca allowlist de conveniência.
 
 Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sumário) — nunca
 `pytest` puro despejando o log inteiro no contexto (`CLAUDE.md` global, Regra 3).

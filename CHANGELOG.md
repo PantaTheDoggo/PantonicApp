@@ -53,6 +53,16 @@ compatível, PATCH corrige redação.
   *Enforcement* preservados). Absorvido no mesmo ato o `TK-01` (achado fora de escopo da
   `V2M-T2`): `GOVERNANCA.md` §3 e o bullet acima corrigidos para descrever a skill
   `modelo-por-fase` como residente no kit versionado, não `~/.claude/skills/` (`V2M-T3`).
+- **`V2M-T5` fechada — check executável de código morto testado (G-DEADCODE), Estágio 3A
+  encerrado 5/5.** `.claude/checks/dead_code.py` (alcançabilidade por AST a partir de entry
+  points, três rodadas de ajuste estrutural — auto-vivo para POC/seed de diretório, import
+  relativo em `_resolve_import_targets`, override de virtual Qt) wireado como item **6**,
+  bloqueante, do "Checklist executável" de `.claude/skills/guardrails-check/SKILL.md`. Baseline do
+  `PantonicVideo` confirmado em `exit 0` pela campanha `SPRINT-DEADCODE` daquele repositório (92
+  símbolos removidos, `docs/plans/P-0730-limpeza-codigo-morto.md`), destravando o gate que estava
+  bloqueado desde 2026-07-30. Confirmado nesta sessão: `python .claude/checks/dead_code.py`
+  (root = PantonicApp) e `--root D:\workspaces\PantonicVideo` → `OK - 0 achado(s)` nos dois; fixture
+  sintética (`orphan_helper` referenciado só por teste) → exit 1, 1 achado exato.
 
 ## 1.3.0 — 2026-07-30
 

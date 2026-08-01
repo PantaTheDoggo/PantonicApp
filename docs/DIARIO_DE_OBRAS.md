@@ -15,7 +15,7 @@ benchmarking → confronto → melhoria → documentação).
 | SPRINT-PANTONICV2 | Consolidação do framework em V2 — 4 estágios encadeados | in progress | `## SPRINT-PANTONICV2` |
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
-| P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5) | in progress | `docs/plans/P-0729-v2-melhoria.md` |
+| P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
@@ -44,10 +44,9 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** **executar a `SPRINT-DEADCODE` no `PantonicVideo`** — **[Sonnet]**, e
-**no backlog daquele projeto**, não neste: `D:\workspaces\PantonicVideo\docs\plans\P-0730-limpeza-codigo-morto.md`,
-15 tarefas (T1..T15), uma por contexto. Nada da `PANTONIC-V2` avança antes de aquele baseline chegar
-a `exit 0`.
+**Próxima tarefa da sprint:** `V2K-T5` — Allowlist de subcomandos destrutivos (`C-02`), primeira
+tarefa do Bloco C — **[Sonnet]** — `docs/plans/P-0729-v2-melhoria-candidatos.md` (§T5). Estágio 3A
+fechou 5/5 (`V2M-T5`); a ordem DK-1 libera o Bloco C.
 
 **Planejamento da campanha: feito em 2026-07-30 [Opus].** O plano nasceu **fechado** (gate de
 publicação, `G-PLANREADY` item 5) com 6 decisões: **DL-1** achado comprovadamente vivo → tornar o
@@ -73,7 +72,7 @@ concluir — a alternativa de liberar o Bloco C em paralelo (exceção à DK-1) 
 fecho foram **descartadas**. Consequência aceita: os 86 achados entram no caminho crítico da
 iniciativa e precisam ser triados um a um (órfão real × categoria de despacho ainda não nomeada),
 em prazo desconhecido. A ordem DK-1 permanece **sem exceção**: Bloco A → Estágio 3A **inteiro** →
-Bloco C → Estágio 4. Estágio 3A em 4/5.
+Bloco C → Estágio 4. Estágio 3A fechado (5/5).
 **Destravada:** `V2M-T4` fechou em
 2026-07-30 (contador sequencial de planos materializado, `_INBOX.md` com próximo id `P-0730`). O
 **Bloco B abriu em 2026-07-30** com a `V2M-T1` (§7 em 13 guardrails + gate de publicação + os
@@ -480,7 +479,14 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     adicionado ou removido). (3) `git status --short` → só `M`, nenhum `R`/rename.
   - Consumo: 24 tool uses, ~55k tokens, Sonnet, ~7min26s (medido pela notificação de conclusão;
     o autorrelato do executor dizia 14 tool uses — subestimativa de ~42%, mesmo padrão da Regra 7).
-- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — blocked *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B; continuação 2026-07-30: 3 rodadas de ajuste estrutural — a 3ª é a última, autorizada pelo dono — concluídas; bloqueado agora só pela campanha de limpeza no `PantonicVideo`, ainda sem entrada no backlog daquele projeto)*
+- `V2M-T5` — Check executável de código morto testado (G-DEADCODE) — [Sonnet] — done *(herdado de `P-0722` Fase 3; script próprio, ver DK-7 do Estágio 3B; continuação 2026-07-30: 3 rodadas de ajuste estrutural — a 3ª é a última, autorizada pelo dono — concluídas; destravado pela campanha de limpeza no `PantonicVideo`)* **Nota (2026-07-31, `PantonicVideo` T17):** baseline do `PantonicVideo` confirmado em `exit 0` (`python .claude/checks/dead_code.py --root D:\workspaces\PantonicVideo` via PowerShell, 0 achados) — `SPRINT-DEADCODE` fechada formalmente naquele repo (`docs/plans/P-0730-limpeza-codigo-morto.md` §8 T17), destravando o fechamento desta `V2M-T5`. Status não alterado nem fechamento executado aqui — tarefa deste hub, fora de escopo da nota.
+  - **Fechamento formal (2026-08-01):** as duas verificações do "Pronto quando" reconfirmadas ao
+    vivo via PowerShell nesta sessão — `python .claude/checks/dead_code.py` (root = PantonicApp) →
+    `OK - 0 achado(s)`; `--root D:\workspaces\PantonicVideo` → `OK - 0 achado(s)`; fixture sintética
+    recriada no scratchpad (`services/service.py` com `orphan_helper` referenciado só por
+    `tests/test_service.py`, `main.py` como entry point de produção chamando só `used_helper`) →
+    exit 1, exatamente 1 achado, fixture removida em seguida. Wireado como item 6, bloqueante, do
+    "Checklist executável" de `.claude/skills/guardrails-check/SKILL.md`. Estágio 3A fechado 5/5.
   - Método do check (inalterado desde a sessão anterior): alcançabilidade por AST a partir de
     entry points (`contracts/`, `__main__`/bootstrap, `entry_point` de `manifest.json`),
     propagação por grafo de import, casamento por nome simples para referência
