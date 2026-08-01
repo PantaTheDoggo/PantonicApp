@@ -42,13 +42,31 @@
     Running the script twice in a row with no kit changes produces no
     further writes (idempotent).
 
+    Origin signature verification: before any copy or comparison, the
+    script resolves the "origin commit" — the last commit in this repo
+    that touched the kit path ($PSScriptRoot) — and runs
+    `git verify-commit` against it. An unverifiable origin (no signing
+    key configured, no matching commit, git missing, or this directory
+    not being a git repo) is treated as "not signed": by default this
+    only prints a WARN line and the sync proceeds; with -RequireSignature
+    it aborts instead. This check is read-only, so it also runs under
+    -Check.
+
 .PARAMETER Check
     Compare only; makes no changes. Lists the managed artifacts that
     diverge from the kit and exits 1 if any do, 0 if the tree is clean.
+    Signature verification (see above) still runs, since -Check is
+    read-only.
+
+.PARAMETER RequireSignature
+    Makes origin signature verification blocking: if the origin commit
+    is missing or not signature-verified, the script aborts with an
+    actionable message and a non-zero exit code instead of only warning.
 #>
 [CmdletBinding()]
 param(
-    [switch]$Check
+    [switch]$Check,
+    [switch]$RequireSignature
 )
 
 $ErrorActionPreference = 'Stop'
@@ -65,7 +83,7 @@ function Get-ExcludedKeys {
 
     $excluded = New-Object System.Collections.Generic.HashSet[string]
     if (-not (Test-Path -LiteralPath $ExcludeFile -PathType Leaf)) {
-        return $excluded
+        return ,$excluded
     }
 
     foreach ($rawLine in Get-Content -LiteralPath $ExcludeFile) {
@@ -80,7 +98,7 @@ function Get-ExcludedKeys {
         }
         [void]$excluded.Add($line)
     }
-    return $excluded
+    return ,$excluded
 }
 
 function Test-Excluded {
@@ -94,6 +112,68 @@ function Test-Excluded {
 
 $excludeFile  = Join-Path $claudeRoot 'kit-exclude.txt'
 $excludedKeys = Get-ExcludedKeys -ExcludeFile $excludeFile
+
+# ---------------------------------------------------------------------------
+# Origin signature verification (runs before any copy/write, and under
+# -Check too since it is read-only)
+# ---------------------------------------------------------------------------
+
+function Invoke-GitCommand {
+    param(
+        [string]$RepoDir,
+        [string[]]$Arguments
+    )
+
+    $output   = $null
+    $exitCode = 1
+    try {
+        $output = & git -C $RepoDir @Arguments 2>&1
+        $exitCode = $LASTEXITCODE
+    } catch {
+        $output   = $null
+        $exitCode = 1
+    }
+    return [PSCustomObject]@{ Output = $output; ExitCode = $exitCode }
+}
+
+function Get-KitOriginCommit {
+    param([string]$KitRoot)
+
+    $result = Invoke-GitCommand -RepoDir $KitRoot -Arguments @('log', '-1', '--format=%H', '--', '.')
+    if ($result.ExitCode -eq 0 -and $result.Output) {
+        $first = $result.Output | Select-Object -First 1
+        $sha = "$first".Trim()
+        if ($sha.Length -gt 0) {
+            return $sha
+        }
+    }
+    return $null
+}
+
+function Test-KitSignatureVerified {
+    param(
+        [string]$KitRoot,
+        [string]$Sha
+    )
+
+    if (-not $Sha) {
+        return $false
+    }
+    $result = Invoke-GitCommand -RepoDir $KitRoot -Arguments @('verify-commit', $Sha)
+    return ($result.ExitCode -eq 0)
+}
+
+$originSha         = Get-KitOriginCommit -KitRoot $kitRoot
+$signatureVerified = Test-KitSignatureVerified -KitRoot $kitRoot -Sha $originSha
+
+if (-not $signatureVerified) {
+    $shaLabel = if ($originSha) { $originSha } else { '<unresolved: no commit found for this kit path, git missing, or not a git repo>' }
+    if ($RequireSignature) {
+        Write-Host "sync-kit: ABORT - origin commit $shaLabel is not signature-verified. Configure commit signing (git config user.signingkey <key-id> && git config commit.gpgsign true, then re-commit) or omit -RequireSignature to proceed with a warning." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "WARN: sync-kit - origin commit $shaLabel is not signature-verified (git verify-commit failed or unavailable). Proceeding without signature verification. Re-run with -RequireSignature to enforce."
+}
 
 # ---------------------------------------------------------------------------
 # Directory mirror helpers (used for skills/<name>/)

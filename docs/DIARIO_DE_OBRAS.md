@@ -16,17 +16,61 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
-| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 9/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
+| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 11/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
 | P-0725-HU | Hub único: PantonicApp canônico, PantonicVideo como prova | done | `docs/plans/P-0725-governanca-hub-unico.md` |
 | TK-01 | Corrigir residência de `modelo-por-fase` em `GOVERNANCA.md` §3 e no bullet `V2M-T1` do `CHANGELOG.md` (ainda apontam `~/.claude/skills/`, superado por `DM-7`) | done *(absorvido pela `V2M-T3`)* | `docs/DIARIO_HISTORICO.md#tíquetes-avulsos--condensado-em-2026-08-01` |
+| TK-02 | `.claude/sync-kit.ps1`: `Get-ExcludedKeys`/`Test-Excluded` quebram sem `kit-exclude.txt` presente (achado pré-existente, `V2K-T11`) | done | `## Tíquetes avulsos` |
 
 ---
 
 ## Tíquetes avulsos
+
+- `TK-02` — **backlog.** Achado fora de escopo (`V2K-T11`, 2026-08-01, durante a montagem do
+  sandbox de verificação): `.claude/sync-kit.ps1`, funções `Get-ExcludedKeys` e `Test-Excluded`.
+  `Get-ExcludedKeys` devolve a `HashSet[string]` via `return $excluded` (sem `,` nem
+  `-NoEnumerate`); o pipeline do PowerShell **enumera** a coleção antes de sair da função, então
+  quando o conjunto está vazio (`kit-exclude.txt` ausente ou sem entradas válidas) o chamador
+  recebe `$null`, e `Test-Excluded` quebra com "You cannot call a method on a null-valued
+  expression" na primeira chamada de `.Contains()`. Reproduzido tanto na versão editada por esta
+  tarefa quanto na versão **original** (pré-`V2K-T11`, via `git show HEAD:.claude/sync-kit.ps1`
+  antes desta tarefa) — isola que é pré-existente, não introduzido aqui. **Impacto atual:** o hub
+  não tem `.claude/kit-exclude.txt` nem em `.claude/` nem na raiz hoje — rodar
+  `.claude/sync-kit.ps1` (com ou sem `-Check`) no estado atual do repo quebra antes de
+  copiar/comparar qualquer artefato. Correção sugerida (não aplicada aqui — fora do escopo desta
+  tarefa): trocar os dois `return $excluded` por `return ,$excluded` (ou
+  `Write-Output $excluded -NoEnumerate`) para impedir o achatamento pelo pipeline.
+  - **Promovido a tarefa da vez em 2026-08-01** (decisão do dono, aberta pela `proximo-passo` ao
+    escolher a `V2K-T12`): corrigido **antes e sozinho**, em contexto próprio e com alvo único,
+    porque a `V2K-T12` verifica executando o `sync-kit.ps1` e o exige funcional. Descartados o
+    contorno de sandbox (repetir o `kit-exclude.txt` sintético da `V2K-T11`) e a correção
+    embutida na `V2K-T12` (viraria segundo alvo no gate de delegação).
+  - **Nota de estado:** só uma das duas funções tem `return $excluded` na forma achatada
+    (`sync-kit.ps1:86` e `:101`, os dois `return` de `Get-ExcludedKeys`); `Test-Excluded`
+    (`:104-111`) é a **vítima**, não a origem — não precisa de edição, quebra porque recebe
+    `$null`. Verificação de pronto: rodar `.claude/sync-kit.ps1 -Check` num sandbox **sem**
+    `kit-exclude.txt` e obter saída normal em vez de "You cannot call a method on a null-valued
+    expression".
+  - **Fechamento (2026-08-01, done):** trocados os dois `return $excluded` por `return ,$excluded`
+    em `.claude/sync-kit.ps1:86` e `.claude/sync-kit.ps1:101` (vírgula de array-wrap, impede o
+    achatamento do `HashSet[string]` pelo pipeline). `Test-Excluded` (`:104-111`) não foi tocado —
+    era a vítima, não a origem. Verificação: sandbox montado em
+    `.claude/kit/sync-kit.ps1` + `.claude/kit/skills/dummy/` + `.claude/kit/agents/dummy-agent.md`,
+    **sem** `.claude/kit-exclude.txt`, rodando `sync-kit.ps1 -Check`. Saída real:
+    > WARN: sync-kit - origin commit \<unresolved: no commit found for this kit path, git missing,
+    > or not a git repo\> is not signature-verified (git verify-commit failed or unavailable).
+    > Proceeding without signature verification. Re-run with -RequireSignature to enforce.
+    > sync-kit -Check: 2 managed artifact(s) diverge from the kit:
+    >   - skills/dummy
+    >   - agents/dummy-agent
+    >
+    > EXITCODE=1
+    Sem o erro "You cannot call a method on a null-valued expression" — o `-Check` reporta
+    divergência normalmente (exit 1 é o comportamento esperado de divergência, não de crash).
+    Consumo: (preenchido pelo orquestrador via notificação)
 
 ---
 
@@ -36,18 +80,40 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2K-T10` — Inbox de memória: separar descobrir de aprovar (`C-10`,
-adaptar), sexta tarefa do Bloco C — **[Opus]** — `docs/plans/P-0729-v2-melhoria-candidatos.md`
-(§T10). Destravada pela `V2K-T4` (régua de residência) e sem outra dependência aberta. Residência
-já decidida pelo dono em 2026-07-30 pela régua de §3.1: **fora do kit** — a fila e a promoção vão
-para `~/.claude/docs/GOVERNANCA_MEMORIAS.md` + skill global, não para `GOVERNANCA.md` nem para as
-skills versionadas; **não entra na distribuição do Estágio 4**.
+**Próxima tarefa da sprint:** `V2K-T12` — Registro de consumidores e versões instaladas
+(`docs/CONSUMIDORES.md`, `C-09`), oitava tarefa do Bloco C — **[Sonnet]** —
+`docs/plans/P-0729-v2-melhoria-candidatos.md` (§T12), **ficha reescrita fechada em 2026-08-01**
+sob `DK-12`. A ficha original dizia "quem escreve é o `sync-kit.ps1`, no mesmo passo que aplica a
+versão" — três fatos medidos na abertura desta rodada contradizem isso: o script roda de
+`<child>/.claude/kit/` com raízes vindas de `$PSScriptRoot` (`sync-kit.ps1:7-14,74-75`) e não tem
+handle da árvore do hub; ele **não tem** passo que aplique versão (zero referências a
+`KIT_VERSION`; só `Copy-Item` em `:244,:336`); e **0/6 consumidores** têm `.claude/kit/` ou
+`KIT_VERSION` (5/6 nem são repositórios git). Rota escolhida pelo dono: **carimbo no consumidor
+(`SYNC_STATE`, escrito pelo `sync-kit.ps1`) + coletor no hub (`kit_check.ps1 -Mode consumers`)**.
+**Contagem de write-clusters já derivada (não re-derivar): 8** — `sync-kit.ps1` 3, `kit_check.ps1`
+3, `docs/CONSUMIDORES.md` 1, `GOVERNANCA.md` §10 1. Está **no limite** do gate de delegação;
+avaliar partir em duas sub-tarefas (carimbo × registro+coletor+§10) antes de despachar. **Pré-
+requisito resolvido em 2026-08-01:** o `TK-02` (achatamento de `Get-ExcludedKeys` em
+`.claude/sync-kit.ps1`) foi corrigido antes e sozinho, porque a `V2K-T12` verifica executando o
+script e o exige funcional — ver nota de fechamento em `## Tíquetes avulsos`.
 
-**Decisão pendente do dono, aberta pela `V2K-T9` (2026-08-01) — precede a `V2K-T10`:** a primeira
-aplicação do gatilho de revisão mediu que a pergunta de `DK-5` não distingue *regra morta* de
-*regra preventiva que ninguém violou* — ACL, egress G6 e namespace de estado ficaram sem caso
-citável e a aplicação literal os marcaria `OBSOLETA desde 1.4.0`, removendo-os em `1.6.0`. Os três
-estão **retidos sem marcação** até o dono calibrar a régua. Detalhe e opções na nota da `V2K-T9`.
+**Depois dela:** `V2K-T13` — Compatibilidade por major entre kit e consumidor (`C-14`) — **[Sonnet]**
+— `docs/plans/P-0729-v2-melhoria-candidatos.md` (§T13). Arquivos-alvo: `.claude/skills/
+checar-versao-kit/SKILL.md`; `GOVERNANCA.md` §10 (uma linha). Divergência de **MAJOR** entre kit e
+consumidor deixa de ser tratada como divergência comum: três casos distinguidos na saída da skill
+— igual (silêncio) · MINOR/PATCH divergente (reportar, como hoje) · MAJOR divergente (reportar
+como incompatível e parar). A regra do §10a é preservada: o agente reporta, nunca atualiza.
+Verificação: no scratchpad, um `.claude/kit/KIT_VERSION` sintético com MAJOR diferente produz a
+mensagem de incompatibilidade; com MINOR diferente, a mensagem antiga; igual, silêncio.
+
+**Decisão do dono resolvida em 2026-08-01** (aberta pela `V2K-T9`, precedia a `V2K-T10`): a
+primeira aplicação do gatilho mediu que a pergunta de `DK-5` não distingue *regra morta* de *regra
+preventiva que ninguém violou*. Escolha do dono entre 4 opções: **isenção por enforcement
+executável** — guardrail com check executável ativo **e nomeado** sai da pergunta, porque o check
+verde é a evidência de vida; a pergunta vale só para regra advisória/procedimental. Aplicada no
+mesmo ato (`GOVERNANCA.md` §7.1 + `DK-5a` no plano); ACL, egress G6 e namespace de estado ficam
+**isentos** com os checks nomeados e verificados verdes no `PantonicVideo`. Rodada `1.4.0` fecha em
+**0 marcações**, agora como resultado final e não retenção.
 
 **Planejamento da campanha: feito em 2026-07-30 [Opus].** O plano nasceu **fechado** (gate de
 publicação, `G-PLANREADY` item 5) com 6 decisões: **DL-1** achado comprovadamente vivo → tornar o
@@ -110,7 +176,7 @@ ratificado, e só então entrou no inbox e neste índice: 19 tarefas, 14 candida
 questão pendente. O ciclo do gate está fechado na prática antes de virar doutrina em `V2M-T1`
 (G-PLANREADY item 5).
 
-### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 9/19 (Bloco A fechado, Bloco C em andamento), nascido fechado em 2026-07-29 pela `V2C-T6`]
+### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 11/19 (Bloco A fechado, Bloco C em andamento), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
 19 tarefas, cada uma com o `C-NN` de origem. Ordem normativa em `docs/plans/P-0729-v2-melhoria-candidatos.md`
 §2 — **Bloco A** (`T1..T4`) antes do Estágio 3A; **Bloco C** (`T5..T19`) depois dele.
@@ -258,6 +324,24 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     - **Em escopo sem caso citável (3):** **2 (ACL)**, **4 (egress único de filesystem, G6)** e **5 (namespace de estado)**.
     - **Resultado: 0 marcações.** Os três sem caso ficam **retidos sem marcação**, pendentes de decisão do dono — ver ponto de decisão abaixo. Registrado em `GOVERNANCA.md` §7.1, lista "Registro das rodadas".
   - **Ponto de decisão para o dono (defeito de calibragem medido na primeira aplicação):** a pergunta de `DK-5` **não distingue "regra morta" de "regra preventiva que ninguém violou"**. Guardrail enforçado por teste automático só gera caso citável quando alguém o **viola**; funcionando perfeitamente, ele fica silencioso e a pergunta o condena. Foi exatamente o que aconteceu com ACL, egress G6 e namespace de estado — três regras de arquitetura que a aplicação literal marcaria `OBSOLETA desde 1.4.0` e removeria em `1.6.0`. Agravante medido: os dois MINORs da janela (`1.3.0` e `1.4.0`) fecharam **no mesmo dia** (2026-07-30), então "2 MINORs" hoje valem ~2 dias de relógio, não um período de observação. Não alterei `DK-5` (a rota é do dono — `G-PLANFIDELITY`); retive e escalei.
+  - **Decisão do dono (2026-08-01), aplicada no ato pelo orquestrador:** entre 4 opções (isenção por
+    enforcement / segunda pergunta contrafactual / piso temporal na janela / manter literal), o dono
+    escolheu **isenção por enforcement executável**, sem combinar as demais. Materializada em três
+    lugares: (1) `GOVERNANCA.md` §7.1 ganhou o parágrafo **"Isenção por enforcement executável"**
+    entre "Escopo" e a pergunta — guardrail verificada por check executável ativo não entra na
+    pergunta; a pergunta passa a valer só para regra **advisória/procedimental**; a isenção **não é
+    declarativa** (quem invoca **nomeia o check** e confirma que roda; `skip`/`xfail`/allowlist total
+    **não** isenta, e check morto é achado próprio); (2) `DK-5` no plano ganhou a emenda `DK-5a`;
+    (3) o registro da rodada `1.4.0` foi fechado — ACL, egress G6 e namespace de estado passam de
+    *retidos* a **isentos**, com os checks nomeados no consumidor `PantonicVideo`
+    (`tests/conformance/test_acl_no_external_in_plugins.py`,
+    `tests/conformance/test_filesystem_egress.py`,
+    `tests/boundary/test_state_writer_namespacing.py`) e **verificados verdes em 2026-08-01: 11
+    passed**, sem `skip`/`xfail` efetivo. Resultado final da rodada: **0 marcações**. Sem bump
+    (o `1.5.0` fecha o Bloco C); `CHANGELOG.md` não tocado, mesmo tratamento das `V2K-T6..T9`.
+    Gate do kit reconferido após a edição: `validate` e `check-drift` ambos `exit 0`.
+    Consumo (aplicação da decisão, execução inline no orquestrador): ~22 tool uses, Opus, tokens
+    **não medidos** (sem `<usage>` de subagente) — não entra na série como dado medido.
   - Veredito: suítes/conformance — não aplicável (tarefa só de doutrina + skill, nenhum código de produção no hub). Gate do kit — `validate` → `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION == KIT_VERSION ('1.4.0').` (exit 0); `check-drift` → falhou primeiro (exit 1, 2 linhas divergentes, pela `description` nova), corrigido com `-Mode generate` e reconferido → `kit_check: check-drift OK - .claude/README.md == regenerado (9 agente(s), 9 skill(s)).` (exit 0). Piso de regressão — sem mudança. Sem bump (o `1.5.0` fecha o Bloco C). Nenhum arquivo deletado.
   - Consumo: 30 tool uses, ~120k tokens (estimado), Opus, ~12 min — **execução inline no
     orquestrador**, mesmo critério da `V2K-T4` (2 write-clusters em 2 arquivos + registro; `<15`
@@ -267,9 +351,71 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     medido. Classe "redação de doutrina" (**≤30**): exatamente no teto, sem estouro; 5 das 30
     chamadas foram a varredura de evidência no consumidor (`PantonicVideo`), que não estava
     prevista no dossiê e sem a qual a pergunta de `DK-5` era inrespondível para os itens 1-5.
-- `V2K-T10` — Inbox de memória: fila + promoção pelo dono — [Opus] — backlog *(`C-10` adaptar; `T4` já cumprida)*
+- `V2K-T10` — Inbox de memória: fila + promoção pelo dono — [Opus] — **done** (2026-08-01) *(`C-10` adaptar; `T4` já cumprida)*
   - **Residência decidida (dono, 2026-07-30, pela régua do `GOVERNANCA.md` §3.1):** **fora do kit** — a fila e a promoção vão para `~/.claude/docs/GOVERNANCA_MEMORIAS.md` + skill global, não para `GOVERNANCA.md` nem para as skills versionadas. Não entra na distribuição do Estágio 4.
-- `V2K-T11` — Commits assinados + verificação no sync (versão mínima) — [Sonnet] — backlog *(`C-08` adaptar; ramo B medido)*
+  - Resultado — quatro alvos + a fila materializada:
+    1. `~/.claude/docs/GOVERNANCA_MEMORIAS.md` ganhou a **§8 "Fila de candidatos a memória"**: a regra ("descobrir e aprovar são atos de donos diferentes"; o agente não escreve em `<memory-dir>/*.md` nem no `MEMORY.md` por conta própria), a **única exceção** — que é de **remoção**, nunca de escrita (ponteiro quebrado/memória obsoleta, como a Regra 6 global já obriga) —, a forma da linha, o ciclo de marcação e a residência com o `DK-6` citado.
+    2. `~/.claude/CLAUDE.md` Regra 6: bullet novo "**Descobrir ≠ aprovar**" apontando a §8 (140 linhas, teto 200 preservado).
+    3. `.claude/skills/proximo-passo/SKILL.md` passo 1 virou **"Drenar os dois inboxes"** (1 = planos, 2 = fila de memória via `AskUserQuestion`, com "fila vazia ou toda marcada: seguir sem ruído" para não gerar cerimônia).
+    4. `GOVERNANCA.md` §3.1: **ponteiro puro** de 3 linhas, sem doutrina copiada.
+    5. `C:\Users\panta\.claude\projects\d--workspaces-PantonicApp\memory\_INBOX.md` criado (cabeçalho + regramento + `<!-- nenhum candidato enfileirado -->`).
+  - Correção feita na própria execução: a primeira redação do ponteiro em `GOVERNANCA.md` tinha ~7 linhas e **repetia** a doutrina da §8 — colisão que o §3.1 manda resolver reduzindo a cópia perdedora a ponteiro **no mesmo ato**. Reduzida antes do fecho.
+  - Verificação (os três critérios do dossiê): (a) `<memory-dir>/_INBOX.md` existe no PantonicApp — sim, nasceu vazio com cabeçalho; (b) a `proximo-passo` cita a drenagem dos **dois** inboxes no passo 1 — sim; (c) nenhum caminho do procedimento promove memória sem ato do dono — conferido por leitura: os três textos novos (§8, Regra 6, passo 1) dizem "só o dono promove", e a única exceção escrita é de remoção.
+  - Veredito: suítes — não aplicável (hub sem pytest/app Python; tarefa só de doutrina/procedimento). Gate do kit — `-Mode validate` → `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION == KIT_VERSION ('1.4.0').` (exit `0`); `-Mode check-drift` → `kit_check: check-drift OK - .claude/README.md == regenerado (9 agente(s), 9 skill(s)).` (exit `0`). Piso de regressão — sem mudança. Sem bump (o `1.4.0` do Bloco C só fecha no fim do bloco).
+  - Consumo: 35 tool uses, ~95k tokens, Opus, ~13min — **execução inline no orquestrador** (5 write-clusters pequenos, arquivos conhecidos; delegar pagaria cold start sem reduzir consumo — mesmo critério da `V2K-T4`). Números do próprio contexto do orquestrador, **não** de `<usage>` de subagente, e marcados como tal. **Estouro de 5 sobre a classe "redação de doutrina" (≤30)**: a execução inline absorve no mesmo contador os turnos de *pickup* (drenar inbox, ler diretiva, localizar a tarefa) que numa delegação ficariam fora do teto do executor — a série mede coisas diferentes quando a tarefa é inline, e a classe do `C-04` foi calibrada sobre execuções delegadas.
+- `V2K-T11` — Commits assinados + verificação no sync (versão mínima) — [Sonnet] — **done** (2026-08-01) *(`C-08` adaptar; ramo B medido)*
+  - Ramo confirmado pelo orquestrador antes da execução: `git config --get user.signingkey` vazio
+    ⇒ **ramo B** (verificação em modo aviso). Executor não criou nem configurou chave de
+    assinatura — credencial é do dono.
+  - Resultado — dois alvos:
+    1. `.claude/sync-kit.ps1`: origem resolvida por
+       `git -C <kitRoot> log -1 --format=%H -- .` (funciona tanto no hub, `.claude/`, quanto no
+       consumidor, `.claude/kit/`); verificação por `git -C <kitRoot> verify-commit <sha>` via
+       helper `Invoke-GitCommand`, que captura o exit code explicitamente em vez de deixar
+       `$ErrorActionPreference = 'Stop'` derrubar o script numa chamada git que falha. Casos
+       degenerados (git ausente, diretório não é repo, nenhum commit toca o caminho) tratados
+       como "não verificável" = mesmo tratamento do "não assinado". A verificação roda **antes**
+       de qualquer cópia/comparação, inclusive sob `-Check` (decisão documentada no bloco de
+       ajuda: é só leitura). Modo padrão imprime `WARN: sync-kit - origin commit <sha> ...` e
+       prossegue; `-RequireSignature` (novo `[switch]`) aborta com mensagem acionável
+       (`git config user.signingkey <key-id> && git config commit.gpgsign true, then re-commit`)
+       e `exit 1`. Bloco de ajuda ganhou `.PARAMETER RequireSignature` e nota em `.DESCRIPTION`/
+       `.PARAMETER Check` sobre o novo comportamento.
+    2. `GOVERNANCA.md` §10: parágrafo verbatim do plano acrescentado ao fim da seção ("O que se
+       distribui, executa...").
+  - Verificação executada: sandbox sintético no scratchpad (`git init` +
+    `.claude/kit/sync-kit.ps1` + 1 skill + 1 agent + commit **não assinado**, `--no-gpg-sign`).
+    Caso 1 (padrão):
+    `WARN: sync-kit - origin commit aff25ab80d3312d19d7406aad673001ca4187813 is not
+    signature-verified (git verify-commit failed or unavailable). Proceeding without signature
+    verification. Re-run with -RequireSignature to enforce.` seguido de
+    `sync-kit: 1 copied, 1 skipped by exclusion.`, `exit 0`. Caso 2 (`-RequireSignature`):
+    `sync-kit: ABORT - origin commit aff25ab80d3312d19d7406aad673001ca4187813 is not
+    signature-verified. Configure commit signing (git config user.signingkey <key-id> && git
+    config commit.gpgsign true, then re-commit) or omit -RequireSignature to proceed with a
+    warning.`, `exit 1`. Sandbox removido após a prova; nada foi apagado/reescrito no repo real
+    além dos dois arquivos-alvo.
+  - Achado fora de escopo durante a montagem do sandbox, indexado como `TK-02` (seção
+    `## Tíquetes avulsos`, mesma sessão): `Get-ExcludedKeys`/`Test-Excluded` quebram quando
+    `kit-exclude.txt` está ausente ou vazio — reproduzido também na versão **original**
+    (pré-`V2K-T11`) do script e presente hoje no próprio hub (`.claude/kit-exclude.txt` não
+    existe). O caso 1 só chegou a `exit 0` porque o sandbox recebeu um `kit-exclude.txt` com 1
+    entrada para contornar esse defeito pré-existente — não corrigido aqui, fora do escopo desta
+    tarefa.
+  - Gate do kit no repo real: `-Mode validate` →
+    `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION == KIT_VERSION ('1.4.0').` (exit
+    `0`); `-Mode check-drift` →
+    `kit_check: check-drift OK - .claude/README.md == regenerado (9 agente(s), 9 skill(s)).`
+    (exit `0`).
+  - Veredito: os dois ramos de comportamento provados no sandbox com output real; texto de §10
+    conferido verbatim contra o plano; gates do kit verdes. Piso de regressão — sem mudança (hub
+    sem suíte pytest/app Python). Sem bump de `VERSION`/`KIT_VERSION` — não pedido pelo plano
+    desta tarefa e os gates já fecham verdes sem ele.
+  - Consumo: 47 tool uses, ~104k tokens, Sonnet, ~100min (medido no `<usage>` da notificação; teto
+    informado era 40, classe "implementação padrão" — **estouro de 7**. Causa registrada: o defeito
+    pré-existente do `kit-exclude.txt` (`TK-02`) só apareceu como crash dentro do sandbox e consumiu
+    turnos de diagnóstico até ser isolado como anterior à tarefa — custo de descoberta, não de
+    retrabalho do alvo.)
 - `V2K-T12` — Registro de consumidores e versões (`docs/CONSUMIDORES.md`) — [Sonnet] — backlog *(`C-09`)*
 - `V2K-T13` — Compatibilidade por major kit × consumidor — [Sonnet] — backlog *(`C-14`; contíguo a `T11`/`T12` por DK-11)*
 - `V2K-T14` — Doutrina do piso de regressão **comportamental** (§4.4) — [Opus] — backlog *(`C-11`a; nunca percentual)*
