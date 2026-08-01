@@ -73,6 +73,44 @@ invocada pelo usuário.
      próxima tarefa. Se a statusline indicar contexto alto (⚠️/🔴), a limpeza é obrigatória,
      não sugestão — diga isso.
 
+## Checkpoint intermediário (contexto acabando **sem** plano de parada)
+
+O handover acima fecha uma tarefa que chegou ao fim. O checkpoint é outra coisa: a tarefa **não**
+acabou e o contexto vai acabar antes dela. Sem ele, a descoberta já paga (onde está o código, o
+que já foi decidido, o que já foi descartado) morre com o contexto e o próximo contexto a
+reexecuta do zero — pagando duas vezes pelo mesmo achado.
+
+O checkpoint é **ponteiro de estado, não relatório intermediário**: não narra o que foi feito, não
+justifica decisões, não repete o que já está no diário ou no plano. Ele existe para que outro
+contexto retome sem redescobrir.
+
+- **Gatilho** — o consumo cruza **2/3 do teto da classe** da tarefa (tabela de classes em
+  `GOVERNANCA.md` §3): ≤15 → **10**; ≤40 → **27**; ≤60 → **40**; ≤30 → **20**; classe
+  investigação → 2/3 do teto prescrito no dossiê. Também dispara **antes** disso se o executor
+  concluir, por qualquer motivo, que vai estourar. Não esperar o estouro: no estouro já não há
+  orçamento para escrever o checkpoint.
+- **Entregável** — até **5 linhas** no diário, na "Notas de execução" da tarefa em curso, uma
+  linha por item:
+  1. o que já está **descoberto e decidido** (inclusive rotas descartadas — descarte é achado);
+  2. o que **falta**;
+  3. **arquivos tocados**, com `caminho:linha`;
+  4. o **próximo passo exato** (a ação seguinte, não o objetivo da tarefa);
+  5. o que **não precisa ser refeito**.
+- **Teto do próprio checkpoint: 2 tool uses** — um `Grep` para achar a âncora da tarefa e um
+  `Edit`. O checkpoint tem de custar menos que a descoberta que preserva; se está custando mais
+  que 2 chamadas, ele virou relatório e perdeu a razão de existir. Sem releitura de verificação,
+  sem varredura para "completar" o estado.
+- Depois de escrever o checkpoint, a tarefa fica `in progress` com o ponto de parada anotado —
+  nunca `done`, nunca `blocked` (não há impedimento externo; acabou o orçamento).
+
+**Exemplo (caso real da `proximo-passo`: subagente caiu sem bloco `<usage>`)** — cinco linhas:
+
+> Descoberto/decidido: rota A confirmada; rota B descartada (não suporta X). · Falta: aplicar o
+> mesmo ajuste aos 2 call sites restantes. · Tocados: `src/foo/bar.py:112-140`,
+> `tests/test_bar.py:88`. · Próximo passo: editar `src/foo/baz.py:57` no mesmo padrão de
+> `bar.py:118`. · Não refazer: o mapeamento de call sites (grep já rodado, 3 achados) e a escolha
+> da rota A.
+
 ## Trava de contexto (vale para QUALQUER agente, não só o executor)
 
 Depois do handover, se o usuário pedir a próxima tarefa **no mesmo contexto**, não inicie:

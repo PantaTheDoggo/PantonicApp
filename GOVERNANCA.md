@@ -190,6 +190,10 @@ também como um kanban adaptado:
   drena o inbox de planos, aplica a diretiva de priorização (ou a heurística padrão), escolhe uma
   única tarefa e delega ao agente de execução. O handover final sempre reporta a tarefa feita, a
   iniciativa/plano de origem, e o **índice de conclusão do plano** (`<done>/<total>` no diário).
+- **Contexto acabando sem plano de parada** — quando o consumo cruza **2/3 do teto da classe**
+  (§3) com a tarefa ainda aberta, o executor grava um **checkpoint intermediário** (skill
+  `handover`, seção "Checkpoint intermediário"): até 5 linhas de ponteiro de estado, teto de
+  2 tool uses, para que o contexto seguinte retome sem redescobrir o que já foi pago.
 
 ### 4.4 TDD obrigatório
 

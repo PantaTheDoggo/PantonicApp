@@ -16,7 +16,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
-| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 6/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
+| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 7/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
@@ -36,12 +36,14 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2K-T7` — Checkpoint intermediário para perda de contexto não
-planejada (`C-05`), terceira tarefa do Bloco C — **[Opus]** —
-`docs/plans/P-0729-v2-melhoria-candidatos.md` (§T7). Dependência única (`T6`) fechada em
-2026-08-01; o gatilho do checkpoint é "2/3 do teto da **classe**", e as classes agora existem em
-`GOVERNANCA.md` §3. Insumo já medido pela `T6`: a `V2M-T5` somou ~145 tool uses em 4 rodadas
-cabendo no teto de cada rodada — é o caso que o checkpoint precisa pegar.
+**Próxima tarefa da sprint:** `V2K-T8` — `file:line` e comando de validação no dossiê da tarefa
+(`C-06`), quarta tarefa do Bloco C — **[Sonnet]** —
+`docs/plans/P-0729-v2-melhoria-candidatos.md` (§T8). Dependência única (`V2M-T1`, que escreve
+`G-EXECREADY`) fechada com o Estágio 3A inteiro. Toca três arquivos: template de tarefa atômica em
+`.claude/skills/diario-de-obras/SKILL.md`, campo correspondente em
+`.claude/skills/handover/SKILL.md` e o texto de §4.2 já **redigido no plano** (DK-3, transcrever
+verbatim). A verificação é auto-referente: as 19 tarefas do próprio `P-0729-v2-melhoria-candidatos`
+têm de satisfazer o template novo — se não satisfizerem, muda o template, não as tarefas.
 
 **Planejamento da campanha: feito em 2026-07-30 [Opus].** O plano nasceu **fechado** (gate de
 publicação, `G-PLANREADY` item 5) com 6 decisões: **DL-1** achado comprovadamente vivo → tornar o
@@ -207,7 +209,20 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     (Opus), sem notificação de subagente e portanto sem bloco `<usage>`; a contagem é autoestimativa
     e está marcada como tal. Dentro do teto de **≤30** da classe "redação de doutrina" que esta
     própria tarefa institui — a classe foi registrada antes de começar, não depois.
-- `V2K-T7` — Checkpoint de perda de contexto não planejada — [Opus] — backlog *(`C-05`; depende de `T6`, agora fechada)*
+- `V2K-T7` — Checkpoint de perda de contexto não planejada — [Opus] — **done** (2026-08-01) *(`C-05`)*
+  - Seção nova "Checkpoint intermediário" em `.claude/skills/handover/SKILL.md:76-112`, entre o
+    Fluxo de fechamento e a Trava de contexto: gatilho = 2/3 do teto da classe (§3), com os quatro
+    limiares já resolvidos em números (10 / 27 / 40 / 20; investigação = 2/3 do teto prescrito) para
+    não exigir aritmética do executor sob pressão de contexto; entregável = 5 linhas de ponteiro;
+    teto próprio de **2 tool uses** (1 `Grep` de âncora + 1 `Edit`); estado resultante `in progress`,
+    nunca `done`/`blocked`. O texto abre e fecha dizendo que é **ponteiro de estado, não relatório
+    intermediário** (critério de pronto). Ponteiro em `GOVERNANCA.md:193-196` (§4.3).
+  - Verificação (a do dossiê): o formato aplicado ao caso real da `proximo-passo` — queda de
+    subagente sem bloco `<usage>` — cabe nas 5 linhas e ficou no próprio texto como exemplo.
+  - Piso de regressão — sem mudança (tarefa só de doutrina, sem código). Sem bump.
+  - Consumo: ~14 tool uses (contados), tokens **NÃO MEDIDOS** — **execução inline no orquestrador**
+    (Opus), sem notificação de subagente e portanto sem bloco `<usage>`; contagem é autoestimativa
+    e está marcada como tal. Classe "redação de doutrina" (**≤30**), registrada antes de começar.
 - `V2K-T8` — `file:line` + comando de validação no dossiê — [Sonnet] — backlog *(`C-06`; depende de `V2M-T1`)*
 - `V2K-T9` — Gatilho de revisão e deprecação da doutrina — [Opus] — backlog *(`C-07`; depende do Estágio 3A inteiro)*
 - `V2K-T10` — Inbox de memória: fila + promoção pelo dono — [Opus] — backlog *(`C-10` adaptar; `T4` já cumprida)*
