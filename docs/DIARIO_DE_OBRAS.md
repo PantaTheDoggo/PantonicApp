@@ -70,7 +70,7 @@ benchmarking → confronto → melhoria → documentação).
     > EXITCODE=1
     Sem o erro "You cannot call a method on a null-valued expression" — o `-Check` reporta
     divergência normalmente (exit 1 é o comportamento esperado de divergência, não de crash).
-    Consumo: (preenchido pelo orquestrador via notificação)
+    Consumo: 18 tool uses, ~61k tokens, Sonnet, ~6min09s.
 
 ---
 
