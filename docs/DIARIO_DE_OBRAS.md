@@ -487,7 +487,8 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     `tests/test_service.py`, `main.py` como entry point de produção chamando só `used_helper`) →
     exit 1, exatamente 1 achado, fixture removida em seguida. Wireado como item 6, bloqueante, do
     "Checklist executável" de `.claude/skills/guardrails-check/SKILL.md`. Estágio 3A fechado 5/5.
-  - Consumo: (preenchido pelo orquestrador via notificação)
+  - Consumo: 41 tool uses, ~76k tokens, Sonnet, ~5min12s (medido pela notificação de conclusão;
+    autorrelato do executor dizia ~31 tool uses — subestimativa de ~24%, mesmo padrão da Regra 7).
   - Método do check (inalterado desde a sessão anterior): alcançabilidade por AST a partir de
     entry points (`contracts/`, `__main__`/bootstrap, `entry_point` de `manifest.json`),
     propagação por grafo de import, casamento por nome simples para referência
