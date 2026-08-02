@@ -8,7 +8,7 @@ Docs abaixo de 500 linhas (`docs/DIARIO_DE_OBRAS.md`, `docs/GOVERNANCA.md`,
 `docs/plans/_INBOX.md`, `docs/plans/P-0729-v2-*.md` restantes, demais `docs/plans/*.md` e
 `docs/benchmark/BM-*.md`) não precisam de entrada — Read direto.
 
-## docs/DIARIO_HISTORICO.md (516 linhas)
+## docs/DIARIO_HISTORICO.md (1007 linhas)
 **Propósito:** arquivo append-only de seções condensadas do diário de obras ativo (itens
 `done`/`cancelled`/`superseded` movidos para fora do kanban vigente).
 **Quando consultar:** para reconstituir o histórico detalhado de uma tarefa já fechada (ex.:
@@ -19,8 +19,16 @@ consumo, desvios, veredito) cujo índice no `DIARIO_DE_OBRAS.md` aponta para cá
   - `### Estágio 1 — P-0729-v2-benchmarking` — `V2B-T1..T9`, benchmarking de 21 frameworks
   - `### Estágio 2 — P-0729-v2-confronto` — `V2C-T1..T6`, confronto e diagnóstico
   - `### Estágio 3A — P-0729-v2-melhoria` — `V2M-T1..T5`, doutrina herdada do `P-0722`
+- `## Tíquetes avulsos — 2ª condensação (2026-08-01)` — `TK-02` (achatamento de
+  `Get-ExcludedKeys` em `.claude/sync-kit.ps1`)
+- `## SPRINT-PANTONICV2 — Estágio 3B: contexto encerrado e tarefas T1..T12b (condensado em
+  2026-08-01)` — preâmbulo encerrado da sprint (ficha da `V2K-T12`, decisões resolvidas,
+  narrativa dos Estágios 1/2/3A) + bullets de fechamento de `V2K-T1..T12b`
+  - `### Contexto encerrado do preâmbulo de ## SPRINT-PANTONICV2`
+  - `### Tarefas V2K-T1..T12b (done) — bullets de fechamento`
 **Acesso:** `Grep pattern:"^### Estágio 1" path:docs/DIARIO_HISTORICO.md -n` (ou 2/3A; ou
-`^- \`TK-01\`` para o tíquete).
+`^- \`TK-01\`` / `^- \`TK-02\`` para os tíquetes; ou `^- \`V2K-T9\`` para uma tarefa do
+Estágio 3B).
 
 ## docs/benchmark/RELATORIO_CONSOLIDADO.md (808 linhas)
 **Propósito:** confronto dimensão-a-dimensão (D1..D16 + D17..D22 propostas) do framework
