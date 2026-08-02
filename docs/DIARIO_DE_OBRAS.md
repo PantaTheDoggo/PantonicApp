@@ -16,7 +16,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
-| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19; 11/19) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
+| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 13/20) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
@@ -80,7 +80,18 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2K-T12` — Registro de consumidores e versões instaladas
+**Próxima tarefa da sprint:** `V2K-T13` — Compatibilidade por major entre kit e consumidor
+(`C-14`) — **[Sonnet]** — ficha fechada em `docs/plans/P-0729-v2-melhoria-candidatos.md` §T13,
+resumida no bloco "**Depois dela**" mais abaixo nesta seção. O `C-09` fechou por inteiro em
+2026-08-01 (`V2K-T12a` produtor + `V2K-T12b` coletor).
+
+**Gate de condensação pendente (aberto pela `V2K-T12b`, 2026-08-01):** este diário passou de 500
+linhas (560) e os bullets recentes de fechamento passam de 10 linhas cada — a operação Condensar da
+skill `diario-de-obras` está devida antes da próxima tarefa. Decisão do dono.
+
+O bloco abaixo é a ficha da `V2K-T12` inteira (`done`), preservada como contexto do `C-09`:
+
+`V2K-T12` — Registro de consumidores e versões instaladas
 (`docs/CONSUMIDORES.md`, `C-09`), oitava tarefa do Bloco C — **[Sonnet]** —
 `docs/plans/P-0729-v2-melhoria-candidatos.md` (§T12), **ficha reescrita fechada em 2026-08-01**
 sob `DK-12`. A ficha original dizia "quem escreve é o `sync-kit.ps1`, no mesmo passo que aplica a
@@ -100,10 +111,10 @@ porque a `V2K-T12` verifica executando o script e o exige funcional — ver nota
 comportamentais é o teto do gate, e a série medida diz que executor não para no teto — T3 56/35,
 T4 61/40, T5 112/50). Corte na fronteira produtor × consumidor do carimbo, detalhado em
 `docs/plans/P-0729-v2-melhoria-candidatos.md` §T12:
-- **`V2K-T12a`** (a tarefa da vez) — `sync-kit.ps1` escreve `<child>/.claude/kit/SYNC_STATE`;
-  `docs/CONSUMIDORES.md` nasce semeado com 6 linhas. ~4 clusters.
-- **`V2K-T12b`** — `kit_check.ps1 -Mode consumers` + `GOVERNANCA.md` §10. ~4 clusters; verifica
-  contra o `SYNC_STATE` real da `T12a`.
+- **`V2K-T12a`** — `sync-kit.ps1` escreve `<child>/.claude/kit/SYNC_STATE`;
+  `docs/CONSUMIDORES.md` nasce semeado com 6 linhas. ~4 clusters. **`done` em 2026-08-01.**
+- **`V2K-T12b`** (a tarefa da vez) — `kit_check.ps1 -Mode consumers` + `GOVERNANCA.md` §10.
+  ~4 clusters; verifica contra o `SYNC_STATE` real da `T12a`.
 
 **`DK-13` fechada no mesmo pickup** (era plano aberto pelo `G-PLANREADY`): a coluna `modo` do
 carimbo deriva de `$originSha` — não-nulo ⇒ `subtree`, nulo ⇒ `copia`. O valor já é computado em
@@ -193,7 +204,7 @@ ratificado, e só então entrou no inbox e neste índice: 19 tarefas, 14 candida
 questão pendente. O ciclo do gate está fechado na prática antes de virar doutrina em `V2M-T1`
 (G-PLANREADY item 5).
 
-### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 11/19 (Bloco A fechado, Bloco C em andamento), nascido fechado em 2026-07-29 pela `V2C-T6`]
+### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 13/20 (Bloco A fechado, Bloco C em andamento; `T12` partida em `T12a`/`T12b` ⇒ 20 tarefas), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
 19 tarefas, cada uma com o `C-NN` de origem. Ordem normativa em `docs/plans/P-0729-v2-melhoria-candidatos.md`
 §2 — **Bloco A** (`T1..T4`) antes do Estágio 3A; **Bloco C** (`T5..T19`) depois dele.
@@ -474,8 +485,71 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
     agente(s), 9 skill(s)).` (exit `0`); `dead_code.py` →
     `dead_code: OK - 0 achado(s) sob 'D:\workspaces\PantonicApp'.` (exit `0`). Nada tocado em
     `.claude/checks/kit_check.ps1` nem `GOVERNANCA.md` (reservado à `V2K-T12b`).
-  - Consumo: (preenchido pelo orquestrador via notificação)
-- `V2K-T12b` — Coletor `kit_check.ps1 -Mode consumers` + `GOVERNANCA.md` §10 — [Sonnet] — backlog *(`C-09`; depende de `T12a`)*
+  - Consumo: 38 tool uses, ~87k tokens, Sonnet, ~9min24s (medido no `<usage>` da notificação; teto
+    informado era 25 — **estouro de 13**, o executor não parou no checkpoint. Causa auto-relatada:
+    round-trips de verificação não orçados (guarda de listagem recursiva do PowerShell abortou a
+    montagem do sandbox e exigiu refazer; 2 idas extras de Read/Grep para confirmar âncoras
+    `file:line` antes de citá-las no diário) + o custo próprio das skills de fechamento
+    (`guardrails-check`, `handover`, `diario-de-obras`). O alvo em si não teve thrashing: 2 Edits,
+    de primeira. **Leitura para a calibragem de `DK-4`:** o teto de 25 foi fixado pelos ~4 clusters
+    da partição, mas ignorou o piso fixo de fechamento — a partição corta o custo do alvo, não o
+    overhead de sandbox + skills.)
+- `V2K-T12b` — Coletor `kit_check.ps1 -Mode consumers` + `GOVERNANCA.md` §10 — [Sonnet] — done
+  *(`C-09`; depende de `T12a`; fecha o `C-09` junto com `T12a`)*
+  - Mudou: `.claude/checks/kit_check.ps1:28` (`consumers` adicionado ao `ValidateSet`);
+    `.claude/checks/kit_check.ps1:282-341` (ramo `elseif ($Mode -eq 'consumers')` — lê
+    `docs/CONSUMIDORES.md` a partir de `Split-Path -Parent $KitRoot`, localiza a tabela pelo
+    cabeçalho exato, para cada linha de dado testa `<Consumidor>/.claude/kit/SYNC_STATE`: se
+    existe, parseia `chave=valor` e reescreve as 3 colunas derivadas; se não existe, preserva a
+    linha semeada como está; só escreve o arquivo se `$updated -gt 0`). `GOVERNANCA.md:476-480`
+    (`§10`, item novo `(c)` na forma de `(a)`/`(b)`: declara `docs/CONSUMIDORES.md` derivado do
+    carimbo `SYNC_STATE` via `kit_check.ps1 -Mode consumers`, coluna `Consumidor` única entrada
+    manual). Nada tocado em `.claude/sync-kit.ps1`, `.claude/README.md`; `docs/CONSUMIDORES.md`
+    não foi editado à mão — só como saída do modo novo rodando (ficou byte-idêntico no repo
+    real, ver abaixo).
+  - Verificação: sandbox no scratchpad (`t12b_sandbox/`, dois consumidores sintéticos —
+    `consumerA` com `.claude/kit/SYNC_STATE` de 3 chaves, `consumerB` sem carimbo — e uma cópia
+    de `docs/CONSUMIDORES.md` apontando para os dois). Rodando
+    `kit_check.ps1 -Mode consumers -KitRoot <sandbox>/.claude`:
+    ```
+    kit_check: consumers OK - 1 atualizado(s) por carimbo, 1 permanece(m) semeado(s).
+    ```
+    exit `0`; a linha do `consumerA` passou a `| ...consumerA | 1.4.0 | 2026-08-01T22:38:45Z |
+    copia |` (valores reais do carimbo); a linha do `consumerB` permaneceu
+    `| ...consumerB | semeada — não verificada por sync | — | — |`; a prosa fora da tabela e o
+    cabeçalho ficaram intactos. No repo real, `kit_check.ps1 -Mode consumers` (sem `-KitRoot`,
+    resolve `.claude/` do hub):
+    ```
+    kit_check: consumers OK - 0 atualizado(s) por carimbo, 6 permanece(m) semeado(s).
+    ```
+    exit `0`, batendo com "0/6 consumidores têm `.claude/kit/` hoje"; `git status --short
+    docs/CONSUMIDORES.md` veio vazio (byte-idêntico ao versionado — o coletor não tocou o
+    arquivo por não achar carimbo em nenhum dos 6). Gates bloqueantes do kit no repo real:
+    `-Mode validate` → `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION ==
+    KIT_VERSION ('1.4.0').` (exit `0`); `-Mode check-drift` → `kit_check: check-drift OK -
+    .claude/README.md == regenerado (9 agente(s), 9 skill(s)).` (exit `0`); `dead_code.py` →
+    `dead_code: OK - 0 achado(s) sob 'D:\workspaces\PantonicApp'.` (exit `0`).
+  - Veredito — `V2K-T12b`
+    ```
+    Veredito — V2K-T12b
+    Suítes: n/a (hub sem suíte pytest/app Python; escopo é PowerShell + doc). Tocou apenas o
+      kit e GOVERNANCA.md — não é contracts/infracore/serviço compartilhado, sem recomendação de
+      passe completo.
+    Piso: sem mudança de piso (hub não tem tests/conformance/ nem suíte de regressão)
+    Kit: kit_check -Mode validate exit 0 / -Mode check-drift exit 0 / dead_code.py exit 0
+    Checklist de review: camadas n/a (script PowerShell, não código em camada) | ACL n/a |
+      MVVM n/a | UI thread n/a | sinais/Pydantic n/a | mirror discipline n/a | nenhum teste
+      deletado às cegas: ok | decision record: ok (segue DK-12/DK-13 já registrada, sem
+      bifurcar rota)
+    ```
+    `C-09` (`T12a` + `T12b`) entregue por inteiro: metade produtora carimba em cada consumidor,
+    metade coletora deriva `docs/CONSUMIDORES.md` a partir do carimbo, hub nunca edita o registro
+    à mão.
+  - Consumo: 25 tool uses, ~79k tokens, Sonnet, ~17min09s (medido no `<usage>` da notificação; teto
+    informado era 35 — **dentro do teto**, 10 de folga. Confirma a calibragem lida na `T12a`: teto
+    que soma o alvo (~4 clusters) ao piso fixo de fechamento (sandbox + `guardrails-check` +
+    `handover` + edição do diário) para no lugar certo, enquanto o teto derivado só dos clusters
+    (25 na `T12a`) estourou em 13.)
 - `V2K-T13` — Compatibilidade por major kit × consumidor — [Sonnet] — backlog *(`C-14`; contíguo a `T11`/`T12` por DK-11)*
 - `V2K-T14` — Doutrina do piso de regressão **comportamental** (§4.4) — [Opus] — backlog *(`C-11`a; nunca percentual)*
 - `V2K-T15` — Receita executável de ratchet do piso — [Sonnet] — backlog *(`C-11`b)*

@@ -25,7 +25,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('validate', 'generate', 'check-drift')]
+    [ValidateSet('validate', 'generate', 'check-drift', 'consumers')]
     [string]$Mode = 'validate',
 
     [string]$KitRoot
@@ -277,5 +277,66 @@ elseif ($Mode -eq 'check-drift') {
         exit 1
     }
     Write-Host "kit_check: check-drift OK - .claude/README.md == regenerado ($($agentsBody.Count - 2) agente(s), $($skillsBody.Count - 2) skill(s))."
+    exit 0
+}
+elseif ($Mode -eq 'consumers') {
+    # V2K-T12b (docs/plans/P-0729-v2-melhoria-candidatos.md §T12, C-09, metade
+    # consumidora). Deriva por máquina as 3 colunas de docs/CONSUMIDORES.md a
+    # partir do carimbo SYNC_STATE (V2K-T12a) que cada consumidor grava em
+    # .claude/kit/ a cada sync efetivo. Coluna 'Consumidor' é a única entrada
+    # mantida à mão; caminho sem carimbo (inclusive inexistente) preserva a
+    # linha semeada intacta — nunca apaga nem inventa versão.
+    $repoRoot = Split-Path -Parent $KitRoot
+    $consumidoresPath = Join-Path $repoRoot 'docs/CONSUMIDORES.md'
+    if (-not (Test-Path -LiteralPath $consumidoresPath)) {
+        Write-Host "kit_check: consumers FALHOU - docs/CONSUMIDORES.md não encontrado em: $consumidoresPath"
+        exit 1
+    }
+    $lines = @(Get-Content -LiteralPath $consumidoresPath)
+    $headerIdx = -1
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($lines[$i].Trim() -eq '| Consumidor | Versão instalada | Último sync | Modo |') { $headerIdx = $i; break }
+    }
+    if ($headerIdx -lt 0) {
+        Write-Host "kit_check: consumers FALHOU - cabeçalho da tabela não encontrado em: $consumidoresPath"
+        exit 1
+    }
+    $dataStart = $headerIdx + 2
+    $dataEnd = $dataStart
+    while ($dataEnd -lt $lines.Count -and $lines[$dataEnd].TrimStart().StartsWith('|')) {
+        $dataEnd++
+    }
+    $updated = 0
+    $seeded = 0
+    $newLines = [System.Collections.Generic.List[string]]::new()
+    $newLines.AddRange([string[]]$lines[0..($dataStart - 1)])
+    for ($i = $dataStart; $i -lt $dataEnd; $i++) {
+        $row = $lines[$i]
+        $cols = $row.Split('|')
+        $consumidorPath = $cols[1].Trim()
+        $syncStatePath = Join-Path $consumidorPath '.claude/kit/SYNC_STATE'
+        if (Test-Path -LiteralPath $syncStatePath) {
+            $kv = @{}
+            foreach ($l in @(Get-Content -LiteralPath $syncStatePath)) {
+                if ($l -match '^\s*([A-Za-z_]+)\s*=\s*(.*)$') { $kv[$Matches[1]] = $Matches[2].Trim() }
+            }
+            $version = if ($kv.ContainsKey('version')) { $kv['version'] } else { 'unknown' }
+            $syncedAt = if ($kv.ContainsKey('synced_at')) { $kv['synced_at'] } else { 'unknown' }
+            $syncMode = if ($kv.ContainsKey('mode')) { $kv['mode'] } else { 'unknown' }
+            $newLines.Add("| $consumidorPath | $version | $syncedAt | $syncMode |")
+            $updated++
+        }
+        else {
+            $newLines.Add($row)
+            $seeded++
+        }
+    }
+    if ($dataEnd -lt $lines.Count) {
+        $newLines.AddRange([string[]]$lines[$dataEnd..($lines.Count - 1)])
+    }
+    if ($updated -gt 0) {
+        Set-Content -LiteralPath $consumidoresPath -Value $newLines.ToArray() -Encoding utf8NoBOM
+    }
+    Write-Host "kit_check: consumers OK - $updated atualizado(s) por carimbo, $seeded permanece(m) semeado(s)."
     exit 0
 }

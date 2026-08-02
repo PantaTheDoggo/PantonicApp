@@ -144,6 +144,10 @@ perdedora ou a reduz a ponteiro**, no mesmo ato. Duplicata é a próxima diverg�
 
 Nenhuma das quatro: não é doutrina. É estado de trabalho, e o lar é o diário de obras.
 
+**Ponteiro, não cópia:** a governança das memórias do harness — incluindo a fila de candidatos, em
+que o agente enfileira e **só o dono promove** — passa na pergunta 1 e mora em
+`~/.claude/docs/GOVERNANCA_MEMORIAS.md` (§8), **fora do kit e fora da distribuição**.
+
 ## 4. Fluxo de desenvolvimento
 
 ### 4.1 Regra básica
@@ -353,7 +357,18 @@ registrada** abaixo, a revisão está pendente e a skill reporta ao dono.
 **Escopo.** Entram só as guardrails com **≥2 MINORs de idade** — introduzidas em MINOR ≤ (corrente
 − 2). Regra recém-adicionada não teve tempo de agir; cobrar evidência dela é medir ruído.
 
-**Pergunta única, aplicada a cada guardrail em escopo:**
+**Isenção por enforcement executável** (decisão do dono, 2026-08-01, calibragem medida na rodada
+`1.4.0`). Guardrail cujo cumprimento é verificado por um **check executável ativo** — teste de
+conformance, gate de CI, script do kit — **não entra na pergunta**: o check verde é a evidência de
+vida. A pergunta vale para guardrail **advisória ou procedimental**, cujo único rastro possível é o
+registro escrito. Motivo: regra preventiva enforçada por código só produz caso citável quando
+alguém a **viola**; funcionando, ela é silenciosa, e a pergunta a condenaria justamente por
+sucesso. A isenção **não é declarativa** — quem a invoca **nomeia o check** (caminho do teste, ou o
+comando do gate) e confirma que ele roda hoje. Check inexistente, desabilitado (`skip`, `xfail`) ou
+neutralizado (allowlist que cobre todos os casos) **não isenta**: a regra volta à pergunta, e o
+check morto é achado próprio, a reportar.
+
+**Pergunta única, aplicada a cada guardrail em escopo e não isenta:**
 
 > Esta regra mudou algum comportamento nos últimos 2 MINORs? Cite o caso.
 
@@ -376,13 +391,19 @@ registrar a rodada não é** — revisão sem registro não aconteceu.
 - **`1.4.0` — 2026-08-01** (primeira aplicação, `V2K-T9`): 14 guardrails avaliadas, 8 em escopo
   (itens 1-8, doutrina original), 6 fora por idade (itens 9-13 nascidos em `1.4.0`; item 14 ainda
   não lançado). Casos citáveis encontrados para os itens **1, 3, 6, 7, 8**; **sem caso** para os
-  itens **2 (ACL)**, **4 (egress G6)** e **5 (namespace de estado)**. **0 marcações** — os três
-  ficam **retidos sem marcação**, pendentes de decisão do dono, porque a rodada mediu um defeito de
+  itens **2 (ACL)**, **4 (egress G6)** e **5 (namespace de estado)**. A rodada mediu um defeito de
   calibragem da própria pergunta: guardrail **preventivo** enforçado por teste automático só produz
   caso citável quando alguém o **viola**, de modo que a pergunta não distingue "regra morta" de
-  "regra que funcionou tão bem que ninguém a violou". Reter é a leitura conservadora do resultado;
-  a alternativa (marcar) removeria em `1.6.0` três regras de arquitetura sem evidência de que estão
-  mortas. Resultado item a item em `docs/DIARIO_DE_OBRAS.md` (`V2K-T9`).
+  "regra que funcionou tão bem que ninguém a violou". Os três foram **retidos sem marcação** e a
+  calibragem, escalada ao dono.
+  **Encerrada em 2026-08-01** pela decisão do dono — **isenção por enforcement executável** (regra
+  acrescentada acima). Os três são **isentos**, com o check nomeado e confirmado rodando no
+  consumidor `PantonicVideo`: ACL → `tests/conformance/test_acl_no_external_in_plugins.py`;
+  egress G6 → `tests/conformance/test_filesystem_egress.py`; namespace de estado →
+  `tests/boundary/test_state_writer_namespacing.py` — os três executados em 2026-08-01, **11
+  passed**, nenhum `skip`/`xfail` (os `pytest.skip` presentes são guarda de `plugins/` ausente, que
+  existe no consumidor). **Resultado final da rodada: 0 marcações.** Resultado item a item em
+  `docs/DIARIO_DE_OBRAS.md` (`V2K-T9`).
 
 ## 8. Documentação mínima de um projeto Pantonic*
 
@@ -452,6 +473,12 @@ consumidor.
   rede não bloqueia a tarefa nem é tratada como se fosse "versões iguais" — a incerteza é
   reportada, não escondida.
 
+**(c) Registro de consumidores é derivado, nunca editado à mão.** `docs/CONSUMIDORES.md` lista os
+projetos consumidores do kit; as três colunas derivadas (`Versão instalada`, `Último sync`, `Modo`)
+são escritas por `kit_check.ps1 -Mode consumers` a partir do carimbo `SYNC_STATE` que cada
+consumidor grava em `.claude/kit/` a cada sync efetivo — nunca preenchidas à mão. A coluna
+`Consumidor` é a única entrada mantida manualmente.
+
 **Critério de pronto.** Qualquer tarefa que edite `.claude/` do hub só está pronta se o bump de
 `.claude/KIT_VERSION` acompanhar a mudança. Uma versão que não sobe quando o conteúdo muda deixa a
 checagem cega — o guarda vira teatro.
@@ -464,3 +491,9 @@ guardrail novo compatível com o que já existe; **PATCH** = correção redacion
 comportamento. Toda tarefa que edite `.claude/` ou a doutrina bumpa os dois arquivos **e** escreve
 uma linha correspondente no `CHANGELOG.md` (raiz) — os três se movem juntos, nunca um sem os
 outros dois.
+
+**O que se distribui, executa.** Agentes e skills são instruções que rodam com as ferramentas
+que o frontmatter concede; um artefato adulterado no hub vira execução em todo consumidor. O
+passo de sync verifica a assinatura do commit de origem antes de aplicar. **Fora de escopo,
+registrado:** varredura de conteúdo artefato por artefato — custo alto, e o corpus inteiro a
+deixa em aberto.

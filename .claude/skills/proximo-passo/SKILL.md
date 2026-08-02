@@ -14,8 +14,15 @@ aqui.
 
 ## Fluxo
 
-1. **Drenar inbox** — skill `diario-de-obras`, operação "drenar inbox de planos": promove linhas
-   novas de `docs/plans/_INBOX.md` para o índice do diário antes de escolher qualquer tarefa.
+1. **Drenar os dois inboxes** — antes de escolher qualquer tarefa:
+   1. **Inbox de planos** — skill `diario-de-obras`, operação "drenar inbox de planos": promove
+      linhas novas de `docs/plans/_INBOX.md` para o índice do diário.
+   2. **Fila de candidatos a memória** — se `<memory-dir>/_INBOX.md` tiver linha ainda não marcada
+      (`<memory-dir>` = `~/.claude/projects/<slug>/memory/`), apresentá-la ao dono nesta invocação
+      — `AskUserQuestion` com promover/descartar por candidato — e marcar a linha conforme a
+      decisão. O agente **nunca promove sozinho**; sem esta drenagem a fila acumula e a disciplina
+      degrada de volta para gravar direto em memória
+      (`~/.claude/docs/GOVERNANCA_MEMORIAS.md` §8). Fila vazia ou toda marcada: seguir sem ruído.
 
 2. **Ler diretiva de priorização** — primeira linha do diário (`docs/DIARIO_DE_OBRAS.md`), logo
    abaixo do título. Se vazia, aplicar heurística padrão, nesta ordem:
