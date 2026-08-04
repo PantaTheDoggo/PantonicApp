@@ -466,9 +466,13 @@ consumidor.
 
 **Os três resultados possíveis da checagem:**
 - **Versões iguais** → segue em silêncio; não vale o turno do dono para confirmar o óbvio.
-- **Divergentes** → reporta a versão local, a versão remota, e pergunta *"atualizar agora ou
-  postergar?"*. A resposta do dono é registrada no próprio plano que está sendo criado. O agente
-  nunca atualiza sozinho, seja qual for a resposta.
+- **Divergentes em MINOR/PATCH** → reporta a versão local, a versão remota, e pergunta *"atualizar
+  agora ou postergar?"*. A resposta do dono é registrada no próprio plano que está sendo criado. O
+  agente nunca atualiza sozinho, seja qual for a resposta.
+- **Divergentes em MAJOR** → não é divergência comum: reporta como **incompatível** e para, sem a
+  pergunta de atualização — padrão de `BM-19§D10` (CLI v1.x consome só templates v1.x.x). A regra
+  `(a)` continua valendo sem exceção de severidade: o agente nunca atualiza sozinho; decidir como
+  prosseguir é do dono.
 - **Sem rede / remote inacessível** → reporta "não verificado" e segue com o trabalho. Falha de
   rede não bloqueia a tarefa nem é tratada como se fosse "versões iguais" — a incerteza é
   reportada, não escondida.

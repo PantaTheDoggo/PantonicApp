@@ -45,14 +45,22 @@ git ls-remote --tags https://github.com/PantaTheDoggo/PantonicApp.git "kit-v*"
 ### 3. Comparar
 
 Comparar a tag mais alta retornada (`kit-v<versão>`) com a versão local resolvida no passo 1
-(`.claude/kit/KIT_VERSION` no modo consumidor, `.claude/KIT_VERSION` no modo hub).
+(`.claude/kit/KIT_VERSION` no modo consumidor, `.claude/KIT_VERSION` no modo hub). Quando as duas
+divergem, extrair o componente MAJOR de cada uma (`M.x.y` → `M`) — é o que decide entre os dois
+ramos de divergência abaixo, padrão de `BM-19§D10` (CLI v1.x consome só templates v1.x.x):
+consumidor com kit `M.x` consome doutrina `M.x`.
 
-## Os três resultados possíveis
+## Os resultados possíveis
 
 - **Versões iguais** → segue em silêncio, sem gastar turno do dono.
-- **Divergentes** → reporta: versão local, versão remota, e a pergunta *"atualizar agora ou
-  postergar?"*. Registra a resposta do dono no plano que está sendo criado. **Nunca atualiza
-  sozinho.**
+- **Divergentes em MINOR/PATCH** (mesmo MAJOR) → reporta: versão local, versão remota, e a
+  pergunta *"atualizar agora ou postergar?"*. Registra a resposta do dono no plano que está sendo
+  criado. **Nunca atualiza sozinho.**
+- **Divergentes em MAJOR** → não é tratada como divergência comum: reporta como **incompatível**
+  (versão local, versão remota, MAJOR local ≠ MAJOR remoto) e **para** — sem a pergunta de
+  "atualizar agora ou postergar", porque não é uma atualização de rotina. A regra do §10(a) segue
+  intacta: o agente **nunca atualiza sozinho**; decidir como prosseguir (inclusive migrar) é do
+  dono.
 - **Sem rede / remote inacessível** → reporta "não verificado" e segue. Falha de rede não
   bloqueia o trabalho nem vira silêncio — a incerteza é reportada.
 
