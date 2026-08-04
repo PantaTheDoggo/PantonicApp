@@ -210,8 +210,32 @@ Todo desenvolvimento segue TDD, garantindo prioritariamente dois tipos de teste:
 - **Funcionais (TF)** — verificam se a função faz o que deve fazer; derivados dos casos de uso e
   requisitos do PRD, definidos já no Sprint Plan.
 - **Regressão (TR)** — verificam que um estado funcional anterior não quebrou (ausência de
-  colaterais). Formam um **piso de regressão**: o número de testes verdes nunca diminui; um teste
-  cujo significado muda intencionalmente é reescrito, nunca deletado.
+  colaterais).
+
+**Piso de regressão — comportamentos trancados, nunca percentual.** O piso é o conjunto de
+**comportamentos** que o projeto já garante e não pode perder. Ele **não é** percentual de
+cobertura, e percentual de cobertura **não** vale como piso, meta ou critério de pronto em nenhum
+ponto desta doutrina: piso percentual premia manter teste de código morto para não derrubar a
+métrica — exatamente o que `G-DEADCODE` (§7, item 9) proíbe. Escrito como comportamento, o piso
+**reforça** `G-DEADCODE`: sumiu o chamador de produção, o comportamento sai do piso por ato
+explícito, e nenhum teste sobrevive só para segurar um número.
+
+O piso responde a três perguntas:
+
+1. **Como se mede** — por uma **lista versionada** de comportamentos trancados, no repositório do
+   projeto (`tests/piso_comportamental.txt`), uma linha por comportamento no formato
+   `<pytest nodeid> — <comportamento em uma frase>`. Um comportamento entra no piso quando o par
+   TF+TR que o tranca fica verde; a unidade é a frase, não o arquivo nem a contagem de testes.
+2. **Como se prova que não desceu** — por comando, não por leitura: o check de ratchet
+   (`.claude/checks/ratchet_piso.py`, invocado pela skill `guardrails-check`) compara a lista com a
+   coleta real da suíte e **falha nomeando o comportamento perdido** quando um nodeid do piso
+   desapareceu. Handover que não roda o check não fecha a tarefa.
+3. **O que fazer quando um comportamento é removido de propósito** — tirar do piso é **decisão do
+   dono**, nunca efeito colateral de refactor: o dono registra o ato no diário de obras (qual
+   comportamento, por quê, em que commit) e só então a linha sai de `tests/piso_comportamental.txt`,
+   no mesmo commit que remove o teste. Sem esse registro, teste do piso que some é regressão, não
+   simplificação. Teste cujo significado muda intencionalmente é **reescrito** — e a linha do piso
+   é reescrita junto —, nunca deletado.
 
 ## 5. Fluxo de extensão (plugins)
 
