@@ -19,15 +19,16 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
 3. **Boundary** — `tests/boundary/`: namespace de estado (`plugins.<nome>.*`), quando a tarefa
    tocar estado de plugin.
 4. **Tier 3 (piso de regressão completo — gate de sprint/fase, não de toda tarefa)** — a suíte
-   inteira via `/lean-test` sem args, com a contagem de verdes comparada ao piso registrado
-   (diário de obras / doc AS-IS). Roda de fato quando: (b) é a última tarefa do sprint/fase
+   inteira via `/lean-test` sem args. O piso é o conjunto de **comportamentos trancados**
+   (`GOVERNANCA.md` §4.4), nunca contagem de verdes nem percentual de cobertura — ver item 7
+   para o comando que prova isso. Roda de fato quando: (b) é a última tarefa do sprint/fase
    (gate de fechamento já previsto no próprio plano); ou (c) o usuário pedir um passe completo.
    Quando (a) a tarefa toca `contracts/`, `infracore/` ou serviço compartilhado (alto raio de
    explosão), o executor **não** roda Tier 3 por conta própria — decidir rodar é prerrogativa do
    dono/orquestrador (`CLAUDE.md` global, Regra 7; `integration-executor` R-3); o executor só
    **recomenda** o passe completo no handover, com a razão (raio de explosão). Nas demais
-   tarefas o gate é Tier 2, e o piso é conferido no gate de sprint. Piso subiu → nada a fazer;
-   desceu → tarefa **não está pronta**.
+   tarefas o gate é Tier 2, e o piso é conferido no gate de sprint. Nenhum comportamento
+   trancado perdido → nada a fazer; comportamento perdido → tarefa **não está pronta**.
 5. **Kit agêntico (projeto que tem `.claude/checks/kit_check.ps1`) — bloqueante como o Tier 2** —
    `pwsh .claude/checks/kit_check.ps1 -Mode validate` (estrutura do kit + paridade
    `VERSION` == `.claude/KIT_VERSION`) e `pwsh .claude/checks/kit_check.ps1 -Mode check-drift`
@@ -40,6 +41,13 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    achado é órfão real (remover no mesmo commit) ou dispatch dinâmico ainda não coberto pelas
    categorias auto-vivas do script (Pydantic validator, entry class de `manifest.json`, override
    de virtual Qt), nunca allowlist de conveniência.
+7. **Ratchet do piso comportamental (`.claude/checks/ratchet_piso.py`) — bloqueante, mesmo
+   padrão dos itens 5 e 6** — `python .claude/checks/ratchet_piso.py` (usa o `--root` default do
+   próprio projeto; consumidor versiona `tests/piso_comportamental.txt`, uma linha por
+   comportamento trancado no formato `<pytest nodeid> — <comportamento em uma frase>`,
+   `GOVERNANCA.md` §4.4). Compara a lista com `pytest --collect-only -q` e falha nomeando o
+   comportamento perdido quando um nodeid do piso desapareceu da coleta; arquivo de piso ausente
+   é OK explícito (consumidor que ainda não adotou não quebra o gate), nunca silêncio por engano.
 
 Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sumário) — nunca
 `pytest` puro despejando o log inteiro no contexto (`CLAUDE.md` global, Regra 3).
@@ -83,7 +91,7 @@ Suítes: <tier rodado, ex. "Tier 2 (tests/conformance/)"> — <resultado, ex. "5
   <se o piso completo não rodou: por qual critério ficou para o gate de sprint; se a tarefa
   tocou contracts/, infracore/ ou serviço compartilhado — critério (a) — recomendação de passe
   completo para o dono/orquestrador decidir>
-Piso: <antes> → <depois> (ou "sem mudança de piso")
+Piso: <ratchet_piso.py — OK | comportamento(s) perdido(s) nomeados> (ou "sem piso declarado")
 Kit: <kit_check -Mode validate / -Mode check-drift — exit 0 | n/a (projeto sem kit_check.ps1)>
 Checklist de review: <ok | desvio path:line — descrição> (uma linha por item verificado)
 ```
