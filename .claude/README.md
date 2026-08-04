@@ -23,7 +23,7 @@ blocos de "fatos estáveis" dos agentes. Fundamentos: `GOVERNANCA.md` e
 
 **Nota sobre o modelo do `pantonic-planner`:** o frontmatter só carrega `model: opus`; a
 ressalva de que Fable nunca é escolha automática — só entra sob solicitação explícita do dono,
-mesmo em planejamento (CLAUDE.md global, Regra 7) — fica registrada aqui em prosa, fora da
+mesmo em planejamento (`GOVERNANCA.md` §3) — fica registrada aqui em prosa, fora da
 região gerada, para não se perder a cada `kit_check.ps1 -Mode generate`.
 
 Os auditores são invocados pelo usuário, produzem relatórios em `docs/audits/` e **não alteram

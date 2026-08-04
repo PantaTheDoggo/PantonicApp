@@ -104,6 +104,15 @@ Regras de operação:
   espalhou por duas fases do plano sucessor e uma tarefa (autorar o materializador) não caiu em
   nenhuma das duas — só apareceu quando um passo posterior tentou consumi-la e o insumo não
   existia. Rebase que absorve fase de outro plano mapeia tarefa a tarefa, não fase a fase.
+- **Economia de contexto** — saída verbosa de ferramenta (logs, listagens, builds) entra inteira
+  no contexto e degrada qualidade/custo; filtrar na origem, não depois (`~/.claude/CLAUDE.md`
+  Regra 3, dono).
+- **Disciplina de coleta** — `git status --short`/`git log --oneline` no lugar dos completos;
+  listagem de diretório nunca recursiva sem excluir `build/`, `.venv/`, `node_modules/`; arquivo
+  > 500 linhas via Grep + Read com `offset`/`limit`, nunca leitura integral; comando verboso
+  não-teste redireciona a saída para arquivo e lê só o fim.
+- **Batching de chamadas independentes** — leituras/greps sem dependência entre si vão na mesma
+  mensagem; N leituras em 1 turno custam 1 reenvio de contexto, em N turnos custam N reenvios.
 
 ### 3.1 Residência e precedência da doutrina
 
@@ -186,6 +195,16 @@ também como um kanban adaptado:
   carrega o **comando**, copiado do terminal, não a intenção de verificar. `caminho:linha` é
   ponteiro de leitura — envelhece e **não** se mantém; tratá-lo como contrato custa mais do que
   entrega.
+- **Fechamento enxuto** — o diário de obras é o único registro canônico de uma tarefa; o relatório
+  final ao orquestrador é ponteiro + deltas, nunca repete o que já está escrito aqui.
+- **Telemetria pela notificação, não pelo auto-relato** — a linha
+  `Consumo: <N> tool uses, ~<X>k tokens, <modelo>, <duração>` é escrita no diário pelo
+  **orquestrador**, lendo o bloco `<usage>` da notificação de conclusão do subagente (dado
+  medido) — nunca copiando a estimativa que o próprio subagente eventualmente escreve no texto do
+  handover (auto-relato subestima: caso medido registrou ~90k autorrelatado contra ~140k reais,
+  ~35% de subestimativa). Cria série histórica para detectar regressão de consumo por tarefa,
+  mesmo racional do piso de regressão de testes aplicado a custo. O executor grava o placeholder
+  literal `Consumo: (preenchido pelo orquestrador via notificação)` — nunca um número próprio.
 
 ### 4.3 Execução em contexto limpo
 
@@ -211,6 +230,10 @@ Todo desenvolvimento segue TDD, garantindo prioritariamente dois tipos de teste:
   requisitos do PRD, definidos já no Sprint Plan.
 - **Regressão (TR)** — verificam que um estado funcional anterior não quebrou (ausência de
   colaterais).
+
+**Cadência de testes** — Tier 1 roda no máximo 2× por tarefa (após implementar, após corrigir),
+nunca a cada micro-edição; tier superior só no fechamento (`~/.claude/CLAUDE.md` Regra 7; skill
+`test-tiers`).
 
 **Piso de regressão — comportamentos trancados, nunca percentual.** O piso é o conjunto de
 **comportamentos** que o projeto já garante e não pode perder. Ele **não é** percentual de

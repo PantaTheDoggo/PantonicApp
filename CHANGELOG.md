@@ -8,6 +8,16 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 `GOVERNANCA.md` §10 — MAJOR exige ação do consumidor, MINOR adiciona artefato/guardrail
 compatível, PATCH corrige redação.
 
+## [Não lançado]
+
+- `V2K-T17`: residência da doutrina do `~/.claude/CLAUDE.md` global corrigida — a disciplina de
+  coleta condensada (git, listagens, arquivos grandes, comandos verbosos), o batching de chamadas
+  independentes e a cadência de testes passam a viajar em `GOVERNANCA.md` §3/§4.4 (kit); a
+  telemetria medida pela notificação (nunca auto-relato) passa a residir em `GOVERNANCA.md` §4.2.
+  O que era só duplicata (onboarding ATIVO/HISTÓRICO, DOC_MAP, fatos estáveis de agente, modelo
+  por fase, orçamento de turnos) saiu do global, que mantém apenas o princípio condensado
+  apontando para o kit.
+
 ## 1.4.0 — 2026-07-30
 
 - `GOVERNANCA.md` §7 passa de **8 para 13 guardrails**: **G-DEADCODE** (proibição de código morto
