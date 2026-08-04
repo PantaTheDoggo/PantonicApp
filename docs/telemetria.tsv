@@ -1,0 +1,40 @@
+data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
+2026-08-01	PantonicApp	V2B-T1	Sonnet	13	44	100	usage
+2026-08-01	PantonicApp	V2B-T2	Sonnet	20	57	128	usage
+2026-08-01	PantonicApp	V2B-T3	Sonnet	24	79	357	usage
+2026-08-01	PantonicApp	V2B-T4	Haiku	122	282	2300	usage
+2026-08-01	PantonicApp	V2B-T5	Haiku	28	40	201	usage
+2026-08-01	PantonicApp	V2B-T6	Haiku	12	190.5	390	usage
+2026-08-01	PantonicApp	V2B-T7	Haiku	136	310	11500	usage
+2026-08-01	PantonicApp	V2B-T8	Sonnet	67	159	810	usage
+2026-08-01	PantonicApp	V2B-T9	Sonnet	49	117	540	usage
+2026-08-01	PantonicApp	V2C-T1	Sonnet	28	111	305	usage
+2026-08-01	PantonicApp	V2C-T2	Sonnet	32	178	449	usage
+2026-08-01	PantonicApp	V2C-T3	Opus	37	183	698	usage
+2026-08-01	PantonicApp	V2C-T4	Opus	28			contado
+2026-08-01	PantonicApp	V2C-T5	Opus	12			contado
+2026-08-01	PantonicApp	V2C-T6	Opus	28			contado
+2026-08-01	PantonicApp	V2M-T1	Opus	40			nao_medido
+2026-08-01	PantonicApp	V2M-T2	Sonnet	25	78	2940	usage
+2026-08-01	PantonicApp	V2M-T3	Sonnet	29	71	11580	usage
+2026-08-01	PantonicApp	V2M-T4	Sonnet	24	55	446	usage
+2026-08-01	PantonicApp	V2M-T5	Sonnet	41	76	312	usage
+2026-08-01	PantonicApp	V2M-T5	Sonnet	31	94	1172	usage
+2026-08-01	PantonicApp	V2K-T1	Sonnet	17	55	2160	usage
+2026-08-01	PantonicApp	V2K-T2	Sonnet	33	101	24420	usage
+2026-08-01	PantonicApp	V2K-T3	Opus	18	49	180	usage
+2026-08-01	PantonicApp	V2K-T4	Opus	11	66	360	contado
+2026-08-01	PantonicApp	V2K-T5	Sonnet	21	65	396	usage
+2026-08-01	PantonicApp	V2K-T6	Opus	24			contado
+2026-08-01	PantonicApp	V2K-T7	Opus	14			contado
+2026-08-01	PantonicApp	V2K-T8	Sonnet	18	99	396	usage
+2026-08-01	PantonicApp	V2K-T9	Opus	30	120	720	contado
+2026-08-01	PantonicApp	V2K-T10	Opus	35	95	780	contado
+2026-08-01	PantonicApp	V2K-T11	Sonnet	47	104	6000	usage
+2026-08-01	PantonicApp	V2K-T12a	Sonnet	38	87	564	usage
+2026-08-01	PantonicApp	V2K-T12b	Sonnet	25	79	1029	usage
+2026-08-04	PantonicApp	V2K-T13	Sonnet	18	73	502	usage
+2026-08-04	PantonicApp	V2K-T14	Opus	15			contado
+2026-08-04	PantonicApp	V2K-T15	Sonnet	26	87	6960	usage
+2026-08-04	PantonicApp	V2K-T16	Opus	34			contado
+2026-08-04	PantonicApp	V2K-T17	Sonnet				nao_medido

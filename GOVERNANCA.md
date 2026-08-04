@@ -205,6 +205,11 @@ também como um kanban adaptado:
   ~35% de subestimativa). Cria série histórica para detectar regressão de consumo por tarefa,
   mesmo racional do piso de regressão de testes aplicado a custo. O executor grava o placeholder
   literal `Consumo: (preenchido pelo orquestrador via notificação)` — nunca um número próprio.
+- **Fonte estruturada da série** — `docs/telemetria.tsv` (append-only, colunas `data`, `projeto`,
+  `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte`) é a fonte agregável da série de
+  consumo, sem depender de leitura humana da prosa `Consumo:` do diário/histórico. O bullet
+  `Consumo:` em prosa continua sendo o registro no diário/histórico (esta seção não muda isso); o
+  TSV é um espelho estruturado derivado da mesma medição.
 
 ### 4.3 Execução em contexto limpo
 
