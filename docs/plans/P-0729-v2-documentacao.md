@@ -9,9 +9,11 @@ os demais artefatos."*
 **Planejador:** Opus (2026-07-29). **Executor por tarefa:** T2 (redação do README) em **Opus** — é
 síntese de doutrina, a fase mais intelectual da iniciativa; as demais em Sonnet; T5 com o dono.
 
-**Estado:** `blocked` — razão: *depende do Estágio 3 inteiro `done`* (`P-0729-v2-melhoria` = parte A,
-doutrina herdada; `P-0729-v2-melhoria-candidatos` = parte B, autorada pelo Estágio 2 T6). Espelhar um
-framework que ainda está mudando produz um espelho que nasce errado.
+**Estado:** `in progress` — 2/5 (`T1` e `T2` fechadas em 2026-08-05). Desbloqueado em 2026-08-05: a razão
+registrada (*depende do Estágio 3 inteiro `done`* — `P-0729-v2-melhoria` = parte A, doutrina
+herdada; `P-0729-v2-melhoria-candidatos` = parte B, autorada pelo Estágio 2 T6) deixou de valer com
+3A 5/5 e 3B 20/20. O motivo do bloqueio continua válido como princípio: espelhar um framework que
+ainda está mudando produz um espelho que nasce errado.
 
 **Este plano também fecha a iniciativa:** T4 acumula a **distribuição aos consumidores** — a Fase 4
 do `P-0722`, mapeada para cá em `P-0729-v2-melhoria` §1. A propagação acontece **uma vez**, no
@@ -63,15 +65,17 @@ zero referência a decisão interna sem explicar o que ela significa para quem c
 
 ## 2. Tarefas
 
-### T1 — `docs/DOC_MAP.md` do hub [Sonnet]
-- **Objetivo:** o hub tem quatro documentos acima de 500 linhas (`P-0721` 619, `P-0725-hub-unico`
-  834, e os planos desta iniciativa) e nunca teve DOC_MAP — a Regra 4 do CLAUDE.md global o exige, e
-  o §12 do README vai apontar para ele.
+### T1 — `docs/DOC_MAP.md` do hub [Sonnet] — **done (2026-08-05)**, ver `## Achados da execução`
+- **Objetivo (premissa caída):** o hub tem quatro documentos acima de 500 linhas (`P-0721` 619,
+  `P-0725-hub-unico` 834, e os planos desta iniciativa) e nunca teve DOC_MAP — a Regra 4 do
+  CLAUDE.md global o exige, e o §12 do README vai apontar para ele. **O mapa já existia** desde a
+  `V2K-T6` (2026-07-30), posterior à redação deste plano; a tarefa foi fechada por verificação de
+  cobertura/âncoras + atualização do delta desatualizado.
 - **Arquivos-alvo:** `docs/DOC_MAP.md` (novo), via skill `doc-map`.
 - **Pronto quando:** todo documento > 500 linhas do hub tem entrada com âncoras de seção e padrão de
   Grep de acesso; o mapa cabe em uma tela.
 
-### T2 — Redigir o README espelho [**Opus**]
+### T2 — Redigir o README espelho [**Opus**] — **done (2026-08-05)**, ver `## Achados da execução`
 - **Objetivo:** o entregável central da iniciativa.
 - **Arquivos-alvo:** `README.md` (raiz — hoje inexistente).
 - **Método:** seguir §1 seção a seção. Fontes lidas por Grep/âncora, não integralmente (o próprio
@@ -155,3 +159,128 @@ zero referência a decisão interna sem explicar o que ela significa para quem c
 | **DD-3** | Espelho com fonte declarada | `> Fonte da verdade:` por seção + guarda executável | Espelho sem guarda envelhece mentindo, e mente com autoridade por ser o único arquivo lido |
 | **DD-4** | Aceitação por leitura cega | 6 perguntas de decisão, T5 | Testa a exigência real (decidir) em vez da aparente (existir um README) |
 | **DD-5** | MAJOR condicionado | `2.0.0` se houver mudança que exija ação do consumidor; caso contrário `1.x` com justificativa | Meta do dono é o V2, mas semver é contrato com o consumidor, não placar da iniciativa |
+
+## Achados da execução
+
+### T3 — 2026-08-05
+
+**Entregue:** `.claude/checks/check-readme.ps1` (novo), com `-Root` no mesmo desenho de
+`-KitRoot` (`kit_check.ps1`) e `--root` (`dead_code.py`/`ratchet_piso.py`) — resolve a raiz a
+partir do próprio caminho do script, parametrizável para provar contra fixture sintética sem
+nunca escrever no repo real. As 5 checagens do §T3 implementadas literalmente: (1)/(2)
+agentes/skills do README §7 batendo com `.claude/agents/`/`.claude/skills/` nos dois sentidos;
+(3) versão do README (cabeçalho **e** §12 — os dois pontos, não só o §12) igual a `VERSION` e a
+`.claude/KIT_VERSION`; (4) guardrails da tabela do README §8 (`| N |` recortado só na seção 8,
+não a tabela-sumário do topo que também usa `| N |`) igual aos itens numerados de `GOVERNANCA.md`
+§7; (5) toda seção `## ` com `> Fonte da verdade:` apontando para arquivo existente. Integração
+decidida pelo orquestrador (não reaberta na execução): entrada condicional na skill
+`guardrails-check` (item 8, mesmo molde do item 5) + linha `Espelho:` no template de Veredito —
+`.claude/sync-kit.ps1 -Check` não tocado (concern diferente).
+
+**Achado de implementação, resolvido inline (dentro do escopo da tarefa):** PowerShell rejeita
+binding de um parâmetro `[string[]]` `Mandatory` quando o array contém um elemento `""` (linha em
+branco do README) — mensagem "Cannot bind argument... because it is an empty string" mesmo com o
+tipo sendo array, não escalar. `kit_check.ps1` já carregava a correção (`[AllowEmptyString()]` em
+`Set-MarkedRegion -NewBody`); aplicada aqui à função interna `Get-SectionLines`.
+
+**As duas provas do "pronto quando" (§T3), saída literal:**
+
+Estado corrente (`pwsh .claude/checks/check-readme.ps1`):
+```
+check-readme: OK - 9 agente(s), 9 skill(s), 14 guardrail(s), versão '1.5.0', 13 seção(ões) com Fonte da verdade válida.
+```
+exit 0 — confirma os quatro números que a T2 previu (9/9/14/`1.5.0`).
+
+Drift (fixture sintética em scratchpad — repo mínimo copiado do real: `README.md`, `VERSION`,
+`GOVERNANCA.md`, `.claude/KIT_VERSION`, `.claude/agents/*.md`, `.claude/skills/*/SKILL.md`,
+`docs/plans/P-0729-v2-documentacao.md`, `CHANGELOG.md`, `.claude/README.md` — repo real nunca
+tocado; agente `pantonic-fake-agent.md` adicionado só na fixture, README da fixture não
+atualizado; `check-readme.ps1 -Root <fixture>`):
+```
+check-readme: FALHOU (1 problema(s))
+  - Agente 'pantonic-fake-agent' (.claude/agents/pantonic-fake-agent.md) não aparece na tabela de Agentes do README §7.
+```
+exit 1, nomeando exatamente o agente injetado — sem ruído de outras seções, porque a fixture
+copiou todos os arquivos citados pelas 13 linhas `Fonte da verdade`.
+
+**Guardrails-check (itens 5-7, kit agêntico):** `kit_check.ps1 -Mode validate` e `-Mode
+check-drift` → `OK`, exit 0; `dead_code.py` → `OK - 0 achado(s)`; `ratchet_piso.py` → `OK -
+nenhum piso declarado`.
+
+### T1 — 2026-08-05 (fechada por verificação de premissa)
+
+Este plano foi escrito em 2026-07-29, **antes** dos Blocos A/C do Estágio 3B, e afirma estados de
+repositório que aquelas tarefas mudaram. A `V2K-T6` (commit `fa5ce0d`) criou `docs/DOC_MAP.md`; a
+`ce55144` já o atualizou. A T1 virou, então, verificação + delta:
+
+- **Cobertura completa, medida:** exatamente 5 docs do hub passam de 500 linhas
+  (`DIARIO_HISTORICO` 970, `P-0725-hub-unico` 669, `RELATORIO_CONSOLIDADO` 636,
+  `P-0729-v2-melhoria-candidatos` 526, `P-0721` 524) e os 5 têm entrada no mapa.
+- **Âncoras válidas:** `Grep "^#{1,3} "` nos 5 arquivos confirma que toda âncora listada é
+  cabeçalho real — nenhuma adivinhada (item de aceitação da skill `doc-map`).
+- **Delta corrigido:** tamanhos reancorados e explicitamente datados (não são âncora);
+  `P-0729-v2-melhoria-candidatos` de `in progress` para `done (20/20)`; `GOVERNANCA.md` corrigido
+  para a raiz. `docs/DOC_MAP.md` = 5262 bytes (teto ~8000).
+- **Consequência para T2/T3:** os dossiês deste plano afirmam outros estados de repositório
+  (`README.md` inexistente, contagem de agentes/skills do §7, número de guardrails do §8). Cada um
+  precisa de sonda barata **antes** da delegação — a premissa caída da T1 é padrão do plano, não
+  acidente.
+
+### T2 — 2026-08-05
+
+**Entregue:** `README.md` na raiz, **527 linhas** (faixa 400-550 do §1), 13 seções na ordem
+prescrita, cada uma abrindo com `> Fonte da verdade: <arquivo> §<seção>`.
+
+**Estados re-medidos antes de escrever** (a advertência da T1 se confirmou de novo):
+
+| Afirmação | Medido em 2026-08-05 |
+|---|---|
+| `README.md` na raiz inexistente | **verdadeira** — única premissa do plano que sobreviveu intacta |
+| Versão a citar no §12 | **`1.5.0`** (`VERSION` = `.claude/KIT_VERSION`), **não** `2.0.0` |
+| Agentes / skills do §7 | **9** e **9** (18 linhas na tabela) |
+| Guardrails do §8 | **14** (`GOVERNANCA.md` §7, itens 1..14) |
+| Premissas do §3 | **5** (`GOVERNANCA.md` §1) |
+
+**Ambiguidades da doutrina, resolvidas escrevendo o que é verdade hoje (não inventando consenso):**
+
+1. **Fonte da verdade do §5 (modelo econômico).** O §1 deste plano manda citar
+   `~/.claude/CLAUDE.md` Regra 7 **e** `GOVERNANCA.md` §3. Escrito com fonte única
+   `GOVERNANCA.md` §3, por dois motivos: (a) a `V2K-T17` já repatriou essa doutrina para o kit, e
+   `GOVERNANCA.md` §3.1 diz que, em empate, **versionado vence não-versionado**; (b) um arquivo em
+   `~/.claude/` não existe no consumidor e faria o guarda da T3 falhar ao checar existência do
+   arquivo citado. Mesmo critério aplicado ao §11.
+2. **Formato da linha de fonte.** Fixado em **um único arquivo por seção**, para que a checagem do
+   guarda seja mecânica. As seções 2, 10 e 13 (cuja fonte no §1 era "este plano" / "todas as
+   acima") apontam para `docs/plans/P-0729-v2-documentacao.md` §1 e §2.
+3. **§7 e o que é "do kit".** Skills instaladas em `~/.claude/skills/` (`onboard`, `context-prep`,
+   `doc-map`, `test-tiers`, `lean-test`, `memory-diet`) **não** entraram na tabela — o README diz
+   em prosa que skills fora do repositório não viajam para o consumidor e por isso não contam como
+   doutrina do framework (aplicação de `GOVERNANCA.md` §3.1).
+4. **`.claude/README.md` cita um caminho local** (`D:\Skillstore\...`, bases dos auditores). Como o
+   repositório é público, esse caminho foi **deliberadamente omitido** do espelho. Não é drift: é
+   um dado de ambiente do dono, não doutrina.
+
+**Evidência do §11 — as quatro do dossiê, todas confirmadas na fonte, nenhuma cifra inventada:**
+executor em Opus com **71 turnos / ~189k** (`GOVERNANCA.md` §3); **~300 linhas** de código morto
+testado = `dehydrate_subtitles.py` 174 l + `seed_prototype.py` 127 l
+(`P-0722-governanca-guardrails-anti-saga.md:41`); as **três** premissas de plataforma caídas por
+sonda curta, incluindo o **symlink com privilégio elevado no Windows** (`GOVERNANCA.md` §3 —
+symlink e as outras duas são o mesmo achado, não itens separados, e o README os apresenta assim).
+Somadas duas evidências já registradas na doutrina e igualmente medidas: auto-relato ~90k contra
+~140k reais (§4.2) e a recalibração ≤25 → ≤30 pela série de 7 tarefas (§3). **Nenhuma lacuna** —
+não houve afirmação que precisasse ir para o README sem cifra.
+
+**Aceite verificado por comando, não por leitura:** 13 `Fonte da verdade` = 13 headings `## `; os
+12 arquivos citados existem; grep de remissão proibida ("veja/leia o documento X") **vazio**; §6
+com `mermaid` + a `T15` real do `P-0729-v2-melhoria-candidatos` como exemplo de tarefa atômica;
+§12 com a regra anti-drift; §13 com **duas** perguntas cuja resposta é "não adote" (Q2 — projeto
+pequeno/não-desktop/time com CI; Q6 — quem quer framework maduro, com o fato desfavorável de um
+único consumidor real); §10 com oito limites honestos. Varredura de segredo/credencial/caminho
+local no README: **nada**.
+
+**O que a T3 precisa saber.** Os quatro números que o guarda deve comparar com o disco: **9**
+agentes, **9** skills, **14** guardrails, versão **`1.5.0`**. Dois avisos de implementação: (a) as
+linhas de fonte usam **um** arquivo por seção e o caminho vem sempre entre crases — parsear por
+crase, não por espaço; (b) a contagem de guardrails do §8 é a de linhas de tabela numeradas `| N |`
+dentro da seção 8 — o README tem **outra** tabela numerada `| N |` (o sumário de 13 seções, no
+topo), então o guarda precisa recortar a seção antes de contar, sob pena de achar 27.

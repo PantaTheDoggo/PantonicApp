@@ -17,7 +17,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
-| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | backlog | `docs/plans/P-0729-v2-documentacao.md` |
+| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5; 3/5) | in progress | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -34,10 +34,11 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2D-T1` — `docs/DOC_MAP.md` do hub — [Sonnet], primeira tarefa do
-**Estágio 4** (`P-0729-V2D`), desbloqueado em 2026-08-05 pelo fechamento do Estágio 3 inteiro (3A
-5/5, 3B 20/20 — a `V2K-T19` fechou o Bloco C com `docs/telemetria.tsv` como fonte única da série e
-bump `1.5.0`).
+**Próxima tarefa da sprint:** `V2D-T4` — fechar a versão `2.0.0` (CHANGELOG + tag) e distribuir —
+[Sonnet], no **Estágio 4** (`P-0729-V2D`, 3/5). A `V2D-T3` fechou em 2026-08-05 com o guarda
+executável `.claude/checks/check-readme.ps1` — as 5 checagens mecânicas do README espelho
+(agentes/skills, versão, guardrails, `Fonte da verdade`) conferidas contra o disco e a doutrina,
+exit 0 no estado corrente e exit 1 nomeado numa fixture sintética de drift.
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
@@ -248,12 +249,97 @@ com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não 
     antes do commit; a medida `<usage>` daquele agente é piso, não o custo real da tarefa.
   - Consumo: ver `docs/telemetria.tsv`
 
-### Estágio 4 — `P-0729-v2-documentacao` [backlog — desbloqueado em 2026-08-05: a razão registrada ("depende do Estágio 3 inteiro `done`") deixou de valer com 3A 5/5 + 3B 20/20]
+### Estágio 4 — `P-0729-v2-documentacao` [in progress — 3/5; desbloqueado em 2026-08-05: a razão registrada ("depende do Estágio 3 inteiro `done`") deixou de valer com 3A 5/5 + 3B 20/20]
 
-- `V2D-T1` — `docs/DOC_MAP.md` do hub — [Sonnet] — backlog
-- `V2D-T2` — Redigir o `README.md` espelho (13 seções) — [Opus] — backlog
-- `V2D-T3` — Guarda executável de drift do espelho — [Sonnet] — backlog
+- `V2D-T1` — `docs/DOC_MAP.md` do hub — [Opus, inline] — **done** *(premissa caída — o mapa já
+  existia)*
+  - Achado: o objetivo da tarefa afirmava "o hub nunca teve DOC_MAP". Falso desde a `V2K-T6`
+    (commit `fa5ce0d`), que criou `docs/DOC_MAP.md`; a `ce55144` já o havia atualizado na 2ª
+    condensação. O plano do Estágio 4 foi escrito em 2026-07-29, antes do Bloco C.
+  - Verificação da premissa (sondas baratas, antes de qualquer edição): medição de linhas dos
+    `*.md` do hub → exatamente 5 docs > 500 linhas (`DIARIO_HISTORICO` 970,
+    `P-0725-hub-unico` 669, `RELATORIO_CONSOLIDADO` 636, `P-0729-v2-melhoria-candidatos` 526,
+    `P-0721` 524), **todos com entrada no mapa** — cobertura completa, nenhum órfão; `Grep
+    "^#{1,3} "` nos 5 arquivos → **todas** as âncoras listadas batem com cabeçalho real (nenhuma
+    adivinhada); `docs/DOC_MAP.md` = 5262 bytes, dentro do teto de ~8000 da skill `doc-map`.
+  - Mudou (só o delta de desatualização): `docs/DOC_MAP.md` — tamanhos das 5 entradas
+    reancorados na medição de 2026-08-05 e marcados como ordem de grandeza datada, não âncora;
+    `P-0729-v2-melhoria-candidatos` reclassificado de `in progress` para `done (20/20)` com
+    "quando consultar" reescrito para uso post-mortem; linha de docs abaixo do limiar corrigida
+    (`GOVERNANCA.md` está na **raiz**, não em `docs/`; `ARQUITETURA_PANTONICA.md`,
+    `RESIDENCIA_DOUTRINA.md` e `benchmark/CANDIDATOS.md` nomeados).
+  - Aceitação da skill `doc-map` item "CLAUDE.md do projeto referencia o DOC_MAP": satisfeita pela
+    residência equivalente do hub — o hub não tem `CLAUDE.md` de projeto por desenho (doutrina
+    repatriada na `V2K-T17`), e a obrigatoriedade está em `GOVERNANCA.md:470` (§8) + nos fatos
+    estáveis de `pantonic-scout`/`pantonic-executor`/`pantonic-planner`.
+  - Consumo: ver `docs/telemetria.tsv`
+- `V2D-T2` — Redigir o `README.md` espelho (13 seções) — [Opus] — **done** *(2026-08-05)*
+  - Entregue: `README.md` na raiz (novo, **527 linhas**, dentro da faixa 400-550 do plano §1), as
+    13 seções na ordem prescrita, cada uma abrindo com `> Fonte da verdade:` — os 12 arquivos
+    citados no README existem (conferidos um a um por `test -e`).
+  - Premissas re-sondadas antes de escrever (padrão herdado da `V2D-T1`): `README.md` **não**
+    existia (premissa do plano vale); `VERSION` = `.claude/KIT_VERSION` = **`1.5.0`** — o §12 cita
+    `1.5.0`, **não** `2.0.0`, porque o bump é da `V2D-T4` e a `DD-5` o condiciona a haver mudança
+    que exija ação do consumidor; **9 agentes** + **9 skills**; **14 guardrails** em
+    `GOVERNANCA.md` §7; **5 premissas** em §1.
+  - Evidência medida do §11 (ADR) confirmada na fonte antes de escrever, sem cifra inventada:
+    executor em Opus com **71 turnos / ~189k** (`GOVERNANCA.md` §3); **~300 linhas** de código
+    morto testado = `dehydrate_subtitles.py` 174 l + `seed_prototype.py` 127 l
+    (`P-0722-governanca-guardrails-anti-saga.md:41`); as **três** premissas de plataforma caídas,
+    incluindo o symlink que exige privilégio elevado no Windows (`GOVERNANCA.md` §3); auto-relato
+    ~90k contra ~140k reais (§4.2); recalibração ≤25 → ≤30 pela série (§3).
+  - Aceite verificado por comando: 13 linhas `Fonte da verdade` = 13 headings `## `; zero remissão
+    do tipo "veja/leia o documento X" no corpo (grep vazio); §10 e §13 com afirmações
+    desfavoráveis reais (não-CI/CD, um único consumidor, não validado fora de desktop/Qt, scripts
+    só exercitados no Windows) e **duas** perguntas do §13 cuja resposta é "não adote" (Q2 e Q6);
+    §6 com diagrama `mermaid` + a `T15` real do `P-0729-v2-melhoria-candidatos` como exemplo de
+    tarefa atômica; §12 com a regra anti-drift (doutrina edita-se na fonte e **desce** para o
+    espelho).
+  - Repositório é público: varredura explícita por segredo/credencial/caminho local sensível no
+    README — **nada** (o caminho do Skillstore que aparece em `.claude/README.md` foi
+    deliberadamente omitido do espelho).
+  - Consumo: ver `docs/telemetria.tsv`
+- `V2D-T3` — Guarda executável de drift do espelho — [Sonnet] — **done** *(2026-08-05)*
+  - Entregue: `.claude/checks/check-readme.ps1` (novo, `-Root` com o mesmo desenho de
+    `-KitRoot`/`--root` dos checks irmãos) com as 5 checagens mecânicas — agentes/skills do
+    README §7 nos dois sentidos contra `.claude/agents/`/`.claude/skills/`; versão do README
+    (cabeçalho e §12) igual a `VERSION` e a `.claude/KIT_VERSION`; guardrails da tabela do README
+    §8 == itens numerados de `GOVERNANCA.md` §7; toda seção `## ` do README com
+    `> Fonte da verdade:` apontando para arquivo existente. `.claude/skills/guardrails-check/SKILL.md`
+    ganhou o item 8 (condicional, mesmo molde do item 5: "projeto que tem `check-readme.ps1`") e a
+    linha `Espelho:` no template de Veredito.
+  - Achado de implementação (resolvido inline, dentro do escopo): parâmetro `[string[]]`
+    `Mandatory` em PowerShell rejeita array contendo elemento `""` (linha em branco do README) —
+    o mesmo padrão que `kit_check.ps1 Set-MarkedRegion -NewBody` já resolvia com
+    `[AllowEmptyString()]`; aplicado à função interna `Get-SectionLines`.
+  - Verificação 1 — estado corrente, `pwsh .claude/checks/check-readme.ps1`:
+    ```
+    check-readme: OK - 9 agente(s), 9 skill(s), 14 guardrail(s), versão '1.5.0', 13 seção(ões) com Fonte da verdade válida.
+    ```
+    exit 0.
+  - Verificação 2 — drift, fixture sintética no scratchpad (repo mínimo copiado, repo real nunca
+    tocado): agente `pantonic-fake-agent.md` adicionado sem atualizar o README da fixture,
+    `check-readme.ps1 -Root <fixture>`:
+    ```
+    check-readme: FALHOU (1 problema(s))
+      - Agente 'pantonic-fake-agent' (.claude/agents/pantonic-fake-agent.md) não aparece na tabela de Agentes do README §7.
+    ```
+    exit 1.
+  - Guardrails-check (itens 5-7, kit agêntico): `kit_check.ps1 -Mode validate` → `OK - 9 agente(s)
+    e 9 skill(s) validados; VERSION == KIT_VERSION ('1.5.0')`; `-Mode check-drift` → `OK`;
+    `dead_code.py` → `OK - 0 achado(s)`; `ratchet_piso.py` → `OK - nenhum piso declarado`. Todos
+    exit 0.
+  - Não commitado (árvore de trabalho já carregava mudanças não commitadas da `V2D-T2`); `README.md`,
+    `VERSION`, `.claude/KIT_VERSION`, `CHANGELOG.md` não tocados — bump é da `V2D-T4`.
+  - Consumo: ver `docs/telemetria.tsv` — **estouro de orçamento** (teto 30, medido 57 tool uses):
+    causa declarada pelo executor é obstáculo técnico não previsto (gotcha do `[string[]] Mandatory`
+    com elemento `""`, isolado por bisseção) + bloqueio de sandbox em `Copy-Item -Recurse` sobre
+    `.claude/skills/*` ao montar a fixture, que forçou reconstrução diretório a diretório.
 - `V2D-T4` — Fechar a versão `2.0.0` (CHANGELOG + tag) e **distribuir** — [Sonnet] — backlog *(acumula `P-0722` Fase 4)*
 - `V2D-T5` — Teste de aceitação: 6 perguntas respondidas só pelo README — [dono] — backlog
 
-**Notas de execução:** *(vazio — nenhuma tarefa iniciada)*
+**Notas de execução:** a `V2D-T1` expôs um efeito de plano longo — o Estágio 4 foi planejado em
+2026-07-29 e afirma estados de repositório que os Estágios 3A/3B mudaram. Antes de delegar
+`V2D-T2`/`V2D-T3`, verificar por sonda barata as afirmações de estado dos dossiês (ex.: "`README.md`
+hoje inexistente", contagens de agentes/skills do §7, número de guardrails do §8) — o padrão é o
+mesmo da `V2D-T1`, não um caso isolado.

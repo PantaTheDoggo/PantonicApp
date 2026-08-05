@@ -4,11 +4,15 @@
 > `offset`/`limit` na faixa encontrada. Âncoras são cabeçalhos/marcadores, nunca números de
 > linha — eles desatualizam.
 
-Docs abaixo de 500 linhas (`docs/DIARIO_DE_OBRAS.md`, `docs/GOVERNANCA.md`,
-`docs/plans/_INBOX.md`, `docs/plans/P-0729-v2-*.md` restantes, demais `docs/plans/*.md` e
-`docs/benchmark/BM-*.md`) não precisam de entrada — Read direto.
+Docs abaixo de 500 linhas (`docs/DIARIO_DE_OBRAS.md`, `GOVERNANCA.md` na raiz,
+`ARQUITETURA_PANTONICA.md`, `docs/RESIDENCIA_DOUTRINA.md`, `docs/benchmark/CANDIDATOS.md`,
+`docs/plans/_INBOX.md`, demais `docs/plans/*.md` e `docs/benchmark/BM-*.md`) não precisam de
+entrada — Read direto.
 
-## docs/DIARIO_HISTORICO.md (1007 linhas)
+Os tamanhos abaixo são referência de ordem de grandeza medida em **2026-08-05**, não âncora: o
+que localiza a seção é sempre o padrão de Grep.
+
+## docs/DIARIO_HISTORICO.md (~970 linhas)
 **Propósito:** arquivo append-only de seções condensadas do diário de obras ativo (itens
 `done`/`cancelled`/`superseded` movidos para fora do kanban vigente).
 **Quando consultar:** para reconstituir o histórico detalhado de uma tarefa já fechada (ex.:
@@ -30,7 +34,7 @@ consumo, desvios, veredito) cujo índice no `DIARIO_DE_OBRAS.md` aponta para cá
 `^- \`TK-01\`` / `^- \`TK-02\`` para os tíquetes; ou `^- \`V2K-T9\`` para uma tarefa do
 Estágio 3B).
 
-## docs/benchmark/RELATORIO_CONSOLIDADO.md (808 linhas)
+## docs/benchmark/RELATORIO_CONSOLIDADO.md (~636 linhas)
 **Propósito:** confronto dimensão-a-dimensão (D1..D16 + D17..D22 propostas) do framework
 PantonicApp contra os 21 repositórios públicos do corpus de benchmarking.
 **Quando consultar:** ao decidir se um candidato de melhoria (`C-NN` do Estágio 3B) é
@@ -44,7 +48,7 @@ PantonicApp contra os 21 repositórios públicos do corpus de benchmarking.
 **Acesso:** `Grep pattern:"^### D7 " path:docs/benchmark/RELATORIO_CONSOLIDADO.md -n` (trocar
 `D7` pela dimensão desejada).
 
-## docs/plans/P-0721-governanca-single-source.md (619 linhas)
+## docs/plans/P-0721-governanca-single-source.md (~524 linhas)
 **Propósito:** plano fechado (`done`) que estabeleceu PantonicApp como repositório de referência
 single-source da governança comum Pantonic*.
 **Quando consultar:** para entender decisões `DP-*` herdadas (arquitetura alvo, mecanismo D1) que
@@ -55,7 +59,7 @@ planos posteriores (`P-0725-*`) ainda referenciam.
 - `## Achados da execução` — uma `###` por fase concluída, com data
 **Acesso:** `Grep pattern:"^### Fase 3 " path:docs/plans/P-0721-governanca-single-source.md -n`.
 
-## docs/plans/P-0725-governanca-hub-unico.md (834 linhas)
+## docs/plans/P-0725-governanca-hub-unico.md (~669 linhas)
 **Propósito:** plano fechado (`done`) que substituiu o `P-0725-3C` — hub único de governança com
 PantonicApp canônico e PantonicVideo como prova de aceitação, incl. `sync-kit.ps1` e
 `KIT_VERSION`.
@@ -67,11 +71,11 @@ de bugs do `sync-kit.ps1`/`KIT_VERSION` já resolvidos.
 - `## Notas de execução` / `## Achados da execução` — uma `###` por fase/achado, com data
 **Acesso:** `Grep pattern:"^### Fase 3b " path:docs/plans/P-0725-governanca-hub-unico.md -n`.
 
-## docs/plans/P-0729-v2-melhoria-candidatos.md (532 linhas) — Estágio 3B, `in progress`
-**Propósito:** plano vivo do Bloco C (`V2K-T5..T19`) — mudanças adotadas do benchmarking,
-dossiê de cada tarefa (`T1..T19`) mapeada a um `C-NN` ratificado.
-**Quando consultar:** ao pegar a próxima tarefa do Bloco C (`proximo-passo`) ou verificar
-dependência entre candidatos.
+## docs/plans/P-0729-v2-melhoria-candidatos.md (~526 linhas) — Estágio 3B, `done` (20/20)
+**Propósito:** plano fechado do Estágio 3B — mudanças adotadas do benchmarking, dossiê de cada
+tarefa (`T1..T19`, com `T12` partida em `T12a`/`T12b`) mapeada a um `C-NN` ratificado.
+**Quando consultar:** para recuperar a decisão de origem (`C-NN`) de um artefato do kit
+introduzido pelo Bloco A/C, ou o dossiê de uma tarefa já executada.
 **Seções:**
 - `## 2. Ordem de execução e entrelaçamento com o Estágio 3A`
 - `## 3. Tarefas` — `### T1..T19`, uma por candidato `C-NN`

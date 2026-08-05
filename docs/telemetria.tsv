@@ -40,3 +40,6 @@ data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
 2026-08-04	PantonicApp	V2K-T17	Sonnet				nao_medido
 2026-08-04	PantonicApp	V2K-T18	Sonnet	34	135	449	usage
 2026-08-04	PantonicApp	V2K-T19	Sonnet				nao_medido
+2026-08-05	PantonicApp	V2D-T1	Opus	16			contado
+2026-08-05	PantonicApp	V2D-T2	Opus	25	96	427	usage
+2026-08-05	PantonicApp	V2D-T3	Sonnet	57	121	4512	usage

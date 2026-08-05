@@ -49,6 +49,16 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    comportamento perdido quando um nodeid do piso desapareceu da coleta; arquivo de piso ausente
    é OK explícito (consumidor que ainda não adotou não quebra o gate), nunca silêncio por engano.
 
+8. **Guarda de drift do README espelho (projeto que tem `.claude/checks/check-readme.ps1`) —
+   bloqueante como os itens 5-7** — `pwsh .claude/checks/check-readme.ps1`; exit 0 obrigatório.
+   Verifica, tudo mecânico: todo agente/skill em disco aparece no README §7 e vice-versa; a versão
+   citada no README (cabeçalho + §12) é igual a `VERSION` e a `.claude/KIT_VERSION`; o número de
+   guardrails do README §8 é igual ao de `GOVERNANCA.md` §7; toda seção `## ` do README tem
+   `> Fonte da verdade:` apontando para um arquivo que existe. Falha nomeando a divergência exata
+   (agente/skill fora de sincronia, versão divergente, contagem de guardrails, seção sem fonte ou
+   fonte inexistente) — nunca editar o README à mão para "consertar" o gate; o README é que está
+   desatualizado.
+
 Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sumário) — nunca
 `pytest` puro despejando o log inteiro no contexto (`CLAUDE.md` global, Regra 3).
 
@@ -93,6 +103,7 @@ Suítes: <tier rodado, ex. "Tier 2 (tests/conformance/)"> — <resultado, ex. "5
   completo para o dono/orquestrador decidir>
 Piso: <ratchet_piso.py — OK | comportamento(s) perdido(s) nomeados> (ou "sem piso declarado")
 Kit: <kit_check -Mode validate / -Mode check-drift — exit 0 | n/a (projeto sem kit_check.ps1)>
+Espelho: <check-readme.ps1 — exit 0 | divergência(s) nomeada(s) | n/a (projeto sem check-readme.ps1)>
 Checklist de review: <ok | desvio path:line — descrição> (uma linha por item verificado)
 ```
 
