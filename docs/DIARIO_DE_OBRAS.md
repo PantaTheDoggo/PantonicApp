@@ -18,7 +18,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T4 entregues; `T5` reprovada, `T6` cancelada por absorção) | superseded | substituído por `docs/plans/P-0730-v2-identidade.md` |
-| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (2/15) | in progress | `docs/plans/P-0730-v2-identidade.md` |
+| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (6/16) | in progress | `docs/plans/P-0730-v2-identidade.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -26,6 +26,7 @@ benchmarking → confronto → melhoria → documentação).
 | TK-01 | Corrigir residência de `modelo-por-fase` em `GOVERNANCA.md` §3 e no bullet `V2M-T1` do `CHANGELOG.md` (ainda apontam `~/.claude/skills/`, superado por `DM-7`) | done *(absorvido pela `V2M-T3`)* | `docs/DIARIO_HISTORICO.md#tíquetes-avulsos--condensado-em-2026-08-01` |
 | TK-02 | `.claude/sync-kit.ps1`: `Get-ExcludedKeys`/`Test-Excluded` quebram sem `kit-exclude.txt` presente (achado pré-existente, `V2K-T11`) | done | docs/DIARIO_HISTORICO.md#tíquetes-avulsos--2ª-condensação-2026-08-01
 | TK-05 | Skill `checar-versao-kit`: o gatilho de revisão de doutrina (`GOVERNANCA.md` §7.1) compara só o componente MINOR e fica cego ao atravessar um MAJOR (local `2.0.0` × última rodada `1.4.0` ⇒ "sem pendência" indevido) | backlog *(achado do planejamento do `P-0730`)* | `docs/plans/P-0730-v2-identidade.md` §7 |
+| TK-06 | `docs/DOC_MAP.md` lista `GOVERNANCA.md` entre os "docs abaixo de 500 linhas (Read direto)", mas o arquivo já está em **644 linhas** — o mapa manda ler integralmente um doc que passou do limite e não tem entrada de âncoras. Drift pré-existente (já >500 antes da `V2I-T5`); corrigir criando a entrada de navegação da GOVERNANCA no DOC_MAP | backlog *(achado da `V2I-T5`)* | `docs/DOC_MAP.md:7-9` |
 | TK-04 | `.claude/agents/pantonic-executor.md:20` hardcoda "orçamento esperado ~≤40 tool uses" — diverge de `DR-C`/`V2K-T16` (o kit, `GOVERNANCA.md` §3, já é a única autoridade numérica, tabela de tetos por classe; o global perdeu o número na `T17`) | backlog *(achado da `V2K-T17`)* | `.claude/agents/pantonic-executor.md:20` |
 
 ---
@@ -36,8 +37,8 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2I-T3` — [Opus], no **Estágio 5** (`P-0730-V2I`, 2/15). Dossiê em
-`docs/plans/P-0730-v2-identidade.md` `### T3`.
+**Próxima tarefa da sprint:** `V2I-T7` — [Opus], no **Estágio 5** (`P-0730-V2I`, 6/16). Dossiê em
+`docs/plans/P-0730-v2-identidade.md` `### T7`.
 
 **Estágio 5 aberto em 2026-08-05 — o Estágio 4 foi reprovado no aceite e está `superseded`.** A
 `V2D-T5` cumpriu seu papel: a leitura do README pelo dono detectou que a identidade declarada do
@@ -88,6 +89,151 @@ mencionado (`D2`, linha 439) repete o motivo de bus factor/SLA. Nenhum tíquete 
 Nenhuma perda material identificada — a premissa errada não descartou candidato algum em silêncio.
 
 Consumo: ver docs/telemetria.tsv (linha `V2I-T2`)
+
+A `V2I-T3` fechou em 2026-08-05 — o entregável **é** o texto novo: `GOVERNANCA.md` §1 (identidade
+agnóstica, dois níveis, 5 premissas sem stack), **§1.1 nova — Perfis** (`DR-2`) e §2 (régua por
+altura preservada + ressalva medida de que o core é doutrina agnóstica com implementação ainda
+ligada ao PySide6 → `P-0731`/`DR-5`). Três deltas que outras tarefas consomem: (a) **contrato de
+declaração de perfil = `.claude/PERFIL`**, uma linha, artefato do projeto fora de `.claude/kit/`,
+default `desktop-pyside6` na ausência — é o que a `V2I-T8` implementa no kit; (b) perfil
+`web-servidor` declarado **sem verificação própria ainda** (G-PREMISE: vazio honesto, não vão);
+(c) **edição adjacente ao alvo `10-37`** — §7 item 3 (MVVM estrito) passou a
+`*[perfil desktop-pyside6]*`; era regra universal de stack que nenhuma tarefa do plano cobria e que
+a §1.1 já contradizia, consequência mecânica da `DR-2`, não troca de rota.
+Verificação: `Grep -i "desktop|pyside|mvvm|\bqt\b" GOVERNANCA.md` → 5 ocorrências, todas em
+contexto de perfil; `pwsh .claude/checks/check-readme.ps1` → exit 0. Resíduo deixado de propósito:
+`GOVERNANCA.md:348` (§6) — alvo declarado da `V2I-T10`.
+
+Consumo: ver docs/telemetria.tsv (linha `V2I-T3`)
+
+A `V2I-T4` fechou em 2026-08-05 — `ARQUITETURA_PANTONICA.md` deixa de exigir Qt como núcleo. O
+documento ganhou uma **convenção de perfil** no cabeçalho (marcador *[perfil `desktop-pyside6`,
+§1.1]*, declaração em `.claude/PERFIL`, ausência ⇒ `desktop-pyside6`, canônica em `GOVERNANCA.md`
+§1.1) e toda exigência de stack foi reclassificada: §2 (allowlists de import de infracore/plugins e
+a relação com MVVM), §3 (`ui_shell/`, `view_model.py`, ponte de logs do toolkit), §4 (linha
+`ui_shell` e a shell na ordem de boot), §6 (QThreadPool/QRunnable como primitiva do perfil sob o
+`task_runner`), §9 (allowlist AST de plugins), §10 **inteira** (marcador no próprio título), §11
+(platformdirs vira default do perfil; a regra agnóstica passa a ser o ponto único de resolução),
+§13 (pytest-qt) e §14 (shell Qt, View/ViewModel e primitivas de thread declarados fora do núcleo).
+Ficaram intocados, por já serem agnósticos: golden rules (§1), as quatro camadas e a regra de
+dependência, ACL, sinais/estado, plugins/manifests, contenção de falhas (§12) e a disciplina de
+testes (§13).
+
+Deltas que outras tarefas consomem: (a) a notação de marcação do corpus é a da `T3` — *[perfil
+`desktop-pyside6`, §1.1]* — e o marcador `[PERFIL: desktop-pyside6]` previsto no dossiê original do
+plano foi descartado para não deixar dois concorrentes (reconciliação registrada em
+`docs/plans/P-0730-v2-identidade.md`, `## Achados da execução`); (b) dentro de árvore de diretórios
+ou bloco de código, onde ênfase Markdown não renderiza, vale a variante sem itálico `[perfil
+desktop-pyside6]` acompanhada de uma legenda logo abaixo do bloco; (c) nenhuma definição de perfil
+foi duplicada — `GOVERNANCA.md` §1.1 permanece a única fonte, apenas referenciada.
+
+Verificações: `Grep -i "pyside6|\bqt\b|mvvm|desktop|qthread|qobject"` em `ARQUITETURA_PANTONICA.md`
+→ 23 ocorrências, **todas** dentro de trecho marcado por perfil, no próprio marcador/convenção de
+leitura, ou em contexto explícito do case de referência; zero como regra universal.
+`pwsh .claude\checks\check-readme.ps1` → `OK - 9 agente(s), 9 skill(s), 14 guardrail(s), versão
+'2.0.0', 15 seção(ões) com Fonte da verdade válida`, exit 0.
+
+Resíduos deixados de propósito: §12 mantém "UI thread" na linha do TaskRunner — é descrição do
+comportamento no case de referência e reescrever a tabela de contenção está fora do escopo
+declarado da `T4`; §14 continua intitulada "O que NÃO portar do PantonicVideo", com o recorte de
+perfil adicionado como parágrafo em vez de retitulação. O documento marca o que é do perfil
+desktop, mas **não** define o que os perfis `container`/`web-servidor` usam no lugar (superfície de
+entrada, primitiva de concorrência, raiz de dados) — isso é matéria das tarefas seguintes do
+estágio, não desta marcação.
+
+Consumo: ver docs/telemetria.tsv (linha `V2I-T4`)
+
+A `V2I-T5` fechou em 2026-08-05 — o corpus passa a **ter DDD**, que antes tinha 1 ocorrência no
+documento inteiro (`D3`). Três textos novos: (1) `ARQUITETURA_PANTONICA.md` **§1.1 Fundamentos —
+clean architecture + DDD**, entre as golden rules e o modelo de camadas, com o glossário de 8
+termos (linguagem ubíqua, entidade, VO, agregado, invariante, serviço de domínio, caso de uso,
+contexto delimitado — cada um com "como se reconhece"), a regra de pureza da camada de domínio, uma
+**escada de classificação de 6 perguntas** que decide se uma classe nova é entidade/VO/agregado/
+serviço de domínio/serviço-ACL/caso de uso, e a tese pantônica (`D5`): infracore doutrina as camadas
+de aplicação e infraestrutura que a CA deixa ao improviso, e **cada plugin responde por exatamente
+um caso de uso** — um caso de uso = um plugin = um manifest = um TF. (2) `GOVERNANCA.md` §5 abre
+com a regra normativa `um plugin = um caso de uso` e quatro consequências verificáveis na revisão
+de um plugin novo (sem caso de uso nomeável não entra; caso de uso partido em dois plugins é
+acoplamento disfarçado; dois casos de uso num plugin é atomicidade quebrada; comunicação só por
+sinais e estado), e o passo 3 do fluxo de POC agora manda dissecar pela escada da §1.1. (3)
+`GOVERNANCA.md` §6 item 1 põe no PRD a obrigação de nomear o contexto delimitado, listar
+entidades/VOs/agregados com invariantes e fixar a linguagem ubíqua (termo novo na execução volta ao
+PRD), com cada caso de uso listado como candidato a exatamente um plugin. Nenhuma linha nova nomeia
+stack — o texto encaixa na identidade agnóstica da `T3`.
+
+`D10` cumprido: o grau de aderência da implementação atual está declarado **NÃO AUDITADO** em dois
+fechos — `ARQUITETURA_PANTONICA.md` §1.1 (infracore e plugins vs. CA+DDD) e `GOVERNANCA.md` §5
+(plugins existentes vs. um caso de uso cada) —, ambos apontando para a `T14` e para
+`docs/audits/AUDIT_ARCH_<AAAA-MM-DD>.md`, com a proibição explícita de o corpus afirmar conformidade
+antes da medida (G-PREMISE).
+
+Deltas que outras tarefas consomem: (a) `ARQUITETURA_PANTONICA.md` §1.1 é a **fonte única** do
+vocabulário de domínio — `T9` (auditor de CA+DDD), `T11`/`T11b` (README e glossário) e `T6`
+referenciam, nunca duplicam; (b) a escada de 6 perguntas é o critério auditável que a `T9` pode
+transformar em checagem; (c) a `T14` precisa substituir **as duas** declarações de não-auditoria, e
+não só uma; (d) numeração: a seção entrou como `### 1.1` para não renumerar `##2`..`##15` e as
+referências cruzadas do corpus, e o cabeçalho ganhou uma linha de desambiguação — o `§1.1` dentro
+do marcador de perfil continua apontando para `GOVERNANCA.md` §1.1 (Perfis). Justificativa completa
+em `## Achados da execução` §`T5 — 2026-08-05` de `docs/plans/P-0730-v2-identidade.md`.
+
+Verificações: `grep -c -i "\bDDD\b|agregado|linguagem ubíqua"` → `ARQUITETURA_PANTONICA.md:14`,
+`GOVERNANCA.md:12` (antes: 1 ocorrência de DDD em todo o corpus); `pwsh
+.claude\checks\check-readme.ps1` → `OK - 9 agente(s), 9 skill(s), 14 guardrail(s), versão '2.0.0',
+15 seção(ões) com Fonte da verdade válida`, exit 0.
+
+Resíduos deixados de propósito: `GOVERNANCA.md` §6 **item 2** ("MVVM + clean architecture") segue
+intocado — alvo declarado da `V2I-T10`; §4 (backlog/sprints/responsabilidades) e o eixo
+qualidade→rota→custo são da `V2I-T6`, não desta tarefa; `docs/DOC_MAP.md` não foi atualizado
+(fora do alvo) — o drift medido virou o tíquete `TK-06` no índice.
+
+Consumo: ver docs/telemetria.tsv (linha `V2I-T5`)
+
+A `V2I-T6` fechou em 2026-08-05 — a **camada de projeto** passa a estar declarada como o dono a
+definiu (`D6`, `D7`, `D8`, `DR-3`), toda em `GOVERNANCA.md`, com uma âncora greppável por alínea.
+(a) **Eixo de justificação — qualidade → rota → custo** abre a §3: o motor declarado é a doutrina da
+qualidade (agir sobre o **processo** que gera o produto, não sobre o produto — daí guardrails, TDD,
+piso, contexto limpo e o gate de sprint), a rota vem depois (decidida no planejamento, fiel na
+execução), e o custo é **restrição de projeto**, não razão de ser; modelo por fase e orçamento de
+turnos tornam a qualidade sustentável, não a compram mais barata. A ordem é decisória: nenhuma
+economia derruba guardrail, nenhuma rota muda para caber no orçamento — inverte o "custo, rota,
+qualidade" que o README ainda declara (`D6`, alvo da `T11`). (b) **Filiação ágil** abre a §4:
+backlog, sprints e tarefas **derivam de Scrum**, modulado para programação agêntica porque quem
+consome o backlog é um agente com contexto finito — tabela de 6 correspondências (backlog→diário,
+sprint→plano `P-NNNN`, história→tarefa atômica, time auto-organizado→papéis fixos,
+cerimônias→atos escritos, DoD→critério de pronto + guardrails), mais as duas práticas que **não**
+viajam (story points, substituídos pelo orçamento de turnos medido; auto-organização de escopo,
+proibida pelo modelo por fase). (c) **§4.5 Validação por sprint — gate do gerente/cliente**
+(subseção nova, aditiva): nenhuma sprint avança sem validação **visual** do entregável pelo
+gerente/cliente; suíte verde não substitui (teste prova o que o agente entendeu, a validação prova
+o que o dono quis); reprovação volta como rodada da mesma sprint, não vira tarefa de outra; sprint
+sem entregável mostrável é decomposição errada. (d) **Matriz de responsabilidades** na abertura da
+§3, **lugar canônico único**: cinco papéis (dono/gerente, planejamento, execução, coleta,
+auditoria) com colunas *Responde por* e *Não faz* — absorveu a tabela de agentes que já vivia ali.
+
+`DR-A` cumprido sem duplicata: o bullet da §3 que repetia em prosa a fronteira dos papéis virou
+**ponteiro** para a matriz; §4 (tabela Scrum), §4.5 e §5 apontam para a §3; a **regra** do gate mora
+na §4.5 e o **veredito** de cada sprint no diário (§4.2, bullet novo) — doutrina versionada de um
+lado, estado de trabalho do outro. Decisões de redação (por que a matriz não virou `### 3.1`, por
+que a validação entrou como `### 4.5`) em `## Achados da execução` §`T6 — 2026-08-05` do plano.
+
+Deltas que outras tarefas consomem: (a) a `T11` reescreve o README sob o eixo `qualidade → rota →
+custo` — a fonte da verdade já está invertida aqui; (b) a `T7`, ao criar o **G-README** (§7 item
+15), precisa ligá-lo de volta à §4.5 — a §4.5 fecha dizendo que em sprint de doutrina o entregável
+é o documento e a leitura do dono é a validação, **sem citar item de guardrail**, porque o item 15
+ainda não existe (ponteiro proposital, não esquecimento); (c) qualquer agente/skill que descreva
+papel passa a apontar para a matriz da §3, nunca a repetir.
+
+Verificações (âncora por alínea): `qualidade → rota → custo` → `GOVERNANCA.md:92`; `Filiação ágil`
+→ `:229`; `### 4.5 Validação por sprint` → `:362` e `validação visual do gerente/cliente` → `:364`;
+`Matriz de responsabilidades` → `:103` (canônica) + 4 ponteiros. `pwsh
+.claude\checks\check-readme.ps1` → `OK - 9 agente(s), 9 skill(s), 14 guardrail(s), versão '2.0.0',
+15 seção(ões) com Fonte da verdade válida`, exit 0 — §7 intocada, guarda no mesmo estado de antes.
+
+Resíduos deixados de propósito: `GOVERNANCA.md` §6 item 2 ("MVVM + clean architecture") segue
+intocado (`V2I-T10`); §7 não foi tocada (`V2I-T7`); o README continua declarando o eixo invertido
+(`V2I-T11`).
+
+Consumo: (preenchido pelo orquestrador via notificação)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
@@ -402,7 +548,7 @@ com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não 
 hoje inexistente", contagens de agentes/skills do §7, número de guardrails do §8) — o padrão é o
 mesmo da `V2D-T1`, não um caso isolado.
 
-### Estágio 5 — `P-0730-v2-identidade` [backlog — 0/15; aberto em 2026-08-05]
+### Estágio 5 — `P-0730-v2-identidade` [in progress — 3/16; aberto em 2026-08-05]
 
 **Objetivo:** corrigir a identidade declarada do framework na fonte da verdade e elevar o README a
 documento canônico. O PantonicApp é **agnóstico a tecnologia e plataforma**, atua nos níveis de
@@ -414,6 +560,13 @@ MVVM/desktop passam a ser **perfil do case de referência**, não premissa (`DR-
 reconciliação):** `docs/plans/P-0730-v2-identidade.md`. Sequência linear `T1→T15`; `T3..T7` e `T11`
 são doutrina/redação canônica [Opus], `T8..T10` e `T13..T14` propagação e medida [Sonnet], `T12` é
 o aceite do dono e **bloqueia** o fechamento da versão.
+
+**Revisão de escopo em 2026-08-05 (decisão do dono):** tarefa nova **`V2I-T11b` — glossário do
+framework no README**, posicionada **entre a `T11` e a `T12`** (escrita sobre o README já reescrito
+e antes do aceite do dono, que é onde a inteligibilidade do vocabulário é julgada). Escopo em três
+eixos: jargão de arquitetura, de projeto e **de metadados do framework** (`kit`, `hub`, `drift`,
+`estágio` — eixo destacado pelo dono). Plano passa a **16 tarefas**; dossiê fechado e ordem de
+execução vigente em `docs/plans/P-0730-v2-identidade.md` §8. `T1`..`T10` não foram afetadas.
 
 **Fecha em `2.1.0`** (`DR-6`, absorve a `V2D-T6`). A abstração do infracore (`DR-5`) **não** entra
 neste estágio: nasce como `P-0731`, autorado já fechado pela `V2I-T15`, com o achado da `V2I-T14`

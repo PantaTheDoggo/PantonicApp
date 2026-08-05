@@ -307,3 +307,112 @@ plano vivo** da iniciativa `PANTONIC-V2`.
   (`GOVERNANCA.md` §7.1) e fica cega ao atravessar um MAJOR: local `2.0.0` × última rodada `1.4.0`
   dá "sem pendência" quando a revisão está pendente. Correção de uma linha (comparar
   `MAJOR.MINOR`), sem relação com este estágio — registrado como tíquete avulso.
+
+## Achados da execução
+
+### T4 — 2026-08-05
+
+**Reconciliação da notação de perfil (decisão do orquestrador).** O dossiê da `T4` neste plano foi
+escrito antes de a `T3` existir e previa o marcador `[PERFIL: desktop-pyside6]`. A `T3`
+materializou no corpus outra forma — *[perfil `desktop-pyside6`, §1.1]*, ver `GOVERNANCA.md` §7
+item 3 — e é ela que vale daqui em diante, para não deixar dois marcadores concorrentes. É
+consequência mecânica da `DR-2`, não bifurcação de rota. Em heading, o sufixo vai no próprio
+título; inline, no item. Dentro de árvore de diretórios ou bloco de código, onde ênfase Markdown
+não renderiza, usa-se a variante sem itálico `[perfil desktop-pyside6]` com uma legenda logo abaixo
+do bloco. Aplicado em `ARQUITETURA_PANTONICA.md` pela `T4`; as tarefas seguintes que marcarem
+perfil devem usar a mesma notação.
+
+### T5 — 2026-08-05
+
+**Numeração da seção nova de DDD (decisão de redação).** O dossiê pede a seção "antes do modelo de
+camadas". Criá-la como `## 2` numerada obrigaria a renumerar `##2`..`##15` de
+`ARQUITETURA_PANTONICA.md` e todas as referências cruzadas do corpus (`§4`, `§6`, `§9`, `§10`, `§14`
+aparecem em GOVERNANCA, nos agentes e nas skills) — cascata fora do escopo declarado e sem relação
+com `D3`. A seção entrou como **`### 1.1 Fundamentos — clean architecture + DDD`**, logo após as
+golden rules e antes de `## 2. Modelo de camadas`: mesma posição de leitura, zero renumeração.
+Efeito colateral tratado no mesmo passo: como o marcador de perfil da `T3` cita "§1.1" apontando
+para `GOVERNANCA.md` §1.1, a convenção de perfil no cabeçalho do documento ganhou uma linha de
+**desambiguação de numeração** (o `§1.1` do marcador é sempre o da GOVERNANCA; a §1.1 local é a de
+CA+DDD).
+
+**Item (c) declarado em dois lugares, de propósito.** A não-auditoria (`D10`) aparece no fecho da
+`ARQUITETURA_PANTONICA.md` §1.1 (aderência do infracore e dos plugins a CA+DDD) e no fecho da
+`GOVERNANCA.md` §5 (plugins existentes de fato mapearem um caso de uso cada). São as duas asserções
+que o corpus fazia como fato consumado, em documentos que se leem separadamente; ambas apontam para
+a `T14` e para `docs/audits/AUDIT_ARCH_<AAAA-MM-DD>.md`. Quando a `T14` entregar, **as duas**
+precisam ser substituídas pelo resultado medido — não só uma.
+
+**Fronteira com a `T6`.** A `T5` não tocou `GOVERNANCA.md` §4 (backlog/sprints) nem o eixo
+qualidade→rota→custo: `D5` e `D10` param na §5 e na §6 item 1. O item 2 da §6 ("MVVM + clean
+architecture", `GOVERNANCA.md` §6) segue intocado como resíduo declarado da `T10`.
+
+### T6 — 2026-08-05
+
+**Posição da matriz de responsabilidades (decisão de redação).** A matriz entrou na **abertura da
+`GOVERNANCA.md` §3**, absorvendo a tabela de agentes que já vivia ali, e não como subseção nova:
+`### 3.1` já é *Residência e precedência da doutrina*, citada por `GOVERNANCA.md:119` e pelos docs
+de residência — criar uma `### 3.1` para a matriz obrigaria renumeração em cascata, proibida pelo
+escopo. A âncora greppável é a linha em negrito **`Matriz de responsabilidades — lugar canônico.`**,
+acima da tabela. A tabela ganhou duas colunas (*Papel*, *Não faz*) e duas linhas novas
+(**dono/gerente** e **auditoria**), passando de três agentes para os cinco papéis do projeto.
+
+**`DR-A` aplicado dentro da própria §3.** O bullet *"O agente de planejamento nunca executa; o
+agente de execução nunca replaneja escopo…"* dizia, em prosa, o que a matriz agora diz em tabela —
+virou **ponteiro** ("papéis não são intercambiáveis… a fronteira está na matriz acima"), não cópia.
+Mesma disciplina nas demais residências: §4 (tabela Scrum), §4.5 e §5 **apontam** para a §3.
+
+**Numeração da validação por sprint.** Entrou como **`### 4.5 Validação por sprint — gate do
+gerente/cliente`**, sufixo aditivo depois da `4.4` — zero renumeração. A **regra** do gate mora na
+§4.5; o **veredito** de cada sprint mora no diário (§4.2), que ganhou um bullet-ponteiro. Separação
+deliberada: regra é doutrina versionada, veredito é estado de trabalho (teste de residência, §3.1).
+
+**Recado para a `T7` (não é bifurcação, é ponteiro faltante).** A §4.5 fecha dizendo que, em sprint
+de doutrina/documentação, o entregável mostrável é o documento e a leitura corrida pelo dono é a
+validação — **sem citar item de guardrail**, porque o G-README (§7 item **15**) ainda não existe. A
+`T7`, ao criar o item 15, deve ligá-lo de volta à §4.5: o aceite do README é a instância desse gate
+aplicada ao contrato com o cliente, não um gate paralelo.
+
+## 8. Revisão de escopo — `T11b` (decisão do dono, 2026-08-05)
+
+Requisito novo do dono, pedido após o fechamento da `T3`: **o README precisa de uma seção
+introdutória que defina todo o jargão do framework**. Escopo ratificado no ato: jargão de
+**arquitetura**, de **projeto** e — o eixo que o dono destacou — de **metadados do próprio
+framework** (o exemplo dado foi o termo *kit*).
+
+Posição decidida: **entre a `T11` e a `T12`**. O glossário é escrito sobre o README já reescrito
+(`T11`) e **antes do aceite do dono** (`T12`) — é justamente o gate onde a inteligibilidade do
+vocabulário é julgada. Escrevê-lo antes da `T4` seria documentar jargão em pleno movimento:
+`T4`–`T7` ainda introduzem *perfil*, *agregado*, *linguagem ubíqua*, *infracore agnóstico* e
+*G-README*.
+
+**Ordem de execução vigente (substitui a de §5):** `T1` → … → `T10` → `T11` → **`T11b`** → `T12`
+(dono) → `T13` → `T14` → `T15`. Total do plano passa de 15 para **16 tarefas**.
+
+### T11b — Glossário do framework no README [Opus]
+- **Objetivo:** um gerente/cliente lê o README de ponta a ponta sem encontrar um termo que não
+  consiga definir. Decorre da `DR-7` (README = contrato com o cliente): contrato com vocabulário
+  privado não é contrato.
+- **Arquivos-alvo:** `README.md` — **uma seção `##` nova, não numerada**, inserida entre o preâmbulo
+  e a `## 1.`, titulada `## Glossário — o vocabulário deste framework`.
+- **Por que não numerada (medido na `T3`, não presumir de novo):** `.claude/checks/check-readme.ps1`
+  ancora as seções que valida pelo **título** (`Anatomia do kit`, `Os guardrails`), e a contagem de
+  seções é derivada, não fixa. Seção nova não numerada não renumera nada e não quebra ponteiro
+  externo (`README §10`, `§12` etc. seguem válidos). **A seção precisa carregar a linha
+  `> Fonte da verdade:`** — obrigatória se o guarda a enxergar, inofensiva se não.
+- **Conteúdo — três eixos, um bloco cada:**
+  1. **Arquitetura:** infracore, core pantonico, contracts, serviços de expressão, ACL, egress,
+     plugin, caso de uso, perfil, agregado, objeto de valor, linguagem ubíqua, regra de dependência.
+  2. **Projeto:** diário de obras, tarefa atômica, handover, guardrail, piso de regressão,
+     conformance, modelo por fase, contexto, orçamento de turnos.
+  3. **Metadados do framework:** kit, hub, consumidor, `sync-kit`, drift, espelho, fonte da verdade,
+     `KIT_VERSION`, tag `kit-vX.Y.Z`, plano `P-NNNN`, iniciativa, estágio, sprint, tíquete `TK-`,
+     agente, skill, decisão `DR-`/`DP-`.
+  Cada verbete: **uma frase de definição + ponteiro para onde a regra vive**. Definição sem
+  ponteiro cria segunda residência da doutrina (`docs/RESIDENCIA_DOUTRINA.md`, padrão `DR-A`) —
+  o glossário **define o termo, nunca a regra**.
+- **Critério anti-duplicata:** nenhum verbete pode ser a única fonte de uma regra. Se ao escrever
+  um verbete a regra não existir em lugar nenhum, isso é achado — vai para `## Achados da execução`,
+  não vira doutrina nova criada no glossário.
+- **Verificação:** `pwsh .claude/checks/check-readme.ps1` → exit 0; e todo termo em **negrito ou
+  crase** no corpo do README que não seja nome de arquivo tem verbete (varredura do próprio autor).
+- **Pronto quando:** os três eixos existem, cada verbete tem definição + ponteiro, e o guarda passa.

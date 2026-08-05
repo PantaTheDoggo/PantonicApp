@@ -7,53 +7,120 @@
 
 ---
 
-## 1. Identidade de uma aplicação Pantonic*
+## 1. Identidade do framework Pantonic*
+
+O framework é **agnóstico a tecnologia e a plataforma**. Ele não prescreve linguagem, framework de
+interface, runtime nem modalidade de entrega: atua **um nível acima da implementação**, em dois
+níveis.
+
+| Nível | O que doutrina | Onde mora |
+|---|---|---|
+| **Arquitetura** | como o software é estruturado — camadas, sentido das dependências, domínio, extensão | [ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md) |
+| **Projeto** | como o software é produzido — backlog, sprints, papéis, guardrails, disciplina de contexto agêntico | este documento (§3 a §9) |
+
+Modalidades cobertas: **desktop, container, web e servidor**. O que muda entre elas é o **perfil**
+(§1.1), nunca o núcleo da doutrina.
 
 Premissas repetíveis, válidas para todo projeto da família:
 
-1. **Desktop-first** — aplicações majoritariamente desktop.
-2. **Stack fixo** — Python + PySide6, arquitetura base **MVVM** (apropriada para desktop).
-3. **Obsessão por clean architecture, clean code e melhores práticas** — não é aspiração, é
-   guardrail (ver §7).
-4. **Core comum reusável** — a camada de infraestrutura segue o core "pantonico" descrito em
-   [ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md). Nenhum projeto reinventa infraestrutura.
-5. **Extensibilidade por plugins** — toda evolução funcional entra como plugin (ver §5).
+1. **Clean architecture + DDD como base** — fundamentos pares, não alternativas: a CA dá as camadas
+   e o sentido das dependências; o DDD dá o conteúdo do domínio (linguagem ubíqua, entidades,
+   objetos de valor, agregados e suas invariantes). Ver
+   [ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md).
+2. **Infracore como doutrina das camadas de aplicação e infraestrutura** — o passo pantônico além
+   da CA+DDD: as camadas altas não ficam ao improviso de cada projeto, seguem o core descrito no
+   documento de arquitetura.
+3. **Um plugin = um caso de uso** — toda evolução funcional entra como plugin, e cada plugin
+   responde por exatamente um caso de uso (§5).
+4. **Core comum reusável** — nenhum projeto reinventa infraestrutura; o que é comum é herdado, não
+   recriado (§2).
+5. **Guardrails executáveis** — a obsessão por clean architecture e clean code não é aspiração: é
+   verificada por teste e por script, e o que não é verificável não é guardrail (§7).
+
+Nenhuma premissa nomeia stack. Linguagem, framework de interface e plataforma pertencem ao
+**perfil** do projeto, nunca à identidade do framework.
+
+### 1.1 Perfis
+
+Um **perfil** é o conjunto de regras que só fazem sentido para uma modalidade de aplicação. O
+núcleo é universal e cobrado de todo projeto; o perfil liga verificações adicionais.
+
+| Camada | Conteúdo | Cobrança |
+|---|---|---|
+| **Núcleo (universal)** | CA+DDD, regra de dependência, ACL, plugin/caso de uso, egress único de filesystem, namespace de estado, gate de conformance, piso de regressão, disciplina de contexto e de projeto | todo projeto Pantonic*, sempre |
+| **Perfil** | as regras da modalidade, e só elas | apenas o projeto que declara o perfil |
+
+Perfis nomeados:
+
+| Perfil | Modalidade | Ativa | Auditor |
+|---|---|---|---|
+| `desktop-pyside6` | aplicação desktop em Python + PySide6 | MVVM estrito (§7 item 3); ViewModel `QtCore`-only; geometria e estilo Qt só na shell e nas Views; infracore com binding Qt | `pantonic-auditor-pyside6` |
+| `container` | serviço containerizado | 12-factor, concorrência/event loop, shutdown determinístico, observabilidade, empacotamento | `pantonic-auditor-container` |
+| `web-servidor` | aplicação web ou serviço de rede | **nenhuma verificação própria ainda** — perfil declarado, conteúdo a escrever quando o primeiro projeto dessa modalidade existir | — |
+
+**Como um projeto declara o seu:** arquivo `.claude/PERFIL` na raiz do repositório — uma linha, o
+identificador do perfil. É artefato **do projeto**, não do kit: fica fora de `.claude/kit/` e o
+`sync-kit` não o toca. **Na ausência do arquivo, o perfil é `desktop-pyside6`** — compatibilidade
+com os consumidores existentes, que nasceram sob a premissa antiga.
+
+Um projeto tem **exatamente um** perfil. Modalidade não coberta entra como perfil novo nesta seção
+**antes** de o projeto nascer, nunca como exceção silenciosa dentro de um perfil vizinho.
 
 ## 2. Core comum e diversificação por camada
 
 - Todo projeto **adota o mesmo core pantonico** (infracore + contracts genéricos + serviços de
   expressão), conforme o documento de arquitetura reusável.
+- O core é **doutrina agnóstica com implementação hoje ligada ao perfil `desktop-pyside6`**: a
+  abstração das portas do infracore (lifecycle, injeção, estado, sinais, filesystem) é etapa
+  própria e ainda não executada. Até lá, projeto de outro perfil herda do core os **conceitos e os
+  contratos**, não o binding.
 - A **diversificação acontece nas camadas inferiores da clean architecture**: domínio e casos de
   uso. Regra mental para o planejador:
 
   | Altura na clean architecture | Grau de especialização |
   |---|---|
-  | Domínio (entidades, VOs) | Máxima — único por projeto |
-  | Casos de uso / serviços de domínio | Alta — único por projeto |
+  | Domínio (entidades, VOs, agregados) | Máxima — único por projeto |
+  | Casos de uso / serviços de domínio | Alta — único por projeto (um plugin = um caso de uso) |
   | Serviços de expressão / ACL | Baixa — padrão do core |
-  | Infraestrutura (infracore, UI shell) | Nenhuma — idêntico entre projetos |
+  | Infraestrutura (infracore, adaptador de apresentação) | Nenhuma — idêntico entre projetos do mesmo perfil |
 
   Quanto mais baixo (próximo ao domínio), mais especializadas as classes; quanto mais alto
   (infraestrutura), mais as aplicações Pantonic* se parecem entre si.
 
 ## 3. Operações agênticas
 
-Todo projeto pantonico opera com três agentes, cada um no modelo adequado ao seu custo:
+**Eixo de justificação — qualidade → rota → custo, nesta ordem.** O motor declarado da camada de
+projeto é a **doutrina da qualidade**, e ela tem uma tese: a qualidade de um produto não se garante
+agindo sobre o **produto**, mas sobre o **processo** que o gera. Guardrails executáveis, TDD, piso
+de regressão, contexto limpo e validação por sprint (§4.5) existem por isso — são atos sobre o
+processo, não inspeções do resultado. A **rota** vem em segundo: decidida no planejamento e mantida
+fiel na execução (§7 itens 10 e 13), porque processo bom com rota errada entrega, com esmero, o
+produto errado. O **custo** é o terceiro: **restrição de projeto**, não razão de ser. Modelo por
+fase, orçamento de turnos e economia de contexto tornam a qualidade **sustentável** — nunca a
+compram mais barata. Quando os três colidem, a ordem decide: nenhuma economia justifica abrir mão
+de um guardrail, e nenhuma rota se muda para caber no orçamento.
 
-| Agente | Modelo | Responsabilidade |
-|---|---|---|
-| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decomposição em checklists de tarefas atômicas |
-| **Execução** | Melhor custo-benefício (Sonnet) | Implementar uma tarefa do checklist por vez, TDD, em contexto limpo |
-| **Coleta** | O mais barato (Haiku ou equivalente) | Search, grep, leitura de codebase/documentos/prompts; filtra e devolve só o pertinente para o contexto dos agentes mais caros |
+**Matriz de responsabilidades — lugar canônico.** Quem responde pelo quê num projeto Pantonic* é
+declarado **aqui e só aqui**; qualquer outra seção deste documento, agente ou skill **aponta** para
+esta tabela em vez de repeti-la (padrão `DR-A`,
+[docs/RESIDENCIA_DOUTRINA.md](docs/RESIDENCIA_DOUTRINA.md)). Cada papel agêntico opera no modelo
+adequado ao seu custo — a coluna *Modelo* é a tabela vinculante do **modelo por fase**.
+
+| Papel | Modelo | Responde por | Não faz |
+|---|---|---|---|
+| **Dono / gerente** | humano | Última instância e **fonte da doutrina de produto**: decide o quê e o porquê, ratifica decisões (`DR-`/`DP-`), valida cada sprint (§4.5), aceita release, autoriza saída do piso de regressão (§4.4) e comando destrutivo (§7 item 14) | Não desempata, no meio de uma execução, o que o plano deveria ter decidido — a pergunta que chega até ele em execução é sintoma de plano não-pronto (§7 itens 12 e 13) |
+| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 12), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
+| **Execução** | Melhor custo-benefício (Sonnet) | Implementar **uma** tarefa do checklist por vez, em contexto limpo, sob TDD (§4.4); registrar o resultado no diário de obras e fazer handover | Não decide, não pergunta ao dono, não replaneja escopo e não substitui a rota aprovada (G-EXECREADY e G-PLANFIDELITY, §7 itens 13 e 10): plano não-pronto ou obstáculo à rota → para, registra `blocked` no diário e escala |
+| **Coleta** | O mais barato (Haiku ou equivalente) | Search, grep, leitura de codebase/documentos/prompts; filtra e devolve só o pertinente para o contexto dos agentes mais caros | Não edita, não conclui tarefa, não emite juízo sobre o que coletou |
+| **Auditoria** | Melhor custo-benefício (Sonnet) | Medir aderência **sem alterar código**, em duas frentes permanentes: **clean architecture + DDD** (`pantonic-auditor-arch`) e **clean code** (`pantonic-auditor-cleancode`); o perfil declarado acrescenta o seu auditor (§1.1) | Não corrige o que aponta — cada apontamento vira item no diário de obras, priorizado pelo dono |
 
 Regras de operação:
 
 - O agente de coleta existe para **proteger o contexto dos agentes caros**: varreduras amplas
   nunca são feitas diretamente pelo agente de planejamento ou de execução; são delegadas à
   coleta, que devolve dossiês compactos (caminhos, linhas, assinaturas — nunca arquivos inteiros).
-- O agente de planejamento nunca executa; o agente de execução nunca replaneja escopo — se a
-  tarefa se mostrar mal decomposta, ele para, registra o bloqueio no diário de obras e faz
-  handover.
+- **Papéis não são intercambiáveis** — a fronteira de cada um (o que faz e o que não faz) está na
+  matriz de responsabilidades acima, que é o único lugar onde ela se declara.
 - **Modelo por fase é vinculante, não preferência.** Uma preferência de dono ("usar modelo caro
   sempre") não pode inverter a tabela acima para um agente de **execução** — mudar o `model:` de
   um executor para um modelo mais caro exige OK explícito e registrado, nunca herança silenciosa
@@ -159,6 +226,27 @@ que o agente enfileira e **só o dono promove** — passa na pergunta 1 e mora e
 
 ## 4. Fluxo de desenvolvimento
 
+**Filiação ágil — Scrum modulado para programação agêntica.** Este fluxo não é invenção do
+framework: **backlog, sprints e tarefas derivam de metodologia ágil**, na linhagem **Scrum**, e a
+estrutura é preservada — itens priorizados num backlog, trabalho fatiado em sprints com entregável
+ao fim de cada uma, tarefas decompostas a partir dos itens, e revisão a cada ciclo. O que muda é
+**quem consome o backlog**: um agente com contexto finito, que parte frio a cada tarefa, em vez de
+uma equipe humana com memória entre reuniões. Daí as modulações — e só elas:
+
+| Prática Scrum | Como fica em programação agêntica |
+|---|---|
+| Product/sprint backlog | **diário de obras** — índice, status por item e priorização explícita (§4.2); planos completos em `docs/plans/` |
+| Sprint com entregável ao fim | **plano** (`P-NNNN`) com tarefas na ordem de execução; o entregável passa pelo gate de validação antes de a sprint seguinte começar (§4.5) |
+| Item de backlog / história | **tarefa atômica** — uma por contexto (§4.3), com teto de turnos por classe (§3) |
+| Time auto-organizado | **papéis fixos e não intercambiáveis** — matriz de responsabilidades (§3) |
+| Cerimônias (daily, planning, review) | **atos escritos**: dossiê de tarefa, handover e veredito de validação no diário — o que só existe em conversa não sobrevive à troca de contexto e, portanto, não existe |
+| Definition of done | **critério de pronto** no dossiê + guardrails executáveis (§7), gate de conformance e piso de regressão (§4.4) |
+
+Duas práticas ágeis **não** viajam. Estimativa em story points: a unidade de esforço agêntico é o
+**orçamento de turnos** por classe de tarefa (§3), medido em `docs/telemetria.tsv`, nunca estimado
+por analogia. E auto-organização de escopo: o executor não escolhe o que fazer nem redefine a
+tarefa — decidir é fase do planejamento (§3, §7 itens 10 e 13).
+
 ### 4.1 Regra básica
 
 Todo procedimento mais complexo **invoca o agente de planejamento** para criar um **checklist de
@@ -195,6 +283,9 @@ também como um kanban adaptado:
   carrega o **comando**, copiado do terminal, não a intenção de verificar. `caminho:linha` é
   ponteiro de leitura — envelhece e **não** se mantém; tratá-lo como contrato custa mais do que
   entrega.
+- **Veredito de validação da sprint** — o diário é onde a validação do gerente/cliente sobre o
+  entregável fica registrada (aprovada/reprovada, com data). A regra do gate mora na §4.5; aqui
+  ficam só os vereditos. Sprint sem veredito escrito conta como **não validada**.
 - **Fechamento enxuto** — o diário de obras é o único registro canônico de uma tarefa; o relatório
   final ao orquestrador é ponteiro + deltas, nunca repete o que já está escrito aqui.
 - **Telemetria pela notificação, não pelo auto-relato** — o consumo de uma tarefa é registrado
@@ -268,23 +359,68 @@ O piso responde a três perguntas:
    simplificação. Teste cujo significado muda intencionalmente é **reescrito** — e a linha do piso
    é reescrita junto —, nunca deletado.
 
+### 4.5 Validação por sprint — gate do gerente/cliente
+
+**Nenhuma sprint avança sem validação visual do gerente/cliente sobre o entregável.** É **gate**,
+não recomendação: enquanto o veredito não estiver registrado no diário (§4.2), a sprint seguinte
+não começa e nenhuma tarefa dela é delegada.
+
+- **O que se valida** — o entregável **em funcionamento**, visto por quem pediu: o executável, a
+  tela, a saída real do incremento. Suíte verde não substitui. Teste prova que o código faz o que o
+  agente **entendeu**; a validação visual prova que é o que o dono **quis** — e é o único gate que
+  cobre sentido, que nenhum script cobre.
+- **Quem valida** — o dono/gerente, na figura de cliente (matriz de responsabilidades, §3). Nenhum
+  agente valida a própria entrega, e validação não se infere de conversa: ou está escrita, ou não
+  aconteceu.
+- **Reprovação não vira tarefa de outra sprint** — volta como rodada nova da **mesma** sprint, até
+  o entregável ser aceito. O que a reprovação ensinou entra no diário junto do veredito, para que a
+  rodada seguinte não repita a causa.
+- **Sprint sem entregável mostrável é decomposição errada** — se ao fim do ciclo não há o que
+  mostrar, o corte do plano está no eixo errado (fatia técnica em vez de fatia de valor) e o corte
+  é replanejado. Em sprint de doutrina ou documentação, o entregável mostrável é o **documento**, e
+  a leitura corrida pelo dono é a validação.
+
 ## 5. Fluxo de extensão (plugins)
 
-A extensão de capacidades ocorre **exclusivamente por plugins**: incrementos funcionais
-**atômicos**, com propósito e operação específicos, **não conflitantes** com outros plugins
-(comunicação apenas por sinais e estado — nunca acoplamento direto; ver arquitetura §9).
+A extensão de capacidades ocorre **exclusivamente por plugins**, e a unidade de extensão é
+normativa: **um plugin = um caso de uso** (§1, premissa 3). Caso de uso, no sentido de CA+DDD
+([ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md) §1.1), é um objetivo do usuário levado do
+início ao fim, com nome que o dono reconhece e resultado que ele consegue validar. O plugin é a
+materialização verificável desse caso de uso: um caso de uso = um plugin = um manifest = um teste
+funcional que o valida.
+
+Consequências operacionais, todas verificáveis na revisão de um plugin novo:
+
+- **Plugin sem caso de uso nomeável não entra.** Se o propósito só se descreve em termos técnicos
+  ("camada de X", "utilidades de Y"), o que está na mesa é infraestrutura (infracore) ou serviço
+  (ACL), não plugin.
+- **Caso de uso espalhado por dois plugins é decomposição errada** — vira acoplamento disfarçado,
+  já que plugins só podem conversar por sinais e estado.
+- **Dois casos de uso num plugin só** também é defeito: quebra a atomicidade e impede validar um
+  sem o outro. Divide-se antes de integrar.
+- Plugins continuam **não conflitantes** entre si: comunicação apenas por sinais e estado, nunca
+  acoplamento direto nem referência entre plugins (ver arquitetura §9).
 
 Fluxo de trabalho para toda nova funcionalidade:
 
 1. **POC separada** — cria-se uma prova de conceito fora da aplicação, com a finalidade
    pretendida, funcionando standalone.
 2. **Estresse e validação** — a POC é estressada até que o **cliente valide** o atendimento da
-   necessidade. Nada é integrado antes dessa validação.
+   necessidade. Nada é integrado antes dessa validação. Esta valida a **ideia** antes de custar
+   integração; não dispensa o gate de sprint sobre o entregável já integrado (§4.5) — são dois
+   momentos distintos do mesmo princípio, e ambos são do dono (matriz de responsabilidades, §3).
 3. **Integração** — os agentes **dissecam a POC nas camadas da clean architecture** (o que é
-   domínio, o que é caso de uso, o que vira serviço/ACL, o que fica como código ad-hoc do
-   plugin) e inserem o código na aplicação Pantonic*, seguindo a doutrina de integração do
-   documento de arquitetura (§9).
+   entidade, VO ou agregado; o que é caso de uso; o que vira serviço/ACL; o que fica como código
+   ad-hoc do plugin), usando a escada de classificação de
+   [ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md) §1.1, e inserem o código na aplicação
+   Pantonic*, seguindo a doutrina de integração do documento de arquitetura (§9).
 4. **Teste do conjunto** — TF do plugin + suíte de conformance + piso de regressão completo.
+
+**Estado da aderência: não auditado.** A regra acima é doutrina. O grau em que os plugins já
+existentes na implementação de referência de fato mapeiam **um** caso de uso cada **ainda não foi
+medido** — a medição é a `T14` de
+[docs/plans/P-0730-v2-identidade.md](docs/plans/P-0730-v2-identidade.md). Até o relatório existir,
+nenhum documento afirma conformidade aqui como fato consumado (G-PREMISE, §7).
 
 ## 6. Fluxo de projeto — os quatro artefatos iniciais
 
@@ -293,7 +429,14 @@ planejamento:
 
 1. **PRD** — coleta os objetivos da aplicação; determina casos de uso, elementos de domínio,
    requisitos, estruturas de dados e **linguagem ubíqua** necessários para construir as camadas
-   de domínio e de casos de uso segundo a clean architecture.
+   de domínio e de casos de uso segundo **clean architecture + DDD** (§1, premissa 1). É aqui que
+   o domínio é modelado, com o vocabulário definido em
+   [ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md) §1.1: o PRD nomeia o **contexto
+   delimitado** da aplicação, lista as **entidades**, os **objetos de valor** e os **agregados**
+   com suas **invariantes**, e fixa a **linguagem ubíqua** — um termo por conceito, sem sinônimos
+   concorrentes. Esse vocabulário é o mesmo que aparecerá em classes, campos, sinais, plugins e
+   testes; termo novo que surja na execução volta ao PRD em vez de nascer só no código. Cada caso
+   de uso listado aqui é candidato a **exatamente um plugin** (§5).
 2. **Architecture** — modelo conceitual da arquitetura com base em MVVM + clean architecture,
    **partindo do core pantonico** ([ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md)) e
    especializando as camadas baixas. Determina os limites de cada camada e as responsabilidades
@@ -318,8 +461,10 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    não por convenção.
 2. **ACL** — toda dependência externa (biblioteca, OS, filesystem, rede) pertence a exatamente um
    serviço; nenhum outro módulo a importa.
-3. **MVVM estrito** — geometria/estilo Qt só na shell e Views; ViewModel é QtCore-only (sem
-   widgets); Model é puro (sem Qt).
+3. **MVVM estrito** — *[perfil `desktop-pyside6`, §1.1]* geometria/estilo Qt só na shell e Views;
+   ViewModel é QtCore-only (sem widgets); Model é puro (sem Qt). Projeto de outro perfil não é
+   cobrado por este item; a regra universal correspondente é a **separação de apresentação e
+   domínio**, coberta pelos itens 1 e 2.
 4. **Egress único de filesystem** — só o componente de filesystem escreve em disco (regra G6 da
    arquitetura), verificado por teste AST.
 5. **Namespace de estado** — plugin só escreve em `plugins.<nome>.*`, salvo whitelist explícita;
