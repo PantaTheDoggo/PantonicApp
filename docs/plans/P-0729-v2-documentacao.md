@@ -6,10 +6,20 @@ atuais, de modo que um humano consiga ler um único arquivo, entender as premiss
 escolhas do PantonicApp, e, principalmente, conseguir decidir sobre esse framework sem precisar ler
 os demais artefatos."*
 
-**Planejador:** Opus (2026-07-29). **Executor por tarefa:** T2 (redação do README) em **Opus** — é
-síntese de doutrina, a fase mais intelectual da iniciativa; as demais em Sonnet; T5 com o dono.
+**Correção de premissa do dono (2026-08-05), vinculante — ver `## Revisão de rota`:** o verbo
+"decidir" do pedido original foi lido no planejamento como *decidir se adota*, e o plano produziu um
+documento de adoção. Não é isso. **Convencer nunca será preocupação deste projeto — assume-se que
+quem lê já usa o framework.** O README é um **proxy das implementações** para o dono/gerente:
+entender premissas, conceitos e procedimentos a ponto de **argumentar sobre as práticas** sem ler
+skill, agente e hook um a um; e, nesta versão, enxergar **o que a V2 mudou** — o que fica, o que sai
+e o que se modifica — para concluir a iniciativa com visibilidade.
 
-**Estado:** `in progress` — 2/5 (`T1` e `T2` fechadas em 2026-08-05). Desbloqueado em 2026-08-05: a razão
+**Planejador:** Opus (2026-07-29; revisão de rota em 2026-08-05). **Executor por tarefa:** T2
+(redação do README) em **Opus** — é síntese de doutrina, a fase mais intelectual da iniciativa; as
+demais em Sonnet; T5 com o dono.
+
+**Estado:** `in progress` — 3/6 (`T1`, `T3` e `T4` fechadas em 2026-08-05; `T2` **reaberta** pela
+revisão de rota; `T5` substituída; `T6` nova). Desbloqueado em 2026-08-05: a razão
 registrada (*depende do Estágio 3 inteiro `done`* — `P-0729-v2-melhoria` = parte A, doutrina
 herdada; `P-0729-v2-melhoria-candidatos` = parte B, autorada pelo Estágio 2 T6) deixou de valer com
 3A 5/5 e 3B 20/20. O motivo do bloqueio continua válido como princípio: espelhar um framework que
@@ -33,35 +43,60 @@ plano trata o espelho como um artefato com **fonte da verdade declarada por seç
 executável de drift**, não como um documento de boa vontade. Sem o guarda, o README é o pior
 artefato do repositório em vez do melhor.
 
-Segunda exigência, igualmente literal: o leitor precisa **decidir** sobre o framework. Decidir exige
-saber onde ele **não** serve, o que ele custa e o que ele deliberadamente recusa a fazer — não só o
-que ele promete. Um README que só descreve virtudes falha no teste de aceitação de §4, por desenho.
+Segunda exigência, corrigida pelo dono em 2026-08-05: o leitor **já usa** o framework. O que ele não
+tem é **memória da forma que cada acordo tomou**. Ele lembra do conceito ("próxima tarefa é uma fila")
+e não da implementação (diretiva de priorização persistida + heurística de 4 níveis onde FIFO é o
+**último** desempate) — e é sobre a implementação que ele precisa argumentar. O modo de falha
+correspondente não é "README que só descreve virtudes"; é **README que descreve o conceito e não o
+procedimento**, deixando o gerente discutir uma prática que o repositório não executa.
 
-## 1. Esqueleto obrigatório do README (13 seções)
+Terceira exigência, da mesma correção: a iniciativa V2 absorveu 14 candidatos ratificados vindos do
+benchmarking de 21 frameworks públicos, e o dono **não tem visibilidade do resultado**. Concluir a
+iniciativa exige ler, num só lugar, o que fica, o que sai e o que se modifica.
+
+## 1. Esqueleto obrigatório do README (15 seções)
 
 Ordem e conteúdo fixados aqui para que o T2 execute redação, não arquitetura. Meta de tamanho:
-**400-550 linhas** — abaixo disso não cabe a decisão; acima, o leitor volta a precisar de um índice,
-e o espelho falhou.
+**750-900 linhas**. O teto antigo (400-550) servia ao documento de adoção; um espelho de procedimento
+precisa de profundidade suficiente para o gerente **intervir**, não só reconhecer o nome do
+procedimento. O risco que o teto antigo mitigava — "o leitor volta a precisar de um índice" — já tem
+resposta melhor: o `docs/DOC_MAP.md` entregue pela `T1`.
 
 | § | Seção | O que precisa responder | Fonte da verdade |
 |---|---|---|---|
-| 1 | **O que é** | Framework de governança + arquitetura para aplicações desktop Python/PySide6 construídas por agentes de IA. Em 3 parágrafos, sem jargão interno | `GOVERNANCA.md` §1 |
-| 2 | **Para quem é / para quem não é** | Perfil de projeto e de dono onde compensa; e os casos em que **não** compensa (projeto pequeno, web, equipe grande com CI própria, quem não paga por contexto) | Este plano + §1 |
-| 3 | **As cinco premissas** | Desktop-first; Python+PySide6+MVVM; obsessão por clean architecture; core comum reusável; extensão só por plugin | `GOVERNANCA.md` §1 |
-| 4 | **A filosofia em seis escolhas** | Cada escolha no formato **escolha → alternativa rejeitada → por quê → o que custa**: (a) custo governado por fase de modelo; (b) uma tarefa por contexto; (c) guardrail executável acima de convenção; (d) plugins acima de configuração; (e) TDD com piso de regressão; (f) hub único distribuído por git em vez de cópia | `GOVERNANCA.md` §3, §4, §5, §7, §9 |
-| 5 | **O modelo econômico** | Por que o framework existe: contexto reenviado × peso do modelo. Modelo por fase, orçamento de turnos, e o fato contraintuitivo de que **delegar a subagente é higiene de contexto, não economia de tokens** | `~/.claude/CLAUDE.md` Regra 7; `GOVERNANCA.md` §3 |
-| 6 | **O ciclo de vida** | 4 artefatos → diário de obras → tarefa atômica → executor em contexto limpo → guardrails-check → handover → `execute o próximo passo`. Um diagrama `mermaid` e um exemplo concreto de tarefa atômica real | `GOVERNANCA.md` §4, §6 |
-| 7 | **Anatomia do kit** | Tabela dos agentes e das skills, uma linha cada: nome, modelo, quando dispara | `.claude/README.md` |
-| 8 | **Os guardrails** | Tabela: regra → como é enforceada (**teste executável** \| **gate de review** \| **instrução de agente**). A coluna do meio é o ponto alto do framework e precisa ser honesta sobre o que ainda é só texto | `GOVERNANCA.md` §7 |
-| 9 | **Como adotar em 10 minutos** | Sequência exata de comandos (`git subtree add`, `sync-kit.ps1`, `kit-exclude.txt`) + o que o consumidor deve ajustar (os "fatos estáveis" dos agentes) e o que nunca deve tocar (o subtree) | `GOVERNANCA.md` §9, §10 |
-| 10 | **O que este framework não resolve** | Limites honestos: não é CI/CD, não gerencia equipe, não substitui revisão humana, não impede custo alto se o dono ignorar os gates, não foi validado fora do stack desktop Python | Este plano |
-| 11 | **Decisões e o que as motivou** | ADR compacto — cada decisão com a **evidência medida** que a produziu (o executor em Opus com 71 turnos; as ~300 linhas de código morto testado; as três premissas de plataforma que caíram por sonda curta; o symlink que exigia privilégio no Windows). É o que separa este framework de uma lista de boas intenções | `GOVERNANCA.md` §3; `docs/plans/*.md` fechados |
-| 12 | **Versão, changelog e mapa dos documentos** | Versão vigente, o que mudou na 2.0.0, e a tabela "quer saber X? leia Y" apontando os documentos-fonte | `VERSION`, `CHANGELOG.md`, `docs/DOC_MAP.md` |
-| 13 | **Devo adotar? (FAQ de decisão)** | 6 perguntas fechadas com resposta direta — incluindo pelo menos duas cuja resposta honesta é "não adote" | Todas as acima |
+| 1 | **O que é e o que ele governa** | Framework de governança + arquitetura para aplicações desktop Python/PySide6 construídas por agentes de IA. O que ele governa (custo, rota, qualidade) e o que ele deixa de fora. 3 parágrafos, sem jargão interno | `GOVERNANCA.md` §1 |
+| 2 | **As cinco premissas de arquitetura** | Desktop-first; Python+PySide6+MVVM; obsessão por clean architecture; core comum reusável; extensão só por plugin. Cada uma com a consequência prática que ela impõe ao código | `GOVERNANCA.md` §1 |
+| 3 | **O modelo econômico** | Por que o framework existe: custo ≈ Σ (contexto reenviado × peso do modelo). Orçamento de turnos, batching, cadência de testes, e o fato contraintuitivo de que **delegar a subagente é higiene de contexto, não economia de tokens** | `GOVERNANCA.md` §3 |
+| 4 | **Modelo por fase** | A tabela vinculante (intelectual→Opus, execução→Sonnet, varredura→Haiku), o gate que a cobra no início de cada tarefa, e **o que o gerente faz quando o gate dispara** | `GOVERNANCA.md` §3 |
+| 5 | **O fluxo plano → execução** | O coração do framework: toda iniciativa é antecedida por um **checklist em formato consolidado**, decomposto em **tarefas atômicas** que permitem ao executor operar incrementalmente, com **contexto limpo** e sem conhecer o projeto inteiro. Planejador e executor são papéis distintos, em modelos distintos, e o executor **não decide, não pergunta e não muda a rota** | `GOVERNANCA.md` §4 |
+| 6 | **O procedimento `próxima tarefa`** | Como o ponto atual do projeto é identificado em contexto novo. A sequência real: drenar inboxes → ler a **diretiva de priorização persistida** → heurística de 4 níveis (`blocked` destravável → `in progress` → bug avulso → **FIFO como último desempate**) → gate de delegação → handover. E **como o gerente reordena**: escrevendo a diretiva no diário, que tem precedência total sobre a heurística | `.claude/skills/proximo-passo/SKILL.md` |
+| 7 | **O diário de obras** | O kanban central: índice, status por item, âncora para o plano, tíquetes avulsos, e a condensação para `DIARIO_HISTORICO.md` quando o diário ativo cresce. Onde o gerente lê o estado sem abrir plano nenhum | `.claude/skills/diario-de-obras/SKILL.md` |
+| 8 | **Planos: o que é um plano fechado** | O gate de publicação (`G-PLANREADY`): plano com questão pendente, bloco a preencher ou ramo não resolvido **não é publicado**, porque o executor pararia e forçaria retrabalho. Inbox append-only de planos, numeração monotônica, decisões `DP`/`DD` fechadas no planejamento, e o que torna um plano `superseded` em vez de "continuado" | `GOVERNANCA.md` §7 |
+| 9 | **Handover e uma tarefa por contexto** | Por que uma tarefa por janela de contexto, o que o handover registra, e por que "decisão pendente é o próximo passo" — com o escopo do que conta como decisão do dono (**arquitetura e requisitos**; evento intrínseco do plano o agente executa) | `.claude/skills/handover/SKILL.md` |
+| 10 | **Os guardrails** | Tabela: regra → como é enforceada (**teste executável** \| **gate de review** \| **instrução de agente**). A coluna do meio é o ponto alto do framework e precisa ser honesta sobre o que ainda é só texto | `GOVERNANCA.md` §7 |
+| 11 | **Anatomia do kit** | Tabela dos agentes e das skills, uma linha cada: nome, modelo, quando dispara. Mais os checks executáveis em `.claude/checks/` | `.claude/README.md` |
+| 12 | **Memória e telemetria** | O que vira memória (fato durável não derivável) e o que **não** vira; a fila `_INBOX.md` de candidatos, que o agente enfileira e **só o dono promove**; e a série medida `docs/telemetria.tsv` — consumo é **medido**, nunca auto-relatado pelo executor | `GOVERNANCA.md` §4 |
+| 13 | **Distribuição e versão** | Hub único, `git subtree`, `sync-kit.ps1`, `kit-exclude.txt` (override de arquivo inteiro, sem merge parcial), semver do kit (MAJOR exige ação do consumidor) e o limite `§10a`: divergência é **reportada**, nunca aplicada por agente | `GOVERNANCA.md` §9 |
+| 14 | **Decisões e a evidência medida que as motivou** | ADR compacto — cada decisão com o número que a produziu (o executor em Opus com 71 turnos; as ~300 linhas de código morto testado; a série de estouros de teto que virou a regra de dividir antes de delegar; o symlink que exigia privilégio no Windows). É o que separa este framework de uma lista de boas intenções | `GOVERNANCA.md` §3 |
+| 15 | **O que a V2 mudou** | **A seção que fecha a iniciativa.** Origem: benchmarking de 21 frameworks públicos → 14 candidatos ratificados (12 `adotar`, 2 `adaptar`, 1 `adiar`). Três listas explícitas — **o que fica** (procedimento que já existia e foi confirmado), **o que sai** (procedimento abandonado e por quê), **o que se modifica** (procedimento que existia e mudou de forma, com o antes → depois). Autossuficiente: o dono conclui a iniciativa sem abrir `CANDIDATOS.md` nem o `CHANGELOG` | `CHANGELOG.md` §2.0.0 |
 
-**Regras de redação:** cada seção abre com a linha `> Fonte da verdade: <arquivo> §<seção>`; nada de
-"veja o documento X para entender" no corpo (isso é exatamente o que o dono pediu para eliminar);
-zero referência a decisão interna sem explicar o que ela significa para quem chega de fora.
+**Regras de redação:**
+
+- Cada seção abre com a linha `> Fonte da verdade: <arquivo> §<seção>`, e o arquivo citado **existe
+  no repositório** — o guarda da `T3` resolve o caminho a partir da raiz e falha em caminho externo
+  (`~/.claude/...`). Doutrina que nasceu global já foi repatriada para `GOVERNANCA.md` na `V2K-T17`;
+  citar o espelho interno, não o global.
+- Nada de "veja o documento X para entender" no corpo — é exatamente o que o dono pediu para
+  eliminar.
+- **Procedimento se descreve pela forma implementada, não pelo conceito.** Onde a implementação for
+  mais rica que o nome (o caso medido: `próxima tarefa` não é uma fila FIFO simples), o README
+  descreve a implementação; simplificar aqui produz um gerente que argumenta sobre uma prática que o
+  repositório não executa.
+- Cada procedimento responde três coisas na mesma seção: **o que é**, **por que foi adotado** (a
+  evidência ou o episódio que o produziu) e **onde o gerente intervém**. Seção sem o terceiro item
+  não serve ao objetivo do documento.
+- Zero convencimento. Não há "por que adotar", "devo adotar", "para quem não é". Assume-se que quem
+  lê já usa o framework.
 
 ## 2. Tarefas
 
@@ -75,16 +110,44 @@ zero referência a decisão interna sem explicar o que ela significa para quem c
 - **Pronto quando:** todo documento > 500 linhas do hub tem entrada com âncoras de seção e padrão de
   Grep de acesso; o mapa cabe em uma tela.
 
-### T2 — Redigir o README espelho [**Opus**] — **done (2026-08-05)**, ver `## Achados da execução`
-- **Objetivo:** o entregável central da iniciativa.
-- **Arquivos-alvo:** `README.md` (raiz — hoje inexistente).
+### T2 — Redigir o README espelho [**Opus**] — **in review** *(2ª rodada fechada em 2026-08-05; ver `## Achados da execução` §`T2 — 2026-08-05 (2ª rodada)`)*
+> A primeira rodada fechou em 2026-08-05 (528 linhas, 13 seções) sob a premissa errada — ver
+> `## Achados da execução` §T2 e `## Revisão de rota`. O artefato entregue **não é descartado**: seis
+> seções sobrevivem com retrabalho de moldura, três saem e sete nascem.
+
+- **Objetivo:** o entregável central da iniciativa, agora com o objetivo corrigido — **proxy das
+  implementações** para o gerente argumentar sobre as práticas.
+- **Arquivos-alvo:** `README.md` (raiz — existe, 528 linhas, será reescrito);
+  `.claude/checks/check-readme.ps1` (ajuste obrigatório, ver abaixo).
+- **Ponto de partida — o que fazer com o README atual** (medido, não re-derivar):
+  - **Aproveitar, remoldando:** §3 premissas → nova §2; §4 filosofia → dissolvida nas seções de
+    procedimento (cada escolha vira o "por que foi adotado" da seção correspondente); §5 modelo
+    econômico → nova §3; §7 anatomia → nova §11; §8 guardrails → nova §10; §11 decisões → nova §14.
+  - **Descartar:** §2 "Para quem é / para quem não é", §10 "O que este framework não resolve",
+    §13 "Devo adotar? (FAQ de decisão)" — os três são argumentação de adoção.
+  - **Escrever do zero:** novas §1, §4, §5, §6, §7, §8, §9, §12, §15.
+- **Ajuste obrigatório no guarda da `T3`** (senão a `T2` sai com o guarda vermelho): o
+  `check-readme.ps1` localiza duas seções por **número hardcoded** — `'## 7. '` (Anatomia do kit) e
+  `'## 8. '` (Os guardrails). No esqueleto novo elas são **§11** e **§10**. Trocar a busca por
+  **título** em vez de número, nas duas checagens, e corrigir a linha 6 do bloco de ajuda, que ainda
+  descreve "espelho de 13 seções escrito para que um humano decida sobre o framework".
+- **Dois formatos que o guarda parseia e que a reescrita não pode quebrar** (medidos na `T3`, ver
+  `## Achados da execução` §T3): (a) a linha de fonte usa **um** arquivo por seção, sempre entre
+  crases — o guarda parseia por crase; (b) a tabela da seção **Os guardrails** conta linhas numeradas
+  `| N |` e o guarda recorta a seção antes de contar, porque o sumário do topo usa a mesma forma —
+  manter a tabela de guardrails numerada e dentro da própria seção.
 - **Método:** seguir §1 seção a seção. Fontes lidas por Grep/âncora, não integralmente (o próprio
   framework proíbe leitura integral de doc grande). Onde a doutrina for ambígua ou tiver envelhecido,
   **não inventar consenso**: registrar como achado da execução no fim deste plano e escrever o que é
-  verdade hoje.
-- **Pronto quando:** as 13 seções existem, cada uma com a linha de fonte da verdade; 400-550 linhas;
-  §10 e §13 contêm afirmações desfavoráveis reais (um README sem elas reprova em §4); nenhuma
-  remissão do tipo "leia o documento X para entender".
+  verdade hoje. Para a §15, a fonte primária é `docs/benchmark/CANDIDATOS.md` (os 14 candidatos
+  ratificados, com o veredito de cada um) cruzada com o `CHANGELOG.md` §2.0.0 — a seção precisa ficar
+  **autossuficiente**, porque o dono não vai abrir nenhum dos dois.
+- **Pronto quando:** as 15 seções existem na ordem de §1, cada uma com a linha de fonte da verdade
+  apontando arquivo que existe no repositório; 750-900 linhas; toda seção de procedimento (§4 a §9,
+  §12, §13) responde **o que é / por que foi adotado / onde o gerente intervém**; a §15 traz as três
+  listas (fica / sai / modifica) com o antes → depois de cada item modificado; nenhuma remissão do
+  tipo "leia o documento X para entender"; nenhuma seção de convencimento; e
+  `pwsh -File .claude/checks/check-readme.ps1` sai **exit 0**.
 
 ### T3 — Guarda de drift do espelho [Sonnet]
 - **Objetivo:** impedir que o README envelheça mentindo — o risco declarado em §0.
@@ -122,30 +185,51 @@ zero referência a decisão interna sem explicar o que ela significa para quem c
   consolidado com a nota de migração; tag criada; o guarda do T3 passa; a divergência de versão do
   `PantonicVideo` está reportada ao dono, com nenhuma alteração feita naquele repositório.
 
-### T5 — Teste de aceitação do espelho [dono]
-- **Objetivo:** verificar a exigência literal do dono — *decidir sobre o framework sem ler os demais
-  artefatos*.
-- **Método:** o dono (ou um leitor externo) lê **apenas** o `README.md` e responde, sem abrir
-  nenhum outro arquivo:
-  1. O que este framework faz por mim que eu não teria de graça?
-  2. Em que tipo de projeto ele seria um erro?
-  3. Quanto ele me custa — em disciplina e em dinheiro?
-  4. Qual a primeira coisa que eu faço para adotá-lo, e a primeira que eu quebro se fizer errado?
-  5. O que ele deliberadamente recusa a fazer, e por quê?
-  6. Como eu descubro que a minha cópia está desatualizada?
-- **Pronto quando:** as 6 respostas saem do README sozinho. Qualquer pergunta que exija abrir outro
-  arquivo **reabre o T2** com a lacuna nomeada — e a reabertura é o resultado esperado na primeira
-  rodada, não um fracasso.
+### T5 — Teste de aceitação do espelho [dono] — **reprovada em 2026-08-05**
+- **Objetivo:** verificar as duas exigências corrigidas — o README **serve** ao gerente e é
+  **verdadeiro**. São testes distintos e ambos são necessários: um espelho fiel e inútil reprova
+  tanto quanto um espelho útil e falso.
+- **Método, parte A — utilidade (o dono lê só o `README.md`):** para **cada** procedimento descrito
+  (§4 a §9, §12, §13), o dono consegue dizer, sem abrir outro arquivo: (1) **o que é**, (2) **por que
+  foi adotado**, (3) **onde ele intervém como gerente**. E, ao fim da §15, consegue afirmar o que
+  fica, o que sai e o que se modifica na V2 — o critério de conclusão da iniciativa.
+- **Método, parte B — fidelidade (amostragem):** sorteiam-se **3** procedimentos descritos no README
+  e confere-se a descrição contra o artefato real (a skill, o agente ou o hook correspondente).
+  Divergência entre o que o README diz e o que o artefato faz é reprovação — é exatamente o modo de
+  falha do §0.
+- **Pronto quando:** parte A sem lacuna e parte B com 3/3 fiéis. Qualquer item faltante em A, ou
+  qualquer divergência em B, **reabre a `T2`** com a lacuna nomeada — a reabertura é resultado
+  esperado, não fracasso.
+
+### T6 — Fechar a `2.0.1` do espelho [Sonnet] — **cancelada por absorção (DR-6)**
+- **Objetivo:** manter tag e conteúdo coerentes depois da reescrita. A `kit-v2.0.0` foi criada em
+  2026-08-05 sobre o README da premissa antiga; a `T2` o reescreve por inteiro.
+- **Por que PATCH e não MINOR/MAJOR** (decisão `DD-7`, fechada): a reescrita não adiciona artefato
+  nem guardrail ao kit e não exige nenhuma ação do consumidor — é correção de redação do espelho, que
+  é a definição de PATCH em `GOVERNANCA.md` §10.
+- **Arquivos-alvo:** `VERSION` e `.claude/KIT_VERSION` → `2.0.1`; `CHANGELOG.md` (seção `2.0.1`
+  registrando a correção de premissa e o que mudou no README); `README.md` §13 (referências de
+  versão); `git tag kit-v2.0.1`.
+- **Não fazer:** `git push`, reescrita de história, alteração ou remoção da tag `kit-v2.0.0` — ela
+  registra um estado real do repositório e permanece.
+- **Pronto quando:** os dois arquivos em `2.0.1`; `CHANGELOG` com a seção nova; `check-readme.ps1`
+  exit 0; tag `kit-v2.0.1` criada; nada pushado.
 
 ## 3. Riscos
 
 - **README bonito e falso** — o modo de falha central (§0). Mitigação: T3 (guarda mecânico) + T5
-  (aceitação por leitura cega).
+  parte B (amostragem de fidelidade contra o artefato real).
+- **README fiel e inútil** — risco novo, introduzido pela revisão de rota: descrever o procedimento
+  com precisão e não dizer onde o gerente intervém. Mitigação: a regra "o que é / por que / onde
+  intervenho" em §1 e a parte A do T5.
 - **Espelho virar terceiro documento de doutrina**, divergindo de `GOVERNANCA.md` a cada edição.
   Mitigação: linha `> Fonte da verdade:` por seção; edição de doutrina acontece na fonte e desce
-  para o README, nunca o contrário — regra a escrever no próprio §12.
-- **Tamanho:** 13 seções tendem a 800+ linhas. Mitigação: teto declarado em §1; o que não couber é
-  sinal de que pertence ao documento-fonte, não ao espelho.
+  para o README, nunca o contrário — regra a escrever no próprio §13.
+- **A §15 envelhecer viva** — ela descreve uma transição, não um estado; mantida viva, vira um
+  segundo changelog. Mitigação (`DD-8`): depois que o dono ratificar o fecho da iniciativa na `T5`,
+  a §15 é congelada como histórico, não atualizada a cada versão.
+- **Tamanho:** 15 seções com profundidade de procedimento passam de 900 linhas. Mitigação: teto
+  declarado em §1; o que não couber é sinal de que pertence ao documento-fonte, não ao espelho.
 - **Publicidade:** o repositório é público (`github.com/PantaTheDoggo/PantonicApp`) e o README passa
   a ser sua fachada. Mitigação: §11 cita evidências medidas do próprio projeto — nenhuma delas
   contém segredo, mas o T2 confere isso explicitamente antes de fechar.
@@ -157,10 +241,70 @@ zero referência a decisão interna sem explicar o que ela significa para quem c
 | **DD-1** | Idioma | PT-BR | Decisão do dono; todo o corpus é PT-BR e um único artefato traduzido é canal permanente de drift |
 | **DD-2** | Um arquivo, não um site | `README.md` na raiz | A exigência é "um humano lê um único arquivo"; qualquer split reintroduz o problema que o README resolve |
 | **DD-3** | Espelho com fonte declarada | `> Fonte da verdade:` por seção + guarda executável | Espelho sem guarda envelhece mentindo, e mente com autoridade por ser o único arquivo lido |
-| **DD-4** | Aceitação por leitura cega | 6 perguntas de decisão, T5 | Testa a exigência real (decidir) em vez da aparente (existir um README) |
-| **DD-5** | MAJOR condicionado | `2.0.0` se houver mudança que exija ação do consumidor; caso contrário `1.x` com justificativa | Meta do dono é o V2, mas semver é contrato com o consumidor, não placar da iniciativa |
+| ~~**DD-4**~~ | ~~Aceitação por leitura cega, 6 perguntas de decisão~~ | **REVOGADA em 2026-08-05** | As 6 perguntas testavam convencimento ("devo adotar?"), e convencer nunca foi preocupação do projeto. Substituída por `DD-6` |
+| **DD-5** | MAJOR condicionado | `2.0.0` se houver mudança que exija ação do consumidor; caso contrário `1.x` com justificativa | Meta do dono é o V2, mas semver é contrato com o consumidor, não placar da iniciativa. **Resolvida na `T4`:** `2.0.0`, pelo contrato novo do piso de regressão |
+| **DD-6** | Objetivo do README e seu teste | **Proxy das implementações** para o gerente argumentar sobre as práticas; aceito por utilidade (o que é / por que / onde intervenho, por procedimento) **e** por fidelidade (amostragem de 3 contra o artefato real) | Correção de premissa do dono, 2026-08-05: quem lê já usa o framework. O que falta a ele não é motivo para adotar — é a **forma que cada acordo tomou** |
+| **DD-7** | Versão da reescrita | `2.0.1` (PATCH), tag `kit-v2.0.1`, preservando `kit-v2.0.0` | Reescrita de espelho não adiciona artefato nem guardrail e não exige ação do consumidor — é redação, a definição de PATCH em `GOVERNANCA.md` §10 |
+| **DD-8** | Ciclo de vida da §15 | Congelada como histórico após a ratificação do dono na `T5`; não atualizada a cada versão | Ela descreve uma transição, não um estado; mantida viva, duplica o `CHANGELOG` e envelhece dentro do espelho |
+
+## Revisão de rota — 2026-08-05 (decision record)
+
+**Quem decidiu:** o dono, no handover da `T4`, ao ler as 6 perguntas da `T5` original.
+**Aprovada:** 2026-08-05, na mesma conversa, com a recomendação aceita integralmente.
+
+**O achado.** As 6 perguntas da `T5` — *"o que ele faz por mim que eu não teria de graça?"*, *"em que
+tipo de projeto ele seria um erro?"*, *"devo adotar?"* — testavam **convencimento**. O dono:
+*"Convencer nunca será uma preocupação do projeto. Assume-se que quem está lendo já está
+utilizando."*
+
+**A raiz.** Erro de leitura na fase de planejamento (2026-07-29), não da execução. O pedido original
+dizia *"conseguir **decidir** sobre esse framework"*, e o planejamento leu "decidir **se adota**".
+O §0 do plano registrou isso explicitamente — *"o leitor precisa decidir sobre o framework... saber
+onde ele não serve, o que ele custa e o que ele deliberadamente recusa a fazer"* — e o esqueleto de
+§1 derivou daí três seções de adoção (§2, §10, §13) e um teste de aceitação de adoção (`DD-4`).
+A `T2` executou o esqueleto com fidelidade; o defeito é anterior a ela.
+
+**O objetivo correto**, nas palavras do dono: *"um proxy das implementações nos artefatos, para o
+dono/gerente do projeto conseguir entender as premissas, os conceitos e os procedimentos para que ele
+tenha condição de argumentar sobre as práticas sem precisar ler todos os artefatos individualmente"*
+— mais a visibilidade do resultado do benchmarking: *"o que fica, o que sai e o que modifica"*.
+
+**A evidência que confirmou o diagnóstico.** Ao descrever de memória um procedimento maduro do
+próprio projeto, o dono definiu `próxima tarefa` como *"uma pilha FIFO onde cada comando de próxima
+tarefa vai coletar a primeira task e passar ao executor"*. A implementação é outra: **diretiva de
+priorização persistida** na primeira linha do diário, com precedência total sobre uma heurística de
+**4 níveis** (`blocked` destravável → `in progress` com WIP de 1 → bug avulso → FIFO). FIFO é o
+**quarto** critério de desempate, não o mecanismo. Não é falha de memória do dono — é exatamente a
+lacuna que o documento existe para cobrir, e a prova de que o espelho precisa descrever a
+**implementação**, não o conceito.
+
+**O que mudou neste plano:** §0 segundo parágrafo reescrito e terceiro acrescentado; §1 de 13 para 15
+seções, com meta de tamanho de 400-550 → 750-900 linhas; `T2` **reaberta** com esqueleto novo e um
+ajuste obrigatório no guarda da `T3` (que localiza `## 7. ` e `## 8. ` por número hardcoded — as duas
+seções mudam de número); `T5` **substituída** (utilidade + fidelidade, no lugar das 6 perguntas);
+`T6` **nova** (fecha a `2.0.1`); `DD-4` revogada; `DD-6`, `DD-7` e `DD-8` acrescentadas; risco novo
+"README fiel e inútil" registrado em §3.
+
+**O que NÃO mudou e não deve ser revisitado:** `DD-1` (PT-BR), `DD-2` (arquivo único), `DD-3`
+(fonte da verdade por seção + guarda executável) e as tarefas `T1`, `T3`, `T4`, todas `done` e não
+afetadas pela correção de premissa. A `2.0.0` e a tag `kit-v2.0.0` permanecem — registram um estado
+real do repositório.
+
+**Fora do escopo deste plano** (mesma decisão): o `git push` dos commits e das tags, e a migração do
+`PantonicVideo` para o kit `2.0.0`.
 
 ## Achados da execução
+
+### T5/T6 — 2026-08-05
+
+**`V2D-T5` reprovada.** O teste de aceitação (utilidade + fidelidade, `DD-6`) cumpriu seu papel e
+detectou desvio de identidade na **fonte da verdade** (`GOVERNANCA.md` §1), não no espelho: o
+README está fiel ao que documenta, mas `GOVERNANCA.md` §1 declara o framework como "desktop, stack
+fixo PySide6" quando o entendimento canônico é agnóstico a tecnologia/plataforma. Os 11 desvios
+medidos estão em `docs/plans/P-0730-v2-identidade.md` §2.
+
+**`V2D-T6` cancelada por absorção.** A correção de `2.0.1` (redação do espelho) é substituída pelo
+escopo maior do Estágio 5, que fecha em `2.1.0` (`DR-6`, ver `docs/plans/P-0730-v2-identidade.md`).
 
 ### T4 — 2026-08-05
 
@@ -202,7 +346,14 @@ commit): commit 1 = README/guarda/DOC_MAP/diário/telemetria (`V2D-T1..T3`); com
 `2.0.0` (`VERSION`, `KIT_VERSION`, `CHANGELOG`, `GOVERNANCA` §9, diário, este bloco); tag anotada
 `kit-v2.0.0` sobre o commit 2, mesmo padrão de `kit-v1.5.0`. Nada pushado.
 
-Consumo: (preenchido pelo orquestrador via notificação)
+**Fora do escopo deste plano** (decisão do dono, 2026-08-05, no handover da `T4`): (a) o `git push`
+dos commits `f1e4879`/`6e2154a` e da tag `kit-v2.0.0` — a publicação é ato do dono, em momento
+próprio; (b) a migração do `PantonicVideo` para o kit `2.0.0`, incluindo a colisão medida em
+`skills/guardrails-check`. A `T4` cumpriu o seu dever sobre (b) — **reportar** a divergência
+(`GOVERNANCA.md` §10a) —, e a ação em si não pertence a este estágio. Nenhum dos dois bloqueia a
+`T5` nem o fechamento do plano.
+
+Consumo: ver `docs/telemetria.tsv` (teto de 35 estourado — 46 tool uses; ver §Riscos/handover).
 
 ### T3 — 2026-08-05
 
@@ -326,3 +477,88 @@ linhas de fonte usam **um** arquivo por seção e o caminho vem sempre entre cra
 crase, não por espaço; (b) a contagem de guardrails do §8 é a de linhas de tabela numeradas `| N |`
 dentro da seção 8 — o README tem **outra** tabela numerada `| N |` (o sumário de 13 seções, no
 topo), então o guarda precisa recortar a seção antes de contar, sob pena de achar 27.
+
+### T2 — 2026-08-05 (2ª rodada)
+
+**Entregue:** `README.md` reescrito como **proxy das implementações** — **752 linhas** (faixa
+750-900 do §1 revisado), **15 seções** na ordem da tabela de §1, cada uma abrindo com
+`> Fonte da verdade: <arquivo> §<seção>` apontando arquivo existente no repositório. Fontes
+efetivamente citadas: `GOVERNANCA.md` (§1, §2, §4, §5, §8, §10, §12, §13, §14), `.claude/README.md`
+(§11), `CHANGELOG.md` (§15) e as três skills — `proximo-passo` (§6), `diario-de-obras` (§7),
+`handover` (§9). Nenhuma seção aponta para `docs/plans/` nem para `~/.claude/`: o esqueleto novo não
+tem seção cuja fonte seja "este plano", que era a saída da 1ª rodada para §2/§10/§13.
+
+**Ajuste no guarda (`.claude/checks/check-readme.ps1`), conforme o dossiê:** as duas seções passam a
+ser localizadas **pelo título** (`^## \d+\. Anatomia do kit` e `^## \d+\. Os guardrails`) em vez do
+número hardcoded — variáveis renomeadas de `$sec7*`/`$sec8*` para `$secKit*`/`$secGuard*` e as
+mensagens de erro correspondentes reescritas sem citar número de seção. Bloco de ajuda atualizado
+(linha 6 e as descrições das 5 checagens), incluindo o rótulo de origem da versão, que era "§12" e
+virou "corpo do README" — a linha `Versão vigente do framework:` migrou para a §13 do esqueleto
+novo, e o guarda nunca dependeu do número, só do texto. **Lógica das checagens 3, 4 e 5 intocada**;
+os padrões `^## 7\. Guardrails dos agentes` / `^### 7\.1` continuam apontando para `GOVERNANCA.md`,
+como o dossiê exigia.
+
+**Decisões de redação não triviais:**
+
+1. **As duas seções antigas fora das listas do dossiê**, resolvidas como o dossiê antecipou: a §9
+   "Como adotar em 10 minutos" foi **descartada** (regra "zero convencimento"; o esqueleto novo não
+   tem seção de adoção) e a §12 "Versão, changelog e mapa dos documentos" foi absorvida pela nova
+   §13 "Distribuição e versão". **A tabela "Quer saber X? O arquivo é Y" não sobreviveu**: sob a
+   regra "nenhuma remissão do tipo 'leia o documento X'", uma tabela de 11 remissões é o próprio
+   defeito que a regra proíbe. O `docs/DOC_MAP.md` continua sendo a porta de entrada dos docs
+   grandes, mas isso é procedimento de agente, não conteúdo do espelho — daí não haver ponteiro para
+   ele no corpo. Se o dono quiser o índice de "onde mora o quê" de volta, é decisão dele, não da
+   execução.
+2. **A §4 antiga ("filosofia em seis escolhas") foi dissolvida**, como mandava o dossiê: (a) virou o
+   "por que foi adotado" da §4 nova; (b) o da §9; (c) o fecho da §10; (d) a premissa 5 da §2; (e) o
+   "por que" da §5; (f) o "por que" da §13. Nenhuma escolha se perdeu, e o formato
+   "escolha → rejeitado → por quê → custo" foi absorvido no texto corrido de cada seção em vez de
+   virar uma seção própria de argumentação.
+3. **Conteúdo de fonte que estava ausente do espelho anterior e entrou agora**, por ser procedimento
+   e não argumento: os quatro artefatos iniciais (`GOVERNANCA.md` §6) na §5; a régua de
+   especialização por altura de camada (§2 da doutrina) na §2; as travas do procedimento de próxima
+   tarefa, inclusive a higiene de busca, na §6; a estrutura literal do diário na §7; os passos de
+   decisões/lições e a nota-forward de obsolescência na §9; o ciclo típico do kit na §11.
+4. **Meta de tamanho atingida por profundidade de fonte, não por retórica.** A 1ª passagem fechou em
+   661 linhas; as ~90 linhas restantes vieram dos itens do ponto 3, todos com fonte, mais duas
+   linhas novas no ADR da §14 (deriva medida do índice derivado — 8/9 agentes e 6/8 skills — e a
+   colisão de nomenclatura `P-0722`/`P-0729`). Nenhum parágrafo foi escrito para preencher cota.
+
+**Ambiguidades de doutrina encontradas (escrito o que é verdade hoje, sem inventar consenso):**
+
+1. **Governança de memória é doutrina do dono, não do kit.** A §12 do esqueleto manda descrever "o
+   que vira memória, o que não vira e a fila `_INBOX.md` que só o dono promove", com fonte
+   `GOVERNANCA.md` §4. Só que `GOVERNANCA.md` §3.1 declara explicitamente que essa governança
+   **mora fora do kit** (`~/.claude/docs/GOVERNANCA_MEMORIAS.md`), por passar na pergunta 1 do teste
+   de residência — e por isso **não viaja** ao consumidor. Resolvido escrevendo a prática vigente do
+   hub **e** declarando a residência no corpo da §12: um consumidor recebe a régua de residência e a
+   doutrina de telemetria, não a governança de memória em si. Sem essa nota, o espelho prometeria ao
+   consumidor uma prática que o kit não entrega.
+2. **A §15 é histórico congelado, e a `DD-8` já decidiu isso** — mas o texto entregue precisou de uma
+   marca explícita disso no próprio corpo da seção, senão o guarda de drift futuro (ou um leitor)
+   trataria uma seção deliberadamente desatualizada como espelho envelhecido. Registrado na primeira
+   linha da §15.
+3. **Nomes das 5 dimensões `MANTER`** (D1, D3, D4, D10, D16) não estão no `CANDIDATOS.md`, que só as
+   cita por número; vieram de `docs/benchmark/RELATORIO_CONSOLIDADO.md` (headings `### D<N> — <nome>
+   — **VEREDITO**`). Não é ambiguidade de doutrina, é ponteiro faltando no insumo — anotado aqui
+   porque a `T5` (fidelidade por amostragem) pode querer conferir a lista "o que fica" e não a
+   encontraria no `CANDIDATOS.md`.
+
+**Verificação (comando colado do terminal):**
+`pwsh -File D:\workspaces\PantonicApp\.claude\checks\check-readme.ps1` →
+`check-readme: OK - 9 agente(s), 9 skill(s), 14 guardrail(s), versão '2.0.0', 15 seção(ões) com
+Fonte da verdade válida.`, **exit 0**. Contagem final:
+`(Get-Content README.md | Measure-Object -Line).Lines` = **752**. Lista de headings `## ` conferida:
+as 15 seções na ordem exata da tabela de §1 (os dois `## ` extras que a listagem mostra estão
+**dentro** do bloco cercado ```markdown``` da §7, não casam `^## \d+\. ` e são inertes para o
+guarda).
+
+**O que a `T5`/`T6` precisam saber.** (a) O guarda deixou de depender de número de seção — reordenar
+o esqueleto de novo não o quebra, desde que os títulos "Anatomia do kit" e "Os guardrails" fiquem
+como estão e a linha `Versão vigente do framework:` continue existindo em algum lugar do corpo.
+(b) A versão citada no README é **`2.0.0`** nos dois pontos (cabeçalho e §13), coerente com
+`VERSION`/`.claude/KIT_VERSION` **atuais**; o bump para `2.0.1` da `DD-7` é da `T6` e vai precisar
+mexer nos **dois** pontos do README, senão a checagem 3 fica vermelha. (c) Nada commitado nesta
+tarefa.
+
+Consumo: ver `docs/telemetria.tsv` (linha `V2D-T2r2`)

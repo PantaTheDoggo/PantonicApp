@@ -2,7 +2,7 @@
 
 Cada linha aponta para um `docs/plans/P-NNNN-<slug>.md`, com `NNNN` um contador global monotônico
 (nunca reutilizado, zero-padded) e a data de origem registrada como campo de cabeçalho do próprio
-plano — não no nome do arquivo. **Próximo id de plano: P-0730.** Os planos já existentes
+plano — não no nome do arquivo. **Próximo id de plano: P-0731.** Os planos já existentes
 `P-0721`..`P-0729` mantêm o nome atual e não são renomeados (renomear quebraria ponteiros
 cruzados de planos fechados sem ganho — DP-G5). Uma vez promovido ao índice/heading do
 `docs/DIARIO_DE_OBRAS.md`, a linha é marcada `[drenado]` e permanece aqui — nunca é apagada.
@@ -97,3 +97,17 @@ cruzados de planos fechados sem ganho — DP-G5). Uma vez promovido ao índice/h
   distribuição continua única, no `P-0729-v2-documentacao` T4. `backlog` — desbloqueado pelo
   fechamento do Estágio 2. **Checagem de versão do kit:** modo hub, `1.2.0`, paridade OK, sem
   divergência.
+- **[drenado]** 2026-08-05 — `P-0730-v2-identidade` — **Estágio 5 (corretivo)**: o teste de aceitação
+  do Estágio 4 reprovou o README e expôs que o desvio está na **fonte da verdade** —
+  `GOVERNANCA.md` §1 define o framework como "desktop, stack fixo PySide6" quando o entendimento
+  canônico do dono é **agnóstico a tecnologia e plataforma**, atuando nos níveis de arquitetura e de
+  projeto, sobre **clean architecture + DDD**, estendidos pelo **infracore** e por **plugins (um
+  plugin = um caso de uso)**. 11 desvios medidos (§2), 15 tarefas `V2I-T1..T15`, decisões
+  `DR-1..DR-7` ratificadas no ato do planejamento. `DR-7` eleva o **README a documento canônico — o
+  contrato entre o framework e o cliente** — com guardrail novo **G-README** e aceite do dono como
+  gate de release. **Rebaseia o Estágio 4** (§6): `P-0729-v2-documentacao` vira `superseded`
+  (classificação B), `V2D-T5` reprovada, `V2D-T6` cancelada por absorção. Fecha em `2.1.0` (`DR-6`);
+  a abstração do infracore (`DR-5`) não entra aqui — nasce como `P-0731`, autorado já fechado pela
+  `T15`. **Checagem de versão do kit:** modo hub, local `2.0.0` (VERSION == KIT_VERSION), maior tag
+  publicada `kit-v1.3.0` ⇒ **republicação pendente** (decisão do dono, `T13`); achado `TK-05` — o
+  gatilho de revisão de doutrina da skill compara só o MINOR e fica cego ao atravessar um MAJOR.

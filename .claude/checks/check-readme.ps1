@@ -3,18 +3,24 @@
     Guarda executável de drift do README espelho (V2D-T3, docs/plans/P-0729-v2-documentacao.md §T3).
 
 .DESCRIPTION
-    O `README.md` da raiz é um espelho de 13 seções escrito para que um humano decida sobre o
-    framework sem abrir outro arquivo (V2D-T2). Um espelho sem guarda nasce fiel e envelhece
-    mentindo — com autoridade, porque é o único arquivo lido. Este script falha (exit != 0)
-    quando o README diverge do disco/doutrina em qualquer uma das 5 checagens mecânicas abaixo;
-    zero julgamento de conteúdo, só forma e paridade de números.
+    O `README.md` da raiz é o espelho das implementações do framework, escrito para que quem já
+    usa o framework consiga argumentar sobre as práticas (o que é / por que foi adotado / onde o
+    gerente intervém) sem abrir skill, agente e hook um a um (V2D-T2). Um espelho sem guarda nasce
+    fiel e envelhece mentindo — com autoridade, porque é o único arquivo lido. Este script falha
+    (exit != 0) quando o README diverge do disco/doutrina em qualquer uma das 5 checagens mecânicas
+    abaixo; zero julgamento de conteúdo, só forma e paridade de números.
 
-    1. Todo agente `.claude/agents/*.md` aparece na tabela de Agentes do README §7, e vice-versa.
-    2. Toda skill `.claude/skills/*/SKILL.md` aparece na tabela de Skills do README §7, e vice-versa.
-    3. A versão citada no README (cabeçalho + §12) é igual a `VERSION` e a `.claude/KIT_VERSION`,
-       e os quatro coincidem entre si.
-    4. O número de guardrails da tabela do README §8 é igual ao número de itens da lista numerada
-       de `GOVERNANCA.md` §7 ("## 7. Guardrails dos agentes" até "### 7.1").
+    As seções são localizadas pelo TÍTULO, não pelo número — o número muda a cada reescrita do
+    esqueleto do espelho e não é contrato.
+
+    1. Todo agente `.claude/agents/*.md` aparece na tabela de Agentes da seção "Anatomia do kit"
+       do README, e vice-versa.
+    2. Toda skill `.claude/skills/*/SKILL.md` aparece na tabela de Skills da mesma seção, e
+       vice-versa.
+    3. A versão citada no README (cabeçalho + linha "Versão vigente do framework:") é igual a
+       `VERSION` e a `.claude/KIT_VERSION`, e os quatro coincidem entre si.
+    4. O número de guardrails da tabela da seção "Os guardrails" do README é igual ao número de
+       itens da lista numerada de `GOVERNANCA.md` §7 ("## 7. Guardrails dos agentes" até "### 7.1").
     5. Toda seção `## ` do README tem a linha `> Fonte da verdade:` e o arquivo citado nela existe.
 
 .PARAMETER Root
@@ -66,29 +72,29 @@ function Get-SectionLines {
     return $Lines[$start..$end]
 }
 
-# --- 1/2. Agentes e Skills: localizar seção "## 7. Anatomia do kit" --------
-$sec7Idx = -1
+# --- 1/2. Agentes e Skills: localizar a seção "Anatomia do kit" pelo TÍTULO -
+$secKitIdx = -1
 for ($i = 0; $i -lt $headingIdx.Count; $i++) {
-    if ($lines[$headingIdx[$i]] -match '^## 7\. ') { $sec7Idx = $i; break }
+    if ($lines[$headingIdx[$i]] -match '^## \d+\. Anatomia do kit') { $secKitIdx = $i; break }
 }
-if ($sec7Idx -lt 0) {
-    $errors.Add("Seção '## 7. ' (Anatomia do kit) não encontrada no README.")
+if ($secKitIdx -lt 0) {
+    $errors.Add("Seção 'Anatomia do kit' não encontrada no README (heading '## <N>. Anatomia do kit').")
 }
 else {
-    $sec7 = Get-SectionLines -Lines $lines -HeadingIdx $headingIdx -Index $sec7Idx
+    $secKit = Get-SectionLines -Lines $lines -HeadingIdx $headingIdx -Index $secKitIdx
 
     $agentesHdr = -1
     $skillsHdr = -1
-    for ($i = 0; $i -lt $sec7.Count; $i++) {
-        if ($sec7[$i].Trim() -eq '**Agentes**' -and $agentesHdr -lt 0) { $agentesHdr = $i }
-        if ($sec7[$i].Trim() -eq '**Skills**' -and $skillsHdr -lt 0) { $skillsHdr = $i }
+    for ($i = 0; $i -lt $secKit.Count; $i++) {
+        if ($secKit[$i].Trim() -eq '**Agentes**' -and $agentesHdr -lt 0) { $agentesHdr = $i }
+        if ($secKit[$i].Trim() -eq '**Skills**' -and $skillsHdr -lt 0) { $skillsHdr = $i }
     }
     if ($agentesHdr -lt 0 -or $skillsHdr -lt 0 -or $skillsHdr -le $agentesHdr) {
-        $errors.Add("Marcadores '**Agentes**'/'**Skills**' ausentes ou fora de ordem em '## 7. '.")
+        $errors.Add("Marcadores '**Agentes**'/'**Skills**' ausentes ou fora de ordem na seção 'Anatomia do kit'.")
     }
     else {
-        $agentRows = $sec7[($agentesHdr + 1)..($skillsHdr - 1)]
-        $skillRows = $sec7[($skillsHdr + 1)..($sec7.Count - 1)]
+        $agentRows = $secKit[($agentesHdr + 1)..($skillsHdr - 1)]
+        $skillRows = $secKit[($skillsHdr + 1)..($secKit.Count - 1)]
 
         $readmeAgents = [System.Collections.Generic.List[string]]::new()
         foreach ($row in $agentRows) {
@@ -107,17 +113,17 @@ else {
 
         $onlyInReadmeAgents = @($readmeAgents | Where-Object { $_ -notin $diskAgents })
         $onlyOnDiskAgents = @($diskAgents | Where-Object { $_ -notin $readmeAgents })
-        foreach ($a in $onlyInReadmeAgents) { $errors.Add("Agente na tabela do README §7 sem arquivo correspondente em .claude/agents/: '$a'") }
-        foreach ($a in $onlyOnDiskAgents) { $errors.Add("Agente '$a' (.claude/agents/$a.md) não aparece na tabela de Agentes do README §7.") }
+        foreach ($a in $onlyInReadmeAgents) { $errors.Add("Agente na tabela de 'Anatomia do kit' sem arquivo correspondente em .claude/agents/: '$a'") }
+        foreach ($a in $onlyOnDiskAgents) { $errors.Add("Agente '$a' (.claude/agents/$a.md) não aparece na tabela de Agentes de 'Anatomia do kit'.") }
 
         $onlyInReadmeSkills = @($readmeSkills | Where-Object { $_ -notin $diskSkills })
         $onlyOnDiskSkills = @($diskSkills | Where-Object { $_ -notin $readmeSkills })
-        foreach ($s in $onlyInReadmeSkills) { $errors.Add("Skill na tabela do README §7 sem SKILL.md correspondente em .claude/skills/: '$s'") }
-        foreach ($s in $onlyOnDiskSkills) { $errors.Add("Skill '$s' (.claude/skills/$s/SKILL.md) não aparece na tabela de Skills do README §7.") }
+        foreach ($s in $onlyInReadmeSkills) { $errors.Add("Skill na tabela de 'Anatomia do kit' sem SKILL.md correspondente em .claude/skills/: '$s'") }
+        foreach ($s in $onlyOnDiskSkills) { $errors.Add("Skill '$s' (.claude/skills/$s/SKILL.md) não aparece na tabela de Skills de 'Anatomia do kit'.") }
     }
 }
 
-# --- 3. Versão: README (cabeçalho + §12) == VERSION == .claude/KIT_VERSION -
+# --- 3. Versão: README (cabeçalho + linha vigente) == VERSION == KIT_VERSION
 $versionFile = Join-Path $Root 'VERSION'
 $kitVersionFile = Join-Path $Root '.claude/KIT_VERSION'
 $versions = @{}
@@ -127,19 +133,19 @@ if (Test-Path -LiteralPath $kitVersionFile) { $versions['.claude/KIT_VERSION'] =
 else { $errors.Add("Arquivo .claude/KIT_VERSION não encontrado em: $kitVersionFile") }
 
 $readmeHeaderVersion = $null
-$readmeSec12Version = $null
+$readmeBodyVersion = $null
 foreach ($line in $lines) {
     if ($null -eq $readmeHeaderVersion -and $line -match '\*\*Versão do framework:\*\*\s*`([^`]+)`') {
         $readmeHeaderVersion = $Matches[1]
     }
-    if ($null -eq $readmeSec12Version -and $line -match 'Versão vigente do framework:\s*`([^`]+)`') {
-        $readmeSec12Version = $Matches[1]
+    if ($null -eq $readmeBodyVersion -and $line -match 'Versão vigente do framework:\s*`([^`]+)`') {
+        $readmeBodyVersion = $Matches[1]
     }
 }
 if ($null -eq $readmeHeaderVersion) { $errors.Add("Linha '**Versão do framework:**' não encontrada no cabeçalho do README.") }
 else { $versions['README.md (cabeçalho)'] = $readmeHeaderVersion }
-if ($null -eq $readmeSec12Version) { $errors.Add("Linha 'Versão vigente do framework:' não encontrada no README §12.") }
-else { $versions['README.md (§12)'] = $readmeSec12Version }
+if ($null -eq $readmeBodyVersion) { $errors.Add("Linha 'Versão vigente do framework:' não encontrada no corpo do README (seção de distribuição e versão).") }
+else { $versions['README.md (corpo)'] = $readmeBodyVersion }
 
 if ($versions.Count -gt 1) {
     $distinctValues = @($versions.Values | Select-Object -Unique)
@@ -149,18 +155,18 @@ if ($versions.Count -gt 1) {
     }
 }
 
-# --- 4. Guardrails: README §8 (linhas '| N |') == GOVERNANCA.md §7 (lista) -
-$sec8Idx = -1
+# --- 4. Guardrails: seção "Os guardrails" ('| N |') == GOVERNANCA.md §7 -----
+$secGuardIdx = -1
 for ($i = 0; $i -lt $headingIdx.Count; $i++) {
-    if ($lines[$headingIdx[$i]] -match '^## 8\. ') { $sec8Idx = $i; break }
+    if ($lines[$headingIdx[$i]] -match '^## \d+\. Os guardrails') { $secGuardIdx = $i; break }
 }
-if ($sec8Idx -lt 0) {
-    $errors.Add("Seção '## 8. ' (Os guardrails) não encontrada no README.")
+if ($secGuardIdx -lt 0) {
+    $errors.Add("Seção 'Os guardrails' não encontrada no README (heading '## <N>. Os guardrails').")
     $readmeGuardrailCount = $null
 }
 else {
-    $sec8 = Get-SectionLines -Lines $lines -HeadingIdx $headingIdx -Index $sec8Idx
-    $readmeGuardrailCount = @($sec8 | Where-Object { $_ -match '^\|\s*\d+\s*\|' }).Count
+    $secGuard = Get-SectionLines -Lines $lines -HeadingIdx $headingIdx -Index $secGuardIdx
+    $readmeGuardrailCount = @($secGuard | Where-Object { $_ -match '^\|\s*\d+\s*\|' }).Count
 }
 
 $governancaPath = Join-Path $Root 'GOVERNANCA.md'
@@ -189,7 +195,7 @@ else {
 }
 
 if ($null -ne $readmeGuardrailCount -and $null -ne $governancaGuardrailCount -and $readmeGuardrailCount -ne $governancaGuardrailCount) {
-    $errors.Add("Divergência no número de guardrails: README §8 tem $readmeGuardrailCount linha(s) vs GOVERNANCA.md §7 com $governancaGuardrailCount item(ns).")
+    $errors.Add("Divergência no número de guardrails: a seção 'Os guardrails' do README tem $readmeGuardrailCount linha(s) vs GOVERNANCA.md §7 com $governancaGuardrailCount item(ns).")
 }
 
 # --- 5. Toda seção '## ' tem 'Fonte da verdade' apontando para arquivo real

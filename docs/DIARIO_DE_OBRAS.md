@@ -17,13 +17,15 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
-| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5; 4/5) | in progress | `docs/plans/P-0729-v2-documentacao.md` |
+| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T4 entregues; `T5` reprovada, `T6` cancelada por absorção) | superseded | substituído por `docs/plans/P-0730-v2-identidade.md` |
+| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (1/15) | in progress | `docs/plans/P-0730-v2-identidade.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
 | P-0725-HU | Hub único: PantonicApp canônico, PantonicVideo como prova | done | `docs/plans/P-0725-governanca-hub-unico.md` |
 | TK-01 | Corrigir residência de `modelo-por-fase` em `GOVERNANCA.md` §3 e no bullet `V2M-T1` do `CHANGELOG.md` (ainda apontam `~/.claude/skills/`, superado por `DM-7`) | done *(absorvido pela `V2M-T3`)* | `docs/DIARIO_HISTORICO.md#tíquetes-avulsos--condensado-em-2026-08-01` |
 | TK-02 | `.claude/sync-kit.ps1`: `Get-ExcludedKeys`/`Test-Excluded` quebram sem `kit-exclude.txt` presente (achado pré-existente, `V2K-T11`) | done | docs/DIARIO_HISTORICO.md#tíquetes-avulsos--2ª-condensação-2026-08-01
+| TK-05 | Skill `checar-versao-kit`: o gatilho de revisão de doutrina (`GOVERNANCA.md` §7.1) compara só o componente MINOR e fica cego ao atravessar um MAJOR (local `2.0.0` × última rodada `1.4.0` ⇒ "sem pendência" indevido) | backlog *(achado do planejamento do `P-0730`)* | `docs/plans/P-0730-v2-identidade.md` §7 |
 | TK-04 | `.claude/agents/pantonic-executor.md:20` hardcoda "orçamento esperado ~≤40 tool uses" — diverge de `DR-C`/`V2K-T16` (o kit, `GOVERNANCA.md` §3, já é a única autoridade numérica, tabela de tetos por classe; o global perdeu o número na `T17`) | backlog *(achado da `V2K-T17`)* | `.claude/agents/pantonic-executor.md:20` |
 
 ---
@@ -34,14 +36,41 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2D-T5` — teste de aceitação do espelho (as 6 perguntas de decisão
-respondidas só pela leitura do `README.md`) — **[dono]**, no **Estágio 4** (`P-0729-V2D`, 4/5). A
-`V2D-T4` fechou em 2026-08-05: `VERSION`/`.claude/KIT_VERSION` em `2.0.0`, `CHANGELOG.md` §2.0.0
+**Próxima tarefa da sprint:** `V2I-T2` — varredura de contaminação do benchmarking —
+**[Sonnet]**, no **Estágio 5** (`P-0730-V2I`, 1/15). Dossiê em
+`docs/plans/P-0730-v2-identidade.md` `### T2`.
+
+**Estágio 5 aberto em 2026-08-05 — o Estágio 4 foi reprovado no aceite e está `superseded`.** A
+`V2D-T5` cumpriu seu papel: a leitura do README pelo dono detectou que a identidade declarada do
+framework está errada **na fonte da verdade** (`GOVERNANCA.md` §1: "desktop, stack fixo PySide6"),
+não no espelho. O entendimento canônico é **agnóstico a tecnologia e plataforma**, atuando nos
+níveis de **arquitetura** e de **projeto**, sobre **clean architecture + DDD**, estendidos pelo
+**infracore** e por **plugins (um plugin = um caso de uso)**. `DR-7` eleva o **README a documento
+canônico — o contrato entre o framework e o cliente**: um framework correto é rejeitado por um
+README equivocado. 11 desvios medidos, 15 tarefas, fechamento em `2.1.0`.
+
+**Revisão de rota em 2026-08-05 (decisão do dono).** A premissa do Estágio 4 estava errada desde o
+planejamento: o README foi projetado como documento de **adoção** (as 6 perguntas da `T5` testavam
+convencimento) quando o objetivo é ser um **proxy das implementações** para o gerente argumentar
+sobre as práticas sem ler skill, agente e hook um a um — mais a visibilidade do que a V2 mudou (o que
+fica, o que sai, o que se modifica). `T2` reaberta, `T5` substituída (utilidade + fidelidade), `T6`
+nova (fecha a `2.0.1`), `DD-4` revogada. `T1`, `T3` e `T4` não foram afetadas. Fora de escopo por
+decisão do dono: o `git push` e a migração do `PantonicVideo`.
+
+A `V2D-T4` fechou em 2026-08-05: `VERSION`/`.claude/KIT_VERSION` em `2.0.0`, `CHANGELOG.md` §2.0.0
 consolidando a iniciativa inteira com a justificativa do MAJOR e a nota de migração ao
 `PantonicVideo`, `GOVERNANCA.md` §9 apontando o README como porta de entrada humana, guarda do T3
 em exit 0 sobre o estado `2.0.0`, tag anotada `kit-v2.0.0` criada localmente (sem push). Divergência
 do consumidor reportada, nenhuma alteração feita em `d:\workspaces\PantonicVideo` — ver
 `## Achados da execução` de `docs/plans/P-0729-v2-documentacao.md`.
+
+A `V2I-T1` fechou em 2026-08-05: commit único fechando o veredito do Estágio 4 (`V2D-T5`
+reprovada, `V2D-T6` cancelada por absorção) e abrindo o Estágio 5 — README espelho, guarda de
+drift, `DOC_MAP.md`, diário e telemetria, mais o plano novo `docs/plans/P-0730-v2-identidade.md`.
+Detalhe do veredito em `## Achados da execução` §`T5/T6 — 2026-08-05` de
+`docs/plans/P-0729-v2-documentacao.md`.
+
+Consumo: (preenchido pelo orquestrador via notificação)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
@@ -252,7 +281,7 @@ com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não 
     antes do commit; a medida `<usage>` daquele agente é piso, não o custo real da tarefa.
   - Consumo: ver `docs/telemetria.tsv`
 
-### Estágio 4 — `P-0729-v2-documentacao` [in progress — 3/5; desbloqueado em 2026-08-05: a razão registrada ("depende do Estágio 3 inteiro `done`") deixou de valer com 3A 5/5 + 3B 20/20]
+### Estágio 4 — `P-0729-v2-documentacao` [superseded em 2026-08-05 — `T1..T4` entregues e de pé; `T5` reprovada, `T6` cancelada por absorção. Substituído por `docs/plans/P-0730-v2-identidade.md` (classificação B: a premissa que o sustentava caiu)]
 
 - `V2D-T1` — `docs/DOC_MAP.md` do hub — [Opus, inline] — **done** *(premissa caída — o mapa já
   existia)*
@@ -276,8 +305,16 @@ com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não 
     repatriada na `V2K-T17`), e a obrigatoriedade está em `GOVERNANCA.md:470` (§8) + nos fatos
     estáveis de `pantonic-scout`/`pantonic-executor`/`pantonic-planner`.
   - Consumo: ver `docs/telemetria.tsv`
-- `V2D-T2` — Redigir o `README.md` espelho (13 seções) — [Opus] — **done** *(2026-08-05)*
-  - Entregue: `README.md` na raiz (novo, **527 linhas**, dentro da faixa 400-550 do plano §1), as
+- `V2D-T2` — Redigir o `README.md` espelho — [Opus] — **in review** *(2ª rodada, 2026-08-05)*
+  - **2ª rodada (2026-08-05):** `README.md` reescrito como **proxy das implementações** — **752
+    linhas**, **15 seções**, cada uma com `> Fonte da verdade:` apontando arquivo existente;
+    `check-readme.ps1` passa a localizar "Anatomia do kit" e "Os guardrails" **pelo título**, não
+    pelo número. Verificação: `pwsh -File .claude/checks/check-readme.ps1` → `OK - 9 agente(s),
+    9 skill(s), 14 guardrail(s), versão '2.0.0', 15 seção(ões)`, exit 0. Decisões de redação e
+    ambiguidades: plano §`Achados da execução` → `T2 — 2026-08-05 (2ª rodada)`. Nada commitado.
+  - Consumo: ver `docs/telemetria.tsv` (linha `V2D-T2r2`)
+  - **1ª rodada (2026-08-05, premissa caída — documento de adoção):**
+    Entregue: `README.md` na raiz (novo, **527 linhas**, dentro da faixa 400-550 do plano §1), as
     13 seções na ordem prescrita, cada uma abrindo com `> Fonte da verdade:` — os 12 arquivos
     citados no README existem (conferidos um a um por `test -e`).
   - Premissas re-sondadas antes de escrever (padrão herdado da `V2D-T1`): `README.md` **não**
@@ -338,11 +375,29 @@ com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não 
     causa declarada pelo executor é obstáculo técnico não previsto (gotcha do `[string[]] Mandatory`
     com elemento `""`, isolado por bisseção) + bloqueio de sandbox em `Copy-Item -Recurse` sobre
     `.claude/skills/*` ao montar a fixture, que forçou reconstrução diretório a diretório.
-- `V2D-T4` — Fechar a versão `2.0.0` (CHANGELOG + tag) e **distribuir** — [Sonnet] — backlog *(acumula `P-0722` Fase 4)*
-- `V2D-T5` — Teste de aceitação: 6 perguntas respondidas só pelo README — [dono] — backlog
+- `V2D-T4` — Fechar a versão `2.0.0` (CHANGELOG + tag) e **distribuir** — [Sonnet] — **done** *(2026-08-05; `git push` e migração do `PantonicVideo` fora de escopo por decisão do dono)*
+- `V2D-T5` — Teste de aceitação do README pelo dono (utilidade + fidelidade) — [dono] — **reprovada** *(2026-08-05)*: a leitura do dono achou desvio de identidade na **fonte da verdade**, não no espelho — ver `P-0730` §0/§2
+- `V2D-T6` — Fechar a `2.0.1` do espelho reescrito (`DD-7`) — [Sonnet] — **cancelled** *(absorvida pela `V2I-T13`, que fecha `2.1.0` — `DR-6`)*
 
 **Notas de execução:** a `V2D-T1` expôs um efeito de plano longo — o Estágio 4 foi planejado em
 2026-07-29 e afirma estados de repositório que os Estágios 3A/3B mudaram. Antes de delegar
 `V2D-T2`/`V2D-T3`, verificar por sonda barata as afirmações de estado dos dossiês (ex.: "`README.md`
 hoje inexistente", contagens de agentes/skills do §7, número de guardrails do §8) — o padrão é o
 mesmo da `V2D-T1`, não um caso isolado.
+
+### Estágio 5 — `P-0730-v2-identidade` [backlog — 0/15; aberto em 2026-08-05]
+
+**Objetivo:** corrigir a identidade declarada do framework na fonte da verdade e elevar o README a
+documento canônico. O PantonicApp é **agnóstico a tecnologia e plataforma**, atua nos níveis de
+**arquitetura** e de **projeto**, sobre **clean architecture + DDD**, estendidos pelo **infracore**
+(hoje ainda preso ao PySide6) e por **plugins — um plugin responde por um caso de uso**. PySide6/
+MVVM/desktop passam a ser **perfil do case de referência**, não premissa (`DR-1`/`DR-2`).
+
+**Dossiê completo (11 desvios medidos, decisões `DR-1..DR-7`, tarefas `V2I-T1..T15`, riscos e
+reconciliação):** `docs/plans/P-0730-v2-identidade.md`. Sequência linear `T1→T15`; `T3..T7` e `T11`
+são doutrina/redação canônica [Opus], `T8..T10` e `T13..T14` propagação e medida [Sonnet], `T12` é
+o aceite do dono e **bloqueia** o fechamento da versão.
+
+**Fecha em `2.1.0`** (`DR-6`, absorve a `V2D-T6`). A abstração do infracore (`DR-5`) **não** entra
+neste estágio: nasce como `P-0731`, autorado já fechado pela `V2I-T15`, com o achado da `V2I-T14`
+como insumo. Achado do planejamento: `TK-05`.
