@@ -345,7 +345,7 @@ Veredito (`guardrails-check`): não aplicável na parte de código — mudança 
 (`kit_check.ps1`, item 5 da `guardrails-check`) é o gate aplicável aqui e passou nos dois modos —
 mesmo raciocínio da `V2I-T8`.
 
-Consumo: (preenchido pelo orquestrador via notificação)
+Consumo: ver docs/telemetria.tsv (linha `V2I-T9`)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
