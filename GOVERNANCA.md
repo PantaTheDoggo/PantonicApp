@@ -486,6 +486,10 @@ estáveis" dos agentes — nunca os artefatos do próprio subtree (eles vêm do 
 versionamento e atualização: §10. Provado ponta a ponta em `PantonicVideo`
 (`P-0725-governanca-hub-unico.md` Fase 4/5).
 
+**Porta de entrada humana do framework:** `README.md` (raiz do hub) é o espelho canônico — um
+humano decide sobre o framework lendo só esse arquivo, sem abrir nenhum outro artefato; guarda de
+drift em `.claude/checks/check-readme.ps1` (`P-0729-v2-documentacao.md`, Estágio 4).
+
 **Enforcement do kit é executável.** `.claude/README.md` é artefato **derivado** do conteúdo real
 de `.claude/` (agentes, skills, checks) e **não se edita à mão** — regenerá-lo a partir do disco é
 a única forma legítima de mudá-lo. O comando canônico do enforcement é

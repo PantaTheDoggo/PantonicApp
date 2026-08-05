@@ -162,6 +162,48 @@ zero referência a decisão interna sem explicar o que ela significa para quem c
 
 ## Achados da execução
 
+### T4 — 2026-08-05
+
+**Entregue:** `VERSION` e `.claude/KIT_VERSION` em `2.0.0`; `CHANGELOG.md` §2.0.0 consolidando os
+quatro estágios (Estágio 1 benchmarking, Estágio 2 confronto, Estágio 3A doutrina herdada do
+`P-0722`, Estágio 3B mudanças adotadas, Estágio 4 README/guarda), com a justificativa do MAJOR (o
+piso de regressão muda de formato — contagem/percentual para lista versionada — e exige ação do
+consumidor, além de guardrails vinculantes novas e artefatos novos do kit) e a nota de migração ao
+`PantonicVideo`; `[Não lançado]` esvaziada (o único item, correção de escopo da `proximo-passo`
+passo 5, absorvido em `2.0.0`); `GOVERNANCA.md` §9 com uma linha apontando `README.md` como porta
+de entrada humana do framework.
+
+**Ramo único (kit-exclude × artefato novo), resolvido — houve colisão:** a entrada
+`skills/guardrails-check` do `kit-exclude.txt` do `PantonicVideo` (protege o perfil local daquele
+projeto, `P-0721` Fase 1a) ocupa o mesmo caminho onde a `T3` deste estágio acabou de adicionar o
+item 8 (guarda do espelho, linha `Espelho:` no veredito). Consequência registrada na nota de
+migração do `CHANGELOG.md` §2.0.0: `sync-kit.ps1` vai respeitar o override e **não** propagar o
+item 8 para aquele projeto. As outras duas entradas (`agents/pantonic-executor`,
+`skills/integrar-poc`) não colidem com nenhum artefato novo da iniciativa.
+
+**Divergência do consumidor, reportada ao dono (nenhuma ação aplicada, `GOVERNANCA.md` §10a):** o
+`PantonicVideo` (`d:\workspaces\PantonicApp\..\PantonicVideo`) está em estado **pré-kit** — sem
+`.claude/KIT_VERSION` (nem `.claude/kit/KIT_VERSION`), cópia manual de `.claude/`, não via
+`git subtree`/`sync-kit.ps1`. A distância relevante para aquele projeto não é o incremento
+`1.5.0` → `2.0.0`; é o kit inteiro publicado até `2.0.0` contra uma cópia manual desatualizada,
+incluindo os 6 guardrails do Estágio 3A/3B e o contrato novo do piso de regressão
+(`tests/piso_comportamental.txt`, ainda não criado lá). Repositório do consumidor **não tocado**
+nesta tarefa — confirmado por `git -C d:/workspaces/PantonicVideo status --short` ao final, sem
+nenhuma mudança atribuível a esta execução.
+
+**Verificação (guardrails-check, itens tocados):** `check-readme.ps1` → `check-readme: OK - 9
+agente(s), 9 skill(s), 14 guardrail(s), versão '2.0.0', 13 seção(ões) com Fonte da verdade válida`,
+exit 0. `kit_check.ps1 -Mode validate` → `OK` (paridade `VERSION == KIT_VERSION`, `2.0.0`).
+`kit_check.ps1 -Mode check-drift` → `OK`. `dead_code.py` → `OK - 0 achado(s)`. `ratchet_piso.py` →
+`OK - nenhum piso declarado`.
+
+**Sequência de commits e tag** (estado inicial já tinha os entregáveis T1-T3 pendentes de
+commit): commit 1 = README/guarda/DOC_MAP/diário/telemetria (`V2D-T1..T3`); commit 2 = fechamento
+`2.0.0` (`VERSION`, `KIT_VERSION`, `CHANGELOG`, `GOVERNANCA` §9, diário, este bloco); tag anotada
+`kit-v2.0.0` sobre o commit 2, mesmo padrão de `kit-v1.5.0`. Nada pushado.
+
+Consumo: (preenchido pelo orquestrador via notificação)
+
 ### T3 — 2026-08-05
 
 **Entregue:** `.claude/checks/check-readme.ps1` (novo), com `-Root` no mesmo desenho de

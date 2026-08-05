@@ -8,8 +8,35 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 `GOVERNANCA.md` §10 — MAJOR exige ação do consumidor, MINOR adiciona artefato/guardrail
 compatível, PATCH corrige redação.
 
-## [Não lançado]
+## 2.0.0 — 2026-08-05
 
+Fecha a iniciativa `PANTONIC-V2` (`SPRINT-PANTONICV2`, quatro estágios encadeados: benchmarking →
+confronto → melhoria → documentação). Consolida o que os MINORs `1.1.0`..`1.5.0` (abaixo) já foram
+entregando estágio a estágio, mais o fechamento do Estágio 4:
+
+- **Estágio 1 — Benchmarking** (`P-0729-v2-benchmarking`, T1..T9): 21 frameworks públicos
+  avaliados no esquema fixo de 16 dimensões; instituiu o versionamento do próprio kit (`1.1.0`) e o
+  agente coletor `pantonic-benchmarker` (`1.2.0`).
+- **Estágio 2 — Confronto** (`P-0729-v2-confronto`, T1..T6): diagnóstico do framework contra a
+  prática pública registrada; autoria do plano de candidatos do Estágio 3B.
+- **Estágio 3A — Doutrina herdada do `P-0722`** (`P-0729-v2-melhoria`, T1..T5): `GOVERNANCA.md` §7
+  de 8 para 13 guardrails (`G-DEADCODE`, `G-PLANFIDELITY`, `G-PREMISE`, `G-PLANREADY`,
+  `G-EXECREADY`), gate de publicação de plano, contador sequencial de planos, skill
+  `modelo-por-fase`, `G-PLANFIDELITY`/`G-EXECREADY` promovidas ao `CLAUDE.md` global, check
+  executável de código morto (`dead_code.py`) — ver `1.3.0`/`1.4.0`.
+- **Estágio 3B — Mudanças adotadas do benchmarking** (`P-0729-v2-melhoria-candidatos`, T1..T19,
+  `T12` partida em `T12a`/`T12b`): checagem MAJOR/MINOR de versão do kit, piso de regressão
+  versionado (`tests/piso_comportamental.txt`) com ratchet executável, mapa de residência da
+  doutrina e repatriação do que pertencia ao kit, série de telemetria append-only
+  (`docs/telemetria.tsv`) escrita pelos dois pontos de fechamento — ver `1.5.0`.
+- **Estágio 4 — README espelho e fechamento** (`P-0729-v2-documentacao`, T1..T4 nesta versão; `T5`,
+  teste de aceitação pelo dono, permanece aberta como próxima tarefa): `docs/DOC_MAP.md` verificado
+  e reancorado (`T1`); `README.md` canônico na raiz — 527 linhas, 13 seções, cada uma com
+  `> Fonte da verdade:` declarada, incluindo as afirmações desfavoráveis exigidas em §10/§13 (`T2`);
+  guarda executável `.claude/checks/check-readme.ps1` (5 checagens mecânicas: agentes, skills,
+  versão, contagem de guardrails, fonte-da-verdade por seção) pendurado como item 8 do
+  `guardrails-check` (`T3`); este fechamento de versão (`T4`).
+- `GOVERNANCA.md` §9 passa a apontar `README.md` como a porta de entrada humana do framework.
 - Skill `proximo-passo`, passo 5: a regra "decisão pendente é o próximo passo" ganha o escopo do
   que **conta** como ponto do dono — só **arquitetura** e **requisitos**. Evento intrínseco do
   projeto (desbloqueio de plano cuja dependência registrada foi satisfeita, flip de status, avanço
@@ -17,6 +44,45 @@ compatível, PATCH corrige redação.
   sem consultar. Correção do dono em 2026-08-05, sobre um caso medido: o Estágio 4 da
   `SPRINT-PANTONICV2` foi apresentado como decisão quando a própria heurística do passo 2 já
   mandava destravá-lo. É o erro simétrico ao de decidir arquitetura sozinho (Regra 8 global).
+
+**Justificativa do MAJOR.** A superfície que o consumidor consome mudou: guardrails vinculantes
+novos (§7 foi de 8 para 14 itens ao longo da iniciativa, incluindo o contrato novo do piso de
+regressão que exige `tests/piso_comportamental.txt` no lado do consumidor), artefatos novos no kit
+(`dead_code.py`, `ratchet_piso.py`, `check-readme.ps1`, skill `modelo-por-fase`) e o `README.md`
+canônico como novo ponto de decisão. Não é só acréscimo compatível — o piso de regressão *muda de
+formato* (contagem/percentual → lista versionada), o que exige uma ação do consumidor para não
+quebrar a checagem. MAJOR é o número correto, não o placar da iniciativa.
+
+**Nota de migração — `PantonicVideo` (único consumidor real hoje).** Medido nesta tarefa,
+2026-08-05: o `PantonicVideo` está em estado **pré-kit** — não tem `.claude/KIT_VERSION` nenhum
+(nem `.claude/kit/KIT_VERSION` nem `.claude/KIT_VERSION`), sua cópia de `.claude/` é manual, não
+via `git subtree`/`sync-kit.ps1`. Por isso o diff relevante para aquele projeto não é incremental
+(`1.5.0` → `2.0.0`); é a distância entre uma cópia manual antiga e o kit inteiro publicado até
+`2.0.0`. Ao passar a consumir via `sync-kit.ps1`:
+  - **Guardrails novas que passam a valer:** os 6 guardrails do Estágio 3A/3B (`G-DEADCODE`,
+    `G-PLANFIDELITY`, `G-PREMISE`, `G-PLANREADY`, `G-EXECREADY`, allowlist de subcomandos
+    destrutivos) e o contrato novo do piso de regressão — o `PantonicVideo` precisa criar
+    `tests/piso_comportamental.txt` (`V2K-T14`) para o gate `ratchet_piso.py` (item 7 do
+    `guardrails-check`) não falhar por ausência de arquivo.
+  - **Colisão com `.claude/kit-exclude.txt`, encontrada nesta tarefa:** a entrada
+    `skills/guardrails-check` (declarada para proteger o perfil local do `PantonicVideo`,
+    `P-0721` Fase 1a) protege exatamente o caminho onde o hub acabou de adicionar o item 8 (guarda
+    do espelho, `check-readme.ps1`) na `T3` deste estágio. Consequência: o `sync-kit.ps1`, ao
+    respeitar o override, **não vai propagar** o item 8 nem a linha `Espelho:` do veredito para o
+    `PantonicVideo` — quem mantém o `skills/guardrails-check` local daquele projeto precisa
+    incorporar essa checagem manualmente se quiser o mesmo guarda lá (esse `README.md`/
+    `check-readme.ps1` não fazem parte do subtree em si — só a entrada de `guardrails-check` que os
+    invoca é o ponto de colisão). As outras duas entradas do `kit-exclude.txt`
+    (`agents/pantonic-executor`, `skills/integrar-poc`) não colidem com nenhum artefato novo desta
+    iniciativa.
+  - Esta nota é só **relato**; nenhuma alteração foi feita em `d:\workspaces\PantonicVideo`
+    (`GOVERNANCA.md` §10a) — a divergência de versão daquele projeto é reportada ao dono, não
+    aplicada por agente.
+
+## [Não lançado]
+
+_(vazia — o único item pendente, correção de escopo da skill `proximo-passo` passo 5, foi
+absorvido na seção `2.0.0` acima nesta mesma sessão de fechamento.)_
 
 ## 1.5.0 — 2026-08-04
 

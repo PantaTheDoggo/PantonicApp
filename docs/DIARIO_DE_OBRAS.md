@@ -17,7 +17,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
-| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5; 3/5) | in progress | `docs/plans/P-0729-v2-documentacao.md` |
+| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5; 4/5) | in progress | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -34,11 +34,14 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2D-T4` — fechar a versão `2.0.0` (CHANGELOG + tag) e distribuir —
-[Sonnet], no **Estágio 4** (`P-0729-V2D`, 3/5). A `V2D-T3` fechou em 2026-08-05 com o guarda
-executável `.claude/checks/check-readme.ps1` — as 5 checagens mecânicas do README espelho
-(agentes/skills, versão, guardrails, `Fonte da verdade`) conferidas contra o disco e a doutrina,
-exit 0 no estado corrente e exit 1 nomeado numa fixture sintética de drift.
+**Próxima tarefa da sprint:** `V2D-T5` — teste de aceitação do espelho (as 6 perguntas de decisão
+respondidas só pela leitura do `README.md`) — **[dono]**, no **Estágio 4** (`P-0729-V2D`, 4/5). A
+`V2D-T4` fechou em 2026-08-05: `VERSION`/`.claude/KIT_VERSION` em `2.0.0`, `CHANGELOG.md` §2.0.0
+consolidando a iniciativa inteira com a justificativa do MAJOR e a nota de migração ao
+`PantonicVideo`, `GOVERNANCA.md` §9 apontando o README como porta de entrada humana, guarda do T3
+em exit 0 sobre o estado `2.0.0`, tag anotada `kit-v2.0.0` criada localmente (sem push). Divergência
+do consumidor reportada, nenhuma alteração feita em `d:\workspaces\PantonicVideo` — ver
+`## Achados da execução` de `docs/plans/P-0729-v2-documentacao.md`.
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
