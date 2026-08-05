@@ -18,7 +18,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T4 entregues; `T5` reprovada, `T6` cancelada por absorção) | superseded | substituído por `docs/plans/P-0730-v2-identidade.md` |
-| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (1/15) | in progress | `docs/plans/P-0730-v2-identidade.md` |
+| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (2/15) | in progress | `docs/plans/P-0730-v2-identidade.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -36,9 +36,8 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2I-T2` — varredura de contaminação do benchmarking —
-**[Sonnet]**, no **Estágio 5** (`P-0730-V2I`, 1/15). Dossiê em
-`docs/plans/P-0730-v2-identidade.md` `### T2`.
+**Próxima tarefa da sprint:** `V2I-T3` — [Opus], no **Estágio 5** (`P-0730-V2I`, 2/15). Dossiê em
+`docs/plans/P-0730-v2-identidade.md` `### T3`.
 
 **Estágio 5 aberto em 2026-08-05 — o Estágio 4 foi reprovado no aceite e está `superseded`.** A
 `V2D-T5` cumpriu seu papel: a leitura do README pelo dono detectou que a identidade declarada do
@@ -70,7 +69,25 @@ drift, `DOC_MAP.md`, diário e telemetria, mais o plano novo `docs/plans/P-0730-
 Detalhe do veredito em `## Achados da execução` §`T5/T6 — 2026-08-05` de
 `docs/plans/P-0729-v2-documentacao.md`.
 
-Consumo: (preenchido pelo orquestrador via notificação)
+Consumo: ver docs/telemetria.tsv (linha `V2I-T1`)
+
+A `V2I-T2` fechou em 2026-08-05 — **resultado negativo medido.** Varredura de contaminação do
+benchmarking: `Grep -i "desktop|pyside|mvvm|\bqt\b"` (+ "não se aplica"/"aplicação local") nas
+seções `## 2. Dimensão por dimensão` e `## 4. Descartes justificados` de
+`docs/benchmark/RELATORIO_CONSOLIDADO.md`, e nas linhas `REJEITAR`/`adiar` de
+`docs/benchmark/CANDIDATOS.md`. Nenhuma ocorrência satisfaz o critério de achado (rejeição/descarte
+que **invoca** desktop/PySide6/MVVM/Qt como razão). Classificação das ocorrências: `D1 — Identidade
+e escopo` (linhas 113-126) descreve a identidade desktop/PySide6/MVVM do Pantonic, mas o veredito é
+**MANTER**, não descarte — irrelevante ao critério. O único `REJEITAR` de seção 2 (`D2 —
+Vitalidade`, linha 130) é motivado por bus factor/SLA, sem menção a stack. A frase-guarda da seção 4
+(linha 683, "conflito com as premissas Pantonic: desktop-first, custo por turno, ...") é a moldura
+geral da seção; nenhum dos 8 descartes individuais (linhas 686-747) cita desktop/PySide6/MVVM/Qt
+como motivo específico. Em `CANDIDATOS.md`, os dois `adiar` (`C-14`, depois revertido para `adotar`
+pelo dono; `C-15`) têm motivo de custo/risco de infraestrutura, não de stack; o único `REJEITAR`
+mencionado (`D2`, linha 439) repete o motivo de bus factor/SLA. Nenhum tíquete `TK-` aberto.
+Nenhuma perda material identificada — a premissa errada não descartou candidato algum em silêncio.
+
+Consumo: ver docs/telemetria.tsv (linha `V2I-T2`)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
