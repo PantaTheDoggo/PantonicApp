@@ -233,7 +233,7 @@ Resíduos deixados de propósito: `GOVERNANCA.md` §6 item 2 ("MVVM + clean arch
 intocado (`V2I-T10`); §7 não foi tocada (`V2I-T7`); o README continua declarando o eixo invertido
 (`V2I-T11`).
 
-Consumo: (preenchido pelo orquestrador via notificação)
+Consumo: ver docs/telemetria.tsv (linha `V2I-T6`)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
