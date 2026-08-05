@@ -17,7 +17,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
-| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
+| P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | backlog | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -34,10 +34,10 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** Bloco C do Estágio 3B fechou com a `V2K-T19` em 2026-08-04
-(`docs/telemetria.tsv` como fonte única da série, bump `1.5.0`) — Estágio 3B completo (20/20). A
-próxima tarefa da iniciativa é o Estágio 4 (`P-0729-V2D`), hoje `blocked` por dependência do
-Estágio 3 inteiro.
+**Próxima tarefa da sprint:** `V2D-T1` — `docs/DOC_MAP.md` do hub — [Sonnet], primeira tarefa do
+**Estágio 4** (`P-0729-V2D`), desbloqueado em 2026-08-05 pelo fechamento do Estágio 3 inteiro (3A
+5/5, 3B 20/20 — a `V2K-T19` fechou o Bloco C com `docs/telemetria.tsv` como fonte única da série e
+bump `1.5.0`).
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
@@ -248,12 +248,12 @@ com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não 
     antes do commit; a medida `<usage>` daquele agente é piso, não o custo real da tarefa.
   - Consumo: ver `docs/telemetria.tsv`
 
-### Estágio 4 — `P-0729-v2-documentacao` [blocked — depende do Estágio 3 inteiro done]
+### Estágio 4 — `P-0729-v2-documentacao` [backlog — desbloqueado em 2026-08-05: a razão registrada ("depende do Estágio 3 inteiro `done`") deixou de valer com 3A 5/5 + 3B 20/20]
 
-- `V2D-T1` — `docs/DOC_MAP.md` do hub — [Sonnet] — blocked
-- `V2D-T2` — Redigir o `README.md` espelho (13 seções) — [Opus] — blocked
-- `V2D-T3` — Guarda executável de drift do espelho — [Sonnet] — blocked
-- `V2D-T4` — Fechar a versão `2.0.0` (CHANGELOG + tag) e **distribuir** — [Sonnet] — blocked *(acumula `P-0722` Fase 4)*
-- `V2D-T5` — Teste de aceitação: 6 perguntas respondidas só pelo README — [dono] — blocked
+- `V2D-T1` — `docs/DOC_MAP.md` do hub — [Sonnet] — backlog
+- `V2D-T2` — Redigir o `README.md` espelho (13 seções) — [Opus] — backlog
+- `V2D-T3` — Guarda executável de drift do espelho — [Sonnet] — backlog
+- `V2D-T4` — Fechar a versão `2.0.0` (CHANGELOG + tag) e **distribuir** — [Sonnet] — backlog *(acumula `P-0722` Fase 4)*
+- `V2D-T5` — Teste de aceitação: 6 perguntas respondidas só pelo README — [dono] — backlog
 
 **Notas de execução:** *(vazio — nenhuma tarefa iniciada)*

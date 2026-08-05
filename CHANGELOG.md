@@ -8,6 +8,16 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 `GOVERNANCA.md` §10 — MAJOR exige ação do consumidor, MINOR adiciona artefato/guardrail
 compatível, PATCH corrige redação.
 
+## [Não lançado]
+
+- Skill `proximo-passo`, passo 5: a regra "decisão pendente é o próximo passo" ganha o escopo do
+  que **conta** como ponto do dono — só **arquitetura** e **requisitos**. Evento intrínseco do
+  projeto (desbloqueio de plano cuja dependência registrada foi satisfeita, flip de status, avanço
+  para a fase seguinte de uma iniciativa já aprovada) é consequência mecânica e o agente executa,
+  sem consultar. Correção do dono em 2026-08-05, sobre um caso medido: o Estágio 4 da
+  `SPRINT-PANTONICV2` foi apresentado como decisão quando a própria heurística do passo 2 já
+  mandava destravá-lo. É o erro simétrico ao de decidir arquitetura sozinho (Regra 8 global).
+
 ## 1.5.0 — 2026-08-04
 
 - `V2K-T13`: checagem de versão do kit passa a distinguir MAJOR de MINOR/PATCH — divergência em

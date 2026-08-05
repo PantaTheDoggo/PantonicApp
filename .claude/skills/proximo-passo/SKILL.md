@@ -130,6 +130,14 @@ aqui.
    **recomendação** com o motivo. Decidir depois de a tarefa dependente já ter começado é
    retrabalho — é o mesmo modo de falha do gate de publicação (G-PLANREADY item 5).
 
+   **O que conta como ponto do dono** (regra do dono, 2026-08-05): só decisão de **arquitetura**
+   ou de **requisitos**. **Evento intrínseco do projeto não se pergunta — executa-se:** desbloqueio
+   de plano cuja dependência registrada foi satisfeita (passo 2, item 1 da heurística), flip de
+   status, avanço para a fase seguinte de uma iniciativa já aprovada e demais consequências
+   mecânicas de um plano vigente são evolução natural, já decidida quando o plano foi aprovado.
+   Escalar evento intrínseco gasta turno do dono e devolve a ele trabalho que o plano já resolveu —
+   é o erro simétrico ao de decidir arquitetura sozinho (Regra 8, `~/.claude/CLAUDE.md`).
+
    **Telemetria pós-notificação:** a série é do orquestrador. O dossiê instrui o executor a
    gravar no diário o placeholder literal "Consumo: (preenchido pelo orquestrador via
    notificação)" — ou a não editar o diário (orquestrador escreve o bullet inteiro). Preencher =
