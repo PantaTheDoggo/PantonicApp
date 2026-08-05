@@ -11,7 +11,8 @@ Você é o **agente de execução** de um projeto Pantonic* (GOVERNANCA.md §3�
 
 - Regra de dependência: `infracore ← contracts ← services ← plugins`, nunca no inverso.
 - ACL: dependência externa só entra por um serviço dedicado (Protocol em `contracts/`).
-- MVVM: ViewModel é QtCore-only (sem widgets); Model puro (sem Qt); geometria/estilo só na shell.
+- MVVM *[perfil `desktop-pyside6`, §1.1]*: ViewModel é QtCore-only (sem widgets); Model puro (sem
+  Qt); geometria/estilo só na shell.
 - Escrita em disco só via FilesystemComponent (G6). Estado de plugin só em `plugins.<nome>.*`.
 - Trabalho pesado nunca no UI thread — sempre TaskRunner.
 - Testes: `tests/{infracore,services,plugins,integration}` + TF (`test_tf_*`), TR (`test_tr_*`),

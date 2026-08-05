@@ -26,8 +26,9 @@ via `PathsService`; trabalho pesado via `TaskRunner`.
 Dissecar a POC nas camadas:
 - **Lógica validada** → `plugins/<nome>/adhoc/` — preservada, **não refatorar, não reescrever**.
 - **Entidades/VOs que cruzam camadas** → `contracts/domain/` (mirror discipline).
-- **UI** → View no plugin + `view_model.py` (ViewModel QtCore-only; egress de I/O pelo
-  ViewModel → serviços).
+- **UI** *[perfil `desktop-pyside6`, §1.1]* → View no plugin + `view_model.py` (ViewModel
+  QtCore-only; egress de I/O pelo ViewModel → serviços). Projeto de outro perfil usa a camada de
+  apresentação equivalente ao seu perfil.
 - **`plugin.py`** → orquestrador fino com `on_load / on_enable / on_disable / on_unload`,
   roteando entre adhoc e plataforma via sinais/estado. Estado só em `plugins.<nome>.*`;
   comunicação com outros plugins só via state keys.
@@ -36,7 +37,8 @@ Dissecar a POC nas camadas:
 Gerar `manifest.json`: `name` (snake_case), `version`, `contracts_min_version`, `author`,
 `description` (≤500 chars), `entry_point` (`modulo:Classe`), `required_services`
 (`[{name, min_version}]`), `inputs`, `outputs`, `permissions`. Imports do plugin restritos à
-allowlist (`contracts.*`, `PySide6.*`, `pathlib`, `typing`) — validado por AST no load.
+allowlist (`contracts.*`, `pathlib`, `typing`, mais `PySide6.*` *[perfil `desktop-pyside6`,
+§1.1]*) — validado por AST no load.
 
 ### 5. Conformance e teste do conjunto
 TF do plugin + suíte de conformance completa + piso de regressão (skill `guardrails-check`).

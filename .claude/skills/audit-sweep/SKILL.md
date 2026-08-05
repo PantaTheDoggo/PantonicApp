@@ -27,8 +27,11 @@ julgamento.
    |---|---|
    | ARCH-reverse | `from services|from plugins|import services|import plugins` dentro de `infracore/` e `contracts/`; `from plugins` dentro de `services/` |
    | ARCH-acl | imports de libs externas (do requirements) fora de `services/` — uma lib por grep |
-   | ARCH-mvvm | `QtWidgets` em `**/view_model*.py` e `**/model*.py`; `PySide6|Qt` em `contracts/` |
+   | ARCH-mvvm *[perfil `desktop-pyside6`, §1.1]* | `QtWidgets` em `**/view_model*.py` e `**/model*.py`; `PySide6|Qt` em `contracts/` |
    | ARCH-mirror | `^class (\w+)` na codebase → nomes de classe duplicados entre camadas |
+   | DDD-pureza | imports de infraestrutura/framework (`import sqlite3|import requests|import httpx|import logging|from pathlib import Path|from PySide6|import PySide6`) dentro de `contracts/domain/` |
+   | DDD-vo | `^@dataclass$` (decorador sem `frozen=True`) dentro de `contracts/domain/` — candidato a VO mutável |
+   | DDD-usecase | `^class \w+UseCase` agrupado por diretório de `plugins/*/` — plugin com 0 ou mais de 1 caso de uso diverge de `D9` (plugin = caso de uso) |
    | PYSIDE | `QtWidgets` fora de views/shell; `QThread|QRunnable|QThreadPool` fora do task_runner; `time.sleep` em código de UI; `setGeometry`; `lambda` em `.connect(`; `def eventFilter` |
    | CLEANCODE | módulos > 300 linhas (contagem por arquivo); nº de `def ` por módulo (top 15); `except Exception` |
    | FORA-DA-CAIXA | `_v2|_new|_fixed|legacy|old_|workaround|fallback|special`; comentários `hack|tempor|compatibilidade|não mexer|nao mexer`; flags booleanas em assinaturas (`: bool =`) |

@@ -18,7 +18,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T4 entregues; `T5` reprovada, `T6` cancelada por absorção) | superseded | substituído por `docs/plans/P-0730-v2-identidade.md` |
-| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (6/16) | in progress | `docs/plans/P-0730-v2-identidade.md` |
+| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (9/17) | in progress | `docs/plans/P-0730-v2-identidade.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -37,8 +37,8 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2I-T7` — [Opus], no **Estágio 5** (`P-0730-V2I`, 6/16). Dossiê em
-`docs/plans/P-0730-v2-identidade.md` `### T7`.
+**Próxima tarefa da sprint:** `V2I-T10` — [Sonnet], no **Estágio 5** (`P-0730-V2I`, 9/17). Dossiê em
+`docs/plans/P-0730-v2-identidade.md` `### T10`.
 
 **Estágio 5 aberto em 2026-08-05 — o Estágio 4 foi reprovado no aceite e está `superseded`.** A
 `V2D-T5` cumpriu seu papel: a leitura do README pelo dono detectou que a identidade declarada do
@@ -234,6 +234,118 @@ intocado (`V2I-T10`); §7 não foi tocada (`V2I-T7`); o README continua declaran
 (`V2I-T11`).
 
 Consumo: ver docs/telemetria.tsv (linha `V2I-T6`)
+
+A `V2I-T7` fechou em 2026-08-05 — a `DR-7` virou **guardrail** antes de o README ser reescrito, para
+que a `V2I-T11` já nasça sob a regra. `GOVERNANCA.md` §7 passa a ter **15 itens**: o item 15,
+**G-README — o README é documento canônico, não artefato acessório**, declara o `README.md` da raiz
+como o **contrato entre o framework e o cliente** e fixa três deveres (doutrina refletida no README
+na mesma sprint; nenhum bump de versão sem aceite explícito do dono; o guarda executável cobre
+estrutura, não sentido — o aceite do dono é o único teste de sentido, logo gate e não cortesia).
+§8 passa a listar o `README.md` como documento canônico na tabela de documentação mínima (primeira
+linha). §9 absorveu a resolução da colisão: o status do README é agora guardrail, e o parágrafo novo
+"Colisão registrada, ainda aberta" declara que o preâmbulo vigente (`README.md:5-11`, *"não existe
+para convencer ninguém a adotar o framework"*) contradiz o §9, que a `DR-7` resolveu a favor do §9, e
+que a correção é dívida da `V2I-T11` — até lá, prevalece o §9.
+
+Verificação: `pwsh .claude\checks\check-readme.ps1` → **exit 1**, um problema: *"Divergência no
+número de guardrails: a seção 'Os guardrails' do README tem 14 linha(s) vs GOVERNANCA.md §7 com 15
+item(ns)"*. **Reprovação prevista pelo dossiê da tarefa** (14 → 15) e deliberadamente não
+"consertada" no README: `README.md` está fora dos Arquivos-alvo da `V2I-T7`, e a contagem é fechada
+pela `V2I-T11`. Nenhum outro problema apontado pelo guarda.
+
+Dívidas registradas em `docs/plans/P-0730-v2-identidade.md` `### T11` (sem ampliar o escopo dela):
+(a) a contradição de `README.md:5-11`; (b) a contagem de guardrails do README §10. Nenhum arquivo
+fora dos Arquivos-alvo foi tocado — em especial, a skill `handover` **não** foi editada: o gate de
+aceite é texto do guardrail em `GOVERNANCA.md`, e materializá-lo na skill é trabalho de outra tarefa.
+
+Consumo: ver docs/telemetria.tsv
+
+**Revisão da `DR-7` no mesmo dia — `DR-8` (decisão do dono, 2026-08-05).** A pergunta do dono sobre
+o que o `check-readme.ps1` de fato protege expôs que o item 15, como entregue pela `V2I-T7`,
+prometia enforcement inexistente ("gate de aceite na skill `handover`"). Decisão: a revisão do
+README é **atividade de encerramento de sprint, autorada pelo planejador como tarefa nomeada** — não
+gate mecânico, que "gera artefatos confusos e muito especializados no diretório". O
+`check-readme.ps1` **permanece**, rebaixado de critério de pronto a **instrumento do planejador**
+(detecta drift estrutural; não julga sentido). Aplicado de imediato: `GOVERNANCA.md` §7 item 15
+reescrito (deveres 2 e 3 + *Enforcement*), `DR-8` registrada em `P-0730-v2-identidade.md` §1,
+**`T16` nova** (materializa o dever 2 na matriz de responsabilidades §3 + agente planejador, com a
+skill `handover` e o script explicitamente fora de escopo), risco e ordem de execução atualizados
+(`T16` entra entre `T11` e `T12`). Plano passa a 17 tarefas.
+
+A `V2I-T8` fechou em 2026-08-05 — o kit para de cobrar MVVM/Qt de projeto que não é desktop
+(`DR-2`). Cada cobrança incondicional nos 5 arquivos-alvo ganhou o marcador de perfil já
+materializado pela `T3`/`T4` — *[perfil `desktop-pyside6`, §1.1]* — reusando `GOVERNANCA.md` §1.1
+como fonte única, sem redefinir o perfil localmente:
+- `.claude/skills/guardrails-check/SKILL.md`: `description` do frontmatter (:3, "MVVM"), item 6 do
+  checklist executável (:43, categoria "override de virtual Qt" do `dead_code.py`) e o item do
+  checklist de review (:69, "ViewModel continua QtCore-only?...") — 3 pontos marcados.
+- `.claude/agents/pantonic-executor.md` (:14) — bullet "MVVM" dos Fatos estáveis marcado.
+- `.claude/agents/pantonic-auditor-arch.md`: item 32-33 ("plugins importam só
+  contracts/PySide6/stdlib") reescrito para isolar PySide6 como acréscimo do perfil; item 9 do
+  checklist (:56, "Fronteira MVVM") marcado.
+- `.claude/skills/audit-sweep/SKILL.md` (:30) — linha `ARCH-mvvm` da tabela de greps marcada; o
+  bloco `PYSIDE` (:32) foi deixado intocado de propósito — é a bateria do `pantonic-auditor-pyside6`,
+  auditor que o próprio perfil `desktop-pyside6` ativa (mesma lógica da cerca de escopo abaixo).
+- `.claude/skills/integrar-poc/SKILL.md`: passo 3 "UI" (:29-30, View/`view_model.py`) marcado com
+  frase adicional para o perfil equivalente de outro projeto; allowlist do manifest (:39, incluindo
+  `PySide6.*`) reescrita para isolar o item do perfil.
+
+`.claude/README.md` regenerado via `kit_check.ps1 -Mode generate` (a `description` do
+`guardrails-check` mudou de texto). Verificação: `pwsh .claude/checks/kit_check.ps1 -Mode validate`
+→ `kit_check: OK - 9 agente(s) e 9 skill(s) validados; VERSION == KIT_VERSION ('2.0.0').`;
+`-Mode check-drift` → `kit_check: check-drift OK - .claude/README.md == regenerado (9 agente(s), 9
+skill(s)).` — ambos exit 0, igual à baseline do dossiê. Grep final `Qt|MVVM|PySide6|ViewModel` nos
+5 arquivos-alvo → toda ocorrência agora convive com o marcador de perfil na mesma linha/bullet;
+nenhuma cobrança incondicional sobrevive.
+
+Cerca de escopo respeitada: `.claude/agents/pantonic-auditor-pyside6.md` não foi tocado (é o
+auditor que o perfil ativa, cobrança lá é correta por desenho). `.claude/agents/pantonic-fora-da-
+caixa.md:23` ("mas o `plugin.py`/ViewModel em volta, sim") foi avaliado e **não** julgado cobrança
+incondicional — é escopo de redesenho do plugin.py/ViewModel existente, não uma exigência de
+MVVM/Qt independente de perfil; nenhum tíquete aberto. `.claude/PERFIL` não foi criado no hub (não é
+o alvo — o hub não é aplicação).
+Veredito (`guardrails-check`): não aplicável na parte de código — mudança é doutrina/texto puro nos
+5 arquivos do kit (skills/agents), sem símbolo de produção, sem suíte pytest a rodar, sem piso a
+mover; camadas/ACL `n/a`; nenhum teste deletado; gate do kit (`kit_check.ps1`, itens 5 e 8 da
+`guardrails-check`) é o gate aplicável aqui e passou nos dois modos.
+
+Consumo: ver docs/telemetria.tsv (linha `V2I-T8`)
+
+A `V2I-T9` fechou em 2026-08-05 — o `pantonic-auditor-arch` passa a auditar CA **e** DDD
+(`DR-4`/`D9`), sem precisar de skill externa ao kit:
+- `.claude/agents/pantonic-auditor-arch.md`: `description` do frontmatter passa a citar DDD; a
+  tabela de capítulos (cap. 4) ganha "invariantes, VOs imutáveis, linguagem ubíqua"; o checklist
+  de verificações vai de 12 para 15 itens — três novas: **4. Invariante de agregado** (regra que
+  atravessa entidades do agregado só se aplica dentro da raiz), **9. Caso de uso por plugin**
+  (`D9`/`GOVERNANCA.md` §5 — plugin mapeia exatamente um caso de uso) e **13. Linguagem ubíqua**
+  (termos consistentes entre PRD e identificadores do código); item 2 (pureza de domínio)
+  reforçado com o enquadramento mecânico "sem import de infraestrutura". O passo 1 do Método
+  (fase mecânica) e o passo 3 (o que exige leitura) foram renumerados para os novos índices.
+- `.claude/skills/audit-sweep/SKILL.md`: 3 blocos novos na bateria — `DDD-pureza` (imports de
+  infra/framework dentro de `contracts/domain/`), `DDD-vo` (`@dataclass` sem `frozen=True` em
+  `contracts/domain/`) e `DDD-usecase` (`class \w+UseCase` por diretório de `plugins/*/`,
+  detecta plugin sem caso de uso ou com mais de um).
+- **Escopo respeitado:** verificações agnósticas a stack, sem condicional de perfil (ao contrário
+  da `T8`) — DDD vale para todo projeto Pantonic*, não só `desktop-pyside6`.
+
+Dry-run dos 3 greps novos no hub (`PantonicApp` não tem `contracts/domain/` nem `plugins/` — é o
+hub de governança, não uma aplicação): os três padrões rodaram sem erro de sintaxe/regex
+(confirmado sem `lookaround`, incompatível com o ripgrep do ambiente) e retornaram vazio —
+resultado esperado e aceitável (nota operacional da tarefa), não colapso.
+
+Verificação: `pwsh .claude/checks/kit_check.ps1 -Mode generate` → `README.md regenerado: 9
+agente(s), 9 skill(s)`; `-Mode check-drift` → `check-drift OK` — exit 0 nos dois modos
+(`description` do `pantonic-auditor-arch` mudou, README derivado precisava regenerar).
+`check-readme.ps1` **não** rodado de propósito — divergência de contagem de guardrails já
+prevista e aceita até a `V2I-T11` (nota operacional da tarefa, herdada da `V2I-T7`).
+
+Veredito (`guardrails-check`): não aplicável na parte de código — mudança é doutrina/texto puro em
+2 arquivos do kit (agent + skill), sem símbolo de produção, sem suíte pytest a rodar (hub não tem
+`tests/`), sem piso a mover; camadas/ACL `n/a`; nenhum teste deletado; gate do kit
+(`kit_check.ps1`, item 5 da `guardrails-check`) é o gate aplicável aqui e passou nos dois modos —
+mesmo raciocínio da `V2I-T8`.
+
+Consumo: (preenchido pelo orquestrador via notificação)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,

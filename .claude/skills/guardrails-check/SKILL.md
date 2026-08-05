@@ -1,6 +1,6 @@
 ---
 name: guardrails-check
-description: Verifica os guardrails de clean architecture de um projeto Pantonic* antes de marcar uma tarefa como concluída — regra de camadas, ACL, MVVM, egress G6, namespace de estado, conformance e piso de regressão. Usar ao final de toda tarefa de execução ou em auditoria.
+description: Verifica os guardrails de clean architecture de um projeto Pantonic* antes de marcar uma tarefa como concluída — regra de camadas, ACL, MVVM *[perfil `desktop-pyside6`, §1.1]*, egress G6, namespace de estado, conformance e piso de regressão. Usar ao final de toda tarefa de execução ou em auditoria.
 ---
 
 # guardrails-check — gate de qualidade Pantonic*
@@ -40,7 +40,7 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    obrigatório. Cobertura por teste não confere "vivo" (`GOVERNANCA.md` §7, G-DEADCODE) — um
    achado é órfão real (remover no mesmo commit) ou dispatch dinâmico ainda não coberto pelas
    categorias auto-vivas do script (Pydantic validator, entry class de `manifest.json`, override
-   de virtual Qt), nunca allowlist de conveniência.
+   de virtual Qt *[perfil `desktop-pyside6`, §1.1]*), nunca allowlist de conveniência.
 7. **Ratchet do piso comportamental (`.claude/checks/ratchet_piso.py`) — bloqueante, mesmo
    padrão dos itens 5 e 6** — `python .claude/checks/ratchet_piso.py` (usa o `--root` default do
    próprio projeto; consumidor versiona `tests/piso_comportamental.txt`, uma linha por
@@ -66,8 +66,8 @@ Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sum
 
 - [ ] Import novo respeita a direção `infracore ← contracts ← services ← plugins`?
 - [ ] Dependência externa nova está confinada a UM serviço com Protocol em `contracts/`?
-- [ ] ViewModel continua QtCore-only? Model continua sem Qt? Geometria/estilo/`QScreen` só na
-      shell (`infracore/ui_shell/`)?
+- [ ] *[perfil `desktop-pyside6`, §1.1]* ViewModel continua QtCore-only? Model continua sem Qt?
+      Geometria/estilo/`QScreen` só na shell (`infracore/ui_shell/`)?
 - [ ] Nenhum trabalho pesado no UI thread (tudo via `task_runner_service`)?
 - [ ] Sinais usados só para observação (sem polling)? Payload é Pydantic `extra="forbid"`?
 - [ ] Tipo que cruza camadas foi espelhado verbatim em `contracts/` (mirror discipline)?

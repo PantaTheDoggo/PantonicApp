@@ -537,6 +537,21 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    diário. *Enforcement:* `permissions.deny` em `.claude/settings.json` (`Bash(git push
    --force*)`, `Bash(git push -f*)`, `Bash(git reset --hard*)`, `Bash(git branch -D*)`,
    `Bash(git clean -fdx*)`, `Bash(gh repo delete*)`).
+15. **G-README — o README é documento canônico, não artefato acessório** (`DR-7`, 2026-08-05) — o
+   `README.md` da raiz do hub é o **contrato entre o framework e o cliente**, não artefato
+   acessório nem derivado: um framework corretamente construído é **rejeitado** por um README
+   desatualizado, confuso ou equivocado. Três deveres: **(1)** nenhuma mudança de doutrina fecha sem
+   o README refletindo-a **na mesma sprint**; **(2)** toda sprint encerra com uma **atividade
+   própria de revisão do README**, autorada pelo **planejador** como tarefa nomeada do plano — é aí
+   que o aceite do dono é colhido, e nenhum bump de versão fecha sem ele; **(3)** o guarda executável
+   cobre **estrutura, não sentido** — ele é **instrumento do planejador dentro dessa atividade**,
+   nunca critério de pronto automático, porque o único teste de sentido que existe é a leitura do
+   dono. Evidência de campo: os desvios de identidade que abriram o Estágio 5 foram identificados
+   pelo dono **lendo o README**, não os artefatos. *Enforcement:* a tarefa de encerramento de sprint
+   (dever 2), que roda `pwsh .claude/checks/check-readme.ps1` para a paridade estrutural e registra o
+   veredito do dono. **Não é gate mecânico** (`DR-8`, 2026-08-05 — decisão do dono): pendurar o
+   aceite como bloqueio automático na skill `handover` foi **rejeitado**, por gerar artefato
+   especializado e confuso no lugar de uma responsabilidade clara de quem planeja.
 
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra
@@ -609,6 +624,7 @@ registrar a rodada não é** — revisão sem registro não aconteceu.
 
 | Documento | Papel |
 |---|---|
+| `README.md` (raiz) | **Documento canônico** — o contrato entre o framework e o cliente, e a porta de entrada humana (§7 item 15, §9). Não é derivado nem acessório |
 | `PRD.md`, `ARCHITECTURE.md`, `SPEC.md`, `SPRINT_PLAN.md` | Os quatro artefatos do §6 |
 | Diário de obras | Kanban + arquivo de planejamentos (§4.2) |
 | Doc de estado vigente (AS-IS) | Baseline, decisões (`D-*`), piso de regressão |
@@ -633,7 +649,15 @@ versionamento e atualização: §10. Provado ponta a ponta em `PantonicVideo`
 
 **Porta de entrada humana do framework:** `README.md` (raiz do hub) é o espelho canônico — um
 humano decide sobre o framework lendo só esse arquivo, sem abrir nenhum outro artefato; guarda de
-drift em `.claude/checks/check-readme.ps1` (`P-0729-v2-documentacao.md`, Estágio 4).
+drift em `.claude/checks/check-readme.ps1` (`P-0729-v2-documentacao.md`, Estágio 4). Desde a `DR-7`
+(2026-08-05) esse status é **guardrail** — §7 item 15 (G-README): o README é o **contrato entre o
+framework e o cliente**, não artefato acessório nem derivado.
+
+**Colisão registrada, ainda aberta.** O preâmbulo vigente do README (`README.md:5-11`) declara o
+oposto desta seção — *"não existe para convencer ninguém a adotar o framework: quem lê já o usa"*.
+A `DR-7` resolve a colisão **a favor desta seção e do G-README**; remover a frase e reescrever o
+preâmbulo é dívida da `V2I-T11` (`docs/plans/P-0730-v2-identidade.md` `### T11`). Até lá, em caso
+de conflito prevalece este parágrafo, não o preâmbulo.
 
 **Enforcement do kit é executável.** `.claude/README.md` é artefato **derivado** do conteúdo real
 de `.claude/` (agentes, skills, checks) e **não se edita à mão** — regenerá-lo a partir do disco é

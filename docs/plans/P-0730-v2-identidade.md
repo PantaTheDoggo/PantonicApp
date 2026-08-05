@@ -57,6 +57,7 @@ O que este estágio corrige é a **camada de identidade/arquitetura** e o **stat
 | `DR-5` | Abstração do infracore | **Estágio próprio, posterior.** Não entra aqui; nasce como plano `P-0731`, autorado já fechado pela `T15` deste plano (G-PLANREADY item 5 — nunca um plano com vão). |
 | `DR-6` | Versão | A correção sai como **`2.1.0`** (doutrina muda ⇒ MINOR). A `V2D-T6` (`2.0.1` do espelho) é **cancelada por absorção** na `T13`. |
 | `DR-7` | Status do README | O README é **documento canônico do projeto — o contrato entre o framework e o cliente**, não artefato acessório nem derivado. Um framework corretamente construído é rejeitado por um README desatualizado, confuso ou equivocado. Consequência: guardrail novo **G-README** (`T7`) e aceite do dono como **gate de release** (`T12` antes da `T13`). |
+| `DR-8` | Forma do enforcement do G-README | **(2026-08-05, decisão do dono, revisa a `DR-7`.)** A revisão do README é **atividade de encerramento de sprint, autorada pelo planejador como tarefa nomeada** — **não** gate mecânico. Pendurar o aceite como bloqueio automático na skill `handover` foi **rejeitado**: gera artefato especializado e confuso no lugar de uma responsabilidade clara de papel. O `check-readme.ps1` **permanece**, rebaixado de critério de pronto a **instrumento do planejador** dentro dessa atividade (ele detecta drift estrutural; nunca julga sentido). Consequência: `T16` nova; §7 item 15 reescrito na mesma data. |
 
 **Nota de fundamentação da `DR-7`:** o próprio corpus já se contradiz hoje. `GOVERNANCA.md` §9 diz
 *"um humano decide sobre o framework lendo só esse arquivo"*, enquanto o README §preâmbulo diz *"não
@@ -229,6 +230,13 @@ Uma tarefa por contexto (`GOVERNANCA.md` §4.3). Modelo declarado por tarefa (§
 - **Conteúdo:** identidade agnóstica e os dois níveis; CA+DDD como base e infracore+plugins como a
   extensão pantônica; perfis; a camada de projeto com a doutrina da qualidade como motor; o que está
   medido × o que está declarado não auditado (`T14`).
+- **Dívidas registradas pela `V2I-T7` (2026-08-05), a fechar aqui — sem ampliar o escopo acima:**
+  (a) **contradição de `README.md:5-11`** — o preâmbulo declara *"não existe para convencer ninguém
+  a adotar o framework: quem lê já o usa"*, o oposto de `GOVERNANCA.md` §9 e do novo G-README (§7
+  item 15); a `DR-7` resolveu a colisão a favor do §9, e o §9 passou a registrar a dívida
+  explicitamente ("Colisão registrada, ainda aberta"); a frase já está nos Arquivos-alvo desta
+  tarefa. (b) **contagem de guardrails** — o README §10 declara 14 e §7 passou a ter 15 desde a
+  `V2I-T7`; a divergência era prevista e já está nos Arquivos-alvo (§10 → 15).
 - **Verificação:** `pwsh .claude/checks/check-readme.ps1` → exit 0.
 - **Pronto quando:** exit 0 **e** nenhuma afirmação de stack fixo/desktop sobrevive fora de "perfil"
   ou "case de referência".
@@ -275,6 +283,26 @@ Uma tarefa por contexto (`GOVERNANCA.md` §4.3). Modelo declarado por tarefa (§
 - **Verificação:** o plano novo satisfaz as 5 condições de G-PLANREADY.
 - **Pronto quando:** `P-0731` registrado e fechado, sem questão owner-gated pendente.
 
+### T16 — Materializar o dever 2 do G-README como responsabilidade do planejador [Opus]
+- **Objetivo:** `DR-8` — o dever 2 do G-README (§7 item 15) hoje só existe como texto. Dar-lhe
+  residência **como responsabilidade de papel**, não como gate mecânico.
+- **Origem:** achado da `V2I-T7` (o item 15 prometia enforcement inexistente) + decisão do dono de
+  2026-08-05 rejeitando o gate automático na skill `handover`.
+- **Arquivos-alvo (normativo):** `GOVERNANCA.md` §3 (matriz de responsabilidades — linha canônica do
+  planejador); `.claude/agents/pantonic-planner.md` (instrução operacional, **ponteiro** para §3, sem
+  duplicata plena — padrão `DR-A` de `docs/RESIDENCIA_DOUTRINA.md`).
+- **Fora de escopo, explicitamente:** a skill `handover` **não se toca** — o gate mecânico foi
+  rejeitado pelo dono; e `check-readme.ps1` **não se apaga** (decisão do dono: mantido como
+  instrumento do planejador).
+- **Conteúdo:** ao encerrar qualquer sprint, o planejador autora uma **tarefa nomeada de revisão do
+  README** no plano da sprint, cujo dossiê inclui rodar `pwsh .claude/checks/check-readme.ps1` para a
+  paridade estrutural e colher o **veredito do dono** sobre o sentido. Sprint sem essa tarefa é plano
+  incompleto (G-PLANREADY).
+- **Verificação:** Grep pela linha do planejador em `GOVERNANCA.md` §3 e pelo ponteiro no arquivo do
+  agente; `pwsh .claude/checks/kit_check.ps1 -Mode validate` e `-Mode check-drift` → exit 0.
+- **Pronto quando:** a responsabilidade está declarada em um só lugar canônico, o agente planejador
+  a referencia, e nenhum gate automático foi criado.
+
 ## 4. Riscos
 
 | Risco | Mitigação |
@@ -283,7 +311,7 @@ Uma tarefa por contexto (`GOVERNANCA.md` §4.3). Modelo declarado por tarefa (§
 | "Agnóstico" virar vago — perder a precisão que hoje torna as regras executáveis | Perfis nomeados (`DR-2`): o núcleo é agnóstico, o perfil é específico e continua verificável por teste |
 | Afirmar aderência a CA+DDD sem medida (o defeito que G-PREMISE proíbe) | `T5` declara não auditado; `T14` mede; nenhuma das duas afirma sem a outra |
 | Quebrar os 5 consumidores ao trocar guardrail incondicional por condicional | `T8` fixa `desktop-pyside6` como perfil default na ausência de declaração |
-| README voltar a divergir em silêncio | G-README (`T7`) + aceite como gate de release (`T12` bloqueia `T13`) |
+| README voltar a divergir em silêncio | G-README (`T7`) + revisão do README como tarefa de encerramento de sprint autorada pelo planejador (`DR-8`, `T16`); nesta sprint, a `T12` (aceite do dono) é essa tarefa e bloqueia a `T13` |
 
 ## 5. Ordem de execução
 
@@ -291,6 +319,10 @@ Uma tarefa por contexto (`GOVERNANCA.md` §4.3). Modelo declarado por tarefa (§
 `T13` → `T14` → `T15`. Linear, sem ramo condicional. `T3`..`T7` são doutrina (Opus, um contexto
 cada); `T8`..`T10` e `T13`..`T14` são propagação/medida (Sonnet); `T11` é redação canônica (Opus);
 `T12` é do dono.
+
+**`T16` (aberta em 2026-08-05 pela `DR-8`)** entra **antes da `T12`** — o dever que ela materializa
+é o que dá à `T12` o caráter de tarefa de encerramento, e não de gate. Ordem efetiva a partir da
+`T8`: `T8` → `T9` → `T10` → `T11` → `T16` → `T12` (dono) → `T13` → `T14` → `T15`.
 
 ## 6. Reconciliação com o Estágio 4 (obrigatória)
 
