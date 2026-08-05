@@ -16,7 +16,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2B | Estágio 1 — benchmarking de 21 frameworks públicos (T1..T9) | done | `docs/plans/P-0729-v2-benchmarking.md` |
 | P-0729-V2C | Estágio 2 — confronto, diagnóstico e autoria do plano 3B (T1..T6) | done | `docs/plans/P-0729-v2-confronto.md` |
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
-| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 19/20) | in progress | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
+| P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T5) | blocked | `docs/plans/P-0729-v2-documentacao.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
@@ -34,9 +34,10 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2K-T19` — Escrita da série nos dois pontos de fechamento + bump
-`1.4.0` — [Sonnet] *(`C-13`b)*. A `V2K-T18` fechou em 2026-08-04 (`docs/telemetria.tsv` criado com
-39 linhas de semente re-derivadas) — bullets de fechamento abaixo.
+**Próxima tarefa da sprint:** Bloco C do Estágio 3B fechou com a `V2K-T19` em 2026-08-04
+(`docs/telemetria.tsv` como fonte única da série, bump `1.5.0`) — Estágio 3B completo (20/20). A
+próxima tarefa da iniciativa é o Estágio 4 (`P-0729-V2D`), hoje `blocked` por dependência do
+Estágio 3 inteiro.
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
@@ -60,7 +61,7 @@ ratificado, e só então entrou no inbox e neste índice: 19 tarefas, 14 candida
 questão pendente. O ciclo do gate está fechado na prática antes de virar doutrina em `V2M-T1`
 (G-PLANREADY item 5).
 
-### Estágio 3B — `P-0729-v2-melhoria-candidatos` [in progress — 18/20 (Bloco A fechado, Bloco C em andamento; `T12` partida em `T12a`/`T12b` ⇒ 20 tarefas), nascido fechado em 2026-07-29 pela `V2C-T6`]
+### Estágio 3B — `P-0729-v2-melhoria-candidatos` [done — 20/20 (Blocos A e C fechados; `T12` partida em `T12a`/`T12b` ⇒ 20 tarefas), nascido fechado em 2026-07-29 pela `V2C-T6`]
 
 19 tarefas, cada uma com o `C-NN` de origem. Ordem normativa em `docs/plans/P-0729-v2-melhoria-candidatos.md`
 §2 — **Bloco A** (`T1..T4`) antes do Estágio 3A; **Bloco C** (`T5..T19`) depois dele.
@@ -68,10 +69,11 @@ questão pendente. O ciclo do gate está fechado na prática antes de virar dout
 **Bloco A (`T1..T4`) e Bloco C até `T12b`: `done`, 13/20.** Os bullets de fechamento (resultado,
 verificação, veredito e `Consumo:` de cada tarefa) estão em `docs/DIARIO_HISTORICO.md`, seção
 "Estágio 3B: contexto encerrado e tarefas `T1..T12b`". **`V2K-T13`, `V2K-T14`, `V2K-T15`,
-`V2K-T16` e `V2K-T17`: `done`, 18/20** — bullets de fechamento abaixo, ainda não condensados
-(diário a ~130 linhas, longe do gatilho de 500).
+`V2K-T16`, `V2K-T17`, `V2K-T18` e `V2K-T19`: `done`, 20/20 — Bloco C fechado** em 2026-08-04
+com o bump `1.5.0` + tag `kit-v1.5.0`; bullets de fechamento abaixo, ainda não condensados
+(diário a ~140 linhas, longe do gatilho de 500).
 
-**Bloco C — em aberto:**
+**Bloco C — fechado:**
 - `V2K-T13` — Compatibilidade por major kit × consumidor — [Sonnet] — **done** *(`C-14`; contíguo
   a `T11`/`T12` por DK-11)*
   - Mudou: `.claude/skills/checar-versao-kit/SKILL.md` (passo 3 extrai o componente MAJOR de cada
@@ -232,7 +234,19 @@ verificação, veredito e `Consumo:` de cada tarefa) estão em `docs/DIARIO_HIST
   - Fora de escopo respeitado: bullets `Consumo:` existentes no diário/histórico não foram
     reescritos como ponteiro (`V2K-T19`); `VERSION`/`.claude/KIT_VERSION`/tag não tocados.
   - Consumo: 34 tool uses, ~135k tokens, Sonnet, ~7min29s (medido pela notificação de conclusão).
-- `V2K-T19` — Escrita da série nos dois pontos de fechamento + bump `1.4.0` — [Sonnet] — backlog *(`C-13`b)*
+- `V2K-T19` — Escrita da série nos dois pontos de fechamento + bump `1.5.0` — [Sonnet] — **done** *(`C-13`b)*
+  - Mudou: `GOVERNANCA.md` §4.2 (2 bullets reescritos — telemetria aponta `docs/telemetria.tsv`,
+    fonte única da série); `handover`/`proximo-passo` SKILL.md (linha `Consumo:` vira ponteiro);
+    `docs/telemetria.tsv` (+1 linha, backfill `V2K-T18`); `CHANGELOG.md` (`[Não lançado]` fechado
+    como `1.5.0`, bullets `T13..T19` + nota de versão); `VERSION`/`.claude/KIT_VERSION` → `1.5.0`.
+  - Verificação (rodada pelo orquestrador, saída colada): `Import-Csv docs\telemetria.tsv` → **40**
+    linhas (39 + backfill da `T18`); `kit_check.ps1 -Mode validate` → `OK - 9 agente(s) e 9
+    skill(s) validados; VERSION == KIT_VERSION ('1.5.0')`, exit 0; `-Mode check-drift` → exit 0;
+    `ratchet_piso.py` → `OK - nenhum piso declarado`; `dead_code.py` → `OK - 0 achado(s)`.
+  - Ressalva de execução: o subagente delegado reportou parada sem edições, mas as edições estavam
+    no working tree e conferem com o dossiê verbatim — revisadas hunk a hunk pelo orquestrador
+    antes do commit; a medida `<usage>` daquele agente é piso, não o custo real da tarefa.
+  - Consumo: ver `docs/telemetria.tsv`
 
 ### Estágio 4 — `P-0729-v2-documentacao` [blocked — depende do Estágio 3 inteiro done]
 

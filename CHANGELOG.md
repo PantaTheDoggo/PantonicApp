@@ -8,8 +8,18 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 `GOVERNANCA.md` §10 — MAJOR exige ação do consumidor, MINOR adiciona artefato/guardrail
 compatível, PATCH corrige redação.
 
-## [Não lançado]
+## 1.5.0 — 2026-08-04
 
+- `V2K-T13`: checagem de versão do kit passa a distinguir MAJOR de MINOR/PATCH — divergência em
+  MAJOR é reportada como incompatível e para (sem perguntar se atualiza/posterga); divergência em
+  MINOR/PATCH mantém o comportamento anterior (`checar-versao-kit`, `GOVERNANCA.md` §10, `C-14`).
+- `V2K-T14`: piso de regressão deixa de ser contagem/percentual de testes e passa a ser lista
+  versionada de comportamentos trancados (`tests/piso_comportamental.txt`); remover um
+  comportamento é ato do dono no mesmo commit que remove o teste (`GOVERNANCA.md` §4.4, `C-11`a).
+- `V2K-T15`: `.claude/checks/ratchet_piso.py` (novo) materializa o ratchet do piso comportamental;
+  `guardrails-check` ganha item 7 bloqueante que o invoca (`C-11`b).
+- `V2K-T16`: `docs/RESIDENCIA_DOUTRINA.md` (novo) classifica os 36 itens do `~/.claude/CLAUDE.md`
+  global em `global`/`Pantonic`/`dividir`, ratificado pelo dono (`C-12`a).
 - `V2K-T17`: residência da doutrina do `~/.claude/CLAUDE.md` global corrigida — a disciplina de
   coleta condensada (git, listagens, arquivos grandes, comandos verbosos), o batching de chamadas
   independentes e a cadência de testes passam a viajar em `GOVERNANCA.md` §3/§4.4 (kit); a
@@ -17,6 +27,19 @@ compatível, PATCH corrige redação.
   O que era só duplicata (onboarding ATIVO/HISTÓRICO, DOC_MAP, fatos estáveis de agente, modelo
   por fase, orçamento de turnos) saiu do global, que mantém apenas o princípio condensado
   apontando para o kit.
+- `V2K-T18`: `docs/telemetria.tsv` (novo) — formato append-only da série de consumo (`data`,
+  `projeto`, `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte`), semeado com 39
+  linhas re-derivadas dos bullets `Consumo:` existentes no diário/histórico (`C-13`a).
+- `V2K-T19`: a série de telemetria passa a ser escrita pelos dois pontos de fechamento — a skill
+  `handover` e o passo 5 da skill `proximo-passo` apendem uma linha a `docs/telemetria.tsv`
+  (`fonte` ∈ `{usage, contado, nao_medido}`) e o diário passa a **apontar**
+  (`Consumo: ver docs/telemetria.tsv`) em vez de copiar o número; `GOVERNANCA.md` §4.2 declara o
+  TSV **fonte única** da série, com o registro qualitativo (estouro de teto, execução inline)
+  seguindo no bullet do diário ao lado do ponteiro (`C-13`b).
+- **Nota de versão.** O `DK-9` (`docs/plans/P-0729-v2-melhoria-candidatos.md` §5) reservava
+  `1.4.0` para este fechamento, mas essa versão já havia sido consumida pelo fechamento do Estágio
+  3A; o Bloco C fecha em `1.5.0` por decisão do dono (2026-08-04). Continuam sendo **dois** bumps
+  MINOR na iniciativa, como o `DK-9` previu — mudou só o número do segundo.
 
 ## 1.4.0 — 2026-07-30
 

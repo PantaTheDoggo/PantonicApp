@@ -28,11 +28,15 @@ invocada pelo usuário.
      sprint vive inteiramente em `docs/plans/P-*.md` (índice com linha única, sem heading no
      diário), o destino é uma seção do próprio plano — a célula do índice fica travada em
      status + ≤ ~1-2 frases + ponteiro. Registrar também
-     `Consumo: <N> tool uses, ~<X>k tokens, <modelo>, <duração>` — preenchido
-     pelo **orquestrador** a partir do bloco `<usage>` da notificação de conclusão do subagente
-     (dado medido), nunca por estimativa do próprio subagente no texto do handover (auto-relato
-     subestima o consumo real). Se este fluxo roda dentro do subagente antes de retornar, omitir
-     o número e deixar o orquestrador completá-lo ao processar a notificação.
+     `Consumo: ver docs/telemetria.tsv` — **ponteiro, nunca o número em prosa**. A
+     medida vai como uma linha nova em `docs/telemetria.tsv` (`data`, `projeto`, `tarefa`,
+     `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte`), apendada pelo **orquestrador** a
+     partir do bloco `<usage>` da notificação de conclusão do subagente (`fonte: usage`), nunca
+     por estimativa do próprio subagente no texto do handover (auto-relato subestima o consumo
+     real). Execução inline, sem bloco `<usage>` a ler, entra com `fonte: contado`; consumo
+     perdido com a sessão, com `fonte: nao_medido`. Se este fluxo roda dentro do subagente antes
+     de retornar, deixar o placeholder e o orquestrador escreve a linha da série ao processar a
+     notificação (`GOVERNANCA.md` §4.2).
    - **Dono do gatilho de condensação:** se o diário exceder ~500 linhas OU o bullet
      recém-escrito exceder ~10 linhas, rodar a operação Condensar (skill `diario-de-obras`) na
      mesma sessão — nota longa vale 1 leitura, ponteiro vale para sempre. O flip de status da

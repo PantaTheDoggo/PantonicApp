@@ -197,19 +197,22 @@ também como um kanban adaptado:
   entrega.
 - **Fechamento enxuto** — o diário de obras é o único registro canônico de uma tarefa; o relatório
   final ao orquestrador é ponteiro + deltas, nunca repete o que já está escrito aqui.
-- **Telemetria pela notificação, não pelo auto-relato** — a linha
-  `Consumo: <N> tool uses, ~<X>k tokens, <modelo>, <duração>` é escrita no diário pelo
-  **orquestrador**, lendo o bloco `<usage>` da notificação de conclusão do subagente (dado
-  medido) — nunca copiando a estimativa que o próprio subagente eventualmente escreve no texto do
-  handover (auto-relato subestima: caso medido registrou ~90k autorrelatado contra ~140k reais,
-  ~35% de subestimativa). Cria série histórica para detectar regressão de consumo por tarefa,
-  mesmo racional do piso de regressão de testes aplicado a custo. O executor grava o placeholder
-  literal `Consumo: (preenchido pelo orquestrador via notificação)` — nunca um número próprio.
-- **Fonte estruturada da série** — `docs/telemetria.tsv` (append-only, colunas `data`, `projeto`,
-  `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte`) é a fonte agregável da série de
-  consumo, sem depender de leitura humana da prosa `Consumo:` do diário/histórico. O bullet
-  `Consumo:` em prosa continua sendo o registro no diário/histórico (esta seção não muda isso); o
-  TSV é um espelho estruturado derivado da mesma medição.
+- **Telemetria pela notificação, não pelo auto-relato** — o consumo de uma tarefa é registrado
+  pelo **orquestrador** como uma linha em `docs/telemetria.tsv`, lendo o bloco `<usage>` da
+  notificação de conclusão do subagente (dado medido) — nunca copiando a estimativa que o próprio
+  subagente eventualmente escreve no texto do handover (auto-relato subestima: caso medido
+  registrou ~90k autorrelatado contra ~140k reais, ~35% de subestimativa). Cria série histórica
+  para detectar regressão de consumo por tarefa, mesmo racional do piso de regressão de testes
+  aplicado a custo. O executor grava no diário o placeholder literal
+  `Consumo: (preenchido pelo orquestrador via notificação)` — nunca um número próprio.
+- **Fonte única da série** — `docs/telemetria.tsv` (append-only, colunas `data`, `projeto`,
+  `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte` ∈ `{usage, contado,
+  nao_medido}`) é a **fonte da série de consumo**; o diário/histórico **aponta** para ela
+  (`Consumo: ver docs/telemetria.tsv`) em vez de copiar o número. Duplicar a medição em prosa
+  recriaria duas fontes que divergem à primeira edição. Registro qualitativo que não cabe em
+  coluna (estouro de teto, execução inline, ressalva sobre a medida) continua no bullet do diário,
+  ao lado do ponteiro — o que não se repete é o **número**. Bullets `Consumo:` anteriores à adoção
+  desta regra ficam como estão: são registro histórico, já espelhado na série.
 
 ### 4.3 Execução em contexto limpo
 

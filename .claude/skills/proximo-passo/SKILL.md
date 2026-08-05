@@ -130,13 +130,16 @@ aqui.
    **recomendação** com o motivo. Decidir depois de a tarefa dependente já ter começado é
    retrabalho — é o mesmo modo de falha do gate de publicação (G-PLANREADY item 5).
 
-   **Telemetria pós-notificação:** a linha `Consumo:` é do orquestrador. O dossiê instrui o
-   executor a gravar o placeholder literal "Consumo: (preenchido pelo orquestrador via
-   notificação)" — ou a não editar o diário (orquestrador escreve o bullet inteiro). Preencher
-   = Grep pelo placeholder → Read offset/limit da região → Edit; NUNCA Edit apoiado em Read
-   anterior à chamada `Agent` (o hiato de delegação invalida o rastreio). No pickup, 1 Grep
-   pelo texto-promessa: match de sessão anterior = telemetria vencida → substituir por "NÃO
-   MEDIDO — placeholder expirado", mantendo autoestimativa marcada como tal.
+   **Telemetria pós-notificação:** a série é do orquestrador. O dossiê instrui o executor a
+   gravar no diário o placeholder literal "Consumo: (preenchido pelo orquestrador via
+   notificação)" — ou a não editar o diário (orquestrador escreve o bullet inteiro). Preencher =
+   apender **uma linha** a `docs/telemetria.tsv` com o dado do bloco `<usage>` (`fonte: usage`;
+   inline sem `<usage>` = `contado`) e trocar o placeholder pelo ponteiro
+   "Consumo: ver docs/telemetria.tsv" — Grep pelo placeholder → Read offset/limit da região →
+   Edit; NUNCA Edit apoiado em Read anterior à chamada `Agent` (o hiato de delegação invalida o
+   rastreio). O número **não** é copiado para o diário (`GOVERNANCA.md` §4.2 — fonte única). No
+   pickup, 1 Grep pelo texto-promessa: match de sessão anterior = telemetria vencida → linha na
+   série com `fonte: nao_medido` e o diário apontando, mantendo autoestimativa marcada como tal.
    **Queda de subagente:** notificação de falha não traz `<usage>` → registrar "PARCIAL —
    trecho pré-queda não medido". Antes de re-delegar a frio: `git status --short` + Read do
    artefato-alvo + `SendMessage` ao MESMO agentId com "o que falta"; só re-delegar se não
