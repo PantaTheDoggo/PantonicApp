@@ -18,7 +18,7 @@ benchmarking → confronto → melhoria → documentação).
 | P-0729-V2M | Estágio 3A — doutrina herdada do P-0722 (T1..T5 completos, 5/5) | done | `docs/plans/P-0729-v2-melhoria.md` |
 | P-0729-V2K | Estágio 3B — mudanças adotadas do benchmarking (T1..T19, com `T12` partida em `T12a`/`T12b`; 20/20) | done | `docs/plans/P-0729-v2-melhoria-candidatos.md` |
 | P-0729-V2D | Estágio 4 — README espelho, fechamento 2.0.0 e distribuição (T1..T4 entregues; `T5` reprovada, `T6` cancelada por absorção) | superseded | substituído por `docs/plans/P-0730-v2-identidade.md` |
-| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (9/17) | in progress | `docs/plans/P-0730-v2-identidade.md` |
+| P-0730-V2I | Estágio 5 — identidade do framework: agnosticismo a stack/plataforma, CA+DDD, perfis e o README como contrato canônico (10/17) | in progress | `docs/plans/P-0730-v2-identidade.md` |
 | P-0722 | Guardrails de doutrina anti-saga (G-DEADCODE, G-PLANFIDELITY, G-PREMISE, G-PLANREADY, G-EXECREADY) | superseded | mesclado em `P-0729-v2-melhoria.md` §1 |
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
@@ -37,8 +37,8 @@ benchmarking → confronto → melhoria → documentação).
 o confronto apontar, e entregar um `README.md` a partir do qual um humano decida sobre o framework
 sem abrir nenhum outro arquivo — tudo sob controle de versão, fechando em `2.0.0`.
 
-**Próxima tarefa da sprint:** `V2I-T10` — [Sonnet], no **Estágio 5** (`P-0730-V2I`, 9/17). Dossiê em
-`docs/plans/P-0730-v2-identidade.md` `### T10`.
+**Próxima tarefa da sprint:** `V2I-T11` — [Opus], no **Estágio 5** (`P-0730-V2I`, 10/17). Dossiê em
+`docs/plans/P-0730-v2-identidade.md` `### T11`.
 
 **Estágio 5 aberto em 2026-08-05 — o Estágio 4 foi reprovado no aceite e está `superseded`.** A
 `V2D-T5` cumpriu seu papel: a leitura do README pelo dono detectou que a identidade declarada do
@@ -346,6 +346,52 @@ Veredito (`guardrails-check`): não aplicável na parte de código — mudança 
 mesmo raciocínio da `V2I-T8`.
 
 Consumo: ver docs/telemetria.tsv (linha `V2I-T9`)
+
+A `V2I-T10` fechou em 2026-08-05 — um projeto novo nasce sob a doutrina corrigida, sem presumir
+desktop em momento algum:
+- `GOVERNANCA.md` (§6, item 2, linha real 440 — o plano apontava `:297`, desatualizado por
+  edições anteriores do Estágio 5): o artefato *Architecture* deixa de ser "MVVM + clean
+  architecture" e passa a "clean architecture + DDD, com MVVM apenas no perfil `desktop-pyside6`
+  (§1.1)".
+- `.claude/skills/bootstrap-pantonic/SKILL.md`: a fase 2 (Architecture) ganhou o passo de
+  perguntar e registrar o **perfil** do projeto (`GOVERNANCA.md` §1.1) em `.claude/PERFIL` antes
+  de qualquer especialização de camada — perfil nomeado ou perfil novo descrito na doutrina, com
+  `desktop-pyside6` como padrão só na ausência de resposta, mas o arquivo sempre escrito (nunca
+  perfil implícito); o texto do modelo conceitual passou para clean architecture + DDD, com MVVM
+  condicionado ao perfil declarado; a fase 5 (estrutura inicial) ganhou a entrada `.claude/PERFIL`
+  na árvore; a seção de Aceitação ganhou o critério "perfil perguntado e registrado".
+- `.claude/README.md` regenerado via `kit_check.ps1 -Mode generate` (conferência de rotina —
+  `description` do `bootstrap-pantonic` não mudou, regeneração ficou idêntica à baseline).
+
+Verificação: `pwsh .claude/checks/kit_check.ps1 -Mode check-drift` → `check-drift OK - .claude/
+README.md == regenerado (9 agente(s), 9 skill(s))` — exit 0, igual à baseline do dossiê; `-Mode
+validate` → `VERSION == KIT_VERSION ('2.0.0')` também OK.
+
+Veredito (`guardrails-check`): não aplicável na parte de código — mudança é doutrina/texto puro em
+2 arquivos do kit (doc de governança + skill), sem símbolo de produção, sem suíte pytest a rodar
+(hub não tem `tests/`), sem piso a mover; camadas/ACL `n/a`; nenhum teste deletado; gate do kit
+(`kit_check.ps1`, item 5 da `guardrails-check`) é o gate aplicável aqui e passou nos dois modos —
+mesmo raciocínio da `V2I-T8`/`V2I-T9`.
+
+Fora de escopo respeitado: `MVVM + clean architecture` ainda aparece em `docs/DIARIO_DE_OBRAS.md`
+(citações históricas de fechamentos anteriores) e em `docs/plans/P-0730-v2-identidade.md` (texto
+do próprio dossiê da `T10`) — ambas citações de registro histórico, não doutrina viva; nenhum
+tíquete aberto.
+
+```
+Veredito — V2I-T10
+Suítes: n/a — mudança é doutrina/texto puro em 2 arquivos do kit (GOVERNANCA.md + skill), sem
+  símbolo de produção, sem suíte pytest a rodar (hub não tem tests/)
+Piso: ratchet_piso.py — OK, nenhum piso declarado
+Kit: kit_check -Mode validate / -Mode check-drift — exit 0 nos dois modos (9 agente(s), 9 skill(s),
+  VERSION == KIT_VERSION '2.0.0')
+Espelho: check-readme.ps1 — n/a (projeto sem esse script; check ligado ao README público, fora do
+  escopo desta tarefa, mesmo raciocínio da V2I-T9)
+Checklist de review: ok (mudança textual, sem import/camada/ViewModel/sinal/mirror tocado)
+dead_code.py: OK - 0 achado(s)
+```
+
+Consumo: (preenchido pelo orquestrador via notificação)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,

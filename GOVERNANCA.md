@@ -437,11 +437,12 @@ planejamento:
    concorrentes. Esse vocabulário é o mesmo que aparecerá em classes, campos, sinais, plugins e
    testes; termo novo que surja na execução volta ao PRD em vez de nascer só no código. Cada caso
    de uso listado aqui é candidato a **exatamente um plugin** (§5).
-2. **Architecture** — modelo conceitual da arquitetura com base em MVVM + clean architecture,
-   **partindo do core pantonico** ([ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md)) e
-   especializando as camadas baixas. Determina os limites de cada camada e as responsabilidades
-   de cada uma; **cada responsabilidade é mapeada aos casos de uso e requisitos do PRD**
-   (rastreabilidade Feature → UC/RF → responsabilidade).
+2. **Architecture** — modelo conceitual da arquitetura com base em **clean architecture + DDD**,
+   com **MVVM apenas no perfil `desktop-pyside6`** (§1.1), **partindo do core pantonico**
+   ([ARQUITETURA_PANTONICA.md](ARQUITETURA_PANTONICA.md)) e especializando as camadas baixas.
+   Determina os limites de cada camada e as responsabilidades de cada uma; **cada responsabilidade
+   é mapeada aos casos de uso e requisitos do PRD** (rastreabilidade Feature → UC/RF →
+   responsabilidade).
 3. **Spec** — especifica as classes Python que materializam as responsabilidades do Architecture:
    filesystem proposto, assinaturas das classes, docstrings, e técnicas de projeto que garantam o
    desacoplamento tecnológico (inversão de dependência, strategy, unit of work, etc.).

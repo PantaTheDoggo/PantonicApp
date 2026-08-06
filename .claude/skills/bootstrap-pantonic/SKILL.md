@@ -16,10 +16,18 @@ Coletar com o usuário: objetivos, casos de uso (UC-*), requisitos (RF-*/RNF-*),
 domínio, estruturas de dados e **linguagem ubíqua**. Sem PRD aprovado, nada avança.
 
 ### 2. Architecture (`docs/ARCHITECTURE.md`)
-Partir do core pantonico (não redesenhar infraestrutura): copiar o modelo de camadas, golden
-rules e catálogos da ARQUITETURA_PANTONICA e **especializar só** `contracts/domain/`, serviços
-de domínio e plugins. Cada responsabilidade de camada mapeada a UC/RF do PRD. Definir os
-limites: o que é [REPLICAR] e o que é [ESPECIALIZAR] neste projeto.
+Perguntar e registrar o **perfil** do projeto (`GOVERNANCA.md` §1.1) antes de especializar
+qualquer camada: perfil nomeado (`desktop-pyside6`, `container`, `web-servidor`, ou perfil novo
+descrito na doutrina antes de o projeto nascer) grava-se em `.claude/PERFIL` — uma linha, o
+identificador do perfil. Na ausência de resposta o padrão é `desktop-pyside6` (compatibilidade),
+mas o arquivo é escrito de qualquer forma, nunca deixado implícito.
+
+O modelo conceitual é **clean architecture + DDD**; MVVM entra **somente** se o perfil declarado
+for `desktop-pyside6` (§1.1) — projeto de outro perfil não herda ViewModel/View, usa a camada de
+apresentação equivalente ao seu perfil. Partir do core pantonico (não redesenhar infraestrutura):
+copiar o modelo de camadas, golden rules e catálogos da ARQUITETURA_PANTONICA e **especializar
+só** `contracts/domain/`, serviços de domínio e plugins. Cada responsabilidade de camada mapeada
+a UC/RF do PRD. Definir os limites: o que é [REPLICAR] e o que é [ESPECIALIZAR] neste projeto.
 
 ### 3. Spec (`docs/SPEC.md`)
 Materializar responsabilidades em classes Python: filesystem proposto, assinaturas, docstrings,
@@ -43,6 +51,8 @@ docs/plans/      P-NNNN-<slug>.md (planos completos) + _INBOX.md (append-only, d
                  paralelos, nunca escritos direto no diário (GOVERNANCA §4.2)
 infracore/  contracts/src/contracts/  services/  plugins/  tests/  tools/
 CLAUDE.md        ≤ 200 linhas, só regras que mudam comportamento
+.claude/PERFIL   perfil declarado do projeto (§1.1), uma linha — fora de .claude/kit/, o
+                 sync-kit não o toca
 .claude/agents/  copiar pantonic-planner, pantonic-executor, pantonic-scout do kit
 .claude/skills/  copiar diario-de-obras, proximo-passo, integrar-poc, guardrails-check, handover
 ```
@@ -50,6 +60,8 @@ CLAUDE.md        ≤ 200 linhas, só regras que mudam comportamento
 ## Aceitação
 
 - Os 4 artefatos existem, com rastreabilidade PRD → Architecture → Spec → Sprint Plan.
+- Perfil do projeto perguntado e registrado em `.claude/PERFIL` (`GOVERNANCA.md` §1.1); nenhum
+  artefato do bootstrap presume desktop antes dessa resposta.
 - Diário de obras criado com o primeiro sprint em `backlog`, diretiva de priorização vazia.
 - `docs/plans/_INBOX.md` criado vazio.
 - Docs separados ATIVO × HISTÓRICO; DOC_MAP planejado para quando um doc passar de 500 linhas.
