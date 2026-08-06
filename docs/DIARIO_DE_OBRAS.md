@@ -391,7 +391,7 @@ Checklist de review: ok (mudança textual, sem import/camada/ViewModel/sinal/mir
 dead_code.py: OK - 0 achado(s)
 ```
 
-Consumo: (preenchido pelo orquestrador via notificação)
+Consumo: ver docs/telemetria.tsv (linha `V2I-T10`)
 
 **Condensado em 2026-08-01 (2ª rodada).** O gate aberto pela `V2K-T12b` foi resolvido pelo dono
 antes desta tarefa: o contexto encerrado da sprint — ficha da `V2K-T12`, decisões já resolvidas,
