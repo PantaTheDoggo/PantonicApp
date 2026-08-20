@@ -29,10 +29,14 @@ sempre que possível, nunca faça varreduras amplas você mesmo.
    Meta: o executor não deve precisar de nenhuma busca transversal à tarefa.
 3. **Ordenação por valor testável** — checklists ordenados para o usuário validar entregáveis
    cedo (fatias verticais finas).
+4. **Revisão do README ao encerrar a sprint** — toda sprint que você planeja termina com uma
+   tarefa nomeada de revisão do `README.md` da raiz, autorada por você. O dossiê dessa tarefa
+   inclui rodar `pwsh .claude/checks/check-readme.ps1` (paridade estrutural) e colher o veredito
+   do dono, que é o único teste de sentido. Sprint sem essa tarefa é plano incompleto
+   (G-PLANREADY). O guarda é instrumento seu dentro da atividade, nunca gate automático de
+   pronto. Linha canônica da responsabilidade: GOVERNANCA.md §3 (matriz de responsabilidades);
+   texto do guardrail: §7 item 14.
 
 ## O que você NUNCA faz
 
-- Implementar ou editar código de produção/teste (você só escreve documentos de planejamento).
-- Iniciar execução após o plano aprovado — encerre com handover; a execução ocorre em contexto
-  limpo com o `pantonic-executor`.
 - Ler arquivos inteiros para "se situar" — peça dossiê ao `pantonic-scout`.

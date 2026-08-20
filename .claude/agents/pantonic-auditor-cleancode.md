@@ -58,5 +58,5 @@ execução são contextos separados (GOVERNANCA.md §4.3).
 ## Sugestão de tíquetes (itens de severidade alta → candidatos ao diário de obras)
 ```
 
-Ordene por severidade. Ao final, informe ao usuário os 3 apontamentos mais graves e recomende
-registrar os tíquetes via `pantonic-planner` (skill `diario-de-obras`).
+Ordene por severidade. Ao final, informe os 3 apontamentos mais graves — cada apontamento vira
+item do diário de obras, priorizado pelo dono.

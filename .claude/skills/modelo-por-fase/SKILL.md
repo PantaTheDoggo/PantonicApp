@@ -6,10 +6,10 @@ description: Gatilho operacional da regra "modelo por fase" (GOVERNANCA.md §3) 
 # modelo-por-fase — gatilho operacional do modelo por fase
 
 A **regra** mora em `GOVERNANCA.md` §3 (tabela de agentes/modelo/responsabilidade) e §3.1
-(residência e precedência da doutrina); o **enforcement automático** é o hook global
-`~/.claude/hooks/modelo_por_fase_userpromptsubmit.py` (UserPromptSubmit, fora deste repo,
-não versionado no kit). Esta skill é só o **gatilho manual** — não recopia a doutrina, aponta
-para ela. Em caso de dúvida sobre a regra em si, `GOVERNANCA.md` §3 é a fonte, não este arquivo.
+(residência e precedência da doutrina); o **enforcement automático** é o hook canônico
+`.claude/global/hooks/modelo_por_fase_userpromptsubmit.py` (UserPromptSubmit), projetado no ponto
+de carga `~/.claude/hooks/modelo_por_fase_userpromptsubmit.py`. Esta skill é só o **gatilho
+manual** — não recopia a doutrina, aponta para ela. Em caso de dúvida sobre a regra em si, `GOVERNANCA.md` §3 é a fonte, não este arquivo.
 
 **Fato técnico já medido, não reinvestigar:** nenhum agente troca o próprio modelo em tempo de
 execução — o schema de saída de hook não tem campo de modelo. Só o dono (`/model`) ou config
@@ -48,7 +48,7 @@ Se o modelo ativo **não bate** com a fase:
   não há inversão silenciosa possível: preferência genérica de memória não decide isso.
 - Se o modelo já bate com a fase, siga sem ruído — o gate não é anúncio a cada turno.
 
-## Convenção de anúncio (Regra 5, `~/.claude/CLAUDE.md`)
+## Convenção de anúncio (Regra 5, `.claude/global/CLAUDE.md`)
 
 Depois de uma troca de modelo efetivada (`<local-command-stdout>` de "Set model to X" no
 histórico), a **primeira resposta seguinte** abre com:

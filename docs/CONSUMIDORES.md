@@ -8,6 +8,10 @@ sync efetivo (`kit_check.ps1 -Mode consumers`, `V2K-T12b`) — editá-las à mã
 recria o defeito do `.claude/README.md` (registro que mente em silêncio). A
 coluna `Consumidor` é a única entrada mantida à mão.
 
+Com a versão congelada em `0.0.0` (`GOVERNANCA.md` §10), a coluna `Versão instalada` carrega o
+mesmo `0.0.0` para todos os consumidores e **não distingue deriva** — a deriva entre hub e
+consumidor passa a ser detectada por `kit_check.ps1 -Mode check-drift` rodado no consumidor.
+
 Hoje, **0/6 consumidores têm `.claude/kit/`** — nenhum foi instalado por
 subtree ainda, então todas as 6 linhas abaixo permanecerem semeadas é o
 resultado esperado, não falha.

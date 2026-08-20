@@ -8,6 +8,86 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 `GOVERNANCA.md` §10 — MAJOR exige ação do consumidor, MINOR adiciona artefato/guardrail
 compatível, PATCH corrige redação.
 
+A versão está congelada em `0.0.0` (`DE-7`) até decisão de publicar. Enquanto durar o
+congelamento, toda mudança canônica é registrada sob `## [Não lançado]`, a única seção viva. As
+seções numeradas abaixo (`1.0.0`..`2.0.0`) são o histórico de desenvolvimento pré-lançamento,
+correspondem às tags `kit-v1.0.0`..`kit-v2.0.0` já publicadas e permanecem como registro — não são
+reescritas nem revogadas.
+
+## [Não lançado]
+
+- O vocabulário de `status` do kanban ganha residência única em
+  `.claude/skills/diario-de-obras/SKILL.md` (`## Status — residência única`), com sete estados:
+  `triage`, `ready`, `blocked`, `in-progress`, `review`, `done`, `cancelled`. `backlog` deixa de ser
+  status e designa só o conjunto dos itens elegíveis; `in progress` e `in review` passam a
+  `in-progress` e `review`; `superseded` fica restrito a plano e iniciativa, e a tarefa tornada
+  obsoleta é `cancelled`. O `README.md` §7 espelha a lista e aponta para a residência, sem recopiar a
+  máquina de transições nem o alcance por objeto (`EXA-T25`).
+- A golden rule de escopo de agente entra em `GOVERNANCA.md` §7 como **guardrail 15** (`G-SCOPE`) —
+  o agente se atém estritamente às responsabilidades declaradas, e o que não está escrito é
+  proibido, com a matriz de responsabilidades do §3 como autoridade exaustiva; o §3 passa a apontar
+  para o guardrail e o espelho do `README.md` §10 sobe no mesmo ato — 14 → 15 guardrails
+  (`EXA-T36`).
+- A golden rule de superfície de contato entra em `GOVERNANCA.md` §7 como **guardrail 16**
+  (`G-SURFACE`) — mudança de decisão estruturante (objetivo-chave, requisito ou caso de uso)
+  regulariza no ato a superfície de contato inteira, não só o artefato onde a decisão foi tomada, e
+  a rodada de planejamento que fecha a decisão emite os cards de regularização no mesmo ato, sem a
+  fila avançar sem eles; o espelho do `README.md` §10 sobe junto — 15 → 16 guardrails (`EXA-T46`).
+- A tabela de tetos de turnos (`GOVERNANCA.md` §3) ganha o caso da **rodada de replanejamento** —
+  fechar uma decisão e reescrever, no mesmo contexto, os dossiês que ela invalida — com teto **≤50**,
+  dentro da classe de redação/planejamento e sem criar classe nova. Calibrado pela série medida
+  dessas rodadas (19, 21, 39, 43 e 48 tool uses), três das cinco acima de ≤30. O `README.md`
+  espelha, inclusive no gatilho de checkpoint por dois terços do teto.
+- Conceito de **perfil** removido do hub: nenhuma marcação `*[perfil ...]*`, nenhum
+  `.claude/PERFIL`, nenhum default no hub; conteúdo desktop preservado em `PantonicForDesktop/` e o
+  de container em `PantonicForContainer/` (`V2E-T1`..`T4c`).
+- Guardrail de MVVM sai da lista de `GOVERNANCA.md` §7 — 15 → 14 guardrails (`V2E-T2`).
+- `.claude/checks/dead_code.py` troca as constantes de Qt pelo arquivo opcional
+  `.claude/framework-virtuals.txt` do projeto; quem dependia das exceções de Qt passa a declará-las,
+  com o modelo pronto para copiar em `PantonicForDesktop/.claude/framework-virtuals.txt`
+  (`V2E-T5b`).
+- Versão congela em `0.0.0` e as superfícies de versionamento são reconciliadas (`V2E-T9a`,
+  `T9c`..`T9e`; esta entrada corresponde à fatia `T9d`).
+- Gatilho de revisão da porta de saída de guardrail (`GOVERNANCA.md` §7.1) deixa de pender do
+  fechamento de um MINOR e passa a pender do fechamento de um plano (`V2E-T9b`).
+- O core deixa de ser descrito por componentes concretos e passa a ser descrito por **dez portas de
+  contrato de runtime** (sinais, estado, filesystem, log, registro de plugins, injeção, raiz de
+  dados, lifecycle de plugin, superfície de entrada, execução assíncrona): cada porta prescreve
+  responsabilidade, operações, invariantes e modos de falha, com a implementação do case sempre
+  citada como referência nomeada, nunca como regra universal; a superfície de entrada expõe
+  estado/comando/alerta/apresentação/lifecycle e a execução assíncrona mantém a regra de que
+  trabalho pesado ou bloqueante nunca corre na thread que atende à entrada. `GOVERNANCA.md` e
+  `README.md` passam a espelhar a mesma doutrina, sem duplicar o texto (`V2P-T1`, `T2`, `T4`, `T8`).
+- O caso de uso ganha residência própria dentro do plugin: mora em `plugins/<nome>/use_case.py`,
+  numa classe `<Nome>UseCase` com um método público de execução, depende só de `contracts` (portas +
+  domínio) por injeção, e é exatamente um por plugin — o `plugin.py`/adaptador de apresentação só
+  invoca, e a POC de `adhoc/` é orquestrada por ele, não é ele. O manifesto (`manifest.json`) ganha o
+  campo obrigatório `use_case` (o nome reconhecido pelo dono, a mesma frase do PRD, único entre
+  plugins), com unicidade validada no load. **Nota de migração:** manifesto de plugin já existente
+  sem o campo `use_case` não é reconhecido pela validação de load até declará-lo — não há default
+  silencioso nem inferência automática do nome (`V2P-T3`).
+- A cadeia de auditoria ganha critério objetivo e executável para o caso de uso por plugin:
+  `audit-sweep` coleta a existência de `use_case.py`, a classe `^class \w+UseCase` dentro dele e o
+  campo `use_case` do manifesto (com a regra de divergência para ausente/vazio/repetido);
+  `pantonic-auditor-arch` aplica o mesmo critério nas verificações de "caso de uso por plugin" e "use
+  cases finos" (dependência restrita a `contracts`) (`V2P-T5`).
+- `bootstrap-pantonic` e `integrar-poc` passam a produzir a residência do caso de uso por padrão:
+  projeto novo já nasce com `plugins/<nome>/use_case.py` e o campo `use_case` no manifesto, e POC
+  integrada ganha o caso de uso como artefato de saída obrigatório da dissecção, com `plugin.py`
+  roteando ao caso de uso em vez de direto a `adhoc` (`V2P-T6`).
+- Primeira rodada da porta de saída de guardrails sob o regime da `DE-8`, disparada pelo fechamento
+  do plano anterior: 13 dos 14 guardrails vigentes revisados (`G-README` fora por idade), com 6
+  isentos por enforcement executável já em produção (regra de dependência, ACL, egress G6, namespace
+  de estado, gate de conformance e allowlist de subcomandos destrutivos) (`V2P-T7`).
+- A régua de residência (`GOVERNANCA.md` §3.1) separa **autoridade** de **ponto de carga** em três
+  classes — canônico, ponto de carga e local de máquina —, com o manifesto único
+  `.claude/projecoes.json` como residência canônica das projeções e o materializador
+  `.claude/tools/materializar.py` (`apply`/`check`/`drift`) como único caminho de escrita nos
+  pontos de carga. O `kit_check` ganha exigência nova cobrindo o canônico (`-Mode validate`) e a
+  materialização (`-Mode check-drift`). Os treze artefatos que só existiam em `~/.claude/` (4 hooks
+  registrados, 6 skills, 1 agente, 2 docs de doutrina) mais o `CLAUDE.md` global são promovidos a
+  projeção de canônico versionado (`RPC-T1..T7`).
+
 ## 2.0.0 — 2026-08-05
 
 Fecha a iniciativa `PANTONIC-V2` (`SPRINT-PANTONICV2`, quatro estágios encadeados: benchmarking →
@@ -78,11 +158,6 @@ via `git subtree`/`sync-kit.ps1`. Por isso o diff relevante para aquele projeto 
   - Esta nota é só **relato**; nenhuma alteração foi feita em `d:\workspaces\PantonicVideo`
     (`GOVERNANCA.md` §10a) — a divergência de versão daquele projeto é reportada ao dono, não
     aplicada por agente.
-
-## [Não lançado]
-
-_(vazia — o único item pendente, correção de escopo da skill `proximo-passo` passo 5, foi
-absorvido na seção `2.0.0` acima nesta mesma sessão de fechamento.)_
 
 ## 1.5.0 — 2026-08-04
 

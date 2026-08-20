@@ -1,6 +1,6 @@
 ---
 name: integrar-poc
-description: Integra uma POC validada pelo cliente como plugin de uma aplicação Pantonic*, dissecando-a nas camadas da clean architecture (pipeline de 5 passos do agente integrador). Usar quando uma POC standalone foi aprovada e deve virar plugin.
+description: Integra uma POC validada pelo cliente como plugin de uma aplicação Pantonic*, dissecando-a nas camadas da clean architecture (pipeline de 5 passos). Usar quando uma POC standalone foi aprovada e deve virar plugin.
 ---
 
 # integrar-poc — de POC validada a plugin
@@ -26,19 +26,25 @@ via `PathsService`; trabalho pesado via `TaskRunner`.
 Dissecar a POC nas camadas:
 - **Lógica validada** → `plugins/<nome>/adhoc/` — preservada, **não refatorar, não reescrever**.
 - **Entidades/VOs que cruzam camadas** → `contracts/domain/` (mirror discipline).
-- **UI** *[perfil `desktop-pyside6`, §1.1]* → View no plugin + `view_model.py` (ViewModel
-  QtCore-only; egress de I/O pelo ViewModel → serviços). Projeto de outro perfil usa a camada de
-  apresentação equivalente ao seu perfil.
+- **Camada de apresentação** → estrutura equivalente na camada de apresentação declarada pelo
+  projeto; no case de referência, View no plugin + `view_model.py` (sem lógica de negócio, só
+  coordenação; egress de I/O sempre pelos serviços). Cada projeto usa a estrutura equivalente à
+  sua própria camada de apresentação.
+- **Caso de uso** → `plugins/<nome>/use_case.py`, classe `<Nome>UseCase` que orquestra a lógica
+  preservada em `adhoc/` usando só `contracts` (portas e domínio) — nunca a apresentação, nem
+  serviço concreto, nem lib externa. Artefato de saída obrigatório da dissecção, ao lado do
+  inventário de dependências (passo 1) e do mapeamento para serviços (passo 2).
 - **`plugin.py`** → orquestrador fino com `on_load / on_enable / on_disable / on_unload`,
-  roteando entre adhoc e plataforma via sinais/estado. Estado só em `plugins.<nome>.*`;
-  comunicação com outros plugins só via state keys.
+  roteando entre o caso de uso e a apresentação via sinais/estado. Estado só em
+  `plugins.<nome>.*`; comunicação com outros plugins só via state keys.
 
 ### 4. Manifest
 Gerar `manifest.json`: `name` (snake_case), `version`, `contracts_min_version`, `author`,
-`description` (≤500 chars), `entry_point` (`modulo:Classe`), `required_services`
-(`[{name, min_version}]`), `inputs`, `outputs`, `permissions`. Imports do plugin restritos à
-allowlist (`contracts.*`, `pathlib`, `typing`, mais `PySide6.*` *[perfil `desktop-pyside6`,
-§1.1]*) — validado por AST no load.
+`description` (≤500 chars), `use_case` (nome do caso de uso reconhecido pelo dono, único na base
+de plugins), `entry_point` (`modulo:Classe`), `required_services` (`[{name, min_version}]`),
+`inputs`, `outputs`, `permissions`. Imports do plugin restritos à
+allowlist (`contracts.*`, `pathlib`, `typing`, mais o toolkit da camada de apresentação
+declarado pelo projeto) — validado por AST no load.
 
 ### 5. Conformance e teste do conjunto
 TF do plugin + suíte de conformance completa + piso de regressão (skill `guardrails-check`).
@@ -47,5 +53,5 @@ conformance bloqueia o `done` da tarefa.
 
 ## Saída
 
-Plugin em `plugins/<nome>/` (manifest.json, plugin.py, view_model.py, adhoc/), serviços novos
-registrados, testes verdes, entrada do diário de obras atualizada.
+Plugin em `plugins/<nome>/` (manifest.json, plugin.py, use_case.py, view_model.py, adhoc/),
+serviços novos registrados, testes verdes, entrada do diário de obras atualizada.

@@ -55,3 +55,126 @@ data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
 2026-08-05	PantonicApp	V2I-T8	Sonnet	48	99	383	usage
 2026-08-05	PantonicApp	V2I-T9	Sonnet	40	93	2743	usage
 2026-08-05	PantonicApp	V2I-T10	Sonnet	32	80	429	usage
+2026-08-06	PantonicApp	V2I-T11	Opus	39	95	405	usage
+2026-08-06	PantonicApp	V2I-T11b	Opus	34	104	316	usage
+2026-08-06	PantonicApp	V2I-T11c	Opus	66	199	1032	usage
+2026-08-06	PantonicApp	V2E-T1	Sonnet	39	76	11797	usage
+2026-08-06	PantonicApp	V2E-T2	Opus	70	83	327	usage
+2026-08-06	PantonicApp	V2E-T3a	Sonnet	49	112	520	usage
+2026-08-06	PantonicApp	V2E-T3b	Opus	19	54	179	usage
+2026-08-06	PantonicApp	V2E-T3c	Opus	21	49	147	usage
+2026-08-06	PantonicApp	V2E-T4a	Sonnet	33	110	671	usage
+2026-08-06	PantonicApp	V2E-T4b	Sonnet	27	91	468	usage
+2026-08-06	PantonicApp	V2E-T4c	Sonnet	31	97	514	usage
+2026-08-06	PantonicApp	V2E-T5a	Sonnet	27	87	588	usage
+2026-08-06	PantonicApp	V2E-T5b	Sonnet	46	108	1660	usage
+2026-08-07	PantonicApp	V2E-T6a	Opus	19	56	187	usage
+2026-08-07	PantonicApp	V2E-T6b	Opus	22	59	172	usage
+2026-08-07	PantonicApp	V2E-T7	Opus	13	44	433	usage
+2026-08-07	PantonicApp	V2E-T9-replan	Opus	48	110	823	usage
+2026-08-07	PantonicApp	V2E-T9-replan-r2	Opus	43	164	680	usage
+2026-08-07	PantonicApp	V2E-T9a	Opus	29	85	375	usage
+2026-08-07	PantonicApp	V2E-T9b	Opus	25	78	290	usage
+2026-08-07	PantonicApp	V2E-T9c	Sonnet	41	94	2002	usage
+2026-08-07	PantonicApp	V2E-T9d	Sonnet	32	76	332	usage
+2026-08-07	PantonicApp	V2E-T9e	Opus	29	70	193	usage
+2026-08-07	PantonicApp	V2E-T10-sweep-arch-reverse	Haiku	5	11	41	usage
+2026-08-07	PantonicApp	V2E-T10-sweep-arch-acl	Haiku	13	20	73	usage
+2026-08-07	PantonicApp	V2E-T10-sweep-arch-mirror	Haiku	15	28	114	usage
+2026-08-07	PantonicApp	V2E-T10-sweep-ddd-pureza	Haiku	3	10	17	usage
+2026-08-07	PantonicApp	V2E-T10-sweep-ddd-vo	Haiku	10	17	49	usage
+2026-08-07	PantonicApp	V2E-T10-sweep-ddd-usecase	Haiku	30	23	133	usage
+2026-08-07	PantonicApp	V2E-T10	Opus	57	131	498	usage
+2026-08-07	PantonicApp	V2E-T11	Opus	52	137	882	usage
+2026-08-07	PantonicApp	V2P-T1	Opus	32	85	413	usage
+2026-08-07	PantonicApp	V2P-T2	Opus	33	68	960	usage
+2026-08-08	PantonicApp	V2P-T3	Opus	34	85	302	usage
+2026-08-08	PantonicApp	V2P-T4	Opus	24	57	197	usage
+2026-08-08	PantonicApp	V2P-T5	Sonnet	41	111	472	usage
+2026-08-08	PantonicApp	V2P-T6	Sonnet	35	84	620	usage
+2026-08-08	PantonicApp	V2P-T7	Opus	68	84	160	contado
+2026-08-08	PantonicApp	V2P-T8	Opus	38	90	262	usage
+2026-08-08	PantonicApp	V2P-T9	Sonnet	31	79	279	usage
+2026-08-08	PantonicApp	DHB-T1	Sonnet	40	117	446	usage
+2026-08-08	PantonicApp	EXA-T1	Sonnet	26	148	1113	usage
+2026-08-08	PantonicApp	EXA-T2	Opus	25			contado
+2026-08-08	PantonicApp	EXA-T3	Opus	26			contado
+2026-08-08	PantonicApp	EXA-T4	Opus	34			contado
+2026-08-08	PantonicApp	EXA-T5	Opus	26	94	428	usage
+2026-08-08	PantonicApp	EXA-T6a	Opus	17	63	204	usage
+2026-08-08	PantonicApp	EXA-T6b	Opus	30	75	307	usage
+2026-08-08	PantonicApp	EXA-T7	Sonnet	35	99	1343	usage
+2026-08-08	PantonicApp	EXA-T8a	Sonnet	48	141	2103	usage
+2026-08-08	PantonicApp	EXA-T8b	Sonnet	26	102	1874	usage
+2026-08-08	PantonicApp	EXA-T8c	Sonnet	38	155	2139	usage
+2026-08-08	PantonicApp	EXA-T9a	Sonnet	37	138	1486	usage
+2026-08-08	PantonicApp	EXA-T9b	Sonnet	34	105	22129	usage
+2026-08-09	PantonicApp	EXA-T10	Opus	19	79	764	usage
+2026-08-10	PantonicApp	EXA-T11-retomada	Opus	8	103	179	usage
+2026-08-11	PantonicApp	EXA-T18	Sonnet	48	137	1960	usage
+2026-08-11	PantonicApp	EXA-T19	Sonnet	29	140	478	usage
+2026-08-11	PantonicApp	EXA-T19-replan	Opus	21	80	423	usage
+2026-08-11	PantonicApp	EXA-DPE-replan	Opus	19	78	550	usage
+2026-08-11	PantonicApp	EXA-T22	Opus	14	61	355	usage
+2026-08-11	PantonicApp	EXA-T23a	Opus	14	58	3101	usage
+2026-08-11	PantonicApp	EXA-T23b	Opus	19	63	237	usage
+2026-08-11	PantonicApp	EXA-DPG-replan	Opus	39			contado
+2026-08-11	PantonicApp	EXA-DPG-replan-followup	Opus	12			contado
+2026-08-11	PantonicApp	EXA-T28	Opus	21	54	406	usage
+2026-08-11	PantonicApp	EXA-DPH-replan	Opus	53	127	4637	usage
+2026-08-11	PantonicApp	EXA-DPK-replan	Opus	34	94	625	usage
+2026-08-11	PantonicApp	EXA-T19	Sonnet	41	168	964	usage
+2026-08-11	PantonicApp	EXA-T20	Opus	26	72	409	usage
+2026-08-11	PantonicApp	EXA-T31	Opus	15	53	151	usage
+2026-08-11	PantonicApp	EXA-TK32-insumo	Opus	44			contado
+2026-08-11	PantonicApp	EXA-T32	Opus	17	61	146	usage
+2026-08-11	PantonicApp	EXA-T21a	Opus	29	93	2594	usage
+2026-08-11	PantonicApp	EXA-T21b	Opus	27	115	12268	usage
+2026-08-11	PantonicApp	EXA-DPM-decisao	Opus	5			contado
+2026-08-11	PantonicApp	EXA-DPM-replan	Opus	39	117	829	usage
+2026-08-12	PantonicApp	EXA-T33	Opus	25	58	414	usage
+2026-08-12	PantonicApp	EXA-T35	Opus	23	60	187	usage
+2026-08-12	PantonicApp	EXA-T36	Opus	24	60	215	usage
+2026-08-12	PantonicApp	EXA-T37	Opus	23	58	274	usage
+2026-08-12	PantonicApp	EXA-T38	Sonnet	20	55	3871	usage
+2026-08-12	PantonicApp	EXA-T39	Opus	13	54	2033	usage
+2026-08-12	PantonicApp	EXA-T23b-fecho	Opus	24			contado
+2026-08-12	PantonicApp	EXA-T24	Opus	24	48	186	usage
+2026-08-12	PantonicApp	EXA-DPN-replan	Opus	20			contado
+2026-08-12	PantonicApp	EXA-DPO-replan	Opus	10			contado
+2026-08-12	PantonicApp	EXA-T40	Opus	9	41	383	usage
+2026-08-12	PantonicApp	EXA-T41	Opus	17	54	380	usage
+2026-08-12	PantonicApp	EXA-T42	Opus	7	45	78	usage
+2026-08-12	PantonicApp	EXA-T43	Opus	41	101	1601	usage
+2026-08-12	PantonicApp	EXA-T44	Opus	18	101	353	usage
+2026-08-13	PantonicApp	EXA-T25	Opus	24	73	179	usage
+2026-08-13	PantonicApp	EXA-T45	Opus	17	72	745	usage
+2026-08-13	PantonicApp	EXA-T46	Opus	12	46	171	usage
+2026-08-13	PantonicApp	EXA-T47	Opus	28	113	393	usage
+2026-08-13	PantonicApp	EXA-T48	Opus	46	133	2741	usage
+2026-08-13	PantonicApp	EXA-T49	Opus	38	76	352	usage
+2026-08-13	PantonicApp	EXA-T50	Opus	36	88	1082	usage
+2026-08-13	PantonicApp	EXA-T51a	Sonnet	26	76	446	usage
+2026-08-13	PantonicApp	EXA-T51b	Opus	48	118	547	usage
+2026-08-13	PantonicApp	EXA-T52	Sonnet	52	113	533	usage
+2026-08-15	PantonicApp	EXA-T13	Sonnet	35	131	15599	usage
+2026-08-15	PantonicApp	EXA-T13-laudo	Opus	17	72	254	usage
+2026-08-15	PantonicApp	EXA-DPR-replan	Opus	58	122	707	usage
+2026-08-15	PantonicApp	RPC-P0735-planejamento	Opus	64	183	994	usage
+2026-08-15	PantonicApp	RPC-T1	Opus	14	56	103	usage
+2026-08-17	PantonicApp	RPC-T2	Sonnet	25	127	6082	usage
+2026-08-17	PantonicApp	RPC-T3	Sonnet	21	63	164	usage
+2026-08-17	PantonicApp	RPC-T4	Sonnet	24	86	225	usage
+2026-08-17	PantonicApp	RPC-T10	Sonnet	18	64	816	usage
+2026-08-17	PantonicApp	RPC-T5	Sonnet				nao_medido
+2026-08-17	PantonicApp	RPC-T6	Sonnet	17	52	136	usage
+2026-08-18	PantonicApp	RPC-T11	Sonnet	23	79	23259	usage
+2026-08-18	PantonicApp	RPC-T7a	Opus	18	60	616	usage
+2026-08-18	PantonicApp	RPC-T7b	Opus	9	46	1939	usage
+2026-08-18	PantonicApp	RPC-T7c	Opus	15	44	1341	usage
+2026-08-19	PantonicApp	RPC-T8	Sonnet	17	61	106	usage
+2026-08-19	PantonicApp	RPC-T9	Opus	28			contado
+2026-08-19	PantonicApp	EXA-T14	Sonnet	23	81	351	usage
+2026-08-19	PantonicApp	EXA-T15	Sonnet	43	129.1	1505	usage
+2026-08-19	PantonicApp	EXA-DPS-replan	Opus	27			contado
+2026-08-19	PantonicApp	EXA-T55	Sonnet	49	125.3	2558	usage

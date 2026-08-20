@@ -33,16 +33,17 @@ Método — alcançabilidade por AST, não por execução:
      ou decorado com um hook de despacho invisível ao AST (`field_validator`/
      `model_validator`/`validator`/`root_validator` — Pydantic invoca via metaclasse,
      nunca por `.nome()` explícito em lugar nenhum); para método (não função/classe),
-     conta também como entry point próprio o override de uma virtual canônica do Qt
-     (`_QT_VIRTUAL_METHODS`) numa classe Qt-derivada — alguma base direta ou
-     transitiva com nome que casa `^Q[A-Z]`, resolvida globalmente sobre todas as
-     classes do `--root` varrido, por nome simples (`QWidget` e `QtWidgets.QWidget`
-     casam igual, é sempre o atributo terminal). Motivo estrutural, não allowlist de
-     conveniência (V2M-T5, rodada 3): o Qt invoca `paint`/`columnCount`/`headerData`/
-     `mimeData`/`fixup` etc. por despacho do próprio framework (moc/C++), nunca por
-     uma chamada `.nome()` explícita em lugar nenhum do AST — mesma lacuna estrutural
-     do decorador Pydantic acima, só que por herança em vez de decorador; OU (b) seu
-     nome simples aparece
+     conta também como entry point próprio o override de uma virtual de framework
+     declarada em `<root>/.claude/framework-virtuals.txt` (seções `[bases]`/
+     `[metodos]`, ver ponto de extensão abaixo) numa classe cuja base — direta ou
+     transitiva, resolvida globalmente sobre todas as classes do `--root` varrido,
+     por nome simples (o caminho totalmente qualificado não importa, só o atributo
+     terminal) — casa alguma entrada de `[bases]`. Motivo estrutural, não allowlist
+     de conveniência (V2M-T5, rodada 3; mecanismo de declaração trocado na V2E-T5b):
+     um framework de UI/plugin despacha certos métodos por convenção do próprio
+     runtime, nunca por uma chamada `.nome()` explícita em lugar nenhum do AST —
+     mesma lacuna estrutural do decorador Pydantic acima, só que por herança em vez
+     de decorador; OU (b) seu nome simples aparece
      como `Name`/`Attribute.attr`/decorator/base em algum módulo alcançável (inclui
      anotação de tipo, já que `ast.walk` atravessa `arg.annotation`).
      Casamento é por nome simples, não por resolução de tipo — é a mesma aproximação
@@ -52,10 +53,18 @@ Método — alcançabilidade por AST, não por execução:
      conservador (menos falso positivo), não o contrário.
   5. Achado sobrevivente a isso e ainda sem chamador é o caso real de G-DEADCODE.
 
-Lacuna conhecida (documentada, não implementada nesta versão): slot Qt conectado por
-nome via `QMetaObject.connectSlotsByName` (convenção `on_<objectName>_<sinal>`) não é
-capturado — não há ocorrência desse padrão no baseline validado (`PantonicVideo`, grep
-`connectSlotsByName` = zero hits); se aparecer, é candidato a nova categoria de
+Ponto de extensão para virtuais despachadas por framework (V2E-T5b, `DE-5`): este check
+não conhece nenhum framework de UI/plugin específico. `<root>/.claude/
+framework-virtuals.txt` é um arquivo opcional do projeto varrido — `[bases]` lista
+nomes terminais de classe-base cujas subclasses são instanciadas/despachadas pelo
+runtime do framework; `[metodos]` lista os nomes de método invocados por esse
+despacho (um nome por linha em cada seção, `#` comenta o resto da linha; arquivo
+ausente, ou seção ausente, ⇒ lista vazia ⇒ nenhuma exceção concedida). O parser é do
+hub; o conteúdo é do projeto — cada consumidor declara o próprio framework.
+
+Lacuna conhecida (documentada, não implementada nesta versão): despacho por convenção
+de nome (um método vinculado a um evento pelo próprio nome, sem chamada explícita nem
+menção em `[metodos]`) não é capturado; se aparecer, é candidato a nova categoria de
 despacho dinâmico (ajuste de regra, não allowlist) antes de virar falso positivo.
 
 CLI: ``python .claude/checks/dead_code.py [--root <caminho>]``. Sem `--root`, resolve
@@ -68,7 +77,6 @@ from __future__ import annotations
 import argparse
 import ast
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -91,38 +99,47 @@ EXCLUDED_DIR_NAMES = {"tests", ".venv", "venv", "build", "dist", "__pycache__", 
 # comum (`obj.nome()` já é um Attribute reference).
 _INVISIBLE_DISPATCH_DECORATORS = {"field_validator", "model_validator", "validator", "root_validator"}
 
-# Virtuais canônicas do Qt: despachadas pelo framework (moc/C++) quando a classe é
-# Qt-derivada, nunca por uma chamada `.nome()` explícita em código Python — mesma
-# lacuna estrutural do decorador Pydantic acima, por herança em vez de decorador
-# (V2M-T5, rodada 3; NÃO é allowlist de diretório/classe — é regra estrutural: só
-# entra em jogo quando (a) a classe tem base Qt E (b) o nome bate aqui). Cobre
-# model/view, delegate, validator, item gráfico e eventos de widget usuais.
-_QT_VIRTUAL_METHODS = {
-    # QAbstractItemModel / QAbstractTableModel / QAbstractListModel
-    "data", "setData", "rowCount", "columnCount", "headerData", "setHeaderData",
-    "flags", "index", "parent", "hasChildren", "canFetchMore", "fetchMore",
-    "insertRows", "removeRows", "insertColumns", "removeColumns", "sort",
-    "mimeData", "mimeTypes", "supportedDropActions", "dropMimeData",
-    # QSortFilterProxyModel
-    "filterAcceptsRow", "filterAcceptsColumn", "lessThan",
-    # QStyledItemDelegate / QItemDelegate
-    "createEditor", "setEditorData", "setModelData", "updateEditorGeometry",
-    "sizeHint", "initStyleOption", "displayText",
-    # QValidator
-    "validate", "fixup",
-    # QGraphicsItem / QGraphicsObject
-    "paint", "boundingRect", "shape", "itemChange", "mousePressEvent",
-    "mouseMoveEvent", "mouseReleaseEvent", "mouseDoubleClickEvent", "hoverEnterEvent",
-    "hoverMoveEvent", "hoverLeaveEvent",
-    # QWidget e eventos comuns
-    "paintEvent", "resizeEvent", "closeEvent", "showEvent", "hideEvent",
-    "keyPressEvent", "keyReleaseEvent", "wheelEvent", "dragEnterEvent",
-    "dragMoveEvent", "dragLeaveEvent", "dropEvent", "contextMenuEvent",
-    "focusInEvent", "focusOutEvent", "changeEvent", "moveEvent", "timerEvent",
-    "eventFilter", "event",
-}
-
 _BOOTSTRAP_BASENAMES = {"app.py", "bootstrap.py", "main.py", "__main__.py"}
+
+_FRAMEWORK_VIRTUALS_RELPATH = Path(".claude") / "framework-virtuals.txt"
+
+
+def _parse_framework_virtuals(text: str) -> tuple[set[str], set[str]]:
+    """Parse o conteúdo de `framework-virtuals.txt`: seções `[bases]` e `[metodos]`,
+    um nome por linha, `#` comenta o resto da linha. Seção desconhecida ou ausente
+    ⇒ conjunto vazio para ela — nunca levanta em entrada malformada (mesma postura
+    best-effort de `_resolve_import_targets`)."""
+    bases: set[str] = set()
+    methods: set[str] = set()
+    current: set[str] | None = None
+    for raw_line in text.splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if line == "[bases]":
+            current = bases
+            continue
+        if line == "[metodos]":
+            current = methods
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            current = None
+            continue
+        if current is not None:
+            current.add(line)
+    return bases, methods
+
+
+def _load_framework_virtuals(root: Path) -> tuple[set[str], set[str]]:
+    """Carrega `<root>/.claude/framework-virtuals.txt`. Arquivo ausente ⇒
+    `(set(), set())` — nenhuma exceção é concedida sem declaração explícita do
+    projeto varrido."""
+    path = root / _FRAMEWORK_VIRTUALS_RELPATH
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return set(), set()
+    return _parse_framework_virtuals(text)
 
 
 def _iter_py_files(root: Path):
@@ -169,8 +186,8 @@ def _decorator_terminal_names(decorator_list) -> set[str]:
 
 def _base_terminal_names(bases) -> set[str]:
     """Nome terminal de cada base de classe — mesma aproximação de
-    `_decorator_terminal_names`: `QWidget` e `QtWidgets.QWidget` casam igual (só o
-    atributo/nome terminal importa, não o caminho totalmente qualificado)."""
+    `_decorator_terminal_names`: `Base` e `pkg.Base` casam igual (só o atributo/nome
+    terminal importa, não o caminho totalmente qualificado)."""
     names: set[str] = set()
     for base in bases:
         node = base.func if isinstance(base, ast.Call) else base
@@ -181,23 +198,33 @@ def _base_terminal_names(bases) -> set[str]:
     return names
 
 
-def _is_qt_derived(cls_name: str, class_bases: dict[str, set[str]], _seen: set[str] | None = None) -> bool:
-    """True se `cls_name` (ou alguma base transitiva) casa `^Q[A-Z]` textualmente.
+def _is_framework_derived(
+    cls_name: str,
+    class_bases: dict[str, set[str]],
+    framework_bases: set[str],
+    _seen: set[str] | None = None,
+) -> bool:
+    """True se `cls_name` (ou alguma base transitiva) casa por nome simples uma
+    entrada de `framework_bases` — a seção `[bases]` do `framework-virtuals.txt` do
+    projeto varrido (`_load_framework_virtuals`). Sem declaração, `framework_bases`
+    é vazio e isto sempre retorna False (nenhuma exceção concedida).
 
     Resolução é global ao repositório varrido (o `class_bases` passado cobre todas
-    as `trees` de `check()`, não só o arquivo do achado) — uma classe Qt-derivada por
-    duas camadas de herança dentro do próprio projeto (`class Foo(BaseWidget)` onde
-    `BaseWidget(QWidget)` mora em outro arquivo) ainda resolve. `_seen` protege
-    contra ciclo de herança (não deveria existir em código real, mas não pode travar
-    o check)."""
+    as `trees` de `check()`, não só o arquivo do achado) — uma classe derivada do
+    framework por duas camadas de herança dentro do próprio projeto
+    (`class Foo(BaseWidget)` onde `BaseWidget(FrameworkBase)` mora em outro arquivo)
+    ainda resolve. `_seen` protege contra ciclo de herança (não deveria existir em
+    código real, mas não pode travar o check)."""
+    if not framework_bases:
+        return False
     seen = _seen if _seen is not None else set()
     if cls_name in seen:
         return False
     seen.add(cls_name)
     for base in class_bases.get(cls_name, ()):
-        if re.match(r"^Q[A-Z]", base):
+        if base in framework_bases:
             return True
-        if _is_qt_derived(base, class_bases, seen):
+        if _is_framework_derived(base, class_bases, framework_bases, seen):
             return True
     return False
 
@@ -302,11 +329,12 @@ def check(root: Path) -> list[str]:
         is_init_of[f] = f.name == "__init__.py"
 
     manifest_seeds, manifest_entry_classes = _collect_manifest_entry_classes(root, module_map)
+    framework_bases, framework_methods = _load_framework_virtuals(root)
 
     # Mapa global classe -> {bases}, sobre todas as `trees` do repositório varrido
-    # (não por arquivo) — herança Qt costuma atravessar arquivo/pacote (ex.: um mixin
-    # de projeto entre a classe concreta e `QWidget`). `ast.walk` pega ClassDef em
-    # qualquer nível de aninhamento, não só top-level.
+    # (não por arquivo) — herança de framework costuma atravessar arquivo/pacote
+    # (ex.: um mixin de projeto entre a classe concreta e a base do framework).
+    # `ast.walk` pega ClassDef em qualquer nível de aninhamento, não só top-level.
     class_bases: dict[str, set[str]] = {}
     for tree in trees.values():
         for node in ast.walk(tree):
@@ -399,8 +427,8 @@ def check(root: Path) -> list[str]:
                                 & _INVISIBLE_DISPATCH_DECORATORS
                             )
                             or (
-                                member.name in _QT_VIRTUAL_METHODS
-                                and _is_qt_derived(node.name, class_bases)
+                                member.name in framework_methods
+                                and _is_framework_derived(node.name, class_bases, framework_bases)
                             )
                         )
                         definitions.append(

@@ -1,5 +1,12 @@
 # P-0730 — Estágio 5: identidade do framework (agnosticismo, CA+DDD e o README como contrato)
 
+> **`superseded` desde 2026-08-06 — substituído por
+> [`P-0731-v2-extracao-modalidade.md`](P-0731-v2-extracao-modalidade.md).** A 2ª rodada de aceite do
+> README (`T12`) derrubou a `DR-2`: perfil não é abstração do núcleo. Nenhuma tarefa nova sai deste
+> plano. `T1..T11c` estão entregues e permanecem válidas — a correção de identidade que fizeram é a
+> base do Estágio 6. `T12`..`T16` foram absorvidas com escopo corrigido (§7 do plano novo), e o id
+> `P-0731` que a `T15` reservava para a abstração do infracore passou a **`P-0732`**.
+
 **Data de origem:** 2026-08-05 · **Iniciativa:** `PANTONIC-V2` · **Estágio:** 5 (corretivo) ·
 **Prefixo de tarefa:** `V2I-` · **Substitui:** `P-0729-v2-documentacao` (Estágio 4) — ver §6.
 
@@ -448,3 +455,48 @@ vocabulário é julgada. Escrevê-lo antes da `T4` seria documentar jargão em p
 - **Verificação:** `pwsh .claude/checks/check-readme.ps1` → exit 0; e todo termo em **negrito ou
   crase** no corpo do README que não seja nome de arquivo tem verbete (varredura do próprio autor).
 - **Pronto quando:** os três eixos existem, cada verbete tem definição + ponteiro, e o guarda passa.
+
+## 9. Revisão de escopo — `T11c` (veredito da `T12`, 2026-08-06)
+
+A `T12` (aceite do README pelo dono) **reprovou** o documento. O motivo não é factual — as
+afirmações da `T11` estão corretas — é de **legibilidade**: o texto narra a própria gestação. O
+preâmbulo abre relatando conversas anteriores e um episódio de campo, e em seguida **anuncia** que
+cada seção contará a evidência ou o episódio que produziu o procedimento. A leitura foi
+interrompida no preâmbulo.
+
+Conforme a `T12` (*"reprovação gera rodada nova da `T11`, não segue adiante"*), abre-se `T11c`. A
+`T13` continua bloqueada.
+
+Correção de doutrina no ato: o vício não é do README, é do modo de escrever. Vira skill de kit
+`redacao-doc` (`.claude/skills/redacao-doc/SKILL.md`), tíquete `TK-09` — autorada nesta rodada e
+usada como critério da `T11c`.
+
+**Ordem de execução vigente (substitui a de §8):** `T1` → … → `T11` → `T11b` → **`T11c`** → `T12`
+(dono, 2ª rodada) → `T13` → `T14` → `T15` → `T16`. Total do plano passa de 17 para **18 tarefas**.
+
+### T11c — Refazer o README sob a `redacao-doc` [Opus]
+- **Objetivo:** o README fica legível para quem nunca participou de nenhuma conversa sobre o
+  projeto. Nenhuma afirmação nova: o conteúdo técnico da `T11`/`T11b` está aceito; o que muda é a
+  forma.
+- **Arquivos-alvo:** `README.md`, apenas. Não tocar em `GOVERNANCA.md`, `ARQUITETURA_PANTONICA.md`,
+  versão (`2.0.0` segue até a `T13`) nem no kit.
+- **Critério normativo:** `.claude/skills/redacao-doc/SKILL.md` — vícios `V1..V8`, teste do leitor
+  externo (§1), régua razão × história (§3), papel ≠ interlocutor (§3), procedimento de reescrita
+  (§7, incluindo *descartar o preâmbulo inteiro e reescrevê-lo do zero*).
+- **Baseline medido em 2026-08-06 (varredura do §6 da skill sobre o README, 1114 linhas):**
+  `V2-interlocutor` 43 · `V3-id-processo` 16 · `V3-data` 3 · `V4-anuncio` 2 · `V1-proveniencia` 4 ·
+  `V7-datacao` 3 · `V8-divida` 2.
+- **Aceite:** `V3-id-processo` e `V4-anuncio` em **zero** fora da seção histórica declarada (§15);
+  `V2-interlocutor` só em construções de **papel** (teste do §3 da skill); `V1`, `V6`, `V7` e `V8`
+  só com exceção que passe no §3, listada no fechamento. O documento **encolhe** — tamanho igual ou
+  maior é sinal de vício reescrito, não removido.
+- **Invariantes estruturais (o guarda ancora nelas — não renomear):** títulos `Anatomia do kit` e
+  `Os guardrails`; a linha `> Fonte da verdade:` de toda seção numerada; a numeração `## N.` de §1 a
+  §15; a tabela de skills de `Anatomia do kit` com as **10** skills do disco; a contagem de 15
+  guardrails; a versão `2.0.0`.
+- **Seção histórica declarada:** `## 15` é a única onde datar mudança entre versões é o assunto
+  (classe do §5 da skill). Ali `V7` é liberado; `V1`, `V2`, `V3`, `V4` e `V5` continuam proibidos.
+- **Verificação:** `pwsh -NoProfile -File .claude/checks/check-readme.ps1` → exit 0; e a varredura
+  do §6 da skill re-rodada, com a contagem final comparada ao baseline acima.
+- **Pronto quando:** guarda em exit 0, contagens dentro do aceite, e o preâmbulo não contém nenhuma
+  frase sobre a história do próprio documento.

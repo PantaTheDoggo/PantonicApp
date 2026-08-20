@@ -30,8 +30,8 @@ offset/limit até o capítulo seguinte. Âncoras são cabeçalhos, nunca número
 ## Fatos estáveis (o alvo pantonico)
 
 - Camadas: `infracore ← contracts ← services ← plugins`; contracts = zero runtime; services =
-  ACL; plugins importam só contracts/stdlib restrito, mais PySide6 *[perfil `desktop-pyside6`,
-  §1.1]* (ARQUITETURA_PANTONICA.md §2).
+  ACL; plugins importam só contracts/stdlib restrito, mais o toolkit da camada de apresentação
+  declarado pelo projeto (ARQUITETURA_PANTONICA.md §2).
 - Guardrails já automatizados em `tests/conformance/` e `tests/boundary/` — a auditoria começa
   onde o AST para.
 - `plugins/*/adhoc/` (POC validada) está fora do escopo de refatoração; a fronteira em volta
@@ -41,7 +41,7 @@ offset/limit até o capítulo seguinte. Âncoras são cabeçalhos, nunca número
 
 1. **Dependency Rule** — imports só em direção ao centro; nenhum reverse import (cap. 1.1).
 2. **Pureza de domínio** — `contracts/domain/` sem import de infraestrutura/framework/I/O (driver
-   externo, ORM, HTTP client, logging de infra, Qt) nem side-effects (cap. 4.4); Pydantic é a
+   externo, ORM, HTTP client, logging de infra) nem side-effects (cap. 4.4); Pydantic é a
    exceção pantonica aceita (registrada como desvio consciente).
 3. **Entidades e VOs** — igualdade de entidade por ID; VOs imutáveis/frozen com invariantes no
    construtor (cap. 4.2).
@@ -55,34 +55,35 @@ offset/limit até o capítulo seguinte. Âncoras são cabeçalhos, nunca número
 7. **SRP/OCP** — classe com mais de uma razão para mudar; cadeias if/elif por tipo que pedem
    polimorfismo/strategy (cap. 2).
 8. **Use cases finos** — serviços de domínio orquestram, não acumulam regra de negócio que
-   pertence às entidades (cap. 5.1).
+   pertence às entidades (cap. 5.1); o módulo `plugins/*/use_case.py` depende só de `contracts` —
+   import de superfície de apresentação, de serviço concreto ou de lib externa nele é desvio.
 9. **Caso de uso por plugin** — cada plugin de `plugins/*/` mapeia exatamente um caso de uso
-   (`D9`, `GOVERNANCA.md` §5); plugin sem caso de uso identificável, ou cobrindo mais de um, é
+   (`D9`, `GOVERNANCA.md` §5); critério objetivo: um módulo `use_case.py`, uma classe
+   `^class \w+UseCase` dentro dele, um campo `use_case` declarado no manifesto, com nome único
+   entre plugins. Ausência de qualquer um desses elementos, ou campo repetido entre plugins, é
    desvio (cap. 5.1).
 10. **Erros tipados** — sucesso/falha explícitos (Result/exceções específicas de contracts),
     não `except Exception` genérico engolindo falha (cap. 5.2).
-11. **Fronteira MVVM** *[perfil `desktop-pyside6`, §1.1]* — ViewModel QtCore-only; Model sem Qt;
-    Qt geometry/estilo só na shell.
-12. **Mirror discipline** — tipo que cruza camada existe uma vez e é espelhado verbatim em
+11. **Mirror discipline** — tipo que cruza camada existe uma vez e é espelhado verbatim em
     contracts; procurar cópias divergentes.
-13. **Linguagem ubíqua** — termos do domínio consistentes entre o PRD do plugin/projeto e os
+12. **Linguagem ubíqua** — termos do domínio consistentes entre o PRD do plugin/projeto e os
     identificadores do código (classes, métodos, campos); mesmo conceito com nomes divergentes
     entre PRD e implementação é desvio (cap. 4, Ubiquitous Language).
-14. **Fitness functions** — o que desta lista é verificável por AST e ainda NÃO está em
+13. **Fitness functions** — o que desta lista é verificável por AST e ainda NÃO está em
     `tests/conformance/`? Propor o teste (cap. 10.5–10.6 tem os modelos).
-15. **Desvios conscientes** — desvio pragmático sem decision record (`D-*`) é apontamento;
+14. **Desvios conscientes** — desvio pragmático sem decision record (`D-*`) é apontamento;
     com registro, é anotado como aceito (cap. 12.2).
 
 ## Método
 
 1. **Fase mecânica: consuma o sweep, não grepe.** Procure `docs/audits/SWEEP_*.md` (Glob) e
-   use o mais recente como resultado das verificações mecânicas (1, 2, 3 [parte VO], 6, 9, 11,
-   12 — blocos ARCH-* e DDD-*). Só repita um grep para confirmar um match ambíguo. Se não houver
+   use o mais recente como resultado das verificações mecânicas (1, 2, 3 [parte VO], 6, 9,
+   11 — blocos ARCH-* e DDD-*). Só repita um grep para confirmar um match ambíguo. Se não houver
    sweep (ou estiver velho), faça apenas os greps mínimos indispensáveis e registre no relatório
    a recomendação de rodar a skill `audit-sweep` antes da próxima auditoria.
 2. Mapa da codebase por Glob dirigido (módulos por camada) — sem listagem recursiva.
-3. Verificações 2, 3, 4, 5, 7, 8, 9, 10 e 13 exigem leitura — priorize serviços de domínio,
-   plugins e o que o sweep marcou como suspeito; para a verificação 13 (linguagem ubíqua),
+3. Verificações 2, 3, 4, 5, 7, 8, 9, 10 e 12 exigem leitura — priorize serviços de domínio,
+   plugins e o que o sweep marcou como suspeito; para a verificação 12 (linguagem ubíqua),
    confronte com o PRD do plugin/projeto. Confirme cada desvio no código real antes de apontar.
 4. Para cada desvio confirmado, consulte a seção pertinente da base de conhecimento para
    fundamentar a ação de recuperação (o cap. 11 dá a estratégia de migração em estágios).
@@ -104,4 +105,4 @@ offset/limit até o capítulo seguinte. Âncoras são cabeçalhos, nunca número
 ```
 
 Ordene por severidade; desvio sistêmico vem antes de pontual. Ao final, informe os 3
-apontamentos mais graves e recomende registrar os tíquetes via `pantonic-planner`.
+apontamentos mais graves — cada apontamento vira item do diário de obras, priorizado pelo dono.

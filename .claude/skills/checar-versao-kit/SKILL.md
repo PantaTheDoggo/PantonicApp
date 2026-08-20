@@ -1,6 +1,6 @@
 ---
 name: checar-versao-kit
-description: Checa se a versão local do kit agêntico diverge da versão publicada no hub PantonicApp, sem nunca atualizar sozinho, e arma o gatilho de revisão da doutrina (GOVERNANCA.md §7.1) quando o MINOR avançou desde a última rodada. Resolve a versão local em três modos — consumidor (.claude/kit/KIT_VERSION), hub (.claude/KIT_VERSION sem .claude/kit/) e não-instalado. Usar no momento de criar/registrar um plano novo (chamada pela skill diario-de-obras, operação "Registrar plano").
+description: Resolve a versão local do kit agêntico e, enquanto o framework estiver com a versão congelada em 0.0.0 (GOVERNANCA.md §10), reporta "congelada — nada a comparar" sem tocar a rede. Fora do congelamento, compara com a versão publicada no hub PantonicApp sem nunca atualizar sozinho, em três modos de resolução (consumidor, hub, não-instalado). Nos dois regimes arma o gatilho de revisão da doutrina (GOVERNANCA.md §7.1), que fica pendente quando existe plano fechado como done no índice do diário sem rodada de revisão registrada. Usar no momento de criar/registrar um plano novo (chamada pela skill diario-de-obras, operação "Registrar plano").
 ---
 
 # checar-versao-kit — checagem anti-drift do kit agêntico
@@ -13,7 +13,9 @@ procedimento que a executa. Em caso de dúvida sobre a regra, §10 é a fonte, n
 Na criação/registro de todo plano novo (skill `diario-de-obras`, operação "1. Registrar plano").
 Esse é o único gatilho de invocação — não roda a cada turno, nem a cada tarefa, só quando um plano
 é criado. Uma vez invocada, executa **duas** checagens independentes: a de versão (passos 1-3
-abaixo) e a de revisão da doutrina (última seção), que aproveita a mesma leitura de versão.
+abaixo) e a de revisão da doutrina (última seção); as duas compartilham só o momento de invocação,
+não mais a leitura de versão. Sob congelamento, a primeira para no passo 1 ("Congelamento
+(curto-circuito)" abaixo) e a segunda roda assim mesmo.
 
 ## Procedimento
 
@@ -36,6 +38,12 @@ que o repo é um consumidor:
 3. **Nenhum dos dois existe** → **"kit não instalado"**, segue em silêncio (sem checagem remota,
    sem bloquear a criação do plano).
 
+**Congelamento (curto-circuito).** Se a versão local resolvida for `0.0.0`, o framework está em
+desenvolvimento pré-lançamento (`GOVERNANCA.md` §10, bloco "Congelamento pré-lançamento"): reportar
+`versão congelada em 0.0.0 — nada a comparar`, **pular os passos 2 e 3** (nenhuma chamada de rede
+acontece) e **seguir direto para o gatilho de revisão da doutrina**, que com a `DE-8` não depende de
+versão e roda igual nos dois regimes. A skill **não** encerra aqui.
+
 ### 2. Checagem remota (só nos modos consumidor/hub — 1 chamada de rede, sem fetch, sem tocar a árvore de trabalho)
 
 ```
@@ -52,6 +60,8 @@ consumidor com kit `M.x` consome doutrina `M.x`.
 
 ## Os resultados possíveis
 
+- **Versão congelada (`0.0.0`)** → reporta "congelada — nada a comparar", sem rede e sem pergunta
+  ao dono, e segue para o gatilho de revisão.
 - **Versões iguais** → segue em silêncio, sem gastar turno do dono.
 - **Divergentes em MINOR/PATCH** (mesmo MAJOR) → reporta: versão local, versão remota, e a
   pergunta *"atualizar agora ou postergar?"*. Registra a resposta do dono no plano que está sendo
@@ -66,25 +76,24 @@ consumidor com kit `M.x` consome doutrina `M.x`.
 
 ## Gatilho de revisão da doutrina (`GOVERNANCA.md` §7.1)
 
-A porta de saída de um guardrail está pendurada no **fechamento de MINOR do kit** — e esta skill é
-quem a arma, porque já leu a versão local no passo 1. A doutrina mora em §7.1; aqui está só o
-procedimento.
+A porta de saída de um guardrail está pendurada no **fechamento de um plano** (status `done` no
+índice do diário) — e esta skill é quem a arma, porque roda no momento certo (criação de plano). A
+doutrina mora em §7.1; aqui está só o procedimento. Roda **sempre**, congelada ou não.
 
-Rodar **depois** da checagem de versão, em qualquer modo exceto "kit não instalado":
+1. Ler, em `GOVERNANCA.md` §7.1, a última rodada registrada e o plano que ela cobre (Grep por
+   `Registro das rodadas`, sem ler a seção inteira).
+2. Ler o índice de `docs/DIARIO_DE_OBRAS.md` e listar os planos com status `done` (Grep por
+   `| done |` na tabela do índice).
+3. **Existe plano `done` fechado a partir do marco zero (`2026-08-01`) que não conste de nenhuma
+   rodada registrada** → a revisão está **pendente**. Reportar ao dono: o plano que disparou, a
+   última rodada registrada e quantas guardrails de §7 entram em escopo (as que já constavam na
+   penúltima rodada). **Não executar a revisão aqui** — ela é uma tarefa nomeada, com registro
+   próprio no diário; esta skill só a torna visível no momento em que há material para julgar.
+4. **Nenhum plano `done` fora das rodadas registradas** → segue em silêncio.
 
-1. Ler o MINOR corrente da versão local resolvida no passo 1 (`X.Y.Z` → `Y`).
-2. Ler a **última revisão registrada** na lista "Registro das rodadas" de `GOVERNANCA.md` §7.1
-   (Grep por `Registro das rodadas`, sem ler a seção inteira).
-3. **MINOR corrente > MINOR da última revisão** → a revisão está **pendente**. Reportar ao dono:
-   versão da última rodada, versão corrente, e quantas guardrails de §7 entram em escopo
-   (introduzidas em MINOR ≤ corrente − 2). **Não executar a revisão aqui** — ela é uma tarefa
-   nomeada, com registro próprio no diário; esta skill só a torna visível no momento em que há
-   material para julgar.
-4. **MINOR igual** → segue em silêncio, como no caso "versões iguais" da checagem de versão.
-
-Um MINOR pode fechar sem que nenhum plano novo seja criado logo depois; nesse caso o aviso aparece
-na próxima criação de plano. O atraso é aceito por desenho — o gatilho troca pontualidade por
-custo zero de cerimônia (§7.1, "nunca em calendário").
+Um plano pode fechar sem que outro seja criado logo depois; nesse caso o aviso aparece na próxima
+criação de plano. O atraso é aceito por desenho — o gatilho troca pontualidade por custo zero de
+cerimônia (§7.1, "nunca em calendário").
 
 ## Proibição
 

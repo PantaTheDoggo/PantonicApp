@@ -1,0 +1,11 @@
+# T5b (docs/plans/P-0731-v2-extracao-modalidade.md ### T5b) — declaração de framework
+# deste fixture: `MyWidget(QWidget)` em widget.py é uma classe derivada do framework e
+# `paint` é a virtual despachada pelo framework, exatamente o par que a tabela embutida
+# `_QT_VIRTUAL_METHODS`/`_is_qt_derived` reconhecia antes da troca de mecanismo — agora
+# por declaração do projeto, não por conhecimento do check.
+
+[bases]
+QWidget
+
+[metodos]
+paint

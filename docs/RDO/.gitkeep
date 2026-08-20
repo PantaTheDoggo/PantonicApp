@@ -1,0 +1,2 @@
+Diretório dos RDOs gerados por `.claude/tools/rdo.py` (EXA-T8a). Fica vazio até a primeira
+chamada de `rdo.py new`; este marcador mantém o diretório versionado enquanto isso.

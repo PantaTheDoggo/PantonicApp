@@ -5,7 +5,7 @@
 > linha — eles desatualizam.
 
 Docs abaixo de 500 linhas (`docs/DIARIO_DE_OBRAS.md`, `GOVERNANCA.md` na raiz,
-`ARQUITETURA_PANTONICA.md`, `docs/RESIDENCIA_DOUTRINA.md`, `docs/benchmark/CANDIDATOS.md`,
+`docs/RESIDENCIA_DOUTRINA.md`, `docs/benchmark/CANDIDATOS.md`,
 `docs/plans/_INBOX.md`, demais `docs/plans/*.md` e `docs/benchmark/BM-*.md`) não precisam de
 entrada — Read direto.
 
@@ -82,3 +82,21 @@ introduzido pelo Bloco A/C, ou o dossiê de uma tarefa já executada.
 - `## 6. Decisões (fechadas no planejamento)`
 **Acesso:** `Grep pattern:"^### T5 " path:docs/plans/P-0729-v2-melhoria-candidatos.md -n`
 (trocar `T5` pela tarefa desejada).
+
+## ARQUITETURA_PANTONICA.md (raiz, ~513 linhas)
+**Propósito:** doutrina de clean architecture + DDD do framework — modelo de camadas, portas de
+runtime do core, estrutura de pastas canônica, plugins/manifests, residência do caso de uso e
+contenção de falhas.
+**Quando consultar:** para o contrato de uma porta do core, a doutrina de residência/forma do
+caso de uso de um plugin, ou o grau de aderência medido da implementação de referência.
+**Seções:**
+- `## 1. Golden rules` — inclui o grau de aderência medido (domínio, infracore, plugins, camada
+  de aplicação)
+- `## 2. Modelo de camadas` / `## 3. Estrutura de pastas canônica`
+- `## 4. Infracore — as dez portas de runtime do core`
+- `## 9. Plugins e manifests` — doutrina POC-first, manifest, validação no load
+- `### 9.1 O caso de uso dentro do plugin` — residência (`plugins/<nome>/use_case.py`), campo
+  `use_case` do manifest, regra de exatamente um caso de uso por plugin
+- `## 10. Operações de OS e IN/OUT` / `## 11. Contenção de falhas [REPLICAR]`
+**Acesso:** `Grep pattern:"^### 9\.1" path:ARQUITETURA_PANTONICA.md -n` (trocar a âncora por
+qualquer heading `##`/`###` da lista acima).

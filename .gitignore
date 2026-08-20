@@ -1,6 +1,18 @@
-# Configuração local de máquina (permissões, overrides de sessão) — nunca canônica
+# Configuração local de máquina (permissões, overrides de sessão) — nunca canônica.
+# Declaração canônica do que o harness lê mora em `.claude/projecoes.json` (versionado);
+# este arquivo é a materialização local, produzida por `python .claude/tools/materializar.py apply`.
 .claude/settings.local.json
 .claude/settings.json
+
+# Estado de sessão do loop autônomo (ex.: tarefa-corrente.json, escrito pelo `scrum-master` no
+# despacho e consumido pelo hook `SubagentStop` — T55) — fato de uma sessão numa máquina, nunca
+# canônico do framework.
+.claude/estado/
+
+# Bytecode do Python — a suíte do hub (`tests/`) carrega os verificadores de
+# `.claude/checks/` por caminho, e cada rodada grava `__pycache__/` ao lado deles
+__pycache__/
+*.pyc
 
 # Ruído de SO / editor
 Thumbs.db
@@ -14,3 +26,11 @@ desktop.ini
 # Transcrições e artefatos efêmeros de sessão de agente
 *.log
 scratchpad/
+
+# Embriao da ramificacao desktop/PySide6 do framework — conhecimento extraido do hub
+# universal, preservado fora do versionamento ate virar repositorio proprio.
+PantonicForDesktop/
+
+# Embriao da ramificacao container/Docker do framework — conhecimento extraido do hub
+# universal, preservado fora do versionamento ate virar repositorio proprio.
+PantonicForContainer/

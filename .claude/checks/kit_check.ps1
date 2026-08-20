@@ -217,6 +217,40 @@ else {
     }
 }
 
+# --- 4. Materialização: canônico (projecoes.json) -> settings.json alvo --
+# RPC-T3 (docs/plans/P-0735-residencia-e-ponto-de-carga.md §T3). A régua deixa
+# de depender de disciplina: cobra que o canônico declarado em projecoes.json
+# seja válido para os dois alvos (leitura pura, segura em qualquer máquina —
+# 'check' não olha o disco do alvo, só a forma do manifesto).
+$materializarScript = Join-Path $KitRoot 'tools/materializar.py'
+$materializarCheckOutput = @(& python $materializarScript check --alvo todos --kit-root $KitRoot 2>&1)
+$materializarCheckExit = $LASTEXITCODE
+if ($materializarCheckExit -eq 1) {
+    foreach ($line in $materializarCheckOutput) {
+        $errors.Add("materializar check: $line")
+    }
+}
+elseif ($materializarCheckExit -ne 0) {
+    $errors.Add("materializar check: saida nao interpretavel (exit $materializarCheckExit): $($materializarCheckOutput -join ' | ')")
+}
+
+$canonicalEntryCount = 0
+$projecoesPath = Join-Path $KitRoot 'projecoes.json'
+if (Test-Path -LiteralPath $projecoesPath) {
+    $projecoes = Get-Content -LiteralPath $projecoesPath -Raw | ConvertFrom-Json
+    foreach ($alvoProp in $projecoes.alvos.PSObject.Properties) {
+        $alvo = $alvoProp.Value
+        if ($alvo.chaves -and $alvo.chaves.hooks) {
+            foreach ($eventProp in $alvo.chaves.hooks.PSObject.Properties) {
+                $canonicalEntryCount += @($eventProp.Value).Count
+            }
+        }
+        if ($alvo.arquivos) {
+            $canonicalEntryCount += @($alvo.arquivos).Count
+        }
+    }
+}
+
 if ($errors.Count -gt 0) {
     Write-Host "kit_check: FALHOU ($($errors.Count) problema(s))"
     foreach ($e in $errors) {
@@ -225,7 +259,7 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Host "kit_check: OK - $($agentFiles.Count) agente(s) e $($skillDirs.Count) skill(s) validados; VERSION == KIT_VERSION ('$versionSummary')."
+Write-Host "kit_check: OK - $($agentFiles.Count) agente(s), $($skillDirs.Count) skill(s) e $canonicalEntryCount entrada(s) canonica(s) validados; VERSION == KIT_VERSION ('$versionSummary')."
 exit 0
 
 }
@@ -251,6 +285,7 @@ elseif ($Mode -eq 'generate') {
     exit 0
 }
 elseif ($Mode -eq 'check-drift') {
+    $driftErrors = [System.Collections.Generic.List[string]]::new()
     $readmePath = Join-Path $KitRoot 'README.md'
     if (-not (Test-Path -LiteralPath $readmePath)) {
         Write-Host "kit_check: check-drift FALHOU - README.md não encontrado em: $readmePath"
@@ -269,14 +304,36 @@ elseif ($Mode -eq 'check-drift') {
     }
     $diff = Compare-Object -ReferenceObject $current -DifferenceObject $regenerated
     if ($diff) {
-        Write-Host "kit_check: check-drift FALHOU - .claude/README.md diverge do regenerado ($($diff.Count) linha(s) diferente(s)):"
+        $driftErrors.Add("README.md diverge do regenerado ($($diff.Count) linha(s) diferente(s)):")
         foreach ($d in $diff) {
             $side = if ($d.SideIndicator -eq '<=') { 'versionado' } else { 'regenerado' }
-            Write-Host "  [$side] $($d.InputObject)"
+            $driftErrors.Add("  [$side] $($d.InputObject)")
+        }
+    }
+
+    # --- Materialização (RPC-T3): destino do alvo 'projeto' == canônico -----
+    # Alvo 'usuario' fica fora (DL-4): cobrar a projeção da máquina de quem
+    # executa quebraria consumidor que não optou por ela.
+    $materializarScript = Join-Path $KitRoot 'tools/materializar.py'
+    $materializarDriftOutput = @(& python $materializarScript drift --alvo projeto --kit-root $KitRoot 2>&1)
+    $materializarDriftExit = $LASTEXITCODE
+    if ($materializarDriftExit -eq 1) {
+        foreach ($line in $materializarDriftOutput) {
+            $driftErrors.Add("materializar drift: $line")
+        }
+    }
+    elseif ($materializarDriftExit -ne 0) {
+        $driftErrors.Add("materializar drift: saida nao interpretavel (exit $materializarDriftExit): $($materializarDriftOutput -join ' | ')")
+    }
+
+    if ($driftErrors.Count -gt 0) {
+        Write-Host "kit_check: check-drift FALHOU ($($driftErrors.Count) problema(s)):"
+        foreach ($e in $driftErrors) {
+            Write-Host "  - $e"
         }
         exit 1
     }
-    Write-Host "kit_check: check-drift OK - .claude/README.md == regenerado ($($agentsBody.Count - 2) agente(s), $($skillsBody.Count - 2) skill(s))."
+    Write-Host "kit_check: check-drift OK - .claude/README.md == regenerado ($($agentsBody.Count - 2) agente(s), $($skillsBody.Count - 2) skill(s)); materializacao do alvo 'projeto' == canonico."
     exit 0
 }
 elseif ($Mode -eq 'consumers') {

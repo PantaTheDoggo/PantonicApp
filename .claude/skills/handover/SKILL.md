@@ -5,7 +5,7 @@ description: Encerra uma tarefa Pantonic* com handover limpo — atualiza o diá
 
 # handover — encerramento de tarefa e troca de contexto
 
-Regra de ouro (`~/.claude/CLAUDE.md` Regra 2; `GOVERNANCA.md` §4.3 no hub do kit): **uma tarefa
+Regra de ouro (`.claude/global/CLAUDE.md` Regra 2; `GOVERNANCA.md` §4.3 no hub do kit): **uma tarefa
 por contexto**. Toda tarefa termina com este fluxo; a próxima tarefa começa em contexto limpo,
 invocada pelo usuário.
 
@@ -14,11 +14,12 @@ invocada pelo usuário.
 1. **Gate** — se a tarefa está sendo dada como concluída, a skill `guardrails-check` já deve
    ter passado (Tier 2 no mínimo — dirs tocados + `tests/conformance/` verde; Tier 3 completo só
    quando a própria tarefa/sprint exigir, ver skill `guardrails-check`). Sem gate verde, o
-   destino é `blocked` ou permanece `in progress`, nunca `done`.
+   destino é `blocked` ou permanece `in-progress`, nunca `done`.
 
 2. **Atualizar o diário de obras** (skill `diario-de-obras`):
-   - Status: `in review` (pronto para validação do usuário), `done` (validado/trivial),
-     `blocked` (com razão) ou `in progress` (interrompida — anotar ponto de parada).
+   - Status: `review` (pronto para validação do usuário), `done` (validado/trivial),
+     `blocked` (com razão) ou `in-progress` (interrompida — anotar ponto de parada).
+     Lista completa e transições: skill `diario-de-obras`, `## Status — residência única`.
    - Preencher "Notas de execução" da tarefa (≤ ~5 linhas + ponteiros): o que foi feito, arquivos
      tocados (`caminho:linha`), o **comando de verificação colado do terminal** (não a intenção de
      verificar — `GOVERNANCA.md` §4.2) com os testes criados (TF/TR), desvios do plano, piso de
@@ -29,18 +30,17 @@ invocada pelo usuário.
      diário), o destino é uma seção do próprio plano — a célula do índice fica travada em
      status + ≤ ~1-2 frases + ponteiro. Registrar também
      `Consumo: ver docs/telemetria.tsv` — **ponteiro, nunca o número em prosa**. A
-     medida vai como uma linha nova em `docs/telemetria.tsv` (`data`, `projeto`, `tarefa`,
-     `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte`), apendada pelo **orquestrador** a
-     partir do bloco `<usage>` da notificação de conclusão do subagente (`fonte: usage`), nunca
+     medida vai como uma linha nova em `docs/telemetria.tsv` (ver `.claude/tools/telemetria.py append`), apendada pelo **orquestrador** a partir do bloco `<usage>` da notificação de conclusão
+     do subagente (`fonte: usage`), nunca
      por estimativa do próprio subagente no texto do handover (auto-relato subestima o consumo
      real). Execução inline, sem bloco `<usage>` a ler, entra com `fonte: contado`; consumo
      perdido com a sessão, com `fonte: nao_medido`. Se este fluxo roda dentro do subagente antes
      de retornar, deixar o placeholder e o orquestrador escreve a linha da série ao processar a
      notificação (`GOVERNANCA.md` §4.2).
    - **Dono do gatilho de condensação:** se o diário exceder ~500 linhas OU o bullet
-     recém-escrito exceder ~10 linhas, rodar a operação Condensar (skill `diario-de-obras`) na
+     recém-escrito exceder ~30 linhas, rodar a operação Condensar (skill `diario-de-obras`) na
      mesma sessão — nota longa vale 1 leitura, ponteiro vale para sempre. O flip de status da
-     sprint (`backlog`↔`in progress`↔`done`) acompanha o início/fim de suas tarefas — índice
+     sprint (`ready`↔`in-progress`↔`done`) acompanha o início/fim de suas tarefas — índice
      nunca defasado do WIP real.
    - **Achado fora de escopo com ação futura** (falha de teste pré-existente OU risco/
      recomendação registrado só em decision record/prosa) vira, NA MESMA SESSÃO: (a) entrada
@@ -90,11 +90,11 @@ O checkpoint é **ponteiro de estado, não relatório intermediário**: não nar
 justifica decisões, não repete o que já está no diário ou no plano. Ele existe para que outro
 contexto retome sem redescobrir.
 
-- **Gatilho** — o consumo cruza **2/3 do teto da classe** da tarefa (tabela de classes em
-  `GOVERNANCA.md` §3): ≤15 → **10**; ≤40 → **27**; ≤60 → **40**; ≤30 → **20**; classe
-  investigação → 2/3 do teto prescrito no dossiê. Também dispara **antes** disso se o executor
-  concluir, por qualquer motivo, que vai estourar. Não esperar o estouro: no estouro já não há
-  orçamento para escrever o checkpoint.
+- **Gatilho** — o executor conclui que o contexto acaba antes da tarefa (`GOVERNANCA.md` §4.3,
+  "Contexto acabando sem plano de parada"): sinal qualitativo, não número — nenhum teto de
+  consumo dispara o checkpoint. O mesmo checkpoint responde ao sinal de poluição, e nada se
+  inicia depois do sinal. Não esperar a certeza plena: ao concluir que vai faltar contexto, já é
+  hora de escrever — sem orçamento sobrando não há como escrever o checkpoint.
 - **Entregável** — até **5 linhas** no diário, na "Notas de execução" da tarefa em curso, uma
   linha por item:
   1. o que já está **descoberto e decidido** (inclusive rotas descartadas — descarte é achado);
@@ -106,7 +106,7 @@ contexto retome sem redescobrir.
   `Edit`. O checkpoint tem de custar menos que a descoberta que preserva; se está custando mais
   que 2 chamadas, ele virou relatório e perdeu a razão de existir. Sem releitura de verificação,
   sem varredura para "completar" o estado.
-- Depois de escrever o checkpoint, a tarefa fica `in progress` com o ponto de parada anotado —
+- Depois de escrever o checkpoint, a tarefa fica `in-progress` com o ponto de parada anotado —
   nunca `done`, nunca `blocked` (não há impedimento externo; acabou o orçamento).
 
 **Exemplo (caso real da `proximo-passo`: subagente caiu sem bloco `<usage>`)** — cinco linhas:

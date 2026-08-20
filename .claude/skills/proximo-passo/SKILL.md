@@ -7,9 +7,15 @@ description: Ponto de entrada de contexto novo para "execute o próximo passo do
 
 Ponto de entrada canônico para o fluxo "abro contexto novo, digo 'execute o próximo passo do
 backlog', recebo um relatório". Não substitui a regra **uma tarefa por contexto**
-(`~/.claude/CLAUDE.md` Regra 2; `GOVERNANCA.md` §4 no hub do kit) — orquestra `diario-de-obras`
-+ `pantonic-executor` + `handover` numa sequência fixa. Os "fatos estáveis" da arquitetura de
-cada projeto ficam no arquivo do agente executor daquele projeto (`.claude/agents/*.md`), não
+(`.claude/global/CLAUDE.md` Regra 2; `GOVERNANCA.md` §4 no hub do kit) — orquestra
+`diario-de-obras` + `pantonic-executor` + `handover` numa sequência fixa. Os "fatos estáveis" da
+arquitetura de cada projeto ficam no arquivo do agente executor daquele projeto
+(`.claude/agents/*.md`), não aqui.
+
+**Vocabulário de estados:** esta skill *consome* o kanban e não define estado nenhum. A lista
+final de valores de `Status`, a máquina de transições e o alcance de cada estado por objeto
+(tarefa, plano/iniciativa, tíquete) têm residência única — skill `diario-de-obras`, seção
+`## Status — residência única`. Em dúvida sobre um estado, ler lá; nunca reenunciar a lista
 aqui.
 
 ## Fluxo
@@ -22,28 +28,30 @@ aqui.
       — `AskUserQuestion` com promover/descartar por candidato — e marcar a linha conforme a
       decisão. O agente **nunca promove sozinho**; sem esta drenagem a fila acumula e a disciplina
       degrada de volta para gravar direto em memória
-      (`~/.claude/docs/GOVERNANCA_MEMORIAS.md` §8). Fila vazia ou toda marcada: seguir sem ruído.
+      (`.claude/global/docs/GOVERNANCA_MEMORIAS.md` §8). Fila vazia ou toda marcada: seguir sem
+      ruído.
 
 2. **Ler diretiva de priorização** — primeira linha do diário (`docs/DIARIO_DE_OBRAS.md`), logo
    abaixo do título. Se vazia, aplicar heurística padrão, nesta ordem:
    1. Itens `blocked` cuja razão registrada já não se aplica (destravar).
-   2. Itens `in progress` (WIP de 1 iniciativa por vez — nunca abrir uma segunda enquanto uma
+   2. Itens `in-progress` (WIP de 1 iniciativa por vez — nunca abrir uma segunda enquanto uma
       primeira está em andamento).
    3. Tíquetes avulsos de bug (`TK-*` descritos como bug).
-   4. Demais itens `backlog`, por ordem de entrada no índice (FIFO).
+   4. Demais itens `ready`, por ordem de entrada no índice (FIFO).
    Se a diretiva nomear uma iniciativa/bug específico, ela tem precedência total sobre a
-   heurística — ex.: "Priorize iniciativa X" pula direto para a próxima tarefa `backlog`/
-   `in progress` daquela âncora, mesmo que outra iniciativa esteja mais antiga no índice.
+   heurística — ex.: "Priorize iniciativa X" pula direto para a próxima tarefa `ready`/
+   `in-progress` daquela âncora, mesmo que outra iniciativa esteja mais antiga no índice.
 
-   Se houver 2+ iniciativas `in progress` com Diretiva vazia, não desempatar por FIFO nem
+   Se houver 2+ iniciativas `in-progress` com Diretiva vazia, não desempatar por FIFO nem
    "momentum": `AskUserQuestion` — empate de WIP é prioridade não persistida. Instrução de
    prioridade do dono que dispara execução escreve a linha de Diretiva no mesmo ato, não só
    nota de seção.
 
-3. **Escolher UMA tarefa atômica** — nunca mais de uma por contexto (`~/.claude/CLAUDE.md`,
-   Regra 2). Grep pelo ID no diário, ler só a seção correspondente (nunca o diário inteiro).
+3. **Escolher UMA tarefa atômica** — nunca mais de uma por contexto
+   (`.claude/global/CLAUDE.md`, Regra 2). Grep pelo ID no diário, ler só a seção correspondente
+   (nunca o diário inteiro).
 
-   Para retomar sprint `in progress`: Grep por `Próxima tarefa da sprint` (`output_mode:
+   Para retomar sprint `in-progress`: Grep por `Próxima tarefa da sprint` (`output_mode:
    content`, `-A 2`) e ir direto ao dossiê referenciado — nunca leitura sequencial da seção.
    Tíquete N/A-legado (campos "N/A — migrado", autorado dias/semanas atrás): classificar antes
    de qualquer delegação — (1) objetivo AFIRMA estado de código → 1-3 sondas baratas
@@ -52,19 +60,17 @@ aqui.
    `AskUserQuestion`, nunca delegar; (3) objetivo correto mas sem design definido → fase de
    escopamento própria (scouts + verificações), orçada fora do teto do executor. Se a varredura
    FIFO percorrer vários itens consecutivos sem achar um atômico, parar e apresentar o cluster
-   inteiro (agrupado por perfil) para decisão em lote do dono — 1 round-trip, não N.
+   inteiro (agrupado por tipo) para decisão em lote do dono — 1 round-trip, não N.
 
 4. **Delegar execução** — agente `pantonic-executor`, com a tarefa atômica completa (objetivo,
-   arquivos-alvo, contratos, testes, critério de pronto) copiada da seção do diário. Se a tarefa
-   disser respeito a um domínio já coberto por um agente mais especializado (ex.: `clean-code`
-   para refactor comportamento-preservado, `architect-auditor` para auditoria), delegar a ele em
-   vez do executor genérico é aceitável — a escolha do agente certo é critério do orquestrador,
-   não uma etapa mecânica. **Dieta do prompt:** carregar só o dossiê da tarefa — guardrails de
+   arquivos-alvo, contratos, testes, critério de pronto) copiada da seção do diário. Despachar ao
+   papel competente é critério do orquestrador, não uma etapa mecânica. **Dieta do prompt:** carregar só o dossiê da tarefa — guardrails de
    arquitetura já vivem nos "fatos estáveis" do arquivo do agente e não devem ser repetidos aqui;
    repetir paga o mesmo texto em todos os turnos do executor. **Levantamento de contexto antes do
    dossiê:** se entender o estado atual exigir ler mais de ~1-2 arquivos de código-fonte
    integrais (mismatch de shape, assinaturas, comportamento vigente), essa varredura vai para o
-   agente `context-scout` (skill `context-prep`), não para leitura direta do modelo principal —
+   agente `context-scout` (`.claude/global/agents/context-scout.md`) via skill `context-prep`
+   (`.claude/global/skills/context-prep/SKILL.md`), não para leitura direta do modelo principal —
    o orquestrador monta o prompt de delegação a partir só do dossiê compacto devolvido pelo
    scout. Pular direto para leitura própria só quando a tarefa for trivial e o(s) arquivo(s) já
    forem conhecidos/pequenos.
@@ -95,7 +101,10 @@ aqui.
    3. Números de aceite (piso, contagem de suíte, call sites) re-derivados por 1 comando barato
       agora — nunca copiados do plano (contagens envelhecem com a própria sprint). String
       destinada a assert é citação colada do output de verificação, nunca paráfrase — token
-      negativo errado passa em silêncio.
+      negativo errado passa em silêncio. Junto dos números vão as **âncoras** (arquivo, linha e
+      texto do ponto a editar) re-derivadas no ato e, quando a tarefa fecha em plano em andamento,
+      o **range de linhas do bullet de fechamento anterior**: sem isso o executor paga a
+      localização em tool uses, e é dela que vem o excedente de teto — não do trabalho.
    4. Afirmação negativa de escopo ("não toca contracts/services") com campo novo persistido
       exige 1 grep pelo gate de ESCRITA (`extra.*forbid`, validador) antes de ser afirmada.
       Rename/move de símbolo público: grep também em docs vivos (`docs/*.md`, excluindo
@@ -136,16 +145,14 @@ aqui.
    status, avanço para a fase seguinte de uma iniciativa já aprovada e demais consequências
    mecânicas de um plano vigente são evolução natural, já decidida quando o plano foi aprovado.
    Escalar evento intrínseco gasta turno do dono e devolve a ele trabalho que o plano já resolveu —
-   é o erro simétrico ao de decidir arquitetura sozinho (Regra 8, `~/.claude/CLAUDE.md`).
+   é o erro simétrico ao de decidir arquitetura sozinho (Regra 8, `.claude/global/CLAUDE.md`).
 
-   **Telemetria pós-notificação:** a série é do orquestrador. O dossiê instrui o executor a
-   gravar no diário o placeholder literal "Consumo: (preenchido pelo orquestrador via
-   notificação)" — ou a não editar o diário (orquestrador escreve o bullet inteiro). Preencher =
-   apender **uma linha** a `docs/telemetria.tsv` com o dado do bloco `<usage>` (`fonte: usage`;
-   inline sem `<usage>` = `contado`) e trocar o placeholder pelo ponteiro
-   "Consumo: ver docs/telemetria.tsv" — Grep pelo placeholder → Read offset/limit da região →
-   Edit; NUNCA Edit apoiado em Read anterior à chamada `Agent` (o hiato de delegação invalida o
-   rastreio). O número **não** é copiado para o diário (`GOVERNANCA.md` §4.2 — fonte única). No
+   **Telemetria pós-notificação:** a série é do orquestrador, e o executor não edita o diário —
+   o orquestrador escreve o bullet inteiro. Fechar = apender **uma linha** a
+   `docs/telemetria.tsv` (ver `.claude/tools/telemetria.py append`; `--fonte usage` a partir do bloco `<usage>`, `--fonte contado` na execução inline sem `<usage>`) e escrever no bullet o
+   ponteiro "Consumo: ver docs/telemetria.tsv" — Read
+   offset/limit da região do bullet → Edit; NUNCA Edit apoiado em Read anterior à chamada
+   `Agent` (o hiato de delegação invalida o rastreio). O número **não** é copiado para o diário (`GOVERNANCA.md` §4.2 — fonte única). No
    pickup, 1 Grep pelo texto-promessa: match de sessão anterior = telemetria vencida → linha na
    série com `fonte: nao_medido` e o diário apontando, mantendo autoestimativa marcada como tal.
    **Queda de subagente:** notificação de falha não traz `<usage>` → registrar "PARCIAL —
@@ -160,8 +167,10 @@ aqui.
   razão seja `validação postergada` enquanto suas implementações-dependência não estiverem todas
   `done`. Um plano `superseded` NÃO é retomado nem "continuado" — a rota foi substituída; se ele
   parece a próxima coisa a fazer, o erro está na leitura do estado, não no plano vivo.
+  `superseded` aqui é vocabulário de **plano/iniciativa**: não existe tarefa `superseded`, e o
+  alcance de cada estado por objeto está na residência única (skill `diario-de-obras`).
 - **Convergência de iniciativa (rebase antes de escolher):** se uma iniciativa tiver 2+ planos
-  vivos (`backlog`/`in progress`/`blocked` não-postergado) disputando a mesma rota, NÃO desempatar
+  vivos (`ready`/`in-progress`/`blocked` não-postergado) disputando a mesma rota, NÃO desempatar
   por FIFO/momentum — isso significa que a reconciliação A/B/C (skill `diario-de-obras`, seção
   "Planos derivados") foi pulada. Parar, rebasear (marcar `superseded` os planos que a premissa
   atual contradiz, `blocked` os travados por fato novo, checar gaps já tratados sem registro) e só
@@ -171,7 +180,7 @@ aqui.
   iniciar a implementação nem redescobrir o que o plano já responde.
 - Se a heurística empatar entre itens do mesmo nível, desempate por ordem de entrada no índice
   (mais antigo primeiro).
-- Se o diário estiver vazio (nenhum item `backlog`/`in progress`/`blocked`), reportar isso
+- Se o diário estiver vazio (nenhum item `ready`/`in-progress`/`blocked`), reportar isso
   explicitamente ao usuário — não inventar trabalho nem reabrir item `done`/`cancelled`.
 - Diretiva de priorização só muda por escrita explícita no diário (skill `diario-de-obras`,
   operação "registrar diretiva de priorização") — nunca inferida de uma conversa que não a

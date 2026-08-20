@@ -1,12 +1,12 @@
 ---
 name: guardrails-check
-description: Verifica os guardrails de clean architecture de um projeto Pantonic* antes de marcar uma tarefa como concluída — regra de camadas, ACL, MVVM *[perfil `desktop-pyside6`, §1.1]*, egress G6, namespace de estado, conformance e piso de regressão. Usar ao final de toda tarefa de execução ou em auditoria.
+description: Verifica os guardrails de clean architecture de um projeto Pantonic* antes de marcar uma tarefa como concluída — regra de camadas, ACL, egress G6, namespace de estado, conformance e piso de regressão. Usar ao final de toda tarefa de execução ou em auditoria.
 ---
 
 # guardrails-check — gate de qualidade Pantonic*
 
-Rodar ao final de toda tarefa (obrigatório antes de `in review`/`done`) ou sob demanda em
-auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
+Rodar ao final de toda tarefa (obrigatório antes de sinalizar `review`) ou sob demanda em
+auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §12.
 
 ## Checklist executável
 
@@ -25,8 +25,8 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    (gate de fechamento já previsto no próprio plano); ou (c) o usuário pedir um passe completo.
    Quando (a) a tarefa toca `contracts/`, `infracore/` ou serviço compartilhado (alto raio de
    explosão), o executor **não** roda Tier 3 por conta própria — decidir rodar é prerrogativa do
-   dono/orquestrador (`CLAUDE.md` global, Regra 7; `integration-executor` R-3); o executor só
-   **recomenda** o passe completo no handover, com a razão (raio de explosão). Nas demais
+   dono/orquestrador (`CLAUDE.md` global, Regra 7); o executor só **recomenda** o passe completo
+   no sinal de retorno, com a razão (raio de explosão). Nas demais
    tarefas o gate é Tier 2, e o piso é conferido no gate de sprint. Nenhum comportamento
    trancado perdido → nada a fazer; comportamento perdido → tarefa **não está pronta**.
 5. **Kit agêntico (projeto que tem `.claude/checks/kit_check.ps1`) — bloqueante como o Tier 2** —
@@ -40,7 +40,8 @@ auditoria. Referências: GOVERNANCA.md §7, ARQUITETURA_PANTONICA.md §1, §13.
    obrigatório. Cobertura por teste não confere "vivo" (`GOVERNANCA.md` §7, G-DEADCODE) — um
    achado é órfão real (remover no mesmo commit) ou dispatch dinâmico ainda não coberto pelas
    categorias auto-vivas do script (Pydantic validator, entry class de `manifest.json`, override
-   de virtual Qt *[perfil `desktop-pyside6`, §1.1]*), nunca allowlist de conveniência.
+   de virtual do toolkit da camada de apresentação declarado pelo projeto), nunca allowlist de
+   conveniência.
 7. **Ratchet do piso comportamental (`.claude/checks/ratchet_piso.py`) — bloqueante, mesmo
    padrão dos itens 5 e 6** — `python .claude/checks/ratchet_piso.py` (usa o `--root` default do
    próprio projeto; consumidor versiona `tests/piso_comportamental.txt`, uma linha por
@@ -66,9 +67,8 @@ Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sum
 
 - [ ] Import novo respeita a direção `infracore ← contracts ← services ← plugins`?
 - [ ] Dependência externa nova está confinada a UM serviço com Protocol em `contracts/`?
-- [ ] *[perfil `desktop-pyside6`, §1.1]* ViewModel continua QtCore-only? Model continua sem Qt?
-      Geometria/estilo/`QScreen` só na shell (`infracore/ui_shell/`)?
-- [ ] Nenhum trabalho pesado no UI thread (tudo via `task_runner_service`)?
+- [ ] Nenhum trabalho pesado na thread que atende a superfície de entrada (tudo pela porta de
+      execução assíncrona, via `task_runner_service`)?
 - [ ] Sinais usados só para observação (sem polling)? Payload é Pydantic `extra="forbid"`?
 - [ ] Tipo que cruza camadas foi espelhado verbatim em `contracts/` (mirror discipline)?
 - [ ] Nenhum teste deletado às cegas — teste com significado alterado foi reescrito?
@@ -77,7 +77,7 @@ Sempre `/lean-test` (ou skill `lean-test`) — saída filtrada (só falhas + sum
 ## Padrão de código (limiares canônicos)
 
 Lar canônico dos limiares numéricos de clean code — outros agentes (auditor de arquitetura,
-executor, agente de refactor) **referenciam** esta seção em vez de repetir os números; mudar um
+auditor de clean code, executor) **referenciam** esta seção em vez de repetir os números; mudar um
 limiar é editar só aqui.
 
 - **Automático (ruff — gate de conformance):** complexidade ciclomática (`C901`,
@@ -92,8 +92,8 @@ limiar é editar só aqui.
 ## Veredito
 
 Todo item do checklist de review marcado como **desvio** cita `path:line` da evidência — um
-desvio sem `path:line` é rubber-stamping, não veredito. Colar o bloco abaixo (preenchido) nas
-"Notas de execução" da tarefa no diário de obras:
+desvio sem `path:line` é rubber-stamping, não veredito. Colar o bloco abaixo (preenchido) no
+retorno de fechamento de quem rodou o gate — o sinal da execução, ou o relatório da auditoria:
 
 ```
 Veredito — <ID da tarefa>
@@ -107,5 +107,5 @@ Espelho: <check-readme.ps1 — exit 0 | divergência(s) nomeada(s) | n/a (projet
 Checklist de review: <ok | desvio path:line — descrição> (uma linha por item verificado)
 ```
 
-**Qualquer item vermelho = tarefa não concluída** — registrar no diário de obras (`blocked` ou
-permanece `in progress`) com a razão.
+**Qualquer item vermelho = tarefa não concluída** — sinalizar `blocked` com a razão tipada, em
+vez de `review`.

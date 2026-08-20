@@ -19,22 +19,20 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
 ## Índice
 | ID | Título | Status | Âncora |
 |---|---|---|---|
-| S1-T3 | <título curto> | in progress | `## S1 — <sprint>` |
-| TK-042 | <título curto> | backlog | `## TK-042` |
+| S1-T3 | <título curto> | in-progress | `## S1 — <sprint>` |
+| TK-042 | <título curto> | ready | `## TK-042` |
 
 ## <um heading `##` por sprint/tíquete, apêndice cronológico>
 ```
 
-- **Status válidos:** `backlog`, `in progress`, `in review`, `blocked`, `done`, `cancelled`,
-  `superseded`. Os três terminais são `done`, `cancelled` e `superseded` (todos condensam para o
-  histórico): `done` = entregue e de pé; `cancelled` = nunca feito, descartado; `superseded` =
-  feito ou parcial, porém tornado obsoleto por um entendimento novo — o trabalho pode sobreviver
-  no código, a rota não. `superseded` sai do backlog (não é escolhível) como `done`/`cancelled`.
+- **Status:** os estados válidos, a máquina de transições e o alcance por objeto vivem em
+  "Status — residência única" (abaixo). É o único lugar onde essa lista é enunciada; todo o
+  resto do kit aponta para lá e não recopia.
 - **IDs:** `S<n>-T<m>` para tarefas de sprint; `TK-<seq>` para tíquetes avulsos.
 - O índice fica **no topo** e tem UMA linha por item — é por ele que o executor localiza sua
   tarefa sem ler seções irrelevantes. Toda mudança de status atualiza índice E seção.
-- **A célula "Título" do índice NUNCA recebe prosa de resultado de execução.** Handover de
-  execução (skill `handover`) escreve o detalhe (o que foi feito, testes, consumo) na seção
+- **A célula "Título" do índice NUNCA recebe prosa de resultado de execução.** O handover de
+  fechamento (skill `handover`) escreve o detalhe (o que foi feito, testes, consumo) na seção
   própria (`### <ID>` no diário) ou, para sprint que vive inteiramente em `docs/plans/P-*.md`
   (linha única no índice, sem heading no diário), numa seção do próprio plano (`## Notas de
   execução` / `## Achados da execução`) — nunca de volta na linha do índice. A célula do índice
@@ -45,12 +43,78 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
   "Guardrail anti-log-narrativo" abaixo, generalizado para toda tarefa — não só planos derivados.
 - **Diretiva de priorização** é a linha imediatamente abaixo do título. Guia a
   skill `proximo-passo` quando o usuário pede para seguir o backlog sem nomear tarefa. Vazia por
-  padrão — heurística: destravar `blocked` → concluir `in progress` (WIP de 1 iniciativa por vez)
+  padrão — heurística: destravar `blocked` → concluir `in-progress` (WIP de 1 iniciativa por vez)
   → bugs → demais por FIFO (ordem de entrada no índice).
 - **Sprints multi-tarefa** (`## SPRINT-<nome>`) têm, imediatamente abaixo do `**Objetivo:**`, a
   linha `**Próxima tarefa da sprint:** <ID> (<ponteiro ao dossiê>)` — atualizada a cada handover,
   ANTES das `**Notas de execução:**` (que crescem por apensamento a cada tarefa concluída).
   Heading + essa linha cabem num Read curto, sem varrer notas de execução potencialmente longas.
+
+## Status — residência única
+
+Esta seção é o **único lugar** do repositório onde a lista de estados, a máquina de transições e o
+alcance por objeto são enunciados. Todo o resto **aponta** para cá e não recopia.
+
+**Escritor:** o `status` é **materializado** pelo `scrum-master`, e só por ele, em qualquer estado — a
+regra vale para a lista inteira e não se repete linha a linha. A **autoria** é outro ato: o executor
+é autor de `review` e de `blocked`, os dois valores que devolve ao fim da tarefa, e o `scrum-master`
+os transcreve sem discricionariedade; nos demais estados, autoria e materialização são ambas do
+`scrum-master` (fronteira fixada pela `DP-G` de `docs/plans/P-0734-execucao-autonoma.md`).
+
+### Lista final
+
+| estado | significado | o que dispara a entrada |
+|---|---|---|
+| `triage` | item registrado, ainda não avaliado quanto a entrar no backlog | registro do item na fila de entrada (`docs/plans/_INBOX.md`) |
+| `ready` | item aceito e elegível para execução | a triagem aceita o item; ou o planejamento cria a tarefa dentro de plano aprovado; ou um `blocked` é destravado |
+| `blocked` | item que existe e não pode ser executado agora, com razão registrada | fato novo derruba a premissa; dependência não satisfeita; validação postergada; escalada do executor ou do laudo |
+| `in-progress` | item em execução neste exato momento | o `scrum-master` delega o item a um contexto de execução |
+| `review` | o entregável existe e aguarda aceite ou feedback de correção | o executor devolve a linha de retorno da `DP-G` |
+| `done` | entregável aceito | laudo `seguir` ou `seguir com ressalva` acolhido e, onde o dono é o teste de sentido, o veredito dele |
+| `cancelled` | item que não será executado, por qualquer motivo | a triagem recusa; o escopo é descartado; o item é absorvido por outro |
+
+### Máquina de transições
+
+Toda transição é **materializada** pelo `scrum-master`; a **autoria** de `in-progress` → `review` e
+de `in-progress` → `blocked` é do executor (`DP-G`). A coluna **gatilho** cita os dois — e só os
+dois — gatilhos que disparam ação automática.
+
+| transição | quando | gatilho |
+|---|---|---|
+| (entrada) → `triage` | o item é registrado na fila de entrada | — |
+| `triage` → `ready` | a triagem aceita: o item entra no kanban | — |
+| `triage` → `cancelled` | a triagem recusa | — |
+| `ready` → `in-progress` | o `scrum-master` delega (uma tarefa por contexto, WIP de 1) | — |
+| `ready` → `blocked` | fato novo derruba a premissa, com razão registrada | — |
+| `ready` → `cancelled` | escopo descartado ou absorvido por outro item | — |
+| `blocked` → `ready` | a razão registrada não se aplica mais | — |
+| `blocked` → `cancelled` | o bloqueio é permanente ou a rota mudou | — |
+| `in-progress` → `review` | o executor devolve a linha de retorno da `DP-G` | **gatilho 1** — o `scrum-master` invoca o `pantonic-reviewer` |
+| `in-progress` → `blocked` | o executor para e escala | — |
+| `review` → `done` | laudo `seguir` ou `seguir com ressalva`, mais o aceite do dono onde ele é o teste de sentido | **gatilho 2** — o `scrum-master` escreve o RDO |
+| `review` → `in-progress` | laudo `refazer`, dentro do teto de retentativa; a retentativa é agente novo | — |
+| `review` → `blocked` | laudo `escalar`, ou `refazer` com o teto de retentativa esgotado | — |
+
+**Fechamentos.** (a) `done` e `cancelled` são **terminais** e não têm saída: retrabalho depois do
+`done` nasce como **item novo**, porque reabrir falsificaria o registro. (b) Só as duas transições
+marcadas disparam ação automática; **nenhuma outra dispara nada**. (c) Item que termina em
+`cancelled`, e item que para em `blocked` por escalada, **não** disparam RDO — o gasto continua
+registrado pela telemetria.
+
+### Alcance por objeto
+
+A lista governa a tarefa e, por extensão, todo item do kanban: o índice de
+`docs/DIARIO_DE_OBRAS.md` tem **uma** coluna `Status`, compartilhada por iniciativa, plano, tíquete
+e tarefa. **Exceção declarada, única:** `superseded` é estado **exclusivo de plano/iniciativa** e
+**não é estado de tarefa** — tarefa que a realidade tornou obsoleta é `cancelled`; plano cuja
+premissa caiu é `superseded`, com ponteiro para o substituto. Nem todo estado se aplica a todo
+objeto:
+
+| objeto | estados aplicáveis |
+|---|---|
+| tíquete (fila de entrada) | `triage`, `ready`, `blocked`, `cancelled` |
+| tarefa (de plano ou de sprint) | `ready`, `in-progress`, `review`, `done`, `blocked`, `cancelled` — **sem `triage`** (a tarefa nasce de plano já aprovado) e **sem `superseded`** |
+| plano / iniciativa | `ready`, `in-progress`, `blocked`, `done`, `cancelled`, `superseded` — **sem `review`** (o aceite é das tarefas; o veredito do dono no fecho da sprint é tarefa em `review`) e **sem `triage`** (ideia de plano é triada como tíquete) |
 
 ## Formato de uma tarefa atômica
 
@@ -64,8 +128,8 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
 - **Verificação:** <comando copiado do terminal — não a intenção de verificar; para tarefa sem
   artefato executável, a ação concreta aplicada e o resultado registrado>
 - **Pronto quando:** <critério objetivo>
-- **Notas de execução:** <≤ ~5 linhas + ponteiros (decision record, commit); preenchido pelo
-  executor no handover — custo composto: nota extensa é relida por todo agente em toda tarefa
+- **Notas de execução:** <≤ ~5 linhas + ponteiros (decision record, commit); preenchido no
+  handover de fechamento — custo composto: nota extensa é relida por todo agente em toda tarefa
   futura>
 ```
 
@@ -76,7 +140,7 @@ quando a linha exata não existe no momento do planejamento (`C-06`, padrão de 
 ## Operações
 
 1. **Registrar plano** — apensar a seção do sprint com o checklist completo; inserir cada tarefa
-   no índice como `backlog`.
+   no índice como `ready`.
    **Gate de publicação (G-PLANREADY, `GOVERNANCA.md` §7 item 12) — verificar ANTES de apensar:**
    o plano está fechado (id sequencial; `T1..Tn` em ordem de dependência, com objetivo/"pronto
    quando"/modelo; nenhuma decisão owner-gated postergada; linear, sem "TBD" nem referência para
@@ -96,7 +160,7 @@ quando a linha exata não existe no momento do planejamento (`C-06`, padrão de 
    linhas): (a) mover as seções concluídas para `docs/DIARIO_HISTORICO.md` (append-only), deixando
    no diário só a linha do índice com ponteiro; (b) se passar de 500 linhas mesmo assim, criar
    entrada no `docs/DOC_MAP.md`.
-   Gatilhos adicionais: (c) uma única seção — mesmo `backlog` — que passe de ~300 linhas migra
+   Gatilhos adicionais: (c) uma única seção — mesmo `ready` — que passe de ~300 linhas migra
    para arquivo satélite próprio (`docs/DIARIO_<ID>.md` ou `docs/audits/<ID>_LOG.md`,
    append-only), ficando no diário só a linha de índice + "última rodada: N / último achado:
    M"; (d) o dono do gatilho é o fechamento de cada tarefa (skill `handover`) — não existe
@@ -139,7 +203,7 @@ classificação é explícita e imediata, nunca fica implícita para "resolver d
   vivas fecharem. Não se abre rodada de validação enquanto existe implementação em aberto que possa
   invalidá-la (evita revalidar o que a próxima tarefa vai mudar).
 
-**Regra de convergência:** uma iniciativa tem no máximo **UM** plano vivo (`backlog`/`in progress`/
+**Regra de convergência:** uma iniciativa tem no máximo **UM** plano vivo (`ready`/`in-progress`/
 `blocked` não-postergado) por vez. O plano vivo é sempre o mais recente cuja premissa não foi
 contradita. Se ao drenar o inbox ou escolher tarefa você achar 2+ planos vivos na mesma iniciativa,
 é sinal de que uma reconciliação A/B/C foi pulada: **rebasear antes de escolher** — marcar

@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Guarda executável de drift do README espelho (V2D-T3, docs/plans/P-0729-v2-documentacao.md §T3).
+    Guarda executável de drift do README canônico.
 
 .DESCRIPTION
-    O `README.md` da raiz é o espelho das implementações do framework, escrito para que quem já
-    usa o framework consiga argumentar sobre as práticas (o que é / por que foi adotado / onde o
-    gerente intervém) sem abrir skill, agente e hook um a um (V2D-T2). Um espelho sem guarda nasce
+    O `README.md` da raiz é o contrato entre o framework e quem o adota: o espelho das
+    implementações, escrito para que se possa argumentar sobre as práticas (o que é / por quê /
+    onde o gerente intervém) sem abrir skill, agente e hook um a um. Um espelho sem guarda nasce
     fiel e envelhece mentindo — com autoridade, porque é o único arquivo lido. Este script falha
     (exit != 0) quando o README diverge do disco/doutrina em qualquer uma das 5 checagens mecânicas
     abaixo; zero julgamento de conteúdo, só forma e paridade de números.

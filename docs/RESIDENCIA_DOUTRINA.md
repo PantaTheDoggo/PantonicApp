@@ -8,6 +8,10 @@ Este arquivo classifica **item a item** o conteúdo do `~/.claude/CLAUDE.md` (8 
 e decide onde cada item deve morar — **36 itens**, nenhum sem classificação. A decisão do dono está registrada em §6 e é o insumo único da
 `V2K-T17`: a `T17` executa esta tabela, sem acrescentar nem omitir item.
 
+> **A régua mudou em 2026-08-15.** A classificação item a item das §§1-6 foi produzida sob a régua
+> de quatro perguntas e permanece como registro do que foi decidido à época. O que a régua nova
+> reclassifica está na **§8**, e é ela que vale para leitura de hoje.
+
 ## 1. Régua aplicada (resumo operacional)
 
 Teste de residência de `GOVERNANCA.md` §3.1 — quatro perguntas na ordem, a primeira que der "sim"
@@ -69,13 +73,13 @@ bullets — todos cobertos abaixo).
 *Nota:* `GOVERNANCA.md` §3 ("o agente de planejamento nunca executa") é regra de **papel de agente**,
 não do gatilho de aprovação — não é a mesma proposição, não há colisão.
 
-### Regra 2 — Uma tarefa por contexto (17-29)
+### Regra 2 — Integridade do contexto (17-49)
 
 | # | Item | Classe | Régua | Ação na `T17` |
 |---|---|---|---|---|
-| 2.1 | Uma tarefa por contexto; nunca com contexto cheio | `global` | **P1** — degradação de contexto é fato do harness, não do framework | nenhuma |
+| 2.1 | Integridade do contexto: coesão (poluição = parada fatal e imediata) e capacidade (~50% da janela) | `global` | **P1** — degradação de contexto é fato do harness, não do framework | nenhuma |
 
-*Colisão já resolvida:* `GOVERNANCA.md` §7 item 8 e §4.3 já carregam a versão **do framework**
+*Colisão já resolvida:* `GOVERNANCA.md` §7 item 7 e §4.3 já carregam a versão **do framework**
 (handover, diário, contexto limpo) em forma condensada — é o padrão `DR-A`, sem duas cópias plenas.
 
 ### Regra 3 — Economia de contexto (30-50)
@@ -135,7 +139,7 @@ O global mantém a Regra 3 com o motivo e o hook, apontando para o kit no detalh
 | 7.4 | Batching de chamadas independentes numa mensagem | `dividir` | **P1** para o princípio; **Prec-2** para o consumidor | fica no global; **desce cópia condensada** para §3 (hoje o kit não tem) |
 | 7.5 | Cadência de testes: Tier 1 no máx. 2× por tarefa; tier superior só no fechamento | `dividir` | **P1** (skill `test-tiers` é global); **P2** para o framework (§4.4 TDD) | fica no global; desce 1 linha para `GOVERNANCA.md` §4.4 amarrando cadência ao TDD |
 | 7.6 | Sem re-leitura de verificação após Edit/Write | `global` | **P1** — fato do harness (Edit/Write falham ruidosamente) | nenhuma |
-| 7.7 | **Orçamento por tarefa atômica: "~≤40 tool uses esperado"** | `Pantonic` — **contradição medida** | **Prec-1 + Prec-2 + Dup** — `GOVERNANCA.md` §3 (linhas 74-94) substituiu o teto único pela tabela de tetos por classe, calibrada por 26 registros `Consumo:`; o global ainda diz ≤40 para tudo | remover o número do global; global mantém só "há teto por tarefa atômica; estourar = replanejar, não continuar" e cita o kit |
+| 7.7 | **Orçamento por tarefa atômica: "~≤40 tool uses esperado"** | `Pantonic` — **contradição medida** | **Prec-1 + Prec-2 + Dup** — `GOVERNANCA.md` §3 (linhas 74-94) substituiu o teto único pela tabela de tetos por classe, calibrada por 26 registros `Consumo:`; o global ainda diz ≤40 para tudo | remover o número do global; global mantém só que o dimensionamento por tarefa atômica é **referência informativa** — cruzar o número é alarme, nunca bloqueio: não recusa entrega, não roteia e não encerra tarefa nem janela — e cita o kit |
 | 7.8 | Plano interno antes da primeira edição | `global` | **P1** | nenhuma |
 | 7.9 | Fechamento enxuto: um único registro canônico; relatório = ponteiro + deltas | `dividir` | **P1** para o princípio; **P2** para "o registro canônico é o diário" | fica no global sem citar diário; desce 1 linha para §4.2 |
 | 7.10 | **Telemetria pela notificação, não pelo auto-relato** (linha `Consumo:`; orquestrador lê o `<usage>`; subestimativa medida ~35%) | `Pantonic` | **P2** — a linha `Consumo:` é escrita **no diário de obras**, artefato do framework; `BM-00` marcou como diferencial que não viaja | desce inteiro para `GOVERNANCA.md` §4.2 (ao lado do diário); global mantém 1 linha ("telemetria é medida, não auto-relatada") |
@@ -162,9 +166,12 @@ podem duplicar a mesma frase: se a `T17` rodar antes, a `T19` referencia o pará
   do kit**. Qualquer texto que desça citando-as nasce com ponteiro quebrado no consumidor. Proposta:
   a descida **não cita skill global** — cita só a regra; a promoção dessas skills ao kit, se
   desejada, é iniciativa própria, fora da `T17`.
-- **`DR-C` — contradição viva do teto de turnos** (item 7.7): hoje existem dois números
+- **`DR-C` — divergência viva do orçamento de turnos** (item 7.7): hoje existem dois números
   incompatíveis para a mesma pergunta. Enquanto não for resolvido, um subagente que carrega o
-  CLAUDE.md global lê ≤40 para tarefa de redação de doutrina cujo teto de kit é ≤30.
+  CLAUDE.md global lê ≤40 para tarefa de redação de doutrina cujo número de kit é ≤30. Nenhum dos
+  dois governa fluxo — os dois são referência informativa de dimensionamento (`GOVERNANCA.md` §3),
+  e cruzá-los é alarme, nunca bloqueio —, de modo que a divergência degrada o dimensionamento antes
+  de delegar, não a aceitação da entrega; resolvê-la é alinhar o global ao kit.
 
 ## 6. Ratificação do dono
 
@@ -186,3 +193,30 @@ Com estas quatro respostas, a tabela da §4 está 100% classificada e é o insum
 padrão que o **G-PLANREADY item 1** (§7, linha 325) substituiu por `P-NNNN` com contador global
 monotônico — justamente porque `P-<MMDD>` colidiu (dois `P-0722` no mesmo dia). Correção de 1 linha,
 sem relação com residência; sugerido como tíquete avulso `TK-03`.
+
+## 8. Nota de conciliação — 2026-08-15 (régua nova)
+
+**Nada acima é reescrito.** As §§1-6 registram uma classificação feita sob a régua vigente em
+2026-08-03; esta seção declara o que a régua de 2026-08-15 (`GOVERNANCA.md` §3.1) reclassifica, e é
+a leitura válida de hoje. Execução: `P-0735`.
+
+**O que mudou na régua.** Ela deixa de responder *onde mora* com uma resposta só e passa a separar
+dois eixos que antes coincidiam: **autoridade** (de quem é o conteúdo) e **ponto de carga** (de onde
+o harness lê). Três classes — canônico, ponto de carga, local de máquina —, uma **pergunta zero**
+antes das quatro (*conteúdo ou ponto de carga?*) e o `Prec-2` promovido de critério de desempate a
+**invariante**: nada canônico mora só num ponto de carga.
+
+**Reclassificação, item a item do que esta tabela afirma:**
+
+| O que a §4 afirma | O que a régua nova reclassifica |
+|---|---|
+| A classe **`global`** significa "fica onde está, fora do pacote" | A classe `global` continua significando **doutrina global** — o alcance não muda. O que muda é a residência: o canônico passa a ser versionado no kit (`.claude/global/CLAUDE.md`) e `~/.claude/CLAUDE.md` vira **projeção**. Nenhuma linha da tabela troca de classe |
+| **`Prec-2`** desempata "versionado vence não-versionado" quando duas superfícies empatam (itens 3.3-3.6, 7.4, 7.7) | O empate que o `Prec-2` resolvia deixa de poder existir: com o canônico sempre versionado, a precedência 2 passa a ser **canônico vence projeção**. As conclusões dos itens permanecem — mudou o caminho que as produz |
+| **`DR-A`** — item universal **e** carga do framework resolve-se com texto normativo no kit e condensado autossuficiente no global | Permanece, com o motivo trocado: a razão do condensado deixa de ser "o consumidor não recebe o `~/.claude`" e passa a ser **alcance de ponto de carga** — a doutrina global é o que está ativo num projeto fora da família |
+| **`DR-B`** — as 6 skills globais (`onboard`, `doc-map`, `memory-diet`, `context-prep`, `lean-test`, `test-tiers`) não estão no kit, e a promoção fica como "iniciativa própria" fora da `T17` | **Destravado.** A promoção acontece: as seis skills e o agente `context-scout` passam a ser canônicos no kit e projetados no ponto de carga do usuário. A restrição derivada ("a descida não cita skill global, porque nasceria com ponteiro quebrado no consumidor") **cai** — o ponteiro passa a ter destino |
+| Item **3.2** — o hook de filtro do `pytest` "é mecanismo do harness/máquina do dono; não viaja e não deve" | Reclassificado. O **script** do hook e a **declaração** que o registra são canônicos e viajam; continuam locais de máquina apenas o caminho de log em `%TEMP%` e o bypass, que são propriedade da máquina que executa |
+| **`DR-C`** — divergência do orçamento de turnos | Sem efeito da régua nova; o item já se resolveu pelo alinhamento do global ao kit |
+
+**O que esta nota não faz.** Não reabre nenhuma decisão da §6, não revisa o **conteúdo** do
+`~/.claude/CLAUDE.md` item a item e não muda a fronteira declarada de nenhuma Regra. A mudança de
+residência preserva o texto: o canônico nasce byte a byte igual ao que hoje está no ponto de carga.

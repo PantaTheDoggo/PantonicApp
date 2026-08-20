@@ -1,0 +1,106 @@
+{
+  "alvos": {
+    "projeto": {
+      "settings": "settings.json",
+      "raiz": null,
+      "chaves": {
+        "hooks": {
+          "PreToolUse": [
+            {
+              "matcher": ".*",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/ocupacao.py"
+                }
+              ]
+            }
+          ],
+          "SubagentStop": [
+            {
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/telemetria_hook.py"
+                }
+              ]
+            }
+          ]
+        },
+        "permissions.deny": [
+          "Bash(git push --force*)",
+          "Bash(git push -f*)",
+          "Bash(git reset --hard*)",
+          "Bash(git branch -D*)",
+          "Bash(git clean -fdx*)",
+          "Bash(gh repo delete*)"
+        ]
+      },
+      "arquivos": []
+    },
+    "usuario": {
+      "settings": "{HOME_CLAUDE}/settings.json",
+      "raiz": "{HOME_CLAUDE}",
+      "chaves": {
+        "hooks": {
+          "PreToolUse": [
+            {
+              "matcher": "Bash|PowerShell",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {HOME_CLAUDE}/hooks/pytest_pretooluse.py",
+                  "timeout": 15
+                },
+                {
+                  "type": "command",
+                  "command": "python {HOME_CLAUDE}/hooks/verbose_cmd_pretooluse.py",
+                  "timeout": 15
+                }
+              ]
+            },
+            {
+              "matcher": "Read",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {HOME_CLAUDE}/hooks/read_cap_pretooluse.py",
+                  "timeout": 15
+                }
+              ]
+            }
+          ],
+          "UserPromptSubmit": [
+            {
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {HOME_CLAUDE}/hooks/modelo_por_fase_userpromptsubmit.py",
+                  "timeout": 15
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "arquivos": [
+        {"de": "global/CLAUDE.md", "para": "CLAUDE.md"},
+        {"de": "global/docs/GOVERNANCA_MEMORIAS.md", "para": "docs/GOVERNANCA_MEMORIAS.md"},
+        {"de": "global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md", "para": "docs/RECOMENDACOES_CONSUMO_GLOBAL.md"},
+        {"de": "global/hooks/pytest_pretooluse.py", "para": "hooks/pytest_pretooluse.py"},
+        {"de": "global/hooks/verbose_cmd_pretooluse.py", "para": "hooks/verbose_cmd_pretooluse.py"},
+        {"de": "global/hooks/read_cap_pretooluse.py", "para": "hooks/read_cap_pretooluse.py"},
+        {"de": "global/hooks/modelo_por_fase_userpromptsubmit.py", "para": "hooks/modelo_por_fase_userpromptsubmit.py"},
+        {"de": "global/hooks/pytest_filter.py", "para": "hooks/pytest_filter.py"},
+        {"de": "global/hooks/tail_filter.py", "para": "hooks/tail_filter.py"},
+        {"de": "global/skills/context-prep/SKILL.md", "para": "skills/context-prep/SKILL.md"},
+        {"de": "global/skills/doc-map/SKILL.md", "para": "skills/doc-map/SKILL.md"},
+        {"de": "global/skills/lean-test/SKILL.md", "para": "skills/lean-test/SKILL.md"},
+        {"de": "global/skills/memory-diet/SKILL.md", "para": "skills/memory-diet/SKILL.md"},
+        {"de": "global/skills/onboard/SKILL.md", "para": "skills/onboard/SKILL.md"},
+        {"de": "global/skills/test-tiers/SKILL.md", "para": "skills/test-tiers/SKILL.md"},
+        {"de": "global/agents/context-scout.md", "para": "agents/context-scout.md"}
+      ]
+    }
+  }
+}
