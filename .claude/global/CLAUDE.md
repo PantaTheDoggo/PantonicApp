@@ -20,13 +20,20 @@ Um contexto sustenta **um cenário coerente**: ele segue enquanto tudo que entra
 cenário. Entrando material de outro cenário, ou material que contradiz o que já está lá, o
 contexto está **poluído** — e contexto poluído não se recupera, se substitui.
 
-**Motivo:** duas condições independentes governam a vida de um contexto, e basta uma cair para
-que ele acabe.
+**Motivo:** só uma condição encerra um contexto — a **coesão**, e no instante em que cai. A
+**capacidade** não encerra nada: é diretriz de dimensionamento, exercida antes de a tarefa
+começar.
 
-- **Coesão** — violação **fatal e imediata**. Pare ao primeiro sinal; nunca "termino o que está
-  aberto e limpo depois", porque o que for decidido depois do sinal já é decisão poluída.
-- **Capacidade** — mesmo coeso, o desempenho cai com a ocupação. O teto de trabalho é **~50% da
-  janela**; violação gradual, encerramento planejado.
+- **Coesão** — violação **fatal e imediata**. Pare ao primeiro sinal, de forma **não graciosa**:
+  nada do que for produzido depois do sinal se aproveita, não existe "termino o que está aberto e
+  limpo depois" nem fechamento cerimonioso. Retorne a quem orquestra demandando
+  **contexto limpo para a reexecução**.
+- **Capacidade** — mesmo coeso, o desempenho cai conforme o contexto enche. A capacidade não
+  interrompe trabalho em curso: ela **dimensiona o trabalho antes de começar**. Quem planeja
+  delimita cada tarefa para caber num contexto coerente e coeso, autossuficiente em contexto para
+  a execução, dentro de uma estimativa de **50% de ocupação da janela, com tolerância até 60%**. O
+  número não é constante mágica: vem da literatura sobre decaimento de desempenho de agentes em
+  função do enchimento do contexto, e é revisto se a literatura indicar outro valor.
 
 **Sinais de poluição** (checagem obrigatória, lista não exaustiva): material de outra tarefa,
 outro plano ou outra iniciativa entrou no contexto; premissa que sustentava o trabalho foi
@@ -43,9 +50,11 @@ quem orquestra, conduzir um plano **é** uma tarefa: o contexto atravessa vária
 sem violar nada, porque o cenário é o mesmo, e encerra na **troca de plano ou iniciativa** (troca
 de cenário) ou na capacidade, o que vier antes.
 
-**Como aplicar:** ao detectar sinal de poluição, ou ao cruzar a capacidade, grave um checkpoint
-de até 5 linhas de ponteiro de estado (teto de 2 tool uses), faça handover e siga em contexto
-novo. Nada se inicia depois do sinal.
+**Como aplicar:** a poluição é o **único** critério de parada de execução, e a parada é **não
+graciosa**: nada se inicia depois do sinal, nada do produzido depois dele se aproveita e **não há
+ponteiro de retomada**, porque não há retomada — devolve-se a quem orquestra a declaração de
+poluição e a demanda de reexecução em contexto limpo. Capacidade **não** interrompe tarefa em
+curso: é diretriz de dimensionamento de quem planeja.
 
 ## Regra 3 — Economia de contexto (minimizar ingestão de saída descartável)
 

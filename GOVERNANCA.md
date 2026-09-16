@@ -88,14 +88,24 @@ adequado ao seu custo — a coluna *Modelo* é a tabela vinculante do **modelo p
 | Papel | Modelo | Responde por | Não faz |
 |---|---|---|---|
 | **Dono / gerente** | humano | Última instância e **fonte da doutrina de produto**: decide o quê e o porquê, ratifica decisões (`DR-`/`DP-`), valida cada sprint (§4.5), aceita release, autoriza saída do piso de regressão (§4.4) e comando destrutivo (§7 item 13) | Não desempata, no meio de uma execução, o que o plano deveria ter decidido — a pergunta que chega até ele em execução é sintoma de plano não-pronto (§7 itens 11 e 12) |
-| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 11), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto; **a revisão do README ao encerrar cada sprint** — tarefa nomeada do próprio plano, com o guarda executável como instrumento e o veredito do dono como aceite (G-README dever 2, §7 item 14); sprint planejada sem essa tarefa é plano incompleto | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
-| **Orquestração** | Melhor custo-benefício (Sonnet); o loop roda no contexto principal, onde o dono interrompe sem derrubar a sessão, e **para para pedir `/model`** quando a fase exige outro modelo | Conduzir um plano do começo ao fim: despachar cada tarefa ao papel competente com o dossiê fechado, rotear a linha de retorno do executor e o laudo do `reviewer` (aprovado segue, reprovado volta ao mesmo escopo, escalado sobe ao dono), registrar a telemetria medida e arquivar o resultado | Não implementa, não julga a entrega — o veredito é da revisão — e não decide arquitetura: obstáculo à rota e dossiê não fechado sobem ao dono, nunca viram improviso do loop |
-| **Execução** | Melhor custo-benefício (Sonnet) | Implementar **uma** tarefa do checklist por vez, em contexto limpo, sob TDD (§4.4); responder pela **entrega tecnicamente correta** — testes da área tocada, conformance e piso de regressão verdes — e pelo **sinal** do resultado (`review`, ou `blocked` com razão tipada) | Não decide, não pergunta ao dono, não replaneja escopo e não substitui a rota aprovada (G-EXECREADY e G-PLANFIDELITY, §7 itens 12 e 9): plano não-pronto ou obstáculo à rota → para, sinaliza `blocked` e escala. Não escreve no diário de obras, não registra o resultado da própria entrega e não afere a própria aceitação — o veredito é da revisão |
+| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 11), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto; **o dimensionamento de cada tarefa** sob a *Diretriz de dimensionamento de tarefa* desta seção — coesão, autossuficiência em contexto e ocupação estimada, exercidas no recorte, não publicadas no card; **a revisão de plano, com exclusividade** — indício de que o plano precisa mudar chega aqui e só aqui, e o planejador decide por si o que for **técnico ou tático**, escalando ao dono o que for **estratégico ou alterar escopo**; **a revisão do README ao encerrar cada sprint** — tarefa nomeada do próprio plano, com o guarda executável como instrumento e o veredito do dono como aceite (G-README dever 2, §7 item 14); sprint planejada sem essa tarefa é plano incompleto; **o risco de interrupção de cada card** — plano em que um executor frio pararia por dúvida sem contingência fechada não se libera (G-NOASK, §7 item 18) | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
+| **Orquestração** | Melhor custo-benefício (Sonnet); o loop roda no contexto principal, onde o dono interrompe sem derrubar a sessão, e **para para pedir `/model`** quando a fase exige outro modelo | Conduzir um plano do começo ao fim: despachar cada tarefa ao papel competente com o dossiê fechado, rotear a linha de retorno do executor e o laudo do `reviewer` (aprovado segue, reprovado volta ao mesmo escopo, escalado sobe ao dono), registrar a telemetria medida e arquivar o resultado | Não implementa, não julga a entrega — o veredito é da revisão — e não decide arquitetura: obstáculo à rota e dossiê não fechado sobem ao **planejamento** (G-REPLAN e G-NOASK, §7 itens 17 e 18), nunca viram improviso do loop nem pergunta ao dono no meio da janela — ao dono chega, no relatório de encerramento, só o que o planejador classificar como estratégico. **Não revisa plano** — roteia a escalada ao planejamento, não replaneja |
+| **Execução** | Melhor custo-benefício (Sonnet) | **Executar a tarefa — responsabilidade única**: implementar **uma** tarefa do checklist por vez, em contexto limpo, sob TDD (§4.4), entregando-a **tecnicamente correta** — testes da área tocada, conformance e piso de regressão verdes — e **sinalizando** o resultado (`review`, ou `blocked` com razão tipada) | Não decide, não pergunta ao dono, **não fica com dúvida** — dúvida é sinal de parada, não objeto de deliberação —, não replaneja escopo e não substitui a rota aprovada (G-EXECREADY, G-PLANFIDELITY e G-NOASK, §7 itens 12, 9 e 18): plano não-pronto, obstáculo à rota ou dúvida → para, registra o fato, sinaliza `blocked` e encerra; a escalada é ao planejamento, nunca direta ao dono. **Não se ocupa de teto nem de orçamento** — nem de turnos, nem de contexto: estouro se registra no corpo da tarefa como insumo do planejador, nunca vira decisão sua. **Não revisa plano.** Não escreve no diário de obras, não registra o resultado da própria entrega e não afere a própria aceitação — o veredito é da revisão |
 | **Revisão** | O mais poderoso disponível (Opus) — as dimensões de maior peso do laudo são juízo puro, e reviewer no mesmo modelo de quem executou tende a ratificar; é o único gate entre a entrega e o `done` sem round-trip humano | Julgar a entrega de **uma** tarefa contra o dossiê dela e emitir o laudo, em contexto próprio e com a escrita restrita ao caminho do laudo — independência imposta pela lista de ferramentas. Onde a camada mecânica (guardas, conformance, piso, escopo) mediu vermelho, o laudo acompanha a medição | Não corrige o que aponta, não replaneja e não fecha tarefa: o laudo é o veredito, e o encaminhamento do que ele aponta é da orquestração |
 | **Coleta** | O mais barato (Haiku ou equivalente) | Search, grep, leitura de codebase/documentos/prompts; filtra e devolve só o pertinente para o contexto dos agentes mais caros | Não edita, não conclui tarefa, não emite juízo sobre o que coletou |
 | **Auditoria** | Melhor custo-benefício (Sonnet) | Medir aderência **sem alterar código**, em duas frentes permanentes: **clean architecture + DDD** (`pantonic-auditor-arch`) e **clean code** (`pantonic-auditor-cleancode`) | Não corrige o que aponta — cada apontamento vira item no diário de obras, priorizado pelo dono |
 | **Redesenho** | O mais poderoso disponível (Opus) — separar complexidade acidental de essencial é juízo puro | Varrer a codebase pelo sweep mecânico, identificar procedimentos que ficaram complexos por acúmulo de correções e extensões e propor o redesenho **"do zero, hoje"** dentro das quatro camadas, cada proposta com o que **elimina** e o que **preserva**, riscos, os `TR-*` que protegem e a migração em passos atômicos, no relatório próprio (`pantonic-fora-da-caixa`) | Não implementa o que propõe e não altera código; não redesenha POC validada (`plugins/*/adhoc/`) e não sai das camadas — alvo cuja complexidade é **essencial** é declarado como tal em vez de virar proposta |
 | **Benchmarking** | O mais barato (Haiku ou equivalente) | Descrever **um** repositório público já confirmado no esquema fixo de 16 dimensões (`D1..D16`), toda afirmação ancorada na URL exata do arquivo de onde saiu ou marcada `NÃO ENCONTRADO`, no relatório próprio (`pantonic-benchmarker`) | Não julga o PantonicApp e não escreve prosa de recomendação — a comparação é de outro estágio; não responde de memória de treino, não trata dois repositórios no mesmo contexto e não altera nenhum outro arquivo do repositório |
+
+**Escada de revisão de plano.** Quem **suspeita** de que o plano precisa mudar é quem esbarra no
+indício — quase sempre a execução, eventualmente a revisão ou a orquestração. Quem suspeita **não
+revisa plano**: marca a tarefa como `blocked` com a razão tipada `premissa`, registra o indício
+no corpo da tarefa e encerra. Quem **recebe** é o **planejador**, e só ele. Ele decide por si o que for
+**técnico** (rota, decomposição, dimensionamento, arquivos-alvo, ordem das tarefas) e o que for
+**tático** (fatiar, fundir, adiar ou reordenar tarefas dentro do plano vigente). Sobe ao **dono** o
+que for **estratégico** — mudar o objetivo, a prioridade ou a doutrina — ou o que **altere o
+escopo** acordado do plano. A orquestração roteia essa escalada; não a resolve. A forma da rodada que o planejador conduz —
+entrada, saída e posição na fila — é o `G-REPLAN` (§7 item 17).
 
 Regras de operação:
 
@@ -123,9 +133,23 @@ Regras de operação:
   o consumo total.** O subagente parte frio e paga de novo CLAUDE.md + definição do agente +
   skills carregadas em todos os seus turnos. Tarefa pequena (< ~15 turnos estimados) prefere
   execução inline a abrir um subagente.
-- **Orçamento de turnos por tarefa atômica — referência informativa de dimensionamento, nunca
-  gate.** Os números abaixo dimensionam a tarefa antes de ela ser delegada e alimentam a série
-  medida; **não recusam entrega, não roteiam e não encerram tarefa nem janela**. O teto único de
+- **Diretriz de dimensionamento de tarefa (do planejador).** Quem planeja delimita o escopo de
+  cada tarefa atômica, e a delimita para satisfazer três critérios: **(a)** caber num contexto
+  **coerente e coeso**; **(b)** ser **autossuficiente em contexto para a execução** — o dossiê
+  entrega tudo de que a execução precisa, sem leitura ad hoc no meio dela; **(c)** respeitar uma
+  estimativa de **50% de ocupação da janela, com tolerância até 60%**. O número não é arbitrário
+  nem constante mágica: vem da literatura sobre **decaimento de desempenho de agentes em função do
+  enchimento do contexto**, e **é revisável** — cai, e esta diretriz se reescreve, se a literatura
+  indicar outro valor. A diretriz é de quem dimensiona e só dele: quem executa não se ocupa de
+  teto, de orçamento nem de ocupação — a responsabilidade do executor é executar a tarefa.
+  Capacidade **nunca interrompe tarefa em curso** (§4.3); estouro de teto, de orçamento ou de
+  contexto é **registrado no corpo da tarefa** e vira insumo para revisão do plano e para eventual
+  reexecução da tarefa, havendo suspeita de degradação acentuada por enchimento de contexto.
+- **Orçamento de turnos por tarefa atômica — régua interna de quem dimensiona, nunca gate.**
+  Subordinado à diretriz acima e endereçado ao **planejador**: os números abaixo dimensionam a
+  tarefa antes de ela ser delegada e alimentam a série medida; **não recusam entrega, não roteiam
+  e não encerram tarefa nem janela**. Esta tabela é a **única** residência de número de teto —
+  nenhum dossiê de tarefa carrega teto. O teto único de
   ~≤40 tool uses tratava tarefas de naturezas diferentes como se custassem o mesmo. Cada classe tem
   número próprio, calibrado pela série medida das linhas `Consumo:` deste repositório (26 registros
   em 2026-08-01), nunca por estimativa:
@@ -134,14 +158,15 @@ Regras de operação:
   |---|---|---|
   | Mecânica / pontual | **≤15** | 1 write-cluster, arquivo(s) já conhecido(s), sem contrato novo |
   | Implementação padrão | **≤40** | vários write-clusters numa camada; contrato novo mas verificação direta |
-  | Comportamental multi-camada | **≤60**, com **teto numérico por ramo obrigatório no dossiê** | muda contrato ou fluxo; ciclo editar-rodar-depurar (sync→async, timing de teste) |
-  | Investigação / mapeamento | **sem default** — o teto é **prescrito no dossiê** junto do método de sondagem | o entregável é descoberta, não mudança de código |
+  | Comportamental multi-camada | **≤60**, com **partição por ramo**: ramo que não cabe no número vira outra tarefa | muda contrato ou fluxo; ciclo editar-rodar-depurar (sync→async, timing de teste) |
+  | Investigação / mapeamento | **sem default** — o teto é régua interna de quem dimensiona; o dossiê prescreve o **método de sondagem** | o entregável é descoberta, não mudança de código |
   | Redação de doutrina / planejamento | **≤30** | edita `GOVERNANCA.md`/plano/skill; o custo é decisão, não build |
+  | Rodada de replanejamento | **≤50** | fechar a decisão e reescrever os dossiês que ela invalida, no mesmo contexto |
 
-  A **classe é escolhida no dossiê, antes de delegar**, e fica registrada nele. Cruzar o número da
-  classe é **alarme, nunca bloqueio**: quem executa registra o consumo no fechamento e segue —
-  nenhuma entrega para, é recusada ou fica incompleta por ter cruzado o número, e nenhum ramo de
-  roteamento se abre por causa dele. Escolher classe mais generosa **depois** de cruzar o número é
+  A **classe é escolhida antes de delegar** e fica registrada. Cruzar o número da classe é
+  **alarme para quem dimensiona, nunca bloqueio**: nenhuma entrega para, é recusada ou fica
+  incompleta por ter cruzado o número, e nenhum ramo de roteamento se abre por causa dele — quem
+  executa sequer se ocupa dele. Escolher classe mais generosa **depois** de cruzar o número é
   falsificação da série: vale a classe registrada antes da delegação.
 
   O **≤30** da última classe é correção da série sobre a estimativa inicial de ≤25: das 7 tarefas de
@@ -149,7 +174,7 @@ Regras de operação:
   divergem, manda a série.
 
   **Rodada de replanejamento** — o caso em que fechar a decisão e reescrever os dossiês que ela
-  invalida acontecem no mesmo contexto — fica na mesma classe, com teto **≤50**. A série medida
+  invalida acontecem no mesmo contexto — tem linha própria na tabela. A série medida
   dessas rodadas (19, 21, 39, 43 e 48 tool uses) não cabe em ≤30, e três das cinco o cruzam;
   parti-la entre contextos obrigaria a repagar a leitura da decisão em cada fatia, que é justamente
   o custo que a divisão existe para evitar. O **≤30** continua valendo para redação ou planejamento
@@ -180,6 +205,17 @@ Regras de operação:
   não-teste redireciona a saída para arquivo e lê só o fim.
 - **Batching de chamadas independentes** — leituras/greps sem dependência entre si vão na mesma
   mensagem; N leituras em 1 turno custam 1 reenvio de contexto, em N turnos custam N reenvios.
+- **Disciplina de instrumento** — cinco regras de método, medidas na janela de 2026-09-16
+  (`docs/plans/_CARD-revisao-critica-pickup-opus.md`, achados 2-4: seis turnos perdidos). **(a)**
+  `--help` antes do primeiro uso de um instrumento do kit numa janela — flag chutada custa um turno
+  de correção. **(b)** Sonda que escreve (laudo, RDO, linha de série) aponta o destino para o
+  scratchpad pelo flag de diretório, nunca para o caminho canônico — a sonda que "quase gravou" um
+  laudo falso só falhou porque a pasta não existia. **(c)** Número que um registro consome (range
+  de linhas, contagem, piso) é calculado **na mesma chamada** que o consome, nunca citado antes de
+  existir. **(d)** `&&` só encadeia passos em que a falha do anterior deve abortar o seguinte —
+  `grep` sem match sai 1 e derruba a checagem seguinte, que então custa outra chamada. **(e)**
+  Instrumento antes de protocolo — rodar o instrumento primeiro e ler o protocolo de quem o consome
+  só se ele produzir; protocolo lido antes de evidência que não veio é leitura paga sem uso.
 
 ### 3.1 Residência e precedência da doutrina
 
@@ -266,14 +302,15 @@ uma equipe humana com memória entre reuniões. Daí as modulações — e só e
 |---|---|
 | Product/sprint backlog | **diário de obras** — índice, status por item e priorização explícita (§4.2); planos completos em `docs/plans/` |
 | Sprint com entregável ao fim | **plano** (`P-NNNN`) com tarefas na ordem de execução; o entregável passa pelo gate de validação antes de a sprint seguinte começar (§4.5) |
-| Item de backlog / história | **tarefa atômica** — uma por contexto (§4.3); o orçamento de turnos por classe (§3) dimensiona, não delimita |
+| Item de backlog / história | **tarefa atômica** — uma por contexto (§4.3); quem a dimensiona é o **planejador**, sob a *Diretriz de dimensionamento de tarefa* (§3) |
 | Time auto-organizado | **papéis fixos e não intercambiáveis** — matriz de responsabilidades (§3) |
 | Cerimônias (daily, planning, review) | **atos escritos**: dossiê de tarefa, handover e veredito de validação no diário — o que só existe em conversa não sobrevive à troca de contexto e, portanto, não existe |
 | Definition of done | **critério de pronto** no dossiê + guardrails executáveis (§7), gate de conformance e piso de regressão (§4.4) |
 
-Duas práticas ágeis **não** viajam. Estimativa em story points: a unidade de esforço agêntico é o
-**orçamento de turnos** por classe de tarefa (§3), medido em `docs/telemetria.tsv`, nunca estimado
-por analogia. E auto-organização de escopo: o executor não escolhe o que fazer nem redefine a
+Duas práticas ágeis **não** viajam. Estimativa em story points: o recorte de uma tarefa sai da
+*Diretriz de dimensionamento de tarefa* (§3), exercida pelo **planejador** e aferida depois pelo
+consumo medido em `docs/telemetria.tsv` — nunca estimada por analogia, e nunca observada pelo
+executor. E auto-organização de escopo: o executor não escolhe o que fazer nem redefine a
 tarefa — decidir é fase do planejamento (§3, §7 itens 9 e 12).
 
 ### 4.1 Regra básica
@@ -324,7 +361,12 @@ também como um kanban adaptado:
   Quem precisa do detalhe de uma tarefa abre o RDO dela; o diário guarda a linha de status que aponta
   para lá. Duplicar conteúdo entre os três cria fontes que divergem na primeira edição.
 - **Fechamento enxuto** — o detalhe da execução mora no RDO da tarefa, e o relatório final ao
-  orquestrador é ponteiro + deltas.
+  orquestrador é ponteiro + deltas. **Achado de execução tem um registro só:** bloqueio, obstáculo
+  ou fato que contradiz o plano é escrito uma vez, como entrada `AE-<n>` em `## Achados da
+  execução` do plano; nota da tarefa, `Fila corrente` e célula do índice recebem apenas `AE-<n>` +
+  `caminho:linhas`, e o handover ao dono cabe em ≤ 8 linhas com o ponteiro. O mesmo fato escrito
+  cinco vezes numa janela — um terço dela gasto no fechamento de um bloqueio (caso medido,
+  2026-09-16) — é o defeito que esta regra fecha.
 - **Telemetria pela notificação, não pelo auto-relato** — o consumo de uma tarefa é registrado
   pelo **orquestrador** como uma linha em `docs/telemetria.tsv`, lendo o bloco `<usage>` da
   notificação de conclusão do subagente (dado medido) — nunca copiando a estimativa que o próprio
@@ -340,7 +382,9 @@ também como um kanban adaptado:
   recriaria duas fontes que divergem à primeira edição. Registro qualitativo que não cabe em
   coluna (estouro de teto, execução inline, ressalva sobre a medida) continua no bullet do diário,
   ao lado do ponteiro — o que não se repete é o **número**. Bullets `Consumo:` anteriores à adoção
-  desta regra ficam como estão: são registro histórico, já espelhado na série.
+  desta regra ficam como estão: são registro histórico, já espelhado na série. **`contado` exige
+  contagem efetiva** — chamadas contadas no transcript, não estimadas de memória; contagem não
+  feita entra como `nao_medido` (caso medido, 2026-09-16: `contado` = 14 contra 29 reais).
 
 ### 4.3 Execução em contexto limpo
 
@@ -356,26 +400,35 @@ também como um kanban adaptado:
     descarte imediato; entrou informação ambígua ou controversa que muda o que já foi feito.
     Corrigir o próprio erro, sobrescrever valor errado e refinar detalhe não poluem: a contradição
     é fatal quando atinge o **cenário** (premissa, rota, contrato), e não quando atinge um detalhe
-    que o próprio contexto já substituiu.
-  - **Capacidade** — mesmo coeso, o desempenho cai com a ocupação: o teto de trabalho é **~50% da
-    janela**, com violação gradual e encerramento planejado. O instrumento dessa condição é a
-    **medida de ocupação da janela** exposta ao agente: um hook `PreToolUse`
-    (`.claude/tools/ocupacao.py`) lê o transcript da sessão principal, calcula a ocupação contra a
-    janela e injeta o aviso de cruzamento do teto no próprio contexto do loop quando ela cruza os
-    50%. **Nenhum número arbitrário faz esse papel:** contagem de turnos, de tarefas ou de tokens
-    é medida informativa (§3), e limite não conscientemente delimitado que afeta o fluxo é vício,
-    não critério.
+    que o próprio contexto já substituiu. A parada é **não graciosa**: nada do produzido depois do
+    sinal se aproveita, não há fechamento cerimonioso e quem executa retorna a quem orquestra
+    **demandando contexto limpo para a reexecução**.
+  - **Capacidade** — não é condição de execução: dimensiona a tarefa antes de ela ser delegada
+    (§3, *Diretriz de dimensionamento de tarefa*) e **nunca interrompe tarefa em curso**. Quem
+    executa não para, não parte a entrega e não devolve trabalho por ocupação de janela.
 - **Para quem executa, uma tarefa por contexto.** Para quem orquestra, conduzir um plano **é** uma
   tarefa: o contexto atravessa várias tarefas atômicas, porque o cenário é o mesmo, e encerra na
-  troca de plano ou iniciativa — troca de cenário — ou na capacidade, o que vier antes.
+  troca de plano ou iniciativa — troca de cenário — ou, de forma planejada, na ocupação da janela,
+  o que vier antes. Esse encerramento é ato da **orquestração, entre tarefas** — nunca dentro de
+  uma tarefa, nunca do executor. O hook `PreToolUse` `.claude/tools/ocupacao.py`, que lê o
+  transcript da sessão principal, calcula a ocupação contra a janela e injeta o aviso quando ela
+  cruza o limiar, é **aviso informativo** à orquestração: não é gate, não recusa entrega e não
+  interrompe tarefa.
 - Ao concluir (ou bloquear) uma tarefa, quem executa **sinaliza** o resultado (`review`, ou
-  `blocked` com razão tipada) e encerra o próprio contexto; registrar o fechamento no diário de
-  obras e abrir a tarefa seguinte em contexto limpo são da orquestração (§3).
+  `blocked` com razão tipada) e encerra o próprio contexto — o contexto **do executor**, um por
+  tarefa. Registrar o fechamento no diário de obras e abrir a tarefa seguinte em contexto limpo
+  **do executor** são da orquestração (§3); a janela de orquestração é outra coisa e **não**
+  fecha junto — ela segue as regras do bullet anterior, e não encerra por tarefa concluída.
 - **Acionamento do dono — a causa decide.** Dirimir ambiguidade e resolver conflito, sobretudo de
   **requisito** e de **aceitação**, é responsabilidade do dono, e é ilimitada: nenhum teto de
   acionamentos governa a aceitação de uma entrega, porque um limite desses seria arbitrário. Nenhum
   agente decide aspecto de aceitação sem estar **inequivocamente** seguro de ter a melhor solução —
-  na dúvida, escala (§3.1, item 3), e escalar é o comportamento desejado. A entrega é ineficiente
+  na dúvida, escala (§3.1, item 3), e escalar é o comportamento desejado. **Escalar tem um canal,
+  e ele não passa pelo meio da execução:** quem executa para, registra o fato, bloqueia e encerra;
+  o planejamento recebe, decide o que é seu e leva ao dono, numa rodada com contexto, opções e
+  insumos, só o estratégico (G-NOASK, §7 item 18). Pergunta que chega ao dono no meio de uma
+  execução pede resolução inesperada, sem contexto e sem insumos — é falha de planejamento, não
+  acionamento legítimo. A entrega é ineficiente
   quando o framework aciona o dono em **caminho feliz ou caminho natural**, sem pendência aberta e
   sem demanda que seja dele: parar para que ele limpe o contexto e invoque a tarefa seguinte o põe a
   **mediar execução normal**, e uma única ocorrência dessas é defeito.
@@ -384,11 +437,17 @@ também como um kanban adaptado:
   drena o inbox de planos, aplica a diretiva de priorização (ou a heurística padrão), escolhe uma
   única tarefa e delega ao agente de execução. O handover final sempre reporta a tarefa feita, a
   iniciativa/plano de origem, e o **índice de conclusão do plano** (`<done>/<total>` no diário).
-- **Contexto acabando sem plano de parada** — quando o executor conclui que o contexto acaba antes
-  da tarefa, ele grava um **checkpoint intermediário** (skill
-  `handover`, seção "Checkpoint intermediário"): até 5 linhas de ponteiro de estado, teto de
-  2 tool uses, para que o contexto seguinte retome sem redescobrir o que já foi pago. O mesmo
-  checkpoint responde ao sinal de poluição, e nada se inicia depois do sinal.
+- **Checkpoint intermediário** — é da **orquestração**: quando a janela de orquestração se
+  encerra (coesão ou ocupação) com tarefas do plano ainda abertas, quem orquestra grava até 5
+  linhas de ponteiro de estado no plano em curso (skill `handover`, seção "Checkpoint
+  intermediário"), teto de 2 tool uses, para que a janela seguinte retome sem redescobrir o que já
+  foi pago. A tarefa que não chegou a ser entregue volta ao estado em que estava — nunca `done`.
+- **Dois casos que não são checkpoint** — contexto acabando **dentro** de uma tarefa não é evento
+  a mitigar: é sintoma de que o recorte errou o dimensionamento (§3), registra-se o fato no corpo
+  da tarefa e a matéria volta ao planejamento, sem retomar a tarefa pela metade. E o **sinal de
+  poluição** não gera ponteiro de retomada, porque não há retomada: nada se inicia depois do
+  sinal e o retorno a quem orquestra é a declaração de poluição mais a demanda de reexecução em
+  contexto limpo.
 
 ### 4.4 TDD obrigatório
 
@@ -549,9 +608,12 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
 6. **Piso de regressão** — o piso nunca desce; mudanças comportamentais intencionais exigem
    registro de decisão no doc de estado vigente do projeto.
 7. **Disciplina de contexto** — um contexto sustenta um cenário coerente: material de outro
-   cenário, ou que contradiz o já ingerido, polui o contexto e obriga parada imediata; teto de
-   trabalho de ~50% da janela, com encerramento planejado (§4.3); varreduras amplas só via agente
-   de coleta; docs grandes acessados via índice/DOC_MAP, nunca lidos integralmente.
+   cenário, ou que contradiz o já ingerido, polui o contexto e obriga **parada não graciosa** no
+   ato, sem aproveitar nada do produzido depois do sinal e demandando
+   **contexto limpo para a reexecução** (residência canônica: `.claude/global/CLAUDE.md`, Regra 2;
+   texto operacional em §4.3). Ocupação de janela não é matéria deste guardrail: é diretriz de
+   dimensionamento de quem planeja (§3). Varreduras amplas só via agente de coleta; docs grandes
+   acessados via índice/DOC_MAP, nunca lidos integralmente.
 8. **G-DEADCODE — nada de código morto testado** — todo símbolo de produção (função/classe/módulo
    fora de `tests/`) precisa de **ao menos um chamador de produção** alcançável a partir de um entry
    point real (plugin registrado, superfície de serviço no contrato, bootstrap). Cobertura por teste
@@ -656,6 +718,56 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    derrubado lado a lado, que é o sinal de poluição da Regra 2 (§4.3). *Enforcement:* gate de
    planejamento — a rodada que fecha a decisão estruturante emite os cards de regularização, e o
    plano não avança sem eles — somado ao gate de review.
+17. **G-REPLAN — bloqueio por premissa é gatilho de revisão do plano, não pendência do dono**
+   (dever do **planejador**; roteamento da **orquestração**). Tarefa devolvida `blocked` com razão
+   `premissa` (card defeituoso, rota inviável, fato que contradiz o plano) **não** fica parada
+   esperando o dono e **não** é contornada despachando a tarefa seguinte do mesmo plano: ela abre,
+   no mesmo ato, uma **rodada de replanejamento** — item de classe *Rodada de replanejamento* (§3),
+   no modelo do planejamento — que passa a ser a **próxima tarefa** do plano (topo da fila, acima
+   de toda tarefa `ready` dele), e o plano vai a `blocked` com a razão até a rodada fechar. A rodada
+   tem entrada, saída e residência fixas. **Entrada:** o achado registrado no corpo da tarefa e em
+   `## Achados da execução` do plano. **Saída:** (a) a decisão nova, com id, na tabela de decisões;
+   (b) os cards que a decisão invalida reescritos — inclusive o fato que faltou na §1; (c) a tarefa
+   bloqueada de volta a `ready` (ou `cancelled`, se a rota mudou) e o plano de volta ao estado
+   anterior; (d) o achado marcado como absorvido, com ponteiro para a decisão; (e) a **lição para o
+   planejador** — a verificação de autoria que teria evitado o bloqueio — aplicada ao arquivo do
+   agente `pantonic-planner` quando a classe de erro for nova. **Residência:** uma entrada `RP-<n>`
+   sob `## Achados da execução` do plano, com a classificação da mudança. O planejador decide
+   sozinho o que for técnico ou tático (escada de revisão de plano, §3) e leva ao dono, em **uma**
+   rodada de decisões, só o que for estratégico ou alterar escopo; o dono não desempata card.
+   Segundo bloqueio `premissa` na mesma tarefa depois de uma rodada é sinal de que a premissa caiu
+   por inteiro: o plano vira `superseded` e o sucessor nasce fechado. *Enforcement:* roteamento
+   `A3b` da skill `scrum-master` (escala ao planejador, não ao dono); guardrail da `proximo-passo`
+   (tarefa `blocked premissa` no plano priorizado → a próxima tarefa é a rodada, nunca outra do
+   plano); seção "Rodada de replanejamento" do agente `pantonic-planner`; ledger
+   `docs/telemetria.tsv` (a rodada é medida na classe própria).
+18. **G-NOASK — interrupção para escalar ao dono durante a execução é falha de planejamento**
+   (dever do **planejador**; conduta do **executor** e da **orquestração**; decisão do dono,
+   2026-09-16, sobre o caso medido em `docs/plans/_CARD-revisao-critica-pickup-opus.md`). A
+   pergunta que chega ao dono no meio de uma execução pede dele uma resolução **inesperada, sem
+   contexto e sem insumos** — o oposto da rodada de decisões do planejamento, que chega com
+   contexto, opções, recomendação e consequência. Três deveres. **(1) Quem executa nunca fica com
+   dúvida e nunca escala direto ao dono** — executor, e a orquestração enquanto conduz a janela: ao
+   primeiro sinal de dúvida (referente ausente, instrumento que não produz, obstáculo à rota, dois
+   caminhos possíveis), **para, registra o fato** (`AE-<n>` em `## Achados da execução` do plano),
+   **bloqueia** (`blocked` razão `premissa`) **e encerra**. Não classifica a dúvida ("é do dono?",
+   "é evento intrínseco?") — ponderar já é decidir; não pergunta; não escolhe "o óbvio". **(2) O
+   destino do bloqueio é o planejamento** (G-REPLAN): a rodada decide o que é técnico ou tático e
+   leva ao dono, em uma rodada, só o estratégico. Ao dono, durante a janela, não chega pergunta
+   nenhuma; a orquestração fala com ele **só no relatório de encerramento**, e toda opção de rota
+   apresentada ali — ou na rodada de decisões do planejador — inclui a alternativa **registrar e
+   não agir** quando ela existir (no caso medido era a mais barata, faltou da lista e foi escolhida
+   por "outro"). **(3) O planejador nunca libera plano com alto risco de interrupção**: a
+   auto-auditoria percorre cada card à procura dos pontos em que um executor frio pararia —
+   referente não verificado no repositório, instrumento não sondado com a chamada exata,
+   contingência ausente para o caso observável, número não re-derivável por comando dado — e cada
+   ponto vira contingência fechada, fato na §1 ou partição da tarefa, **ou o card não sai**. Plano
+   com ponto de interrupção sem contingência é plano aberto (G-PLANREADY condição 5).
+   *Enforcement:* instrução nos agentes `pantonic-executor` (parada por dúvida) e
+   `pantonic-planner` (teste de interrupção, fase 4); `scrum-master` e `proximo-passo` (nenhuma
+   pergunta ao dono entre o despacho e o relatório de encerramento; `B1` roteia ao planejador);
+   gate de review — decisão tomada pela entrega que o card não fechou, e parada por dúvida que o
+   card não previu, são achado de processo de alvo `dossiê`.
 
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra

@@ -266,10 +266,10 @@ def test_tf_close_gera_rdo_completo_a_partir_do_plano_pacote_e_consumo(tmp_path)
     assert "provar o padrão" in conteudo  # início do Objetivo real da T7
     assert "cria `.claude/tools/telemetria.py`" in conteudo  # Arquivos-alvo real da T7
 
-    # consumo medido, transcrito, contra o teto do cabeçalho (40, classe implementação padrão)
+    # consumo medido, transcrito (classe implementação padrão) — nenhum teto sobrevive no RDO
     assert "12 tool uses" in conteudo
-    assert "40" in conteudo
     assert "80" in conteudo and "300" in conteudo
+    assert "Teto" not in conteudo
 
     # pacote do laudo, transcrito sem recálculo
     assert "**Veredito:** aprovado" in conteudo
@@ -286,6 +286,69 @@ def test_tf_close_gera_rdo_completo_a_partir_do_plano_pacote_e_consumo(tmp_path)
 
     indice = (tmp_path / "INDEX.md").read_text(encoding="utf-8")
     assert gerados[0].name in indice
+
+
+def _escrever_plano_sintetico(caminho: Path, cabecalho: str) -> None:
+    caminho.write_text(
+        "# Plano de teste\n\n"
+        f"{cabecalho}\n"
+        "- **Objetivo:** validar a gramática do cabeçalho.\n"
+        "- **Arquivos-alvo:** `arquivo.py`.\n"
+        "- **Verificação:** bateria do §3.\n"
+        "- **Pronto quando:** o teste passa.\n",
+        encoding="utf-8",
+    )
+
+
+def test_tf_extrair_dossie_cabecalho_gramatica_nova_sem_teto(tmp_path):
+    """TF da CTX-T1d (`DX-15`): o cabeçalho na gramática nova — `[<modelo> · classe <classe>]`,
+    sem segmento de teto — parseia sem flag nenhuma, com `modelo`/`classe` corretos."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]")
+
+    dossie = rdo.extrair_dossie(
+        plano, "T1", esquema_legado=False, modelo_legado=None, classe_legado=None,
+    )
+
+    assert dossie.modelo == "Sonnet"
+    assert dossie.classe == "implementacao"
+    assert dossie.esquema == "padrao"
+    assert not hasattr(dossie, "teto")
+
+
+def test_tr_extrair_dossie_cabecalho_historico_com_teto_e_aceito_e_descartado(tmp_path):
+    """TR (`DX-15`): o cabeçalho histórico com ` · teto <N>` continua parseando — mesmos
+    `titulo`/`classe` do cabeçalho novo —, e o número é descartado: `close` sobre esse cabeçalho
+    gera um RDO sem a palavra 'Teto' em lugar nenhum."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(
+        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao · teto 40]"
+    )
+
+    dossie = rdo.extrair_dossie(
+        plano, "T1", esquema_legado=False, modelo_legado=None, classe_legado=None,
+    )
+    assert dossie.titulo == "Tarefa sintética"
+    assert dossie.classe == "implementacao"
+
+    rdo_dir = tmp_path / "rdo"
+    exit_code = rdo.main(
+        [
+            "close", "--plano", str(plano), "--tarefa", "T1",
+            "--tool-uses", "5", "--tokens-k", "10", "--duracao-s", "60",
+            "--veredito", "aprovado", "--percentual", "100", "--bloqueante", "nenhuma",
+            "--recomendacao", "seguir", "--pendencia-laudo", "nenhuma",
+            "--rdo-dir", str(rdo_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    conteudo = next(p for p in rdo_dir.glob("*.md") if p.name != "INDEX.md").read_text(
+        encoding="utf-8"
+    )
+    assert "Teto" not in conteudo
 
 
 @pytest.mark.parametrize(
@@ -363,8 +426,9 @@ def test_tf_close_calcula_desdobramento_por_veredito_sem_ramificar_por_consumo(t
     """TF do item (c), reescrito pela `DP-Q` (§21 do `P-0734`): o desdobramento é tabela de dois
     ramos só por veredito (`ressalva` -> `aprovado com ressalva`; `aprovado` -> `aprovado`) — o
     terceiro ramo por estouro de teto caiu, porque nenhum teto numérico governa fluxo. `--tool-uses`
-    acima do teto do cabeçalho (40 na `T7`) não abre um ramo novo: o consumo continua medido e
-    registrado no documento (`TOOL_USES`/`TETO`), só o veredito decide o desdobramento."""
+    alto não abre um ramo novo: o consumo continua medido e registrado no documento
+    (`TOOL_USES`), só o veredito decide o desdobramento; o campo `teto` do cabeçalho da `T7`
+    (`DX-15`) é aceito e ignorado, sem sobreviver no documento."""
     rdo = _load_rdo()
 
     assert rdo.calcular_desdobramento("aprovado") == "aprovado"
@@ -375,9 +439,10 @@ def test_tf_close_calcula_desdobramento_por_veredito_sem_ramificar_por_consumo(t
     conteudo = next(p for p in tmp_path.glob("*.md") if p.name != "INDEX.md").read_text(
         encoding="utf-8"
     )
-    # consumo acima do teto continua medido e registrado, sem abrir ramo de desdobramento
+    # consumo acima do teto do cabeçalho continua medido e registrado, sem abrir ramo de
+    # desdobramento e sem que o número de teto sobreviva no documento
     assert "41 tool uses" in conteudo
-    assert "**Teto:** 40" in conteudo
+    assert "Teto" not in conteudo
     assert "**Desdobramento:** aprovado" in conteudo
     assert "estouro" not in conteudo.lower()
 
@@ -479,3 +544,19 @@ def test_tr_close_recusa_fechar_a_mesma_tarefa_duas_vezes(tmp_path, capsys):
     saida = capsys.readouterr()
     assert "já existe" in saida.err
     assert caminho.read_text(encoding="utf-8") == original
+
+
+def test_tr_laudo_recusa_plano_e_tarefa_em_forma_de_caminho(tmp_path, capsys):
+    """TR (disciplina de instrumento, `GOVERNANCA.md` §3, 2026-09-16): `--plano` e `--tarefa` são
+    identificadores, não caminhos — `--plano docs/plans/P-0739-....md` quase gravou um laudo em
+    `docs/RDO/laudos/docs/plans/...`. Recusa com exit != 0, flag nomeado em stderr, nada escrito."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(
+        _argv_laudo(laudos_dir, plano="docs/plans/P-0739-backlog-instrumento.md", tarefa="T2")
+    )
+
+    assert exit_code != 0
+    assert "--plano" in capsys.readouterr().err
+    assert not laudos_dir.exists() or list(laudos_dir.glob("*.md")) == []

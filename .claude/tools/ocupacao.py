@@ -1,6 +1,8 @@
 """EXA-T13 (`docs/plans/P-0734-execucao-autonoma.md` `### T13`) — proxy de ocupação da janela de
-contexto do loop autônomo, instrumento da condição de **capacidade** (`GOVERNANCA.md` §4.3),
-complementar à condição de **coesão** que já tinha instrumento (sinal do executor).
+contexto do loop autônomo — **aviso informativo à orquestração entre tarefas**, sob a diretriz de
+dimensionamento de `GOVERNANCA.md` §3. Mede a ocupação e avisa; não prescreve parada a quem executa
+uma tarefa. Complementar ao sinal de poluição de contexto, que já tinha instrumento (sinal do
+executor).
 
 Rota fechada na `EXA-T1` Sonda 3 (`docs/audits/SPIKE_HARNESS_EXECUCAO_AUTONOMA.md`): variante (a),
 hook lendo `transcript_path`. A variante (b) — contador de tarefas calibrado por
@@ -20,8 +22,9 @@ cache_creation_input_tokens`. Nenhuma entrada com `usage` ⇒ ramo de fallback: 
 `soma(len(linha)) / 4` sobre todas as linhas do transcript, fonte `"estimado"`.
 
 **Denominador:** `JANELA_TOKENS`, default 200000, sobrescrevível pela variável de ambiente
-`PANTONIC_JANELA_TOKENS`. **Limiar:** 0.50 — o "~50% da janela" que `GOVERNANCA.md` §4.3 já
-doutrina, não um número novo.
+`PANTONIC_JANELA_TOKENS`. **Limiar:** 0.50 — o "~50% da janela" que a diretriz de dimensionamento
+de `GOVERNANCA.md` §3 já doutrina, não um número novo. A reclassificação do instrumento como aviso
+informativo não mexe no valor nem no comportamento: muda o estatuto do que ele emite.
 
 **Filtro de contexto:** o payload de `PreToolUse` de uma sessão de subagente traz `agent_type`
 preenchido (confirmado nesta tarefa e na Sonda 3 — ambas mediram `agent_type="pantonic-executor"`
@@ -51,7 +54,7 @@ JANELA_TOKENS_ENV = "PANTONIC_JANELA_TOKENS"
 JANELA_TOKENS_DEFAULT = 200_000
 JANELA_TOKENS = int(os.environ.get(JANELA_TOKENS_ENV) or JANELA_TOKENS_DEFAULT)
 
-LIMIAR = 0.50  # GOVERNANCA.md §4.3 — "~50% da janela", não um número novo (DP-Q)
+LIMIAR = 0.50  # GOVERNANCA.md §3 — "~50% da janela", não um número novo (DP-Q)
 
 MENSAGEM_AVISO = (
     "Ocupação da janela de contexto cruzou o teto de trabalho (~50%, GOVERNANCA.md §4.3). "

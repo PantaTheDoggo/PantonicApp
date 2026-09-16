@@ -18,7 +18,9 @@ invocada pelo usuário.
 
 2. **Atualizar o diário de obras** (skill `diario-de-obras`):
    - Status: `review` (pronto para validação do usuário), `done` (validado/trivial),
-     `blocked` (com razão) ou `in-progress` (interrompida — anotar ponto de parada).
+     `blocked` (com razão tipada; `premissa` registra o fato como `AE-<n>` no plano e devolve ao
+     planejamento — `G-REPLAN`/`G-NOASK` —, nunca pergunta ao dono) ou `in-progress`
+     (interrompida — anotar ponto de parada).
      Lista completa e transições: skill `diario-de-obras`, `## Status — residência única`.
    - Preencher "Notas de execução" da tarefa (≤ ~5 linhas + ponteiros): o que foi feito, arquivos
      tocados (`caminho:linha`), o **comando de verificação colado do terminal** (não a intenção de
@@ -33,7 +35,8 @@ invocada pelo usuário.
      medida vai como uma linha nova em `docs/telemetria.tsv` (ver `.claude/tools/telemetria.py append`), apendada pelo **orquestrador** a partir do bloco `<usage>` da notificação de conclusão
      do subagente (`fonte: usage`), nunca
      por estimativa do próprio subagente no texto do handover (auto-relato subestima o consumo
-     real). Execução inline, sem bloco `<usage>` a ler, entra com `fonte: contado`; consumo
+     real). Execução inline, sem bloco `<usage>` a ler, entra com `fonte: contado` — contagem efetiva
+     das chamadas no transcript, nunca estimativa; sem contagem, `fonte: nao_medido`; consumo
      perdido com a sessão, com `fonte: nao_medido`. Se este fluxo roda dentro do subagente antes
      de retornar, deixar o placeholder e o orquestrador escreve a linha da série ao processar a
      notificação (`GOVERNANCA.md` §4.2).
@@ -52,6 +55,10 @@ invocada pelo usuário.
      próximo gate. `TK-*` solto (seção no próprio diário) só quando a tarefa de origem for
      avulsa, sem plano-pai — decisão do dono 2026-07-16: achado fora do plano perde o
      contexto e vira pilha indecidível quando o plano acaba.
+   - **Registro único do achado** (`GOVERNANCA.md` §4.2): o achado — de bloqueio, de obstáculo ou
+     fora de escopo — é escrito **uma vez**, na entrada `AE-<n>` do plano. Nota da tarefa, `Fila
+     corrente` e célula do índice recebem `AE-<n>` + `caminho:linhas`; o handover ao dono, o
+     ponteiro. Escrever o mesmo fato em cinco lugares custou um terço de uma janela (2026-09-16).
    - **Gate de triagem no fechamento de sprint:** o flip da sprint para `done` exige triagem
      da seção `## Achados da execução` do plano — cada achado sai com rota: (a) tarefa em
      plano derivado, (b) decisão do dono (`AskUserQuestion` em lote, 1 round-trip), ou
@@ -66,7 +73,8 @@ invocada pelo usuário.
    - Mudança comportamental intencional → decision record `D-*` no doc AS-IS.
    - Incidente com diagnóstico não-óbvio → entrada no doc de lições aprendidas.
 
-4. **Mensagem de handover ao usuário** (última saída do contexto, ≤ ~15 linhas) — **ponteiro +
+4. **Mensagem de handover ao usuário** (última saída do contexto, **≤ 8 linhas** — medido em
+   2026-09-16: handover de ~25 linhas repetindo um achado já escrito no plano) — **ponteiro +
    deltas, nunca repete o conteúdo já escrito no diário** (o diário é o registro canônico; pagar
    o mesmo texto duas vezes é custo composto sem benefício):
    - Tarefa e status final; o que validar e como (comando/fluxo de teste manual, se aplicável).
@@ -79,23 +87,21 @@ invocada pelo usuário.
      próxima tarefa. Se a statusline indicar contexto alto (⚠️/🔴), a limpeza é obrigatória,
      não sugestão — diga isso.
 
-## Checkpoint intermediário (contexto acabando **sem** plano de parada)
+## Checkpoint intermediário (encerramento planejado da **janela de orquestração**)
 
-O handover acima fecha uma tarefa que chegou ao fim. O checkpoint é outra coisa: a tarefa **não**
-acabou e o contexto vai acabar antes dela. Sem ele, a descoberta já paga (onde está o código, o
-que já foi decidido, o que já foi descartado) morre com o contexto e o próximo contexto a
+O handover acima fecha uma tarefa que chegou ao fim. O checkpoint é outra coisa: quem **orquestra**
+chega ao fim da janela com o **plano** ainda aberto. Sem ele, a descoberta já paga (o que já foi
+decidido, o que já foi descartado, onde a série parou) morre com o contexto e a janela seguinte a
 reexecuta do zero — pagando duas vezes pelo mesmo achado.
 
 O checkpoint é **ponteiro de estado, não relatório intermediário**: não narra o que foi feito, não
-justifica decisões, não repete o que já está no diário ou no plano. Ele existe para que outro
-contexto retome sem redescobrir.
+justifica decisões, não repete o que já está no diário ou no plano. Ele existe para que outra
+janela retome o plano sem redescobrir.
 
-- **Gatilho** — o executor conclui que o contexto acaba antes da tarefa (`GOVERNANCA.md` §4.3,
-  "Contexto acabando sem plano de parada"): sinal qualitativo, não número — nenhum teto de
-  consumo dispara o checkpoint. O mesmo checkpoint responde ao sinal de poluição, e nada se
-  inicia depois do sinal. Não esperar a certeza plena: ao concluir que vai faltar contexto, já é
-  hora de escrever — sem orçamento sobrando não há como escrever o checkpoint.
-- **Entregável** — até **5 linhas** no diário, na "Notas de execução" da tarefa em curso, uma
+- **Gatilho** — a janela de orquestração se encerra (coesão ou ocupação) com tarefas do plano
+  ainda abertas: sinal qualitativo, não número — nenhum teto de consumo dispara o checkpoint. Não
+  esperar a certeza plena: sem orçamento sobrando não há como escrever o checkpoint.
+- **Entregável** — até **5 linhas** no diário, na "Notas de execução" do plano em curso, uma
   linha por item:
   1. o que já está **descoberto e decidido** (inclusive rotas descartadas — descarte é achado);
   2. o que **falta**;
@@ -106,8 +112,21 @@ contexto retome sem redescobrir.
   `Edit`. O checkpoint tem de custar menos que a descoberta que preserva; se está custando mais
   que 2 chamadas, ele virou relatório e perdeu a razão de existir. Sem releitura de verificação,
   sem varredura para "completar" o estado.
-- Depois de escrever o checkpoint, a tarefa fica `in-progress` com o ponto de parada anotado —
-  nunca `done`, nunca `blocked` (não há impedimento externo; acabou o orçamento).
+- Depois de escrever o checkpoint, o **plano** fica com o ponto de parada anotado; a tarefa que
+  não chegou a ser entregue volta ao estado em que estava — nunca `done`.
+
+**Dois casos que NÃO são checkpoint.**
+
+- **Contexto poluído — retorno não gracioso.** Ao sinal de poluição (CLAUDE.md global, Regra 2;
+  texto operacional em `GOVERNANCA.md` §4.3), nada se inicia e nada do que foi produzido depois do
+  sinal se aproveita. **Não se escreve ponteiro de retomada, porque não há retomada**: o retorno a
+  quem orquestra é a declaração de contexto poluído mais a demanda de **reexecução em contexto
+  limpo**.
+- **Contexto acabando dentro de uma tarefa — tarefa mal dimensionada.** Não é evento a mitigar com
+  checkpoint: é **sintoma** de que o recorte errou a *Diretriz de dimensionamento de tarefa*
+  (`GOVERNANCA.md` §3), e dimensionar é do planejador. Registra-se o fato no corpo da tarefa e
+  devolve-se a matéria ao planejamento. **Não** se retoma a tarefa pela metade em contexto novo —
+  é exatamente o custo dobrado que a doutrina proíbe.
 
 **Exemplo (caso real da `proximo-passo`: subagente caiu sem bloco `<usage>`)** — cinco linhas:
 

@@ -110,14 +110,16 @@ a leitura de quem adota (`G-README`, §10).
   coleta) e o modelo que a executa. Onde a regra mora: `GOVERNANCA.md` §3, com gatilho operacional
   em `.claude/skills/modelo-por-fase/SKILL.md` (§4 desta página).
 - **Contexto** — a janela de trabalho de um agente, reenviada inteira a cada turno; "contexto limpo"
-  é a janela iniciada do zero para um cenário novo. Um contexto sustenta um cenário coerente e acaba
-  quando uma de duas condições cai: **coesão** — material de outro cenário, ou que contradiz o já
-  ingerido, polui o contexto e obriga parada imediata — e **capacidade** — teto de trabalho de ~50%
-  da janela, com encerramento planejado. Onde a regra mora: `GOVERNANCA.md` §4.3.
+  é a janela iniciada do zero para um cenário novo. Um contexto sustenta um cenário coerente, e o que
+  o encerra é a **coesão**: material de outro cenário, ou que contradiz o já ingerido, o polui e
+  obriga parada **não graciosa** no ato — nada do que foi produzido depois do sinal se aproveita, e a
+  reexecução se faz em contexto limpo. **Capacidade** é outra coisa: não é condição de execução e
+  **nunca interrompe tarefa em curso** — dimensiona a tarefa *antes* de ela ser delegada. Onde a
+  regra mora: `GOVERNANCA.md` §4.3 (coesão) e §3 (capacidade, §3 desta página).
 - **Orçamento de turnos** — o número de chamadas de ferramenta atribuído a uma tarefa **antes** da
   delegação, escolhido pela classe do trabalho e calibrado pela série medida. É **referência de
-  dimensionamento**, nunca porteiro: cruzá-lo é alarme, não bloqueio. Onde a regra mora:
-  `GOVERNANCA.md` §3 (§3 desta página).
+  dimensionamento de quem planeja**, nunca porteiro: cruzá-lo é alarme, não bloqueio, e quem executa
+  não se ocupa dele. Onde a regra mora: `GOVERNANCA.md` §3 (§3 desta página).
 
 ### Metadados — como o próprio framework é distribuído
 
@@ -301,25 +303,28 @@ executada inline do que delegada.
 
 **Orçamento de turnos por classe de tarefa.** Cada tarefa atômica recebe um número de referência
 **antes** de ser delegada, escolhido pela classe do trabalho. Ele dimensiona e alimenta a série
-medida; não recusa entrega, não roteia e não encerra tarefa nem janela:
+medida; não recusa entrega, não roteia e não encerra tarefa nem janela. A tabela é a **única**
+residência do número: nenhum dossiê de tarefa carrega teto, porque o número é régua de quem
+dimensiona, não instrução a quem executa:
 
 | Classe de tarefa | Teto | Como reconhecer |
 |---|---|---|
 | Mecânica / pontual | ≤15 | um bloco de escrita, arquivos já conhecidos, sem contrato novo |
 | Implementação padrão | ≤40 | vários blocos numa camada; contrato novo, verificação direta |
-| Comportamental multi-camada | ≤60, com teto por ramo no dossiê | muda contrato ou fluxo; ciclo editar-rodar-depurar |
-| Investigação / mapeamento | prescrito caso a caso, junto do método de sondagem | o entregável é descoberta |
+| Comportamental multi-camada | ≤60, com **partição por ramo**: ramo que não cabe vira outra tarefa | muda contrato ou fluxo; ciclo editar-rodar-depurar |
+| Investigação / mapeamento | sem default — régua interna de quem dimensiona; o dossiê prescreve o **método de sondagem** | o entregável é descoberta |
 | Redação de doutrina / planejamento | ≤30 | o custo é decisão |
+| Rodada de replanejamento | ≤50 | fechar a decisão e reescrever, no mesmo contexto, os dossiês que ela invalida |
 
-A rodada de replanejamento — fechar uma decisão e reescrever, no mesmo contexto, os dossiês que ela
-invalida — fica na última classe com teto **≤50**: a série dessas rodadas não cabe em ≤30, e
+A rodada de replanejamento tem linha própria porque a série dessas rodadas não cabe em ≤30, e
 dividi-la entre contextos obrigaria a repagar a leitura da decisão em cada fatia.
 
 **Por quê.** Um teto único para tudo trata naturezas diferentes como se custassem o mesmo. Os números
 acima vêm de consumo medido: quando medida e estimativa divergem, manda a série. E o número é
-**alarme, nunca bloqueio** — executores fecham tarefas muito acima dele sem parar, e quem executa
-registra o consumo no fechamento em vez de interromper a entrega. Custo e consumo são informativos e
-não têm valor em isolamento: só rendem insight analisados em conjunto, e um limite não
+**alarme, nunca bloqueio** — entregas fecham muito acima dele sem parar, e o estouro vira insumo de
+replanejamento em vez de interromper a entrega; quem executa sequer se ocupa dele. Custo e consumo
+são informativos e não têm valor em isolamento: só rendem insight analisados em conjunto, e um
+limite não
 conscientemente delimitado que afete o fluxo é vício, não critério. O controle real é
 **dividir a tarefa antes de delegar**, acima de oito regiões de escrita distintas. O registro
 qualitativo por tarefa, quando existe, mora no card "Lições aprendidas na tarefa" do laudo de
@@ -329,7 +334,9 @@ revisão.
 dossiê **antes** da delegação, e escolher uma classe mais generosa *depois* do estouro é falsificar a
 série — se um estouro se repete numa mesma classe, o sinal é de decomposição errada, e a resposta é
 replanejar. Segundo, na leitura da série: `docs/telemetria.tsv` é append-only,
-para que uma regressão de consumo por tarefa seja visível sem depender da memória de ninguém.
+para que uma regressão de consumo por tarefa seja visível sem depender da memória de ninguém. A
+medida por fonte do que uma retomada de backlog ingere, e a aferição do que cada correção rendeu,
+ficam em `docs/CUSTO_DO_PICKUP.md`.
 
 ## 4. Modelo por fase
 
@@ -664,13 +671,21 @@ edita; a nota no diário é o canal vivo.
 escrito no diário: tarefa e status, o que validar e como, iniciativa de origem, índice de conclusão do
 plano, próxima tarefa sugerida sem iniciá-la, e a recomendação explícita de limpar o contexto.
 
-Existe uma variante para o caso em que a tarefa **não** acabou e o contexto vai acabar antes dela: o
-**checkpoint intermediário**. Ele dispara quando o executor conclui que o contexto acaba antes da
-tarefa. O entregável são **cinco linhas**: o que já está descoberto e decidido (inclusive as
-rotas descartadas — descarte é achado), o que falta, os arquivos tocados, o **próximo passo exato** e o
-que não precisa ser refeito. O teto do próprio checkpoint é de **duas chamadas de ferramenta** — uma
-busca pela âncora e uma edição. Depois dele, a tarefa fica `in-progress` com o ponto de parada
-anotado: nunca `done`, nunca `blocked`, porque não há impedimento externo — acabou o contexto.
+Existe uma variante para o caso em que o **plano** não acabou e a janela vai acabar antes dele: o
+**checkpoint intermediário**. Ele é ato de quem **orquestra**, entre tarefas, quando a janela de
+orquestração se encerra com tarefas do plano ainda abertas; o gatilho é qualitativo, e nenhum teto de
+consumo o dispara. O entregável são **cinco linhas** no plano em curso: o que já está descoberto e
+decidido (inclusive as rotas descartadas — descarte é achado), o que falta, os arquivos tocados, o
+**próximo passo exato** e o que não precisa ser refeito. O teto do próprio checkpoint é de **duas
+chamadas de ferramenta** — uma busca pela âncora e uma edição. Depois dele, o plano fica com o ponto
+de parada anotado, e a tarefa que não chegou a ser entregue volta ao estado em que estava: nunca
+`done`.
+
+Dois casos vizinhos **não** são checkpoint. Contexto **poluído** não gera ponteiro de retomada,
+porque não há retomada: o retorno é a declaração de poluição mais a demanda de reexecução em contexto
+limpo. E contexto acabando **dentro** de uma tarefa não é evento a mitigar — é sintoma de que o
+recorte errou o dimensionamento, matéria que volta ao planejamento; retomar a tarefa pela metade em
+contexto novo é o custo dobrado que a doutrina proíbe.
 
 Fecham o procedimento uma trava e três proibições. A trava vale para **qualquer** agente: depois do
 handover, se o usuário pedir a próxima tarefa no mesmo contexto, o agente não inicia — responde com o
@@ -682,7 +697,7 @@ diário desatualizado — se o handover não atualizou o diário, o handover nã
 **Por quê.** Contexto acumulado degrada a qualidade da resposta, mistura escopo entre tarefas não
 relacionadas e é reenviado inteiro a cada turno — o mesmo material é pago repetidamente, com
 qualidade decrescente. O checkpoint cobre o modo de falha oposto: sem ele, a descoberta já paga morre
-com o contexto e o contexto seguinte a reexecuta do zero, pagando duas vezes pelo mesmo achado. Um
+com a janela e a janela seguinte a reexecuta do zero, pagando duas vezes pelo mesmo achado. Um
 checkpoint que custa mais do que a descoberta que preserva vira relatório; daí o teto de duas
 chamadas.
 
@@ -697,7 +712,7 @@ com o agente.
 
 > Fonte da verdade: `GOVERNANCA.md` §7
 
-Dezesseis regras mínimas obrigatórias, válidas em todo projeto da família, sem exceção.
+Dezoito regras mínimas obrigatórias, válidas em todo projeto da família, sem exceção.
 A coluna do meio distingue o que **falha por si** do que depende de
 alguém ler um checklist.
 
@@ -709,7 +724,7 @@ alguém ler um checklist.
 | 4 | Namespace de estado: plugin só escreve em `plugins.<nome>.*`, salvo whitelist explícita | **Teste executável** (boundary) |
 | 5 | Gate de conformance: nenhuma tarefa é `done` com conformance vermelho | **Teste executável** (bloqueante) |
 | 6 | Piso de regressão nunca desce; remoção intencional exige registro de decisão | **Teste executável** (ratchet contra a lista versionada) |
-| 7 | Disciplina de contexto: um contexto sustenta um cenário coerente — material de outro cenário ou contraditório o polui e obriga parada imediata; teto de trabalho de ~50% da janela; varredura ampla só via agente de coleta; doc grande via índice | **Instrução de agente** |
+| 7 | Disciplina de contexto: um contexto sustenta um cenário coerente — material de outro cenário ou contraditório o polui e obriga parada **não graciosa** no ato, sem aproveitar o produzido depois do sinal e com contexto limpo para a reexecução; ocupação de janela não é matéria deste guardrail, e sim diretriz de dimensionamento (§3); varredura ampla só via agente de coleta; doc grande via índice | **Instrução de agente** |
 | 8 | `G-DEADCODE`: todo símbolo de produção precisa de ao menos um chamador de produção alcançável; rota abandonada morre no mesmo commit | **Teste executável** (alcançabilidade por AST) + **gate de review** no fechamento da tarefa |
 | 9 | `G-PLANFIDELITY`: o executor não substitui a rota arquitetural aprovada por alternativa própria sob pressão técnica | **Gate de review** (a revisão confirma que não houve bifurcação sem decision record) |
 | 10 | `G-PREMISE`: premissa que embasa abandono de rota exige spike que a comprove, não asserção | **Gate de review** no fechamento da tarefa que abandona ou bifurca |
@@ -719,8 +734,10 @@ alguém ler um checklist.
 | 14 | `G-README`: o README é documento canônico — o contrato com o cliente; nenhuma mudança de doutrina fecha sem ele refletida na mesma sprint | **Gate de review** (atividade nomeada de revisão no encerramento da sprint, com aceite do dono; `check-readme.ps1` cobre drift estrutural) |
 | 15 | `G-SCOPE`: o agente se atém estritamente às responsabilidades declaradas na matriz de papéis — o que não está escrito é proibido; artefato existente que atribui ato não endossado, ou papel que a matriz sequer cita, é não-conformidade grave que se para e regulariza, e ato real que falta na matriz sobe ao dono em vez de virar responsabilidade nova no prompt | **Instrução de agente** + **gate de review** (prompt novo ou alterado e varredura dos existentes) |
 | 16 | `G-SURFACE`: mudança de decisão estruturante — objetivo-chave, requisito ou caso de uso — regulariza a superfície de contato inteira no ato, não só o artefato onde a decisão foi tomada; a rodada de planejamento que fecha a decisão emite os cards de regularização no mesmo ato e a fila não avança sem eles | **Gate de planejamento** (cards emitidos no mesmo ato, plano parado sem eles) + **gate de review** |
+| 17 | `G-REPLAN`: bloqueio de tarefa por `premissa` abre uma rodada de replanejamento como próxima tarefa do plano, roteada ao planejador — nunca fica esperando o dono nem é contornado pela tarefa seguinte | **Instrução de agente** + roteamento das skills `scrum-master`/`proximo-passo` |
+| 18 | `G-NOASK`: interrupção para escalar ao dono durante a execução é falha de planejamento — quem executa não fica com dúvida e não escala direto: para, registra, bloqueia e encerra; o planejador não libera plano com alto risco de interrupção | **Instrução de agente** + **gate de review** |
 
-**Sete** regras falham como teste executável, **nove** dependem de gate de review ou de instrução de
+**Sete** regras falham como teste executável, **onze** dependem de gate de review ou de instrução de
 agente — uma delas soma as duas formas, e por isso aparece nas duas contagens —, e uma é negada pelo
 sistema de permissões. As três formas têm forças distintas: um teste falha sem ninguém presente, um
 gate de review falha só se alguém executar o gate, e uma instrução de agente falha apenas se o

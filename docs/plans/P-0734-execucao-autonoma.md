@@ -4686,3 +4686,21 @@ que carregue a identidade até o hook.
 **Um, sem ponto de parada:** `T55` (o estado, o hook, a declaração e o teste). Fila: logo depois da
 `T15` e antes da `T16` (§5). O denominador do plano passa de **60** para **61**. A `T14` **não é
 reaberta** — fechou corretamente em ramo B, e recebe só nota datada apontando para esta seção.
+
+## 24. Rebase pelo `P-0737`
+
+Este plano fica **`superseded`** por classificação (B) — substituído por
+`docs/plans/P-0737-loop-autonomo.md`, que absorve as 9 tarefas abertas abaixo (8 absorvidas + 1
+cancelada por absorção) e assume a iniciativa `EXECUCAO-AUTONOMA` como plano vivo único.
+
+| Tarefa do `P-0734` | Matéria | Destino |
+|---|---|---|
+| `T29` — artefato `tarefa`, fecha a `DP-I` | doutrina · decide-e-para | **absorvida** → `AUT-T2` |
+| `T30` — utilidade do laudo, fecha a `DP-J` | doutrina · decide-e-para | **absorvida** → `AUT-T3` |
+| `T19` — `rdo.py`: o RDO se gera no fechamento | implementação | **absorvida** → `AUT-T4` |
+| `T12` — reconciliação com `proximo-passo` | kit executável | **absorvida** → `AUT-T6` (a decisão que ela deveria tomar já veio pronta pela `DU-5`: forma (b)) |
+| `T23b` — `proximo-passo` aponta para a residência única | kit executável | **absorvida** → `AUT-T6` (a skill-alvo deixa de existir; a skill nova nasce já falando a lista final da `DP-F`, o que entrega o efeito sem a edição) |
+| `T26` — conformidade: doutrina normativa | doutrina | **absorvida** → `AUT-T8` |
+| `T27` — conformidade: kanban, planos vivos e varredura de fecho | doutrina + kanban | **absorvida, dissolvida em duas** (`DU-10`) → `AUT-T8` (doutrina, com o `TK-30`) + `AUT-T9` (kanban, planos vivos e varredura) |
+| `T17` — `README.md`, `CHANGELOG.md` e veredito do dono | fecho | **absorvida** → `AUT-T10` |
+| `T16` — piloto medido | validação | **cancelada por absorção** — a matéria migra integral para o **plano recomendado do piloto** (`DU-3`), emitido pela `AUT-T10`. |

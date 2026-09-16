@@ -2,7 +2,7 @@
 
 **Plano:** `{{PLANO_PATH}}`
 **Tarefa:** `{{TAREFA_ID}}` — {{TITULO}}
-**Modelo:** {{MODELO}} · **Classe:** {{CLASSE}} · **Teto:** {{TETO}}
+**Modelo:** {{MODELO}} · **Classe:** {{CLASSE}}
 **Esquema de leitura do plano:** {{ESQUEMA}}
 
 ## Dossiê
@@ -23,7 +23,7 @@
 
 ## Execução
 
-**Consumo:** {{TOOL_USES}} tool uses contra o teto {{TETO}}, {{TOKENS_K}} k tokens, {{DURACAO_S}} s (fonte: `<usage>` do encerramento)
+**Consumo:** {{TOOL_USES}} tool uses, {{TOKENS_K}} k tokens, {{DURACAO_S}} s (fonte: `<usage>` do encerramento)
 
 **Pendência para o dono:** {{PENDENCIA}}
 

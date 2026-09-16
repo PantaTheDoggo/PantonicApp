@@ -64,7 +64,7 @@ def _init_repo_com_baseline(root: Path) -> None:
 def _escrever_plano(caminho: Path, arquivos_alvo_texto: str) -> None:
     texto = (
         "# Plano de teste\n\n"
-        "### T1 — Tarefa sintética de teste [Sonnet · classe implementação padrão · teto 40]\n"
+        "### T1 — Tarefa sintética de teste [Sonnet · classe implementação padrão]\n"
         "- **Objetivo:** validar review_evidence.py.\n"
         f"- **Arquivos-alvo:** {arquivos_alvo_texto}\n"
         "- **Verificação:** bateria do §3.\n"
@@ -275,3 +275,70 @@ def test_tf_secao_guardas_renderiza_exit_code_e_veredito_end_to_end(tmp_path):
     assert "Veredito mecânico (`guardas`): não conforme" in documento
     assert "Veredito mecânico (`testes`): conforme" in documento
     assert "não coletado" not in documento
+
+
+def test_alvo_diretorio_casa_por_prefixo_com_arquivo_tocado_dentro(tmp_path):
+    """AUT-T5b: um `Arquivos-alvo` declarado como diretório (ex.: `.claude/tools/`) casa por
+    prefixo com um arquivo tocado dentro dele — não aparece em 'fora dos alvos' e o documento
+    traz o trecho de diff do arquivo real, nunca mais o fallback 'arquivo ausente na árvore de
+    trabalho' só porque o alvo é um diretório."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "toca `.claude/tools/`.")
+
+    (repo / ".claude" / "tools" / "novo.py").write_text(
+        "def novo():\n    return 1\n", encoding="utf-8"
+    )
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "Veredito mecânico: conforme" in documento
+    assert "fora dos alvos" not in documento
+    assert "arquivo ausente na árvore de trabalho" not in documento
+    assert "### `.claude/tools/novo.py`" in documento
+
+
+def test_desde_recorta_tocados_a_partir_da_referencia(tmp_path):
+    """AUT-T5b: `--desde <ref>` recorta o conjunto de tocados — só arquivos rastreados alterados
+    **depois** de `<ref>` entram; um arquivo que já divergia do HEAD anterior mas não mudou depois
+    do `<ref>` fica de fora. Untracked sempre entra, com ou sem `--desde` (não existe no histórico,
+    então nunca é "desde um ref")."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "c.py").write_text("def c():\n    return 3\n", encoding="utf-8")
+    _run_git(["add", "-A"], repo)
+    _run_git(["commit", "-m", "segunda rodada"], repo)
+    ref = _run_git(["rev-parse", "HEAD"], repo).strip()
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 4\n", encoding="utf-8")
+    (repo / "src" / "d.py").write_text("def d():\n    return 5\n", encoding="utf-8")
+
+    tocados = review_evidence.coletar_arquivos_tocados(repo, desde=ref)
+
+    assert tocados == ["src/b.py", "src/d.py"]
+
+
+def test_escopo_declara_recorte_arvore_inteira_sem_desde(tmp_path):
+    """AUT-T5b: sem `--desde`, a seção `## Escopo` declara explicitamente que o recorte medido é a
+    árvore de trabalho inteira — o dossiê nunca afirma escopo que não mediu."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert (
+        "- Recorte: árvore de trabalho inteira (nenhum `--desde` informado)" in documento
+    )

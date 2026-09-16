@@ -49,6 +49,9 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
   linha `**Próxima tarefa da sprint:** <ID> (<ponteiro ao dossiê>)` — atualizada a cada handover,
   ANTES das `**Notas de execução:**` (que crescem por apensamento a cada tarefa concluída).
   Heading + essa linha cabem num Read curto, sem varrer notas de execução potencialmente longas.
+  No mesmo ato, o mesmo autor reescreve a linha `**Fila corrente:**` do cabeçalho de
+  `docs/DIARIO_DE_OBRAS.md` (primeiras 15 linhas, logo abaixo da Diretiva) com o novo ID, o
+  ponteiro ao dossiê e a fila restante — é projeção da linha `Próxima tarefa`, não fonte nova.
 
 ## Status — residência única
 
@@ -72,6 +75,12 @@ os transcreve sem discricionariedade; nos demais estados, autoria e materializa�
 | `review` | o entregável existe e aguarda aceite ou feedback de correção | o executor devolve a linha de retorno da `DP-G` |
 | `done` | entregável aceito | laudo `seguir` ou `seguir com ressalva` acolhido e, onde o dono é o teste de sentido, o veredito dele |
 | `cancelled` | item que não será executado, por qualquer motivo | a triagem recusa; o escopo é descartado; o item é absorvido por outro |
+
+Plano cuja revisão foi pedida por quem executa ou orquestra é caso de `blocked` **de plano**, com a
+razão registrada; na **tarefa** correspondente, a razão tipada é `premissa`. Esse `blocked` de plano
+abre uma **rodada de replanejamento** como próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7
+item 17): o plano só sai de `blocked` quando a rodada fecha — a tarefa volta a `ready` ou
+`cancelled`, e a entrada `RP-<n>` fica em `## Achados da execução` do plano.
 
 ### Máquina de transições
 
@@ -116,6 +125,55 @@ objeto:
 | tarefa (de plano ou de sprint) | `ready`, `in-progress`, `review`, `done`, `blocked`, `cancelled` — **sem `triage`** (a tarefa nasce de plano já aprovado) e **sem `superseded`** |
 | plano / iniciativa | `ready`, `in-progress`, `blocked`, `done`, `cancelled`, `superseded` — **sem `review`** (o aceite é das tarefas; o veredito do dono no fecho da sprint é tarefa em `review`) e **sem `triage`** (ideia de plano é triada como tíquete) |
 
+## Gramática legível por máquina
+
+Transcrição normativa de `docs/plans/P-0739-backlog-instrumento.md` §2.1–§2.4 e §2.7 — é a
+gramática que `.claude/tools/backlog.py` (§3 do mesmo plano) lê e escreve. Esta seção é a
+residência única do texto; o plano de origem não a recopia depois da transcrição.
+
+### Item e residência
+
+| item | residência viva | cabeçalho | campos obrigatórios logo abaixo |
+|---|---|---|---|
+| plano | `docs/plans/P-NNNN-<slug>.md` | `# P-NNNN — <título>` (linha 1) | nas 20 primeiras linhas: `**Status:** \`<estado>\`` e `**Prefixo das tarefas no diário:** \`<PFX>-T<n>\``; opcional `**Ordem de execução:** ID → ID → …` (1ª ocorrência vence; ausente = ordem dos cabeçalhos) |
+| tarefa de plano | no plano (`### <ID> …`) | `### <ID> — <título> [<modelo>[ + dono] · classe <classe>[ · teto <n>]]` (`DP-C`; ` + dono` marca aceite do dono, ` · teto <n>` é sufixo legado tolerado e ignorado — `DB-20`) | 1º bullet: `- **Status:** \`<estado>\` · AAAA-MM-DD[ · <razão de 1 linha>]`; opcionais `- **Depende de:** \`ID\`[, \`ID\`]`, `- **Tipo:** bug`; `- **Notas de execução:**` com sub-bullets `  - AAAA-MM-DD \`<estado>\` — <texto>` apensados pelo instrumento |
+| tíquete | `docs/DIARIO_DE_OBRAS.md` | `## TK-<n> — <título>` (nível 2, **sem** bracket — tíquete não tem modelo nem classe; `DB-17`) | mesmos campos da tarefa (`Status`, `Tipo`, `Notas de execução`) |
+| subtarefa de tíquete | `docs/DIARIO_DE_OBRAS.md`, dentro da seção do tíquete-pai | `### TK-<n><letra> — <título> [<modelo> · classe <classe>]` (`DP-C` completa, igual à tarefa de plano; `DB-17`) | mesmos campos da tarefa |
+
+Uma tarefa é *do* plano cujo prefixo casa com o dela; `TK-<n><letra>` é *do* tíquete `TK-<n>`.
+
+### Índice do diário
+
+`| <ID> | <título curto> | <estado>[ <done>/<total>] | <âncora> |` — a célula `Status` contém **só**
+o token do vocabulário, opcionalmente seguido de `<done>/<total>` para plano/tíquete com subtarefas.
+Nada mais. Título e âncora seguem de autoria humana (o instrumento só cria a linha no `drain` e só
+reescreve a célula `Status`).
+
+### Cabeçalho do diário (bloco gerado)
+
+```markdown
+**Diretiva de priorização:** [Priorize `<ID>`[, `<ID>`…]] [— <texto livre>]
+<!-- fila:gerada -->
+**Fila corrente:** `<ID>` — <título> (`<arquivo>:<l1>-<l2>`) · fila: <ID2>, <ID3> · ready <n> · blocked <m> · in-progress <k>
+- `P-NNNN` (`<estado>`, <done>/<total>): próxima `<ID>`
+<!-- /fila:gerada -->
+```
+
+O instrumento lê só os tokens `` `ID` `` antes de ` — ` na diretiva; o texto livre é para humanos.
+Tudo entre os marcadores é reescrito a cada verbo de escrita; humano não edita ali.
+
+### Inbox de planos
+
+Linha viva: começa com `- ` e contém um caminho `docs/plans/P-NNNN-<slug>.md` (o resto é livre).
+Drenada: prefixada `- [drenado AAAA-MM-DD] ` e movida **verbatim** para `_INBOX_HISTORICO.md`.
+Contador: `**Próximo id de plano: P-NNNN.**` — `drain` o recalcula como `max(id visto) + 1`.
+
+### Máquina de transições (forma para o instrumento)
+
+Tabela da residência única acima ("Status — residência única" → "Máquina de transições") transcrita
+para `_TRANSICOES: dict[tuple[str, str], ...]`; `blocked` exige `--razao`; `done`/`cancelled` são
+terminais; `superseded` só para plano. Transição fora da tabela → exit 1 sem escrever nada.
+
 ## Formato de uma tarefa atômica
 
 ```markdown
@@ -154,8 +212,10 @@ quando a linha exata não existe no momento do planejamento (`C-06`, padrão de 
    de fechar o registro: se a versão local do kit bate com a do hub, segue em silêncio; se
    divergir, pergunta ao dono "atualizar agora ou postergar?" e registra a resposta no próprio
    plano; se a rede estiver indisponível, anota "não verificado" e segue sem bloquear.
-2. **Mudar status** — atualizar a linha do índice e o `[status]` da seção; `blocked` exige razão
-   registrada em "Notas de execução".
+2. **Mudar status** — forma canônica: `python .claude/tools/backlog.py status <ID> <estado>
+   [--razao "…"] [--nota "…"]` (verbo de `docs/plans/P-0739-backlog-instrumento.md` §3); a prosa
+   abaixo descreve o efeito. Efeito: atualizar a linha do índice e o `[status]` da seção; `blocked`
+   exige razão registrada em "Notas de execução".
 3. **Condensar** — quando itens `done`/`cancelled` dominarem o documento (ou ele passar de ~500
    linhas): (a) mover as seções concluídas para `docs/DIARIO_HISTORICO.md` (append-only), deixando
    no diário só a linha do índice com ponteiro; (b) se passar de 500 linhas mesmo assim, criar
@@ -167,19 +227,26 @@ quando a linha exata não existe no momento do planejamento (`C-06`, padrão de 
    "ninguém verifica". Tíquete acumulador (log de evidência que não fecha por desenho) nasce
    já como arquivo satélite + linha de índice, nunca como seção crescente do diário — também
    elimina colisão de append concorrente entre sessões.
-4. **Registrar diretiva de priorização** — sobrescrever a linha "Diretiva de priorização" no
+4. **Registrar diretiva de priorização** — forma canônica: `python .claude/tools/backlog.py
+   diretiva "Priorize \`ID\`[, \`ID\`…] — …"` (verbo de `docs/plans/P-0739-backlog-instrumento.md`
+   §3); a prosa abaixo descreve o efeito. Efeito: sobrescrever a linha "Diretiva de priorização" no
    topo do diário. Só acontece por pedido explícito do usuário (ex.: "Priorize iniciativa X",
    "priorize tarefas desse bug") — nunca inferida implicitamente de uma conversa. Ficar vazia
    quando o usuário não nomeou prioridade (heurística padrão assume).
-5. **Drenar inbox de planos** — no início de qualquer sessão que vá tocar o diário (em especial
-   ao abrir a skill `proximo-passo`), ler `docs/plans/_INBOX.md`. Cada linha não drenada aponta
+5. **Drenar inbox de planos** — forma canônica: `python .claude/tools/backlog.py drain [--data
+   AAAA-MM-DD]` (verbo de `docs/plans/P-0739-backlog-instrumento.md` §3); a prosa abaixo descreve o
+   efeito. Efeito: no início de qualquer sessão que vá tocar o diário (em especial
+   ao abrir a skill `proximo-passo`), ler `docs/plans/_INBOX.md` — única fonte da drenagem; o
+   pickup nunca lê o histórico. Cada linha não drenada aponta
    para um `docs/plans/P-NNNN-<slug>.md` gravado por um agente de planejamento (possivelmente em
    paralelo com outros); promover cada plano ainda não promovido para uma entrada no índice +
    heading do diário (ou manter o heading no próprio `docs/plans/P-*.md` com só a linha de índice
    apontando para lá, se o plano for grande), e marcar a linha do inbox como drenada (ex.:
-   riscar/prefixar `[drenado]`) sem apagá-la — `_INBOX.md` é append-only. O `NNNN` do novo plano
-   vem do contador declarado no cabeçalho do `_INBOX.md` (alocar = maior id já registrado + 1);
-   atualizar a linha de próximo id do `_INBOX.md` no mesmo ato de registrar o plano.
+   riscar/prefixar `[drenado]`) movendo-a, verbatim, para `docs/plans/_INBOX_HISTORICO.md` — nunca
+   apagá-la nem reescrevê-la lá; `_INBOX.md` continua append-only para as linhas ainda vivas. O
+   `NNNN` do novo plano vem do contador declarado no cabeçalho do `_INBOX.md` (alocar = maior id já
+   registrado + 1); atualizar a linha de próximo id do `_INBOX.md` no mesmo ato de registrar o
+   plano.
 
 ## Planos derivados de uma investigação em curso (reconciliação obrigatória)
 

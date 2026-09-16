@@ -98,3 +98,54 @@ def test_tr_campo_numerico_nao_numerico_falha_ruidosa_sem_escrever(tmp_path, cap
     assert tsv.read_bytes() == conteudo_anterior
     saida = capsys.readouterr()
     assert "tool_uses" in saida.err
+
+
+def test_tf_celula_vazia_aceita_quando_fonte_nao_e_usage(tmp_path):
+    """TF da AUT-T5a: com `fonte` em {`contado`, `nao_medido`}, `tokens_k`/`duracao_s`/`tool_uses`
+    vazios são aceitos — a célula vazia é a sentinela de métrica não medida."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    conteudo_anterior = (_HEADER + _LINHA_EXISTENTE).encode("utf-8")
+    tsv.write_bytes(conteudo_anterior)
+
+    exit_code = telemetria.main(
+        _args(tsv, fonte="contado", tokens_k="", duracao_s="")
+    )
+
+    assert exit_code == 0
+    conteudo_final = tsv.read_bytes()
+    nova_linha = conteudo_final[len(conteudo_anterior):]
+    assert nova_linha == b"2026-08-08\tPantonicApp\tEXA-T7\tSonnet\t20\t\t\tcontado\n"
+
+
+def test_tf_celula_vazia_aceita_com_fonte_nao_medido(tmp_path):
+    """TF da AUT-T5a: `fonte=nao_medido` também aceita célula vazia nas três colunas numéricas."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    conteudo_anterior = (_HEADER + _LINHA_EXISTENTE).encode("utf-8")
+    tsv.write_bytes(conteudo_anterior)
+
+    exit_code = telemetria.main(
+        _args(tsv, fonte="nao_medido", tool_uses="", tokens_k="", duracao_s="")
+    )
+
+    assert exit_code == 0
+    conteudo_final = tsv.read_bytes()
+    nova_linha = conteudo_final[len(conteudo_anterior):]
+    assert nova_linha == b"2026-08-08\tPantonicApp\tEXA-T7\tSonnet\t\t\t\tnao_medido\n"
+
+
+def test_tr_celula_vazia_recusada_com_fonte_usage(tmp_path, capsys):
+    """TR da AUT-T5a: com `fonte=usage` a célula vazia continua sendo falha ruidosa — o bloco de
+    uso reportado sempre carrega os três campos, e vazio ali é medida perdida, não ausente."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    conteudo_anterior = (_HEADER + _LINHA_EXISTENTE).encode("utf-8")
+    tsv.write_bytes(conteudo_anterior)
+
+    exit_code = telemetria.main(_args(tsv, fonte="usage", tokens_k=""))
+
+    assert exit_code != 0
+    assert tsv.read_bytes() == conteudo_anterior
+    saida = capsys.readouterr()
+    assert "tokens_k" in saida.err

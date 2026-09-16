@@ -100,3 +100,48 @@ caso de uso de um plugin, ou o grau de aderência medido da implementação de r
 - `## 10. Operações de OS e IN/OUT` / `## 11. Contenção de falhas [REPLICAR]`
 **Acesso:** `Grep pattern:"^### 9\.1" path:ARQUITETURA_PANTONICA.md -n` (trocar a âncora por
 qualquer heading `##`/`###` da lista acima).
+
+## docs/CUSTO_DO_PICKUP.md (~402 linhas)
+**Propósito:** medida por fonte do que uma retomada de backlog ingere — orçamento em chars e
+tokens, veredito das hipóteses, rota candidata por fonte, orçamento-alvo e anatomia medida de
+uma janela de orquestração real.
+**Quando consultar:** ao decidir ou implementar qualquer mudança no fluxo de pickup (skills
+`proximo-passo`/`diario-de-obras`, diário, inboxes), para partir do número medido em vez de
+remedir; e para o valor de referência contra o qual uma correção se afere.
+**Seções:**
+- `## 1 Pickup típico medido` — definição operacional e `HEAD` da medida
+- `## 2 Orçamento por fonte` — tabela ranqueada por chars ingeridos + cinco recortes internos
+- `## 3 Orçamento por passo do roteiro` — uma linha por passo, com o número único do pickup
+- `## 4 Hipóteses H1..H5` — veredito e número de cada uma
+- `## 5 Rota candidata por fonte` — rota do conjunto fechado, perda e ordem de grandeza
+- `## 6 Orçamento-alvo proposto` — alvo, folga de execução e redução exigida
+- `## 7 Anatomia de uma janela de orquestração` — 3 janelas `AUT-T5b`/2026-08-22 medidas por
+  `sonda_janela.py`: ocupação do 1º `usage`, decomposição fixo × variável, turno de cruzamento
+  de 100k tokens e o que a leva lá
+- `## 8 A série: custo por papel e custo do controle` — decomposição do consumo por papel agêntico
+- `## 9 Causas raízes e veredito do dono (2026-08-23)` — as causas classificadas e a rota decidida
+- `## 10 Aferição (2026-08-24)` — antes × depois medido das correções, com veredito dos critérios
+- `## 11 Composição do 1º usage (2026-08-24)` — decomposição visível × opaco (`TK-51`): dispersão
+  da baseline estendida, tabela por janela canônica e regressão `usage_1 ~ chars_preâmbulo` por papel
+- `## 12 Onde e quando o degrau do 1º usage acontece (2026-08-24)` — discriminação por tempo/tipo
+  de janela/projeto do degrau (`TK-53a`): série diária, `depois` linha a linha, papel de subagente
+  e projeto antes × depois, veredito por eixo e a janela temporal do degrau
+**Acesso:** `Grep pattern:"^## 5 " path:docs/CUSTO_DO_PICKUP.md -n` (trocar `5` pela seção
+desejada).
+
+## docs/plans/P-0737-loop-autonomo.md (~586 linhas)
+**Propósito:** plano vivo único da iniciativa `EXECUCAO-AUTONOMA` — rebase do `P-0734` por
+classificação (B), poda nominal dos 25 tíquetes vivos e as dez tarefas `AUT-T1..T10` que fecham a
+consolidação.
+**Quando consultar:** para o destino de uma tarefa herdada do `P-0734`, o critério e a disposição
+de um tíquete podado/absorvido/encaminhado, ou o dossiê de uma `AUT-T<n>`.
+**Seções:**
+- `## 2. Decisões`
+- `## 4. Rebase do P-0734-execucao-autonoma — classificação (B)` — mapa das 9 tarefas herdadas
+- `## 5. Poda de tíquetes — os 25 vivos, nominalmente` — (a) podados, (b) absorvidos, (c)
+  encaminhados, (d) preservados
+- `## 6. Tarefas` — `### AUT-T1..AUT-T10`
+- `## 8. Saída da AUT-T10 — as três recomendações de plano`
+- `## 11. Riscos`
+**Acesso:** `Grep pattern:"^### AUT-T5 " path:docs/plans/P-0737-loop-autonomo.md -n` (trocar
+`AUT-T5` pela tarefa desejada).

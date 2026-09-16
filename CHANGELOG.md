@@ -16,6 +16,66 @@ reescritas nem revogadas.
 
 ## [Não lançado]
 
+- `G-NOASK` (`GOVERNANCA.md` §7 item 18, 2026-09-16, decisão do dono): interrupção para escalar
+  ao dono durante a execução é falha de planejamento — quem executa (executor e orquestração)
+  não fica com dúvida e não escala direto: para, registra `AE-<n>`, bloqueia `premissa` e
+  encerra; o planejador não libera plano com alto risco de interrupção (teste de interrupção,
+  fase 4 item 8). Matriz §3 (execução, orquestração, planejamento), §4.3 (canal de escalada),
+  `pantonic-executor`, `pantonic-planner`, `pantonic-reviewer` (`--escalar` vai ao planejamento;
+  decisão não fechada pelo card é achado `dossiê`), `scrum-master` (`B1` roteia ao planejador;
+  nenhuma pergunta entre despacho e relatório), `proximo-passo`, `handover` (≤ 8 linhas) e
+  README §10 (itens 17 e 18) alinhados. Achados do card
+  `docs/plans/_CARD-revisao-critica-pickup-opus.md` absorvidos: registro único do achado
+  (§4.2 "Fechamento enxuto"), disciplina de instrumento (§3, cinco regras), opção "registrar e
+  não agir" em toda rodada de decisões, `contado` exige contagem efetiva (§4.2) —
+  `docs/telemetria.tsv` linha `BKL-AE2-pickup` corrigida de 14 para 29 (contagem do card).
+  `rdo.py laudo` passa a recusar `--plano`/`--tarefa` em forma de caminho (TR em
+  `tests/test_rdo.py`).
+- `G-REPLAN` (`GOVERNANCA.md` §7 item 17, 2026-09-16): bloqueio de tarefa por `premissa` abre uma
+  rodada de replanejamento como próxima tarefa do plano, roteada ao planejador (não ao dono);
+  `scrum-master` `A3b`, `proximo-passo` e `diario-de-obras` alinhados. `pantonic-planner` ganha
+  inventário de corpus (fase 1), teste do parser frio (fase 4) e `idem`/`análogo` no léxico
+  proibido. Origem: `P-0739` `AE-1`/`RP-1`.
+- `.claude/agents/pantonic-planner.md` reescrito como doutrina operacional do papel de planejamento (2026-09-15): protocolo em cinco fases com duas saídas antes do plano (campanha de investigação delegada ao `pantonic-scout`/tarefa `investigacao`; rodada única de decisões ao dono), anatomia do card autossuficiente para executor frio (camada, domínio, restrições inline, contingências fechadas), auto-auditoria G-PLANREADY + teste do executor frio + léxico proibido, e proibição de publicar plano com questão aberta. Motivo: executores ignorando restrições e decidindo sob plano com dúvida pendurada; sessões de planejamento longas com medição própria. `.claude/README.md` regenerado.
+- `GOVERNANCA.md` §4.3 reconciliada (`DX-10`/`G-SURFACE`): a doutrina deixa inequívoco que a
+  janela de orquestração atravessa as tarefas atômicas do mesmo plano e só encerra na troca de
+  plano ou iniciativa (ou, de forma planejada, na ocupação da janela) — o "contexto limpo" pago
+  a cada tarefa concluída é o do **executor**, nunca o fechamento da janela de orquestração.
+  `.claude/tools/ocupacao.py` e a `DX-14` item 3 (encerramento planejado entre tarefas) não mudam.
+- `rdo.py`/`review_evidence.py` reconciliados com a gramática nova do cabeçalho de tarefa
+  (`G-SURFACE`, `DX-15`): o segmento ` · teto <N>` do cabeçalho vira opcional e é descartado no
+  parse — cabeçalho histórico com o segmento continua parseando, mas o número não sobrevive em
+  `DossieTarefa` nem no RDO gerado; `_CLASSE_TETO_DEFAULT` permanece como conjunto normativo de
+  classes, só para mensagens de erro.
+- Kit executável reconciliado com a mesma diretriz (`G-SURFACE`): as skills de fluxo
+  (`proximo-passo`, `scrum-master`, `diario-de-obras`) e a docstring de `.claude/tools/ocupacao.py`
+  perdem o texto que orçava teto a quem executa e mandava parar por número. O gate de delegação
+  passa a enunciar **decomposição** como dimensionamento do planejador, com ponteiro para
+  `GOVERNANCA.md` §3; a gramática de cabeçalho de tarefa passa a `### <ID> — <título> [<modelo> ·
+  classe <classe>]` e o consumo medido vira **medida e registro, nunca critério de rota**; o
+  `scrum-master` declara que **não revisa plano** e que encerramento por poluição de contexto não é
+  gracioso; o proxy de ocupação é reclassificado como **aviso informativo à orquestração entre
+  tarefas** (valor `0.50`, hook e comportamento inalterados).
+- Superfície de papéis reconciliada com a diretriz de dimensionamento (`G-SURFACE`): teto e
+  orçamento saem do horizonte do **executor** — cuja responsabilidade única passa a ser executar a
+  tarefa — e entram no do **planejador**, que dimensiona cada tarefa e detém com exclusividade a
+  **revisão de plano**. A escada de escalada fica escrita uma única vez, em `GOVERNANCA.md` §3
+  abaixo da matriz de responsabilidades (suspeita → `blocked` com razão `premissa` → planejador
+  decide o técnico e o tático → dono decide o estratégico e o que altera escopo), com ponteiro nos
+  três artefatos que a exercem. Na skill `handover`, contexto poluído passa a retorno **não
+  gracioso** (sem ponteiro de retomada) e contexto acabando dentro de uma tarefa passa a sintoma de
+  **tarefa mal dimensionada**, devolvido ao planejamento em vez de retomado pela metade; o
+  checkpoint de ponteiro de estado fica para o encerramento planejado da janela de orquestração.
+- A disciplina de contexto se parte em duas normas de naturezas diferentes. **Poluição** é regra
+  final de execução — parada não graciosa no ato, nada do produzido depois do sinal se aproveita e
+  retorno a quem orquestra demandando contexto limpo para a reexecução —, canônica em
+  `.claude/global/CLAUDE.md` (Regra 2), com texto operacional em `GOVERNANCA.md` §4.3 e guardrail
+  em §7 item 7. **Capacidade** deixa de ser condição de execução e vira **diretriz de
+  dimensionamento de quem planeja**, canônica em `GOVERNANCA.md` §3, com os três critérios, a
+  estimativa de 50% de ocupação (tolerância a 60%), a proveniência e a cláusula de revisão;
+  capacidade nunca interrompe tarefa em curso, e `.claude/tools/ocupacao.py` fica como aviso
+  informativo à orquestração. A tabela de classes passa a ser a única residência de número de
+  teto, que sai do dossiê de tarefa (`CTX-T1`).
 - O vocabulário de `status` do kanban ganha residência única em
   `.claude/skills/diario-de-obras/SKILL.md` (`## Status — residência única`), com sete estados:
   `triage`, `ready`, `blocked`, `in-progress`, `review`, `done`, `cancelled`. `backlog` deixa de ser
@@ -247,6 +307,10 @@ via `git subtree`/`sync-kit.ps1`. Por isso o diff relevante para aquele projeto 
   bloqueado desde 2026-07-30. Confirmado nesta sessão: `python .claude/checks/dead_code.py`
   (root = PantonicApp) e `--root D:\workspaces\PantonicVideo` → `OK - 0 achado(s)` nos dois; fixture
   sintética (`orphan_helper` referenciado só por teste) → exit 1, 1 achado exato.
+- `.claude/skills/scrum-master/SKILL.md` condensada de 22.443 para 14.980 chars (prosa —
+  justificativa, racional e exemplo — virou ponteiro para `GOVERNANCA.md` ou caiu; passo, gate,
+  contador e roteamento ficam idênticos); a 7ª âncora `G-SURFACE`, viva desde a `CTX-T1c`, é
+  removida, fechando o achado e tornando a `CTX-T1e` desnecessária (`CTX-T9`).
 
 ## 1.3.0 — 2026-07-30
 

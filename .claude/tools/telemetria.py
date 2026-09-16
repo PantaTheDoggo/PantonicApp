@@ -10,11 +10,10 @@ script só apende. Colunas na ordem do header real do TSV: `data`, `projeto`, `t
 `tool_uses`, `tokens_k`, `duracao_s`, `fonte`. O mapeamento é sempre por nome de coluna (nunca por
 posição), o que elimina o risco de "coluna trocada em silêncio" que a edição manual admitia.
 
-Fora de escopo desta versão (ticket indexado no diário de obras): a série histórica usa ora
-célula vazia ora `-` como sentinela de métrica não medida (`fonte=nao_medido`) sem convenção
-fixa entre as duas formas. Este script exige um número válido em `tool_uses`/`tokens_k`/
-`duracao_s` em toda chamada — não aceita sentinela nenhuma; fixar esse sentinela é decisão de
-outra tarefa, não desta (prova o padrão no menor pedaço possível).
+A célula vazia é a sentinela de métrica não medida. `tool_uses`, `tokens_k` e `duracao_s` aceitam
+célula vazia sempre que `fonte` é `contado` ou `nao_medido`. Com `fonte=usage` os três campos são
+obrigatórios: o bloco de uso reportado sempre os carrega, e célula vazia ali é medida perdida, não
+ausente.
 
 CLI: ``python .claude/tools/telemetria.py append --data AAAA-MM-DD --projeto P --tarefa T
 --modelo M --tool_uses N --tokens_k K --duracao_s S --fonte {usage,contado,nao_medido}
@@ -56,7 +55,9 @@ def _validar_data(valor: str) -> str:
     return valor
 
 
-def _validar_inteiro_nao_negativo(nome: str, valor: str) -> str:
+def _validar_inteiro_nao_negativo(nome: str, valor: str, permite_vazio: bool = False) -> str:
+    if permite_vazio and valor == "":
+        return valor
     try:
         numero = int(valor)
     except ValueError as exc:
@@ -66,7 +67,9 @@ def _validar_inteiro_nao_negativo(nome: str, valor: str) -> str:
     return str(numero)
 
 
-def _validar_numero_nao_negativo(nome: str, valor: str) -> str:
+def _validar_numero_nao_negativo(nome: str, valor: str, permite_vazio: bool = False) -> str:
+    if permite_vazio and valor == "":
+        return valor
     try:
         numero = float(valor)
     except ValueError as exc:
@@ -88,16 +91,21 @@ def _validar_fonte(valor: str) -> str:
 def build_row(args: argparse.Namespace) -> str:
     """Valida todas as colunas e devolve a linha TSV pronta (sem newline final). Lança
     `TelemetriaValidationError` na primeira coluna inválida — nada é escrito em disco a partir
-    daqui; quem chama decide o que fazer com a exceção."""
+    daqui; quem chama decide o que fazer com a exceção.
+
+    `tool_uses`/`tokens_k`/`duracao_s` aceitam célula vazia quando `fonte` não é `usage` — a
+    sentinela de métrica não medida. Com `fonte=usage` os três continuam obrigatórios."""
+    fonte = _validar_fonte(args.fonte)
+    permite_vazio = fonte != "usage"
     valores = {
         "data": _validar_data(args.data),
         "projeto": _validar_texto("projeto", args.projeto),
         "tarefa": _validar_texto("tarefa", args.tarefa),
         "modelo": _validar_texto("modelo", args.modelo),
-        "tool_uses": _validar_inteiro_nao_negativo("tool_uses", args.tool_uses),
-        "tokens_k": _validar_numero_nao_negativo("tokens_k", args.tokens_k),
-        "duracao_s": _validar_numero_nao_negativo("duracao_s", args.duracao_s),
-        "fonte": _validar_fonte(args.fonte),
+        "tool_uses": _validar_inteiro_nao_negativo("tool_uses", args.tool_uses, permite_vazio),
+        "tokens_k": _validar_numero_nao_negativo("tokens_k", args.tokens_k, permite_vazio),
+        "duracao_s": _validar_numero_nao_negativo("duracao_s", args.duracao_s, permite_vazio),
+        "fonte": fonte,
     }
     return "\t".join(valores[coluna] for coluna in _COLUMNS)
 

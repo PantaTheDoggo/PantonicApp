@@ -47,7 +47,7 @@ data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
 2026-08-05	PantonicApp	V2D-T2r2	Opus	64	185	1084	usage
 2026-08-05	PantonicApp	V2I-T1	Sonnet	20	65	117	usage
 2026-08-05	PantonicApp	V2I-T2	Sonnet	15	54	140	usage
-2026-08-05	PantonicApp	V2I-T3	Opus	22	-	-	contado
+2026-08-05	PantonicApp	V2I-T3	Opus	22			contado
 2026-08-05	PantonicApp	V2I-T4	Opus	32	61	258	usage
 2026-08-05	PantonicApp	V2I-T5	Opus	28	72	308	usage
 2026-08-05	PantonicApp	V2I-T6	Opus	25	87	317	usage
@@ -178,3 +178,42 @@ data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
 2026-08-19	PantonicApp	EXA-T15	Sonnet	43	129.1	1505	usage
 2026-08-19	PantonicApp	EXA-DPS-replan	Opus	27			contado
 2026-08-19	PantonicApp	EXA-T55	Sonnet	49	125.3	2558	usage
+2026-08-22	PantonicApp	P-0736-autoria	Opus	13	57	353	usage
+2026-08-22	PantonicApp	CPK-T1	sonnet	31	98.8	457	usage
+2026-08-22	PantonicApp	CPK-T2	sonnet				nao_medido
+2026-08-22	PantonicApp	CPK-T3	Opus	17	100	0	contado
+2026-08-22	PantonicApp	P-0737-autoria	opus	11	134.1	158	usage
+2026-08-22	PantonicApp	AUT-T1	sonnet	32	105.7	255	usage
+2026-08-22	PantonicApp	AUT-T5a-prova-instrumento	sonnet	25			contado
+2026-08-22	PantonicApp	AUT-T5a	sonnet	27	78.4	6263	usage
+2026-08-22	PantonicApp	AUT-T5b	Sonnet				nao_medido
+2026-08-22	PantonicApp	P-0738-autoria	opus	50	165.6	863	usage
+2026-08-22	PantonicApp	P-0738-revisao-DX-13	opus	50	103.7	687	usage
+2026-08-22	PantonicApp	P-0738-revisao-DX-15	opus	68	110.8	664	usage
+2026-08-22	PantonicApp	CTX-T1	opus	33	68	352	usage
+2026-08-22	PantonicApp	CTX-T1b	opus	39	63.7	401	usage
+2026-08-22	PantonicApp	CTX-T1c	opus	32	66.9	286	usage
+2026-08-23	PantonicApp	CTX-T1d	sonnet	62	122.4	823	usage
+2026-08-23	PantonicApp	CTX-T2	Sonnet	34	95.2	457	usage
+2026-08-23	PantonicApp	CTX-T3	Sonnet	43	143.8	1608	usage
+2026-08-23	PantonicApp	CTX-T4	Opus	23			contado
+2026-08-23	PantonicApp	P-0738-CTX-T5	opus	24	105	1500	contado
+2026-08-23	PantonicApp	CTX-T6a	sonnet	22	85.4	914	usage
+2026-08-23	PantonicApp	CTX-T6a	sonnet	74	187	1386	usage
+2026-08-23	PantonicApp	CTX-T6b	sonnet	16	125.5	2132	usage
+2026-08-23	PantonicApp	CTX-T7	sonnet	19	53.2	190	usage
+2026-08-23	PantonicApp	CTX-T8a	sonnet	6	44.6	1675	usage
+2026-08-23	PantonicApp	CTX-T8b	sonnet	11	51.2	97	usage
+2026-08-23	PantonicApp	CTX-T8c	sonnet	7	44.9	2335	usage
+2026-08-24	PantonicApp	CTX-T9	sonnet	30			contado
+2026-08-24	PantonicApp	CTX-T10	sonnet	9	57.257	89.716	usage
+2026-08-24	PantonicApp	CTX-T11	opus	52			contado
+2026-08-24	PantonicApp	TK-52	sonnet	10	47.668	426.407	usage
+2026-08-24	PantonicApp	TK-51	sonnet	112	292.635	1883.894	usage
+2026-08-24	PantonicApp	TK-51-decisao	sonnet	27			contado
+2026-08-24	PantonicApp	TK-53a	sonnet	52	172.733	1022.771	usage
+2026-08-24	PantonicApp	TK-53-escopamento	opus	16	116.382	199.356	usage
+2026-08-31	PantonicApp	TK-54-escopamento	opus	22			contado
+2026-09-16	PantonicApp	BKL-RP1	fable	17			contado
+2026-09-16	PantonicApp	BKL-T2	sonnet	46	200	980	usage
+2026-09-16	PantonicApp	BKL-AE2-pickup	opus	29			contado

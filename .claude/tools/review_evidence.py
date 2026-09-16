@@ -32,7 +32,16 @@ fora de exit 0 resolve para `não conforme`, nunca para `parcial` sozinha) e `te
 (`docs/RUBRICA_DE_REVISAO.md:79-92` — evidência mecânica é o exit code do comando `pytest` da
 bateria). A bateria de produção (`BATERIA_GUARDAS`) é injetável (`comandos_guardas` em
 `montar_documento`/`rodar_bateria_guardas`) para permitir teste determinístico sem depender da
-infraestrutura real do hub num repositório de fixture."""
+infraestrutura real do hub num repositório de fixture.
+
+`AUT-T5b` corrige dois defeitos medidos: (i) um `Arquivos-alvo` que declara um **diretório**
+(ex.: `.claude/tools/`) agora casa por prefixo contra os arquivos tocados dentro dele, em vez de
+comparar como caminho literal e cair no fallback "arquivo ausente na árvore de trabalho"; (ii) o
+conjunto de arquivos tocados agora aceita `--desde <ref>` (`coletar_arquivos_tocados`) para
+recortar só o que mudou a partir de uma referência git, em vez de sempre varrer a árvore de
+trabalho inteira — necessário quando outras tarefas têm mudanças soltas, não commitadas, no mesmo
+repositório. Ausência de `--desde` preserva o comportamento anterior integralmente, e a seção
+`## Escopo` sempre declara explicitamente qual recorte foi medido."""
 from __future__ import annotations
 
 import argparse
@@ -108,31 +117,81 @@ def coletar_diff_stat(root: Path) -> str:
     return _diff(["--stat"], root).strip()
 
 
-def coletar_arquivos_tocados(root: Path) -> list[str]:
-    """`git status --porcelain=v1 --untracked-files=all` — ao contrário de `git diff --stat`,
-    também enxerga arquivo novo ainda não rastreado (o caso comum de uma tarefa que *cria*
-    arquivo-alvo). `--untracked-files=all` é necessário: sem ele, um diretório inteiramente novo
-    aparece colapsado como `dir/` em vez de listar cada arquivo dentro dele."""
-    saida = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
+def _extrair_caminho_status(linha: str) -> str:
+    caminho = linha[3:]
+    if " -> " in caminho:
+        caminho = caminho.split(" -> ", 1)[1]
+    return caminho.strip().strip('"')
+
+
+def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
+    """Sem `desde`: `git status --porcelain=v1 --untracked-files=all` sozinho, árvore de trabalho
+    inteira — ao contrário de `git diff --stat`, também enxerga arquivo novo ainda não rastreado
+    (o caso comum de uma tarefa que *cria* arquivo-alvo). `--untracked-files=all` é necessário:
+    sem ele, um diretório inteiramente novo aparece colapsado como `dir/` em vez de listar cada
+    arquivo dentro dele.
+
+    Com `desde=<ref>` (AUT-T5b): recorta o conjunto de rastreados para só os alterados **desde**
+    `<ref>` (`git diff <ref> --name-only`), em vez da árvore de trabalho inteira — necessário
+    quando outras tarefas têm mudanças soltas, não commitadas, no mesmo repositório. Untracked
+    nunca é "desde um ref" (não existe no histórico), então as entradas `??` do `git status`
+    entram sempre, com ou sem `desde`."""
+    saida_status = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
     tocados: dict[str, None] = {}
-    for linha in saida.splitlines():
-        if not linha:
+    if desde is None:
+        for linha in saida_status.splitlines():
+            if not linha:
+                continue
+            tocados.setdefault(_extrair_caminho_status(linha), None)
+        return sorted(tocados.keys())
+
+    for linha in saida_status.splitlines():
+        if not linha.startswith("??"):
             continue
-        caminho = linha[3:]
-        if " -> " in caminho:
-            caminho = caminho.split(" -> ", 1)[1]
-        caminho = caminho.strip().strip('"')
-        tocados.setdefault(caminho, None)
+        tocados.setdefault(_extrair_caminho_status(linha), None)
+    saida_diff = _git(["diff", desde, "--name-only"], root)
+    for linha in saida_diff.splitlines():
+        linha = linha.strip()
+        if linha:
+            tocados.setdefault(linha, None)
     return sorted(tocados.keys())
 
 
-def confrontar_escopo(tocados: list[str], arquivos_alvo: list[str]) -> dict:
+def _normalizar_separador(caminho: str) -> str:
+    return caminho.replace("\\", "/")
+
+
+def _eh_alvo_diretorio(root: Path, alvo: str) -> bool:
+    """Um item de `arquivos_alvo` é alvo-diretório quando termina em `/` (declaração explícita)
+    ou, após normalizar separador, aponta para um diretório existente na árvore (`root / alvo`)."""
+    if _normalizar_separador(alvo).endswith("/"):
+        return True
+    return (root / alvo).is_dir()
+
+
+def confrontar_escopo(tocados: list[str], arquivos_alvo: list[str], root: Path) -> dict:
     """Veredito mecânico da dimensão `escopo` (`docs/RUBRICA_DE_REVISAO.md:63-77`): `conforme`
     quando o conjunto tocado está contido no conjunto declarado; caso contrário, só o fato — a
     faixa `parcial` depende de um insumo (desvio declarado na entrega) que este script
-    não recebe, então o veredito fica em aberto (`None`), nunca resolvido para `parcial`."""
+    não recebe, então o veredito fica em aberto (`None`), nunca resolvido para `parcial`.
+
+    Alvo-diretório (`_eh_alvo_diretorio`) casa por prefixo (AUT-T5b): um `tocado` que começa com o
+    prefixo do alvo-diretório, após normalizar `\\`→`/` nos dois lados, conta como coberto — não
+    entra em `fora_dos_alvos` só porque o caminho literal do diretório não bate exato."""
     alvo_set = set(arquivos_alvo)
-    fora = sorted(t for t in tocados if t not in alvo_set)
+    prefixos_dir = [
+        _normalizar_separador(alvo).rstrip("/") + "/"
+        for alvo in arquivos_alvo
+        if _eh_alvo_diretorio(root, alvo)
+    ]
+
+    def coberto(tocado: str) -> bool:
+        if tocado in alvo_set:
+            return True
+        tocado_norm = _normalizar_separador(tocado)
+        return any(tocado_norm.startswith(prefixo) for prefixo in prefixos_dir)
+
+    fora = sorted(t for t in tocados if not coberto(t))
     if not fora:
         return {"fora_dos_alvos": [], "veredito": "conforme"}
     return {"fora_dos_alvos": fora, "veredito": None}
@@ -151,12 +210,31 @@ def _diff_para_arquivo(root: Path, caminho_rel: str) -> str:
     return "(sem diferença coletável — arquivo ausente na árvore de trabalho)"
 
 
-def montar_trechos(root: Path, arquivos_alvo: list[str], teto_chars: int) -> dict[str, dict]:
+def montar_trechos(
+    root: Path, arquivos_alvo: list[str], teto_chars: int, tocados: list[str] | None = None
+) -> dict[str, dict]:
     """Trecho de diff (ou conteúdo integral, se o arquivo é novo e sem diff registrável) de cada
     arquivo-alvo, truncado em `teto_chars` — truncamento sempre marcado na saída (nunca
-    silencioso)."""
+    silencioso).
+
+    Alvo-diretório (AUT-T5b): em vez de diffar o path do diretório direto (que sempre cairia no
+    fallback "arquivo ausente"), expande para os `tocados` que casam pelo mesmo prefixo e gera uma
+    entrada de trecho por arquivo real dentro dele. `tocados` é opcional — só é preciso quando
+    algum item de `arquivos_alvo` é diretório; alvo-arquivo comum segue o caminho de sempre."""
     trechos: dict[str, dict] = {}
     for caminho in arquivos_alvo:
+        if tocados and _eh_alvo_diretorio(root, caminho):
+            prefixo = _normalizar_separador(caminho).rstrip("/") + "/"
+            for arquivo in tocados:
+                if not _normalizar_separador(arquivo).startswith(prefixo):
+                    continue
+                texto = _diff_para_arquivo(root, arquivo)
+                truncado = len(texto) > teto_chars
+                trechos[arquivo] = {
+                    "texto": texto[:teto_chars] if truncado else texto,
+                    "truncado": truncado,
+                }
+            continue
         texto = _diff_para_arquivo(root, caminho)
         truncado = len(texto) > teto_chars
         trechos[caminho] = {"texto": texto[:teto_chars] if truncado else texto, "truncado": truncado}
@@ -254,6 +332,7 @@ def _renderizar(
     veredito_guardas_valor: str,
     veredito_testes_valor: str,
     teto_guarda_chars: int,
+    desde: str | None = None,
 ) -> str:
     linhas: list[str] = []
     linhas.append(f"# Evidência de revisão — {plano_id} {tarefa_id}")
@@ -270,6 +349,10 @@ def _renderizar(
         linhas.append("- nenhum arquivo tocado")
     linhas.append("")
     linhas.append("## Escopo")
+    if desde is not None:
+        linhas.append(f"- Recorte: desde `{desde}`")
+    else:
+        linhas.append("- Recorte: árvore de trabalho inteira (nenhum `--desde` informado)")
     alvos_txt = ", ".join(f"`{c}`" for c in arquivos_alvo) if arquivos_alvo else "(nenhum declarado)"
     tocados_txt = ", ".join(f"`{c}`" for c in arquivos_tocados) if arquivos_tocados else "(nenhum)"
     linhas.append(f"- Arquivos-alvo declarados: {alvos_txt}")
@@ -313,6 +396,7 @@ def montar_documento(
     teto_diff_chars: int = 4000,
     comandos_guardas: list[tuple[str, list[str]]] | None = None,
     teto_guarda_chars: int = 2000,
+    desde: str | None = None,
 ) -> str:
     plano_path = Path(plano_path)
     if not plano_path.is_file():
@@ -326,16 +410,15 @@ def montar_documento(
             esquema_legado=False,
             modelo_legado=None,
             classe_legado=None,
-            teto_legado=None,
         )
     except rdo.RdoValidationError as exc:
         raise ReviewEvidenceValidationError(str(exc)) from exc
 
     arquivos_alvo = extrair_arquivos_alvo(dossie.campos)
     diff_stat = coletar_diff_stat(root)
-    tocados = coletar_arquivos_tocados(root)
-    escopo = confrontar_escopo(tocados, arquivos_alvo)
-    trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars)
+    tocados = coletar_arquivos_tocados(root, desde)
+    escopo = confrontar_escopo(tocados, arquivos_alvo, root)
+    trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars, tocados)
     resultados_guardas = rodar_bateria_guardas(root, comandos_guardas)
     veredito_guardas_valor = veredito_guardas(resultados_guardas)
     veredito_testes_valor = veredito_testes(resultados_guardas)
@@ -356,6 +439,7 @@ def montar_documento(
         veredito_guardas_valor=veredito_guardas_valor,
         veredito_testes_valor=veredito_testes_valor,
         teto_guarda_chars=teto_guarda_chars,
+        desde=desde,
     )
 
 
@@ -381,11 +465,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--out", type=Path, default=None, help="Também grava o documento neste caminho (escrita atômica)."
     )
+    parser.add_argument(
+        "--desde",
+        default=None,
+        help=(
+            "Ref git (ex.: SHA capturado no despacho) para recortar arquivos tocados a partir "
+            "dela, em vez da árvore de trabalho inteira (AUT-T5b)."
+        ),
+    )
     args = parser.parse_args(argv)
 
     try:
         documento = montar_documento(
-            args.plano, args.tarefa, args.root, teto_diff_chars=args.max_diff_chars
+            args.plano,
+            args.tarefa,
+            args.root,
+            teto_diff_chars=args.max_diff_chars,
+            desde=args.desde,
         )
     except ReviewEvidenceValidationError as exc:
         print(f"review_evidence: FALHOU - {exc}", file=sys.stderr)

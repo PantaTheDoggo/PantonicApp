@@ -3,7 +3,7 @@ início e passa a ser **gerado no fechamento**: `python .claude/tools/rdo.py clo
 <caminho.md> --tarefa <ID> --tool-uses <N> --tokens-k <N> --duracao-s <N> --veredito
 <aprovado|ressalva> --percentual <N> --bloqueante <dimensão|nenhuma> --recomendacao "<uma linha>"
 --pendencia-laudo "<uma linha|nenhuma>" [--pendencia "<uma linha>"] [--rdo-dir] [--template]
-[--esquema-legado --modelo --classe --teto]` localiza o cabeçalho da tarefa no `.md` do plano pela
+[--esquema-legado --modelo --classe]` localiza o cabeçalho da tarefa no `.md` do plano pela
 gramática fixa da `DP-C` (`extrair_dossie`, reusada também por `review_evidence.py` — não remover),
 **transcreve** — sem recalcular — o `pacote` do laudo (veredito/percentual/bloqueante/recomendação/
 pendência-do-laudo) e o consumo medido, **calcula** o desdobramento pela tabela de dois ramos de
@@ -16,9 +16,10 @@ laudo é documento **consumido e descartado** pelo `scrum-master` (`DP-H`) — `
 arquivo de laudo nenhum e não conhece `--laudos-dir`; o template não pendura ponteiro para um
 documento que já não existe.
 
-Plano legado (cabeçalho sem `[<modelo> · classe <classe> · teto <N>]`): `--esquema-legado` com
-`--modelo`/`--classe`/`--teto` explícitos é o único caminho para prosseguir (política de plano
-legado da `DP-C`, item 3) — o RDO registra `esquema=legado`.
+Plano legado (cabeçalho sem colchete algum — a gramática fixa da `DX-15` é `### <ID> — <título>
+[<modelo> · classe <classe>]`, com o segmento histórico ` · teto <N>` aceito e descartado sem
+flag nenhuma): `--esquema-legado` com `--modelo`/`--classe` explícitos é o único caminho para
+prosseguir (política de plano legado da `DP-C`, item 3) — o RDO registra `esquema=legado`.
 
 `laudo` (EXA-T8b/T18) não é tocado por esta rodada: `python .claude/tools/rdo.py laudo --plano
 <id> --tarefa <id> [--laudos-dir <dir>] --<dimensao> <nivel> ...` (as sete dimensões de
@@ -46,7 +47,9 @@ from pathlib import Path
 
 _MODELOS = {"Opus", "Sonnet", "Haiku"}
 
-# Slug normativo -> teto default (`GOVERNANCA.md` §3 / `DP-C`). `None` = sem default (investigação).
+# Conjunto normativo de classes (`DP-C`) — usado nas mensagens de erro (`sorted(...)`) para nomear
+# o domínio aceito. Os valores eram teto default por classe; a régua de teto agora é exclusiva do
+# planejador em `GOVERNANCA.md` §3 — este módulo não os lê mais (`DX-15`, `CTX-T1d`).
 _CLASSE_TETO_DEFAULT: dict[str, int | None] = {
     "mecanica": 15,
     "implementacao": 40,
@@ -74,10 +77,11 @@ _CLASSE_ALIASES: dict[str, str] = {
 }
 
 _ID_HEADER_RE = re.compile(r"^### (T[0-9]+[a-z]?)(?=[\s—])")
+_ID_LAUDO_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")  # identificador, nunca caminho
 _HEADER_BRACKET_RE = re.compile(
     r"^### (?P<id>T[0-9]+[a-z]?) — (?P<titulo>.+?) "
-    r"\[(?P<modelo>Opus|Sonnet|Haiku) · classe (?P<classe>.+?) · "
-    r"teto (?:prescrito )?(?P<teto>\d+)\](?P<sufixo>.*)$"
+    r"\[(?P<modelo>Opus|Sonnet|Haiku) · classe (?P<classe>.+?)"
+    r"(?: · teto (?:prescrito )?[0-9]+)?\](?P<sufixo>.*)$"
 )
 _HEADER_LEGADO_TITULO_FMT = r"^### {id} — (?P<titulo>.+)$"
 _SECTION_BREAK_RE = re.compile(r"^#{2,3} ")
@@ -104,12 +108,11 @@ class DossieTarefa:
     de anotações adiadas (`from __future__ import annotations`) que `dataclasses` faz na
     definição da classe — evitado ficando fora do mecanismo de dataclass."""
 
-    def __init__(self, tarefa_id, titulo, modelo, classe, teto, esquema, campos, extras):
+    def __init__(self, tarefa_id, titulo, modelo, classe, esquema, campos, extras):
         self.tarefa_id = tarefa_id
         self.titulo = titulo
         self.modelo = modelo
         self.classe = classe
-        self.teto = teto
         self.esquema = esquema  # "padrao" | "legado"
         self.campos = campos
         self.extras = extras
@@ -187,7 +190,6 @@ def extrair_dossie(
     esquema_legado: bool,
     modelo_legado: str | None,
     classe_legado: str | None,
-    teto_legado: str | None,
 ) -> DossieTarefa:
     linhas = plano_path.read_text(encoding="utf-8").splitlines()
 
@@ -212,13 +214,6 @@ def extrair_dossie(
                 f"classe: '{classe_raw}' fora do conjunto {sorted(_CLASSE_TETO_DEFAULT)} "
                 f"(cabeçalho de '{tarefa_id}')"
             )
-        teto = int(bracket.group("teto"))
-        default_teto = _CLASSE_TETO_DEFAULT[classe]
-        if default_teto is not None and teto != default_teto:
-            raise RdoValidationError(
-                f"teto: {teto} diferente do default da classe '{classe}' ({default_teto}) "
-                f"no cabeçalho de '{tarefa_id}'"
-            )
         modelo = bracket.group("modelo")
         esquema = "padrao"
     else:
@@ -231,13 +226,12 @@ def extrair_dossie(
                 ("--esquema-legado", esquema_legado),
                 ("--modelo", modelo_legado),
                 ("--classe", classe_legado),
-                ("--teto", teto_legado),
             )
             if not valor
         ]
         if faltando:
             raise RdoValidationError(
-                f"cabeçalho de '{tarefa_id}' não declara modelo/classe/teto (plano legado) — "
+                f"cabeçalho de '{tarefa_id}' não declara modelo/classe (plano legado) — "
                 f"faltando: {', '.join(faltando)}"
             )
         if modelo_legado not in _MODELOS:
@@ -246,15 +240,6 @@ def extrair_dossie(
         if classe is None:
             raise RdoValidationError(
                 f"classe: '{classe_legado}' fora do conjunto {sorted(_CLASSE_TETO_DEFAULT)}"
-            )
-        try:
-            teto = int(teto_legado)
-        except ValueError as exc:
-            raise RdoValidationError(f"teto: '{teto_legado}' não é inteiro") from exc
-        default_teto = _CLASSE_TETO_DEFAULT[classe]
-        if default_teto is not None and teto != default_teto:
-            raise RdoValidationError(
-                f"teto: {teto} diferente do default da classe '{classe}' ({default_teto})"
             )
         modelo = modelo_legado
         esquema = "legado"
@@ -284,7 +269,6 @@ def extrair_dossie(
         titulo=titulo,
         modelo=modelo,
         classe=classe,
-        teto=teto,
         esquema=esquema,
         campos=campos,
         extras=[(rotulo, conteudo) for rotulo, conteudo in extras_brutos],
@@ -467,6 +451,12 @@ def cmd_laudo(args: argparse.Namespace) -> Path:
     """EXA-T18: laudo grava documento próprio em `docs/RDO/laudos/<plano>-<tarefa>.md` — não
     depende de RDO nenhum aberto, e o `close` (EXA-T19) não o lê: o `pacote` chega a `close` por
     argumento, de quem consumiu este documento."""
+    for flag, valor in (("--plano", args.plano), ("--tarefa", args.tarefa)):
+        if not _ID_LAUDO_RE.fullmatch(valor):
+            raise RdoValidationError(
+                f"{flag} é identificador (ex.: P-0734, T18), não caminho: {valor!r}. "
+                "Laudo de sonda vai para --laudos-dir <scratchpad>."
+            )
     niveis = {d: getattr(args, d.replace("-", "_")) for d in _DIMENSOES_ORDEM}
     vermelhos = set(args.vermelho_mecanico or [])
 
@@ -526,9 +516,9 @@ def calcular_desdobramento(veredito: str) -> str:
     """Tabela de dois ramos por veredito (`T19` item c, fecha o `TK-29`): o RDO só nasce na
     transição `review` → `done` (`DP-F`), então `bloqueado`/`reprovado` nunca chegam a `close` —
     ramo morto testado é o que o `G-DEADCODE` proíbe, por isso não existem aqui. O terceiro ramo
-    que existia por estouro de teto caiu pela `DP-Q` (§21 do plano `P-0734`): nenhum teto numérico
-    governa fluxo — consumo é medido e registrado (`TOOL_USES`/`TETO` no documento), nunca decide
-    o desdobramento."""
+    que existia por estouro de consumo caiu pela `DP-Q` (§21 do plano `P-0734`): nenhum limite
+    numérico governa fluxo — consumo é medido e registrado (`TOOL_USES` no documento), nunca
+    decide o desdobramento."""
     if veredito == "ressalva":
         return "aprovado com ressalva"
     if veredito == "aprovado":
@@ -589,7 +579,6 @@ def cmd_close(args: argparse.Namespace) -> Path:
         esquema_legado=args.esquema_legado,
         modelo_legado=args.modelo,
         classe_legado=args.classe,
-        teto_legado=args.teto,
     )
 
     template_path = args.template if args.template is not None else _default_template_path()
@@ -614,8 +603,8 @@ def cmd_close(args: argparse.Namespace) -> Path:
         if valor is not None and _contar_linhas(valor) > 1:
             raise RdoValidationError(f"{nome_campo}: aceita no máximo uma linha")
 
-    # Consumo (`args.tool_uses` contra `dossie.teto`) é medido e vai para o documento via
-    # TOOL_USES/TETO no `mapping` abaixo — não decide o desdobramento (`DP-Q`, §21 do `P-0734`).
+    # Consumo (`args.tool_uses`) é medido e vai para o documento via TOOL_USES no `mapping`
+    # abaixo — não decide o desdobramento (`DP-Q`, §21 do `P-0734`).
     desdobramento = calcular_desdobramento(args.veredito)
 
     linhas_pendencia = []
@@ -641,7 +630,6 @@ def cmd_close(args: argparse.Namespace) -> Path:
         "TITULO": dossie.titulo,
         "MODELO": dossie.modelo,
         "CLASSE": dossie.classe,
-        "TETO": str(dossie.teto),
         "ESQUEMA": dossie.esquema,
         "OBJETIVO": dossie.campos["objetivo"],
         "ARQUIVOS_LABEL": arquivos_label,
@@ -785,11 +773,10 @@ def main(argv: list[str] | None = None) -> int:
     close_parser.add_argument(
         "--esquema-legado",
         action="store_true",
-        help="Cabeçalho sem [modelo · classe · teto] — exige --modelo/--classe/--teto.",
+        help="Cabeçalho sem [modelo · classe] — exige --modelo/--classe.",
     )
     close_parser.add_argument("--modelo", default=None, help="Só com --esquema-legado.")
     close_parser.add_argument("--classe", default=None, help="Só com --esquema-legado.")
-    close_parser.add_argument("--teto", default=None, help="Só com --esquema-legado.")
 
     args = parser.parse_args(argv)
 

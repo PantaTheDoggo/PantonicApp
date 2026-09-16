@@ -22,7 +22,8 @@ aqui.
 
 1. **Drenar os dois inboxes** — antes de escolher qualquer tarefa:
    1. **Inbox de planos** — skill `diario-de-obras`, operação "drenar inbox de planos": promove
-      linhas novas de `docs/plans/_INBOX.md` para o índice do diário.
+      linhas novas de `docs/plans/_INBOX.md` — única fonte da drenagem — para o índice do diário;
+      as linhas já drenadas vivem em `docs/plans/_INBOX_HISTORICO.md`.
    2. **Fila de candidatos a memória** — se `<memory-dir>/_INBOX.md` tiver linha ainda não marcada
       (`<memory-dir>` = `~/.claude/projects/<slug>/memory/`), apresentá-la ao dono nesta invocação
       — `AskUserQuestion` com promover/descartar por candidato — e marcar a linha conforme a
@@ -33,7 +34,9 @@ aqui.
 
 2. **Ler diretiva de priorização** — primeira linha do diário (`docs/DIARIO_DE_OBRAS.md`), logo
    abaixo do título. Se vazia, aplicar heurística padrão, nesta ordem:
-   1. Itens `blocked` cuja razão registrada já não se aplica (destravar).
+   1. Itens `blocked` cuja razão registrada já não se aplica (destravar). Tarefa `blocked` com
+      razão `premissa` **sem** rodada `RP-<n>` registrada no plano não se destrava nem se pula: a
+      rodada de replanejamento é a próxima tarefa (`G-REPLAN`).
    2. Itens `in-progress` (WIP de 1 iniciativa por vez — nunca abrir uma segunda enquanto uma
       primeira está em andamento).
    3. Tíquetes avulsos de bug (`TK-*` descritos como bug).
@@ -51,38 +54,46 @@ aqui.
    (`.claude/global/CLAUDE.md`, Regra 2). Grep pelo ID no diário, ler só a seção correspondente
    (nunca o diário inteiro).
 
-   Para retomar sprint `in-progress`: Grep por `Próxima tarefa da sprint` (`output_mode:
-   content`, `-A 2`) e ir direto ao dossiê referenciado — nunca leitura sequencial da seção.
+   Para retomar sprint `in-progress`: `Read docs/DIARIO_DE_OBRAS.md offset:1 limit:15` — o bloco
+   `**Fila corrente:**` no cabeçalho do diário carrega o ID da tarefa e o range exato do dossiê
+   dela; ir direto lá — nunca leitura sequencial da seção nem varredura por Grep.
    Tíquete N/A-legado (campos "N/A — migrado", autorado dias/semanas atrás): classificar antes
    de qualquer delegação — (1) objetivo AFIRMA estado de código → 1-3 sondas baratas
    (Grep/Read/`git log`) verificam se a premissa ainda existe; já satisfeita → fechar inline
    com ponteiro ao commit; (2) objetivo é PERGUNTA de produto ("se X for desejado...") →
    `AskUserQuestion`, nunca delegar; (3) objetivo correto mas sem design definido → fase de
-   escopamento própria (scouts + verificações), orçada fora do teto do executor. Se a varredura
+   escopamento própria (scouts + verificações), cujo produto é o que torna o dossiê
+   autossuficiente para quem executa. Se a varredura
    FIFO percorrer vários itens consecutivos sem achar um atômico, parar e apresentar o cluster
    inteiro (agrupado por tipo) para decisão em lote do dono — 1 round-trip, não N.
 
 4. **Delegar execução** — agente `pantonic-executor`, com a tarefa atômica completa (objetivo,
    arquivos-alvo, contratos, testes, critério de pronto) copiada da seção do diário. Despachar ao
-   papel competente é critério do orquestrador, não uma etapa mecânica. **Dieta do prompt:** carregar só o dossiê da tarefa — guardrails de
+   papel competente é critério do orquestrador, não uma etapa mecânica. **Instrumento antes de
+   protocolo** (disciplina de instrumento, `GOVERNANCA.md` §3): ao preparar a revisão, rodar
+   `review_evidence.py`/`rdo.py` primeiro e abrir o protocolo do `pantonic-reviewer` só se a
+   evidência existir; `--help` antes do primeiro uso de cada instrumento na janela. **Dieta do prompt:** carregar só o dossiê da tarefa — guardrails de
    arquitetura já vivem nos "fatos estáveis" do arquivo do agente e não devem ser repetidos aqui;
    repetir paga o mesmo texto em todos os turnos do executor. **Levantamento de contexto antes do
-   dossiê:** se entender o estado atual exigir ler mais de ~1-2 arquivos de código-fonte
-   integrais (mismatch de shape, assinaturas, comportamento vigente), essa varredura vai para o
-   agente `context-scout` (`.claude/global/agents/context-scout.md`) via skill `context-prep`
-   (`.claude/global/skills/context-prep/SKILL.md`), não para leitura direta do modelo principal —
-   o orquestrador monta o prompt de delegação a partir só do dossiê compacto devolvido pelo
-   scout. Pular direto para leitura própria só quando a tarefa for trivial e o(s) arquivo(s) já
-   forem conhecidos/pequenos.
+   dossiê:** regra de precedência, não gatilho condicional — toda coleta que não seja Read de
+   âncora já conhecida (arquivo + range de linhas) ou Grep de string exata vai para o papel
+   barato: `pantonic-scout` (agente Pantonic* do projeto) ou, fora dele, `context-scout`
+   (`.claude/global/agents/context-scout.md`) via skill `context-prep`
+   (`.claude/global/skills/context-prep/SKILL.md`) — nunca para leitura direta do modelo
+   principal. O orquestrador monta o prompt de delegação a partir só do dossiê compacto devolvido
+   pelo scout. Ler no contexto caro é exceção declarada no ato — motivo escrito na delegação — e
+   só cabe quando a coleta já é Read de âncora conhecida ou Grep de string exata; nunca o default.
 
    **Fonte do contexto, em ordem de preferência:** (1) dossiê pré-autorado (`sprint_plan.md`,
    card de plano) copiado verbatim — exceto números de aceite, ver gate abaixo; (2) precedente
    já pago no contexto (notas de tarefas-irmãs lidas no pickup) colado na delegação — custo
-   marginal zero; (3) `context-scout` (skill `context-prep`): DESCOBERTA quando não há dossiê;
-   DETALHE (1 pergunta fechada por spawn, paralelos) quando o pré-autorado referencia shapes de
-   módulos implementados depois dele; (4) leitura direta só para ≤1-2 arquivos pequenos já
-   conhecidos, ou trechos via Grep+offset. A mesma régua vale FORA deste fluxo: pedido direto
-   de planejamento/análise cuja exploração estimada passe de ~15 tool uses usa `context-prep`.
+   marginal zero; (3) `pantonic-scout`/`context-scout` (skill `context-prep`): DESCOBERTA quando
+   não há dossiê; DETALHE (1 pergunta fechada por spawn, paralelos) quando o pré-autorado
+   referencia shapes de módulos implementados depois dele; (4) leitura direta — exceção
+   declarada no ato, motivo escrito — só para Read de âncora já conhecida (arquivo + range de
+   linhas) ou Grep de string exata; qualquer outra coleta é (3). A mesma régua vale FORA deste
+   fluxo: pedido direto de planejamento/análise cuja exploração estimada passe de ~15 tool uses
+   usa `context-prep`.
 
    **Gate G-PLANREADY (`GOVERNANCA.md` §7 item 12) — antes do gate de delegação:** só se delega
    tarefa de plano **fechado**. Se o plano da tarefa escolhida tem questão pendente, bloco a
@@ -103,23 +114,23 @@ aqui.
       destinada a assert é citação colada do output de verificação, nunca paráfrase — token
       negativo errado passa em silêncio. Junto dos números vão as **âncoras** (arquivo, linha e
       texto do ponto a editar) re-derivadas no ato e, quando a tarefa fecha em plano em andamento,
-      o **range de linhas do bullet de fechamento anterior**: sem isso o executor paga a
-      localização em tool uses, e é dela que vem o excedente de teto — não do trabalho.
+      o **range de linhas do bullet de fechamento anterior**: sem isso o dossiê não é
+      autossuficiente e quem executa precisa redescobrir a localização — trabalho que a tarefa
+      não pediu.
    4. Afirmação negativa de escopo ("não toca contracts/services") com campo novo persistido
       exige 1 grep pelo gate de ESCRITA (`extra.*forbid`, validador) antes de ser afirmada.
       Rename/move de símbolo público: grep também em docs vivos (`docs/*.md`, excluindo
       históricos) e somar essa rede ao orçamento.
-   5. Orçamento por volume: contar write-clusters (1 região editada = 1 cluster) — mecânico ~2
-      tool uses, comportamental (muda contrato/fluxo; edit-run-debug: sync→async, timing de
-      teste) ~4-6. Se "Arquivos-alvo" cruza ≥3 camadas da regra de dependência E ≥1 exige
-      padrão sem precedente no código → decompor por camada. Conta >~40 → fixar teto numérico
-      por ramo no dossiê ("PARE e reporte ao atingir N") ou dividir; nunca "aceitável estourar"
-      sem número. **>8 write-clusters → dividir em sub-tarefas ANTES de delegar** (decisão do
-      dono 2026-07-16: executores não param no teto — série UXROUND3 T3 56/35, T4 61/40,
-      T5 112/50; o teto é alarme, a divisão é o controle).
-   6. Tarefa-investigação (entregável = descoberta/mapeamento): itens 1-5 não se aplicam; fixar
-      teto numérico por padrão e PRESCREVER o método de sondagem (artefato grande/linha única =
-      sonda programática via scratchpad; Read estoura e Grep colapsa).
+   5. Decomposição por volume — **dimensionamento do planejador** (`GOVERNANCA.md` §3), nunca
+      instrução de parada a quem executa: contar write-clusters (1 região editada = 1 cluster).
+      **>8 write-clusters → dividir em sub-tarefas ANTES de delegar.** Se "Arquivos-alvo" cruza
+      ≥3 camadas da regra de dependência E ≥1 exige padrão sem precedente no código → decompor
+      por camada. A divisão é o controle; a régua numérica que dimensiona cada tarefa mora na
+      tabela de `GOVERNANCA.md` §3 e não se reapresenta no dossiê.
+   6. Tarefa-investigação (entregável = descoberta/mapeamento): itens 1-5 não se aplicam; o
+      dossiê PRESCREVE o método de sondagem (artefato grande/linha única = sonda programática
+      via scratchpad; Read estoura e Grep colapsa). O dimensionamento continua sendo do
+      planejador, pela régua de `GOVERNANCA.md` §3, e não vira declaração no card.
    7. Build/verify com artefato existente (`dist/`, `.exe`): dossiê declara "não deletar o
       artefato de saída" — deleção não autorizada é ação destrutiva, não limpeza.
 
@@ -147,9 +158,18 @@ aqui.
    Escalar evento intrínseco gasta turno do dono e devolve a ele trabalho que o plano já resolveu —
    é o erro simétrico ao de decidir arquitetura sozinho (Regra 8, `.claude/global/CLAUDE.md`).
 
+   **Quando o ponto do dono se apresenta:** só no relatório de encerramento — nunca entre o
+   despacho e o handover. Obstáculo, instrumento que não produz ou dúvida no meio da janela não
+   viram `AskUserQuestion`: viram `AE-<n>` em `## Achados da execução` do plano, tarefa `blocked`
+   razão `premissa` e rodada de replanejamento como próxima tarefa (`G-NOASK`, `GOVERNANCA.md` §7
+   item 18). Toda opção de rota apresentada ao dono inclui **registrar e não agir** quando ela
+   existir. **Registro único:** o achado mora só na entrada `AE-<n>`; nota da tarefa, `Fila
+   corrente` e célula do índice recebem `AE-<n>` + `caminho:linhas`, e o relatório cabe em ≤ 8
+   linhas com o ponteiro (`GOVERNANCA.md` §4.2).
+
    **Telemetria pós-notificação:** a série é do orquestrador, e o executor não edita o diário —
    o orquestrador escreve o bullet inteiro. Fechar = apender **uma linha** a
-   `docs/telemetria.tsv` (ver `.claude/tools/telemetria.py append`; `--fonte usage` a partir do bloco `<usage>`, `--fonte contado` na execução inline sem `<usage>`) e escrever no bullet o
+   `docs/telemetria.tsv` (ver `.claude/tools/telemetria.py append`; `--fonte usage` a partir do bloco `<usage>`, `--fonte contado` na execução inline sem `<usage>` — contagem efetiva das chamadas no transcript, nunca estimativa; sem contagem, `nao_medido`) e escrever no bullet o
    ponteiro "Consumo: ver docs/telemetria.tsv" — Read
    offset/limit da região do bullet → Edit; NUNCA Edit apoiado em Read anterior à chamada
    `Agent` (o hiato de delegação invalida o rastreio). O número **não** é copiado para o diário (`GOVERNANCA.md` §4.2 — fonte única). No
@@ -178,6 +198,11 @@ aqui.
 - Plano `blocked` por decisão owner-gated não resolvida (ex.: DP-1..DP-N pendentes) **não é
   delegável ao executor**: apresentar os DPs ao dono (`AskUserQuestion` ou resumo) e parar — nunca
   iniciar a implementação nem redescobrir o que o plano já responde.
+- **Bloqueio por premissa abre rodada, não pula tarefa (`G-REPLAN`, `GOVERNANCA.md` §7 item 17):**
+  tarefa `blocked` com razão `premissa` no plano priorizado torna a **rodada de replanejamento** a
+  próxima tarefa — delegada ao `pantonic-planner` (modelo de planejamento) com o achado do corpo da
+  tarefa como dossiê, nunca ao executor; a tarefa seguinte do mesmo plano não é despachada enquanto
+  a rodada não fechar. Só o que o planejador classificar como estratégico chega ao dono.
 - Se a heurística empatar entre itens do mesmo nível, desempate por ordem de entrada no índice
   (mais antigo primeiro).
 - Se o diário estiver vazio (nenhum item `ready`/`in-progress`/`blocked`), reportar isso
@@ -192,4 +217,6 @@ aqui.
   conta MATCHES, não linhas de arquivo — seek posicional é `Read offset/limit`; âncora
   confirmada + especulativa vão juntas numa alternância na mesma chamada.
 - Achado de processo recorrente (≥3×) e de risco zero (edição de 1 linha em doc/skill) não
-  espera lote de tíquete acumulador: vira `AskUserQuestion` pontual ao dono na mesma rodada.
+  espera lote de tíquete acumulador: entra no relatório de encerramento da mesma janela como
+  pendência ao dono, com a opção de registrar e não agir — nunca como pergunta no meio da janela
+  (`G-NOASK`).

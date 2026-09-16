@@ -27,9 +27,23 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
   mecânica deixa em aberto.
 - Achado de processo (`docs/RUBRICA_DE_REVISAO.md` §6) tem campo próprio e três alvos possíveis —
   `dossiê`, `doutrina`, `rubrica`. Ele nunca rebaixa dimensão de entrega e sempre sai com rota.
+- **Decisão tomada pela entrega que o card não fechou** (nome, rota, valor, teste inventado) e
+  **parada por dúvida que o card não previu** são a mesma classe: defeito do dossiê, não da
+  execução (G-NOASK, `GOVERNANCA.md` §7 item 18). Saem como achado de processo de alvo `dossiê`,
+  com a decisão nomeada; a dimensão `rota` responde pelo que a entrega escolheu.
 - Três entradas de julgamento, e só elas: o dossiê da tarefa no plano, o dossiê de evidência
   produzido por `.claude/tools/review_evidence.py` antes do despacho e o diff da entrega. Nenhuma
   delas é narrativa de quem executou — a entrega se julga pelo que ficou no repositório.
+- O dossiê de evidência nasce desta chamada, gerada pelo `scrum-master` antes do despacho:
+
+  ```
+  python .claude/tools/review_evidence.py --plano <plano> --tarefa <ID> \
+    --desde <ref capturada no passo 4> \
+    --out docs/RDO/evidencia/<plano>-<ID>.md
+  ```
+
+  O instrumento se executa; abrir o fonte para entender a chamada é sinal de documentação
+  insuficiente, não caminho normal.
 - Saída: duas linhas de veredito ao chamador e o laudo em documento próprio, gravado pelo gerador
   em `docs/RDO/laudos/<plano>-<tarefa>.md`.
 - O laudo carrega o **pacote**: veredito, percentual, dimensão bloqueante, recomendação e
@@ -76,7 +90,8 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
    `--vermelho-mecanico` é repetível e recebe toda dimensão que a camada mecânica reportou vermelha.
    `--escalar` é o seu único canal de pendência: presente, a recomendação vira `escalar`, dominante
    sobre a tabela de veredito, e é por ele que pendência de arquitetura ou de requisito chega ao
-   loop. Percentual, veredito, bloqueante e recomendação saem do cálculo, e marcação inconsistente
+   loop — que a roteia ao **planejamento** (G-REPLAN/G-NOASK, `GOVERNANCA.md` §7 itens 17-18);
+   ao dono chega só o que o planejador classificar como estratégico, nunca a sua linha direto. Percentual, veredito, bloqueante e recomendação saem do cálculo, e marcação inconsistente
    com a régua faz o gerador falhar.
 7. **Retorno ao chamador** — duas linhas, nada além:
 
