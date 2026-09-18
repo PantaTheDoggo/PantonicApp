@@ -63,6 +63,10 @@ TAREFA_HEADER_RE = re.compile(rf"^### ((?:[A-Z0-9]+-)?T\d+[a-z]?) — (.+?) {_BR
 
 STATUS_BULLET_RE = re.compile(r"^- \*\*Status:\*\* `([a-z-]+)` · \d{4}-\d{2}-\d{2}(?: · (.+))?$")
 DEPENDE_BULLET_RE = re.compile(r"^- \*\*Depende de:\*\* (.+)$")
+TIPO_BULLET_RE = re.compile(r"^- \*\*Tipo:\*\* (.+)$")
+NOTAS_BULLET_RE = re.compile(r"^- \*\*Notas de execução:\*\*\s*$")
+DIRETIVA_RE = re.compile(r"^\*\*Diretiva de priorização:\*\* (.*)$")
+NIVEL_1_OU_2_RE = re.compile(r"^#{1,2} ")
 
 INDICE_LINHA_RE = re.compile(r"^\|\s*([^|]+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|$")
 
@@ -102,6 +106,7 @@ class Item:
     status_linha: int | None = None
     status_razao: str | None = None
     depende_de: list[str] = field(default_factory=list)
+    campo_tipo: str | None = None
     pai: str | None = None
     filhos: list["Item"] = field(default_factory=list)
 
@@ -128,6 +133,7 @@ class LinhaIndice:
     status_bruto: str
     arquivo: str
     linha: int
+    ancora: str = ""
 
 
 @dataclass
@@ -136,6 +142,8 @@ class Modelo:
     tiquetes: list[Item]
     indice: list[LinhaIndice]
     diario_arquivo: str
+    diario_linhas: list[str] = field(default_factory=list)
+    diretiva_ids: list[str] = field(default_factory=list)
 
 
 # --------------------------------------------------------------------------- #
@@ -192,6 +200,14 @@ def _extrair_depende(linhas: list[str], inicio_idx: int, fim_idx: int) -> list[s
     return []
 
 
+def _extrair_tipo(linhas: list[str], inicio_idx: int, fim_idx: int) -> str | None:
+    for j in range(inicio_idx, fim_idx + 1):
+        m = TIPO_BULLET_RE.match(linhas[j])
+        if m:
+            return m.group(1).strip()
+    return None
+
+
 def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
     heading_idxs = [i for i, l in enumerate(linhas) if HEADING_RE.match(l)]
     itens: list[Item] = []
@@ -223,6 +239,7 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
 
         status, status_linha, status_razao = _extrair_status(linhas, i + 1, fim_idx)
         depende_de = _extrair_depende(linhas, i + 1, fim_idx)
+        campo_tipo = _extrair_tipo(linhas, i + 1, fim_idx)
 
         itens.append(
             Item(
@@ -240,6 +257,7 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
                 status_linha=status_linha,
                 status_razao=status_razao,
                 depende_de=depende_de,
+                campo_tipo=campo_tipo,
             )
         )
     return itens
@@ -257,9 +275,20 @@ def _parse_indice(linhas: list[str], arquivo_rel: str) -> list[LinhaIndice]:
         if set(status_bruto) <= {"-"}:
             continue
         resultado.append(
-            LinhaIndice(id=id_, titulo=titulo, status_bruto=status_bruto, arquivo=arquivo_rel, linha=i)
+            LinhaIndice(
+                id=id_, titulo=titulo, status_bruto=status_bruto, arquivo=arquivo_rel, linha=i, ancora=ancora
+            )
         )
     return resultado
+
+
+def _parse_diretiva(linhas: list[str]) -> list[str]:
+    for linha in linhas:
+        m = DIRETIVA_RE.match(linha)
+        if m:
+            parte_ids = m.group(1).split(" — ", 1)[0]
+            return re.findall(r"`([^`]+)`", parte_ids)
+    return []
 
 
 def _parse_plano(caminho: Path, repo: Path) -> Plano:
@@ -312,7 +341,7 @@ def _parse_plano(caminho: Path, repo: Path) -> Plano:
     )
 
 
-def _parse_diario(caminho: Path, repo: Path) -> tuple[list[LinhaIndice], list[Item]]:
+def _parse_diario(caminho: Path, repo: Path) -> tuple[list[LinhaIndice], list[Item], list[str]]:
     texto = caminho.read_text(encoding="utf-8")
     linhas = texto.splitlines()
     rel = caminho.relative_to(repo).as_posix()
@@ -332,7 +361,7 @@ def _parse_diario(caminho: Path, repo: Path) -> tuple[list[LinhaIndice], list[It
                 atual.filhos.append(item)
             else:
                 tiquetes.append(item)
-    return indice, tiquetes
+    return indice, tiquetes, linhas
 
 
 def carregar(repo: Path) -> Modelo:
@@ -342,13 +371,16 @@ def carregar(repo: Path) -> Modelo:
     planos_dir = repo / "docs" / "plans"
 
     planos = [_parse_plano(caminho, repo) for caminho in sorted(planos_dir.glob("P-*.md"))]
-    indice, tiquetes = _parse_diario(diario_path, repo)
+    indice, tiquetes, diario_linhas = _parse_diario(diario_path, repo)
+    diretiva_ids = _parse_diretiva(diario_linhas)
 
     return Modelo(
         planos=planos,
         tiquetes=tiquetes,
         indice=indice,
         diario_arquivo=diario_path.relative_to(repo).as_posix(),
+        diario_linhas=diario_linhas,
+        diretiva_ids=diretiva_ids,
     )
 
 
@@ -374,9 +406,15 @@ def _status_do_id(modelo: Modelo, id_: str) -> str | None:
     for plano in modelo.planos:
         if plano.id == id_:
             return plano.status
+        for tarefa in plano.tarefas:
+            if tarefa.id == id_:
+                return tarefa.status
     for tiquete in modelo.tiquetes:
         if tiquete.id == id_:
             return tiquete.status
+        for sub in tiquete.filhos:
+            if sub.id == id_:
+                return sub.status
     return None
 
 
@@ -530,6 +568,303 @@ def show(modelo: Modelo, id_: str) -> str:
 
 
 # --------------------------------------------------------------------------- #
+# next — seleção determinística (BKL-T3, §2.5/§2.6 de
+# docs/plans/P-0739-backlog-instrumento.md). Somente-leitura (DB-5): nenhuma função
+# desta seção escreve em arquivo do repositório.
+# --------------------------------------------------------------------------- #
+
+
+@dataclass
+class Candidato:
+    item: Item
+    pai: Plano | Item
+    tipo_pai: str  # "plano" | "tiquete"
+
+
+@dataclass
+class SelecaoNext:
+    exit_code: int
+    vencedor: Candidato | None
+    mensagem: str | None = None
+
+
+def _candidatos(modelo: Modelo) -> list[Candidato]:
+    resultado: list[Candidato] = []
+    for plano in modelo.planos:
+        for tarefa in plano.tarefas:
+            resultado.append(Candidato(item=tarefa, pai=plano, tipo_pai="plano"))
+    for tiquete in modelo.tiquetes:
+        for sub in tiquete.filhos:
+            resultado.append(Candidato(item=sub, pai=tiquete, tipo_pai="tiquete"))
+    return resultado
+
+
+def _aplicar_diretiva(modelo: Modelo, candidatos: list[Candidato]) -> list[Candidato]:
+    if not modelo.diretiva_ids:
+        return candidatos
+    ids = set(modelo.diretiva_ids)
+    return [c for c in candidatos if c.item.id in ids or c.pai.id in ids]
+
+
+def _posicao_indice(modelo: Modelo, pai_id: str) -> int | None:
+    for pos, linha in enumerate(modelo.indice):
+        if linha.id == pai_id:
+            return pos
+    return None
+
+
+def _irmaos_ordenados(pai: Plano | Item, tipo_pai: str) -> list[Item]:
+    filhos = pai.tarefas if tipo_pai == "plano" else pai.filhos
+    ordem = pai.ordem_execucao if tipo_pai == "plano" else []
+    if not ordem:
+        return list(filhos)
+    posicao_original = {id(f): idx for idx, f in enumerate(filhos)}
+
+    def chave(item: Item) -> tuple[int, int]:
+        if item.id in ordem:
+            return (0, ordem.index(item.id))
+        return (1, posicao_original[id(item)])
+
+    return sorted(filhos, key=chave)
+
+
+def _ordem_interna(c: Candidato) -> int:
+    irmaos = _irmaos_ordenados(c.pai, c.tipo_pai)
+    for idx, irmao in enumerate(irmaos):
+        if irmao is c.item:
+            return idx
+    return len(irmaos)
+
+
+def _eh_bug(c: Candidato) -> bool:
+    if c.item.campo_tipo == "bug":
+        return True
+    if c.tipo_pai == "tiquete" and c.pai.campo_tipo == "bug":
+        return True
+    return False
+
+
+def _tier(c: Candidato) -> int:
+    if c.tipo_pai == "plano" and c.item.tipo == "tarefa" and c.pai.status == "in-progress":
+        return 0
+    if _eh_bug(c):
+        return 1
+    return 2
+
+
+def selecionar_next(modelo: Modelo) -> SelecaoNext:
+    """§2.5 — ordem total de seleção. Somente-leitura: só lê `modelo`."""
+    candidatos = _aplicar_diretiva(modelo, _candidatos(modelo))
+
+    ids_sem_status = sorted(
+        {c.item.id for c in candidatos if c.item.status is None}
+        | {c.pai.id for c in candidatos if c.pai.status is None}
+    )
+    if ids_sem_status:
+        ids = ", ".join(f"linha de status ausente para {id_}" for id_ in ids_sem_status)
+        return SelecaoNext(3, None, ids)
+
+    em_progresso = [c for c in candidatos if c.item.status == "in-progress"]
+    if len(em_progresso) == 1:
+        vencedor = em_progresso[0]
+        if _posicao_indice(modelo, vencedor.pai.id) is None:
+            return SelecaoNext(3, None, f"linha de índice ausente para {vencedor.pai.id}")
+        return SelecaoNext(0, vencedor, None)
+    if len(em_progresso) >= 2:
+        ids = ", ".join(sorted(c.item.id for c in em_progresso))
+        return SelecaoNext(3, None, f"dois ou mais itens in-progress: {ids}")
+
+    elegiveis = [
+        c
+        for c in candidatos
+        if c.item.status == "ready"
+        and c.pai.status in ("ready", "in-progress")
+        and (not c.item.depende_de or all(_status_do_id(modelo, d) == "done" for d in c.item.depende_de))
+    ]
+
+    if not elegiveis:
+        n_blocked = sum(1 for c in candidatos if c.item.status == "blocked")
+        return SelecaoNext(2, None, f"nada delegável — 0 elegível(is) · blocked {n_blocked}")
+
+    posicoes: dict[str, int] = {}
+    for c in elegiveis:
+        if c.pai.id not in posicoes:
+            pos = _posicao_indice(modelo, c.pai.id)
+            if pos is None:
+                return SelecaoNext(3, None, f"linha de índice ausente para {c.pai.id}")
+            posicoes[c.pai.id] = pos
+
+    ordenados = sorted(elegiveis, key=lambda c: (_tier(c), posicoes[c.pai.id], _ordem_interna(c)))
+    return SelecaoNext(0, ordenados[0], None)
+
+
+def _done_total(filhos: list[Item]) -> tuple[int, int]:
+    """DB-36 — <total> = filhos diretos não `cancelled`; <done> = destes, os `done`."""
+    vivos = [f for f in filhos if f.status != "cancelled"]
+    total = len(vivos)
+    done = sum(1 for f in vivos if f.status == "done")
+    return done, total
+
+
+def _residencia_plano(plano: Plano) -> str:
+    return f"{plano.arquivo}:1-{plano.linha_fim}"
+
+
+def _residencia_tiquete(modelo: Modelo, tiquete: Item) -> str:
+    linhas = modelo.diario_linhas
+    fim = len(linhas)
+    for idx in range(tiquete.linha_header, len(linhas)):
+        if NIVEL_1_OU_2_RE.match(linhas[idx]):
+            fim = idx
+            break
+    return f"{modelo.diario_arquivo}:{tiquete.linha_header}-{fim}"
+
+
+def _indice_ancora(modelo: Modelo, pai_id: str) -> str:
+    for linha in modelo.indice:
+        if linha.id == pai_id:
+            return linha.ancora
+    return ""
+
+
+def _antecessora(pai: Plano | Item, tipo_pai: str, vencedor_item: Item) -> Item | None:
+    irmaos = _irmaos_ordenados(pai, tipo_pai)
+    idx = next((i for i, x in enumerate(irmaos) if x is vencedor_item), None)
+    if idx is None or idx == 0:
+        return None
+    return irmaos[idx - 1]
+
+
+def _range_notas(item: Item) -> tuple[int, int] | None:
+    linhas = item.texto.splitlines()
+    inicio: int | None = None
+    fim: int | None = None
+    for idx, linha in enumerate(linhas):
+        if inicio is None:
+            if NOTAS_BULLET_RE.match(linha):
+                inicio = idx
+                fim = idx
+            continue
+        if linha.startswith("  -") or linha.startswith("\t-"):
+            fim = idx
+            continue
+        break
+    if inicio is None:
+        return None
+    return (item.linha_header + inicio, item.linha_header + (fim or inicio))
+
+
+def _listar_blocked(modelo: Modelo) -> str:
+    todos: list[Item] = []
+    for plano in modelo.planos:
+        todos.extend(plano.tarefas)
+    for tiquete in modelo.tiquetes:
+        todos.extend(tiquete.filhos)
+    bloqueados = [it for it in todos if it.status == "blocked"]
+    if not bloqueados:
+        return "nenhum"
+    partes = [f"{it.id} ({it.status_razao or 'sem razão'})" for it in bloqueados]
+    return ", ".join(partes)
+
+
+_CAMINHO_PLANO_INBOX_RE = re.compile(r"docs/plans/P-\d{4}-[^)\s`]+\.md")
+
+
+def _contar_inbox_planos(caminho: Path) -> int:
+    """DB-38 — conta as linhas de `docs/plans/_INBOX.md` que começam com `- `, contêm um
+    caminho que casa `docs/plans/P-[0-9]{4}-<slug>.md` e não começam com `- [drenado `."""
+    if not caminho.exists():
+        return 0
+    linhas = caminho.read_text(encoding="utf-8").splitlines()
+    n = 0
+    for linha in linhas:
+        s = linha.strip()
+        if not s.startswith("- "):
+            continue
+        if s.startswith("- [drenado "):
+            continue
+        if not _CAMINHO_PLANO_INBOX_RE.search(s):
+            continue
+        n += 1
+    return n
+
+
+def _contar_inbox_memoria(caminho: Path) -> int:
+    """`GOVERNANCA_MEMORIAS.md` §8 — linha de candidato permanece até ser marcada
+    `[promovido]` ou `[descartado — motivo]`; enquanto isso, é uma linha "não marcada"."""
+    if not caminho.exists():
+        return 0
+    linhas = caminho.read_text(encoding="utf-8").splitlines()
+    n = 0
+    for linha in linhas:
+        s = linha.strip()
+        if not s.startswith("- "):
+            continue
+        if "[promovido]" in s or "[descartado" in s:
+            continue
+        n += 1
+    return n
+
+
+def renderizar_next(
+    modelo: Modelo,
+    selecao: SelecaoNext,
+    memoria_inbox: Path | None = None,
+    inbox_planos: Path | None = None,
+) -> str:
+    """§2.6 — forma fixa da saída de `next` para `selecao.exit_code == 0`."""
+    candidato = selecao.vencedor
+    assert candidato is not None
+    item = candidato.item
+    pai = candidato.pai
+    tipo_pai = candidato.tipo_pai
+
+    bracket = f"[{item.modelo} · classe {item.classe}]"
+    linhas_saida = [f"=== PRÓXIMA TAREFA: {item.id} — {item.titulo} {bracket}"]
+
+    if tipo_pai == "plano":
+        done, total = _done_total(pai.tarefas)
+        residencia = _residencia_plano(pai)
+        ancora = _indice_ancora(modelo, pai.id)
+        linhas_saida.append(
+            f"plano: {pai.id} — {pai.titulo} ({done}/{total}) · residência: {residencia} · índice: {ancora}"
+        )
+    else:
+        done, total = _done_total(pai.filhos)
+        residencia = _residencia_tiquete(modelo, pai)
+        ancora = _indice_ancora(modelo, pai.id)
+        linhas_saida.append(
+            f"tíquete: {pai.id} — {pai.titulo} ({done}/{total}) · residência: {residencia} · índice: {ancora}"
+        )
+
+    antecessora_item = _antecessora(pai, tipo_pai, item)
+    if antecessora_item is not None:
+        notas = _range_notas(antecessora_item)
+        if notas is None:
+            linhas_saida.append(f"antecessora: {antecessora_item.id} ({antecessora_item.status}; sem notas)")
+        else:
+            l1, l2 = notas
+            linhas_saida.append(
+                f"antecessora: {antecessora_item.id} "
+                f"({antecessora_item.status}; notas em {antecessora_item.arquivo}:{l1}-{l2})"
+            )
+
+    linhas_saida.append("--- dossiê (verbatim, teto DB-7) ---")
+    linhas_saida.append(_truncar(item.texto, item.arquivo, item.linha_header, item.linha_fim))
+    linhas_saida.append("--- pendências mecânicas ---")
+
+    n_inbox_planos = _contar_inbox_planos(inbox_planos) if inbox_planos is not None else 0
+    n_memoria = _contar_inbox_memoria(memoria_inbox) if memoria_inbox is not None else 0
+    blocked = _listar_blocked(modelo)
+    linhas_saida.append(
+        f"inbox de planos: {n_inbox_planos} por drenar · fila de memória: {n_memoria} candidato(s) · "
+        f"blocked: {blocked}"
+    )
+
+    return "\n".join(linhas_saida)
+
+
+# --------------------------------------------------------------------------- #
 # CLI — só embrulha (DB-1)
 # --------------------------------------------------------------------------- #
 
@@ -553,6 +888,11 @@ def main(argv: list[str] | None = None) -> int:
     show_parser.add_argument("id")
     show_parser.add_argument("--repo", default=None)
 
+    next_parser = subparsers.add_parser("next", help="Seleção determinística da próxima tarefa.")
+    next_parser.add_argument("--repo", default=None)
+    next_parser.add_argument("--memoria-inbox", default=None)
+    next_parser.add_argument("--inbox-planos", default=None)
+
     args = parser.parse_args(argv)
 
     for fluxo in (sys.stdout, sys.stderr):
@@ -575,6 +915,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.comando == "show":
         print(show(modelo, args.id))
         return 0
+
+    if args.comando == "next":
+        selecao = selecionar_next(modelo)
+        if selecao.exit_code == 0:
+            memoria_inbox = Path(args.memoria_inbox).resolve() if args.memoria_inbox else None
+            inbox_planos = (
+                Path(args.inbox_planos).resolve() if args.inbox_planos else repo / "docs" / "plans" / "_INBOX.md"
+            )
+            print(renderizar_next(modelo, selecao, memoria_inbox=memoria_inbox, inbox_planos=inbox_planos))
+            return 0
+        print(selecao.mensagem, file=sys.stderr if selecao.exit_code == 3 else sys.stdout)
+        return selecao.exit_code
 
     parser.error(f"comando desconhecido: {args.comando}")
     return 2

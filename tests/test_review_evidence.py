@@ -124,7 +124,7 @@ def test_escopo_violado_gera_fato_sem_inventar_parcial(tmp_path):
 
     assert "Veredito mecânico: conforme" not in documento
     assert "parcial" not in documento
-    assert "1 arquivo(s) fora dos alvos: `docs/nota.txt`" in documento
+    assert "1 arquivo(s) fora dos alvos e sem atribuição: `docs/nota.txt`" in documento
 
 
 def test_trechos_truncados_pelo_teto_marcam_truncamento_visivel(tmp_path):
@@ -342,3 +342,254 @@ def test_escopo_declara_recorte_arvore_inteira_sem_desde(tmp_path):
     assert (
         "- Recorte: árvore de trabalho inteira (nenhum `--desde` informado)" in documento
     )
+
+
+def test_tf_extrair_arquivos_alvo_aceita_arquivo_de_raiz_e_recusa_literal_de_regex():
+    """TF da BKL-T2b: arquivo de raiz (`CHANGELOG.md`, sem barra, com extensão) passa a ser
+    reconhecido como alvo; literal de trecho de regex (`_ID_HEADER_RE = re.compile(x)`, com
+    espaço) é recusado pela gramática de caminho da `DB-27`."""
+    review_evidence = _load_review_evidence()
+    campos = {
+        "arquivos-alvo": (
+            "- `.claude/tools/rdo.py:79` — `_ID_HEADER_RE = re.compile(x)` "
+            "- `CHANGELOG.md` — uma linha sob `## [Não lançado]` (`CHANGELOG.md:17`)"
+        )
+    }
+    resultado = review_evidence.extrair_arquivos_alvo(campos)
+    assert resultado == [".claude/tools/rdo.py", "CHANGELOG.md"]
+
+
+def test_tr_extrair_literais_nao_caminho_lista_o_descartado():
+    """Regressão: os literais entre crases que não casam a gramática de caminho (cabeçalho de
+    seção, trecho de regex) saem em `extrair_literais_nao_caminho`, não silenciosamente."""
+    review_evidence = _load_review_evidence()
+    campos = {
+        "arquivos-alvo": (
+            "- `.claude/tools/rdo.py:79` — `_ID_HEADER_RE = re.compile(x)` "
+            "- `CHANGELOG.md` — uma linha sob `## [Não lançado]` (`CHANGELOG.md:17`)"
+        )
+    }
+    resultado = review_evidence.extrair_literais_nao_caminho(campos)
+    assert "## [Não lançado]" in resultado
+    assert any("re.compile" in item for item in resultado)
+
+
+def test_tr_extrair_arquivos_alvo_recusa_id_de_tarefa_e_de_decisao():
+    """Regressão: identificador de tarefa/decisão entre crases (sem barra e sem extensão) não é
+    caminho pela gramática da `DB-27` e não vira alvo declarado."""
+    review_evidence = _load_review_evidence()
+    campos = {"arquivos-alvo": "ver `BKL-T9` e `DB-13`."}
+    resultado = review_evidence.extrair_arquivos_alvo(campos)
+    assert resultado == []
+
+
+def test_tf_secao_escopo_lista_literais_nao_reconhecidos_como_caminho(tmp_path):
+    """TF de ponta a ponta da BKL-T2b: um literal de trecho de regex citado no campo
+    `Arquivos-alvo` aparece na seção `## Escopo` como literal não reconhecido como caminho."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`; ver `_RE = re.compile(x)`.")
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "Literais não reconhecidos como caminho (1)" in documento
+
+
+def _escrever_plano_duas_tarefas(
+    caminho: Path, alvo_t1: str, alvo_t2: str, verificacao_t2: str | None = "bateria do §3."
+) -> None:
+    """Plano sintético com duas tarefas; `verificacao_t2=None` omite um campo obrigatório de T2
+    para exercitar o ramo 'dossiê inválido é pulado' de `mapear_alvos_de_outras_tarefas`."""
+    linha_verificacao = f"- **Verificação:** {verificacao_t2}\n" if verificacao_t2 else ""
+    texto = (
+        "# Plano de teste\n\n"
+        "### T1 — Tarefa sintética de teste [Sonnet · classe implementacao]\n"
+        "- **Objetivo:** validar review_evidence.py.\n"
+        f"- **Arquivos-alvo:** {alvo_t1}\n"
+        "- **Verificação:** bateria do §3.\n"
+        "- **Pronto quando:** o teste passa.\n\n"
+        "### T2 — Outra tarefa sintética [Sonnet · classe implementacao]\n"
+        "- **Objetivo:** ser a dona de outro arquivo.\n"
+        f"- **Arquivos-alvo:** {alvo_t2}\n"
+        f"{linha_verificacao}"
+        "- **Pronto quando:** o teste passa.\n"
+    )
+    caminho.write_text(texto, encoding="utf-8")
+
+
+def test_tf_arquivo_alvo_de_outra_tarefa_sai_atribuido_e_nao_pesa_no_veredito(tmp_path):
+    """TF da BKL-T2c: arquivo tocado que não é alvo de T1 mas é alvo declarado de T2 (mesmo plano)
+    sai atribuído a T2 na seção `## Escopo` e não pesa no veredito mecânico de T1."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text(
+        "def b():\n    return 1\n\n\ndef c():\n    return 3\n", encoding="utf-8"
+    )
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "`src/a.py` → `T2`" in documento
+    assert "Veredito mecânico: conforme" in documento
+
+
+def test_tf_registro_da_orquestracao_sai_em_balde_proprio(tmp_path):
+    """TF da BKL-T2c: arquivo de registro da orquestração (`docs/DIARIO_DE_OBRAS.md`,
+    `docs/telemetria.tsv`) tocado fora dos alvos sai em balde próprio, sem pesar no veredito."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text(
+        "def b():\n    return 1\n\n\ndef c():\n    return 3\n", encoding="utf-8"
+    )
+    (repo / "docs").mkdir()
+    (repo / "docs" / "DIARIO_DE_OBRAS.md").write_text("# Diário\n", encoding="utf-8")
+    (repo / "docs" / "telemetria.tsv").write_text("a\tb\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "Registro da orquestração (não atribuível a tarefa)" in documento
+    assert "Veredito mecânico: conforme" in documento
+
+
+def test_tr_arquivo_sem_atribuicao_continua_fora_dos_alvos_com_veredito_aberto(tmp_path):
+    """Regressão: arquivo que não é alvo de T1, não é alvo de nenhuma outra tarefa do plano e não é
+    registro da orquestração continua caindo em 'fora dos alvos', com veredito aberto."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text(
+        "def b():\n    return 1\n\n\ndef c():\n    return 3\n", encoding="utf-8"
+    )
+    (repo / "src" / "c.py").write_text("def c():\n    return 4\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "1 arquivo(s) fora dos alvos e sem atribuição" in documento
+    assert "(aberto" in documento
+
+
+def test_tr_tarefa_com_dossie_invalido_e_pulada_pela_atribuicao(tmp_path):
+    """Regressão: tarefa cujo dossiê não extrai (campo obrigatório ausente) é pulada pela
+    atribuição a outra tarefa, sem subir exceção."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(
+        plano, "edita `src/b.py`.", "cria `src/a.py`.", verificacao_t2=None
+    )
+
+    mapa = review_evidence.mapear_alvos_de_outras_tarefas(plano, "T1", repo)
+
+    assert mapa == {}
+
+
+def test_tf_ato_do_dono_sai_em_balde_proprio_e_nao_pesa_no_veredito(tmp_path):
+    """TF da BKL-T2e: arquivo sob `.claude/agents/` tocado fora dos alvos sai em balde próprio
+    ('ato do dono'), sem pesar no veredito mecânico."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text(
+        "def b():\n    return 1\n\n\ndef c():\n    return 3\n", encoding="utf-8"
+    )
+    (repo / ".claude" / "agents").mkdir(parents=True, exist_ok=True)
+    (repo / ".claude" / "agents" / "pantonic-planner.md").write_text(
+        "# Agente\n", encoding="utf-8"
+    )
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "- Ato do dono, fora do ciclo de tarefa: `.claude/agents/pantonic-planner.md`" in documento
+    assert "Veredito mecânico: conforme" in documento
+
+
+def test_tr_arquivo_em_claude_fora_de_agents_continua_sem_atribuicao(tmp_path):
+    """Regressão: arquivo sob `.claude/` que não é `.claude/agents/` continua caindo em 'fora dos
+    alvos', sem entrar no balde de ato do dono."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text(
+        "def b():\n    return 1\n\n\ndef c():\n    return 3\n", encoding="utf-8"
+    )
+    (repo / ".claude" / "settings.json").write_text("{}\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "1 arquivo(s) fora dos alvos e sem atribuição" in documento
+    assert "(aberto" in documento
+
+
+def test_tr_agente_declarado_como_alvo_do_card_fica_no_balde_de_cobertura(tmp_path):
+    """Regressão: a cobertura pelos alvos do card tem precedência sobre o balde de ato do dono
+    (`DB-32`) — arquivo sob `.claude/agents/` declarado como alvo não aparece nomeado ali."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(
+        plano, "edita `.claude/agents/pantonic-planner.md`.", "cria `src/a.py`."
+    )
+
+    (repo / ".claude" / "agents").mkdir(parents=True, exist_ok=True)
+    (repo / ".claude" / "agents" / "pantonic-planner.md").write_text(
+        "# Agente\n", encoding="utf-8"
+    )
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "Veredito mecânico: conforme" in documento
+    assert "Ato do dono" not in documento
+
+
+def test_tf_confrontar_escopo_devolve_a_chave_ato_do_dono_com_separador_do_windows(tmp_path):
+    """TF da BKL-T2e: `confrontar_escopo` normaliza separador do Windows e classifica arquivo sob
+    `.claude/agents/` no balde `ato_do_dono`, sem pesar no veredito."""
+    review_evidence = _load_review_evidence()
+
+    resultado = review_evidence.confrontar_escopo(
+        [".claude\\agents\\pantonic-planner.md"], [], tmp_path
+    )
+
+    assert resultado["ato_do_dono"] == [".claude\\agents\\pantonic-planner.md"]
+    assert resultado["fora_dos_alvos"] == []
+    assert resultado["veredito"] == "conforme"

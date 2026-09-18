@@ -16,12 +16,15 @@ na entrega — insumo que este script não recebe. Por isso, quando há arquivo 
 dos alvos, a saída relata o **fato** ("N arquivo(s) fora dos alvos: ...") e deixa o veredito em
 aberto; nunca resolve sozinha para `parcial`.
 
-Limitação conhecida e aceita da extração de arquivos-alvo: o campo `Arquivos-alvo`/`Entregável` do
-dossiê é prosa livre: a extração é puramente textual (todo caminho entre crases é tratado como
-alvo declarado), então uma frase como "não editar `x.py`" também cita `x.py` entre crases e o
-script o inclui como se fosse alvo. Interpretar a negação é trabalho do reviewer, não deste
-script — resolver isso aqui seria reinterpretar prosa, não medir fato (fora do escopo desta
-fatia).
+Forma canônica do campo `Arquivos-alvo` (`P-0739` `DB-26`/`DB-27`): um caminho por bullet, o
+caminho como primeiro literal entre crases do bullet, com sufixo opcional `:<linha>`. A extração
+é mecânica e por **literal**, não por linha — `_parsear_campos` (`.claude/tools/rdo.py:151-183`)
+junta as linhas de um campo com espaço, e a estrutura de bullets não chega até aqui. Todo literal
+entre crases é candidato; vira alvo só quando casa `_CAMINHO_RE` e tem extensão, barra ou termina
+em `/`. Literal descartado (trecho de regex, cabeçalho de seção) sai na seção `## Escopo` como
+"não reconhecido como caminho", nunca como bloqueio. Limitação que permanece e é do revisor, não
+deste script: caminho citado em prosa negativa dentro do campo ("não editar `x/y.py`") conta como
+alvo declarado — por isso a forma canônica manda a citação negativa para `Não fazer`.
 
 A seção `## Guardas` (`EXA-T9b`) invoca a bateria de seis comandos de `GOVERNANCA.md` §3 (a
 mesma que fechou a `T9a`: `python -m pytest -q`, `dead_code.py`, `ratchet_piso.py`,
@@ -41,7 +44,14 @@ conjunto de arquivos tocados agora aceita `--desde <ref>` (`coletar_arquivos_toc
 recortar só o que mudou a partir de uma referência git, em vez de sempre varrer a árvore de
 trabalho inteira — necessário quando outras tarefas têm mudanças soltas, não commitadas, no mesmo
 repositório. Ausência de `--desde` preserva o comportamento anterior integralmente, e a seção
-`## Escopo` sempre declara explicitamente qual recorte foi medido."""
+`## Escopo` sempre declara explicitamente qual recorte foi medido.
+
+A seção `## Escopo` classifica o arquivo tocado em cinco baldes (`P-0739` `DB-25`): coberto
+pelos alvos do card; alvo declarado por outra tarefa do mesmo plano; registro da orquestração
+(`docs/DIARIO_DE_OBRAS.md`, `docs/telemetria.tsv`, `docs/plans/`, `docs/RDO/`); ato do dono fora
+do ciclo de tarefa (`.claude/agents/`); fora dos alvos
+sem atribuição. Só o último resolve o veredito — `git` não sabe qual tarefa tocou qual arquivo,
+e o plano sabe qual tarefa declarou qual alvo."""
 from __future__ import annotations
 
 import argparse
@@ -75,19 +85,58 @@ def _load_rdo(root: Path):
     return modulo
 
 
-def extrair_arquivos_alvo(campos: dict) -> list[str]:
-    """Extrai os caminhos declarados no campo `Arquivos-alvo`/`Entregável` do dossiê — extração
-    textual mecânica (tudo entre crases que contém `/`), sem interpretar prosa negativa. Ver
-    limitação conhecida no docstring do módulo."""
+_CAMINHO_RE = re.compile(r"^[A-Za-z0-9_.][A-Za-z0-9_./\\-]*$")
+_EXTENSAO_RE = re.compile(r"\.[A-Za-z0-9]+$")
+
+
+def _eh_caminho(candidato: str) -> bool:
+    """Gramática de caminho da `DB-27` (`P-0739`): sem espaço e sem metacaractere de regex, e
+    com extensão, barra, ou barra final. Recusa `_ID_HEADER_RE = re.compile(...)` (espaço) e
+    `BKL-T9` (sem extensão e sem barra); aceita `CHANGELOG.md` e `tests/fixtures/backlog/`."""
+    if not _CAMINHO_RE.fullmatch(candidato):
+        return False
+    return (
+        "/" in candidato
+        or "\\" in candidato
+        or candidato.endswith("/")
+        or bool(_EXTENSAO_RE.search(candidato))
+    )
+
+
+def _classificar_campo_alvos(campos: dict) -> tuple[list[str], list[str]]:
+    """Parte o campo `Arquivos-alvo`/`Entregável` em (alvos, literais descartados), por literal
+    entre crases (`DB-27`). Descartado é fato impresso, nunca bloqueio (`DB-19`)."""
     texto = campos.get("arquivos-alvo") or campos.get("entregavel") or ""
-    vistos: dict[str, None] = {}
+    alvos: dict[str, None] = {}
+    descartados: list[str] = []
     for match in _BACKTICK_RE.finditer(texto):
-        candidato = match.group(1).strip()
-        if "/" not in candidato and "\\" not in candidato:
-            continue
-        candidato = _LINHA_REF_RE.sub("", candidato)
-        vistos.setdefault(candidato, None)
-    return list(vistos.keys())
+        bruto = match.group(1).strip()
+        candidato = _LINHA_REF_RE.sub("", bruto)
+        if _eh_caminho(candidato):
+            alvos.setdefault(candidato, None)
+        else:
+            descartados.append(bruto)
+    return list(alvos.keys()), descartados
+
+
+def extrair_arquivos_alvo(campos: dict) -> list[str]:
+    """Caminhos declarados no campo `Arquivos-alvo`/`Entregável` do dossiê, na ordem em que
+    aparecem, sem repetição."""
+    return _classificar_campo_alvos(campos)[0]
+
+
+def extrair_literais_nao_caminho(campos: dict) -> list[str]:
+    """Literais entre crases do mesmo campo que não são caminho pela `DB-27` — vão para a seção
+    `## Escopo` como transparência da extração."""
+    return _classificar_campo_alvos(campos)[1]
+
+
+def _forcar_utf8(stream) -> None:
+    """Console cp1252 do Windows estoura `UnicodeEncodeError` ao imprimir `→` do documento; o
+    arquivo de `--out` já é gravado em UTF-8. `reconfigure` só existe em stream de texto real."""
+    reconfigure = getattr(stream, "reconfigure", None)
+    if reconfigure is not None:
+        reconfigure(encoding="utf-8", errors="replace")
 
 
 def _git(args: list[str], root: Path) -> str:
@@ -169,21 +218,89 @@ def _eh_alvo_diretorio(root: Path, alvo: str) -> bool:
     return (root / alvo).is_dir()
 
 
-def confrontar_escopo(tocados: list[str], arquivos_alvo: list[str], root: Path) -> dict:
-    """Veredito mecânico da dimensão `escopo` (`docs/RUBRICA_DE_REVISAO.md:63-77`): `conforme`
-    quando o conjunto tocado está contido no conjunto declarado; caso contrário, só o fato — a
-    faixa `parcial` depende de um insumo (desvio declarado na entrega) que este script
-    não recebe, então o veredito fica em aberto (`None`), nunca resolvido para `parcial`.
+_REGISTRO_ORQUESTRACAO = (
+    "docs/DIARIO_DE_OBRAS.md",
+    "docs/telemetria.tsv",
+    "docs/plans/",
+    "docs/RDO/",
+)
 
-    Alvo-diretório (`_eh_alvo_diretorio`) casa por prefixo (AUT-T5b): um `tocado` que começa com o
-    prefixo do alvo-diretório, após normalizar `\\`→`/` nos dois lados, conta como coberto — não
-    entra em `fora_dos_alvos` só porque o caminho literal do diretório não bate exato."""
+
+def _eh_registro_orquestracao(caminho: str) -> bool:
+    """Balde (3) da `DB-25` (`P-0739`): arquivo que a orquestração escreve por ofício — kanban,
+    telemetria, plano, RDO. Não é atribuível a tarefa nenhuma e por isso não pesa no veredito;
+    aparece nomeado na seção `## Escopo`. Item terminado em `/` casa por prefixo."""
+    alvo = _normalizar_separador(caminho)
+    for item in _REGISTRO_ORQUESTRACAO:
+        if item.endswith("/"):
+            if alvo.startswith(item):
+                return True
+        elif alvo == item:
+            return True
+    return False
+
+
+_ATO_DO_DONO = (".claude/agents/",)
+
+
+def _eh_ato_do_dono(caminho: str) -> bool:
+    """Balde (4) da `DB-32` (`P-0739`): arquivo que só o dono edita, fora do ciclo de qualquer
+    tarefa — definição de agente. A árvore de trabalho é compartilhada, então essa edição aparece
+    em toda tarefa executada enquanto estiver pendente; sai nomeada na seção `## Escopo` e não
+    pesa no veredito. Item terminado em `/` casa por prefixo."""
+    alvo = _normalizar_separador(caminho)
+    return any(alvo.startswith(item) for item in _ATO_DO_DONO)
+
+
+def mapear_alvos_de_outras_tarefas(plano_path: Path, tarefa_id: str, root: Path) -> dict[str, str]:
+    """Balde (2) da `DB-25`: `git` não sabe qual tarefa tocou qual arquivo, mas o plano sabe qual
+    tarefa declarou qual alvo. Percorre os cabeçalhos `### <ID>` do mesmo plano com a gramática
+    de ID que mora em `rdo.py` (residência única, `DB-22`), extrai o dossiê de cada tarefa que
+    não seja `tarefa_id` e devolve `caminho -> primeiro ID que o declara`, na ordem do arquivo.
+    Tarefa cujo dossiê não extrai é pulada: atribuição ausente nunca bloqueia (`DB-19`)."""
+    rdo = _load_rdo(root)
+    mapa: dict[str, str] = {}
+    for linha in Path(plano_path).read_text(encoding="utf-8").splitlines():
+        m = rdo._ID_HEADER_RE.match(linha)
+        if not m or m.group(1) == tarefa_id:
+            continue
+        try:
+            dossie = rdo.extrair_dossie(
+                plano_path,
+                m.group(1),
+                esquema_legado=False,
+                modelo_legado=None,
+                classe_legado=None,
+            )
+        except rdo.RdoValidationError:
+            continue
+        for caminho in extrair_arquivos_alvo(dossie.campos):
+            mapa.setdefault(_normalizar_separador(caminho), m.group(1))
+    return mapa
+
+
+def confrontar_escopo(
+    tocados: list[str],
+    arquivos_alvo: list[str],
+    root: Path,
+    alvos_de_outras_tarefas: dict[str, str] | None = None,
+) -> dict:
+    """Veredito mecânico da dimensão `escopo` (`docs/RUBRICA_DE_REVISAO.md:63-77`) com os cinco
+    baldes da `DB-25` e da `DB-32`, nesta precedência: coberto pelos alvos do card > alvo de outra
+    tarefa do mesmo plano > registro da orquestração > ato do dono fora do ciclo de tarefa > fora
+    dos alvos sem atribuição. Só o último resolve o
+    veredito: vazio → `conforme`; não vazio → `None` (aberto), porque a faixa `parcial` depende de
+    desvio declarado na entrega, insumo que este script não recebe.
+
+    Alvo-diretório (`_eh_alvo_diretorio`) casa por prefixo (AUT-T5b); a atribuição a outra tarefa
+    casa por caminho exato, depois de normalizar `\\`→`/` nos dois lados."""
     alvo_set = set(arquivos_alvo)
     prefixos_dir = [
         _normalizar_separador(alvo).rstrip("/") + "/"
         for alvo in arquivos_alvo
         if _eh_alvo_diretorio(root, alvo)
     ]
+    outros = alvos_de_outras_tarefas or {}
 
     def coberto(tocado: str) -> bool:
         if tocado in alvo_set:
@@ -191,10 +308,29 @@ def confrontar_escopo(tocados: list[str], arquivos_alvo: list[str], root: Path) 
         tocado_norm = _normalizar_separador(tocado)
         return any(tocado_norm.startswith(prefixo) for prefixo in prefixos_dir)
 
-    fora = sorted(t for t in tocados if not coberto(t))
-    if not fora:
-        return {"fora_dos_alvos": [], "veredito": "conforme"}
-    return {"fora_dos_alvos": fora, "veredito": None}
+    de_outra_tarefa: dict[str, str] = {}
+    registro: list[str] = []
+    ato_do_dono: list[str] = []
+    fora: list[str] = []
+    for tocado in sorted(tocados):
+        if coberto(tocado):
+            continue
+        tocado_norm = _normalizar_separador(tocado)
+        if tocado_norm in outros:
+            de_outra_tarefa[tocado] = outros[tocado_norm]
+        elif _eh_registro_orquestracao(tocado):
+            registro.append(tocado)
+        elif _eh_ato_do_dono(tocado):
+            ato_do_dono.append(tocado)
+        else:
+            fora.append(tocado)
+    return {
+        "fora_dos_alvos": fora,
+        "de_outra_tarefa": de_outra_tarefa,
+        "registro_orquestracao": registro,
+        "ato_do_dono": ato_do_dono,
+        "veredito": "conforme" if not fora else None,
+    }
 
 
 def _diff_para_arquivo(root: Path, caminho_rel: str) -> str:
@@ -325,6 +461,7 @@ def _renderizar(
     diff_stat: str,
     arquivos_tocados: list[str],
     arquivos_alvo: list[str],
+    literais_descartados: list[str] | None = None,
     escopo: dict,
     trechos: dict[str, dict],
     teto_diff_chars: int,
@@ -356,12 +493,33 @@ def _renderizar(
     alvos_txt = ", ".join(f"`{c}`" for c in arquivos_alvo) if arquivos_alvo else "(nenhum declarado)"
     tocados_txt = ", ".join(f"`{c}`" for c in arquivos_tocados) if arquivos_tocados else "(nenhum)"
     linhas.append(f"- Arquivos-alvo declarados: {alvos_txt}")
+    if literais_descartados:
+        descartados_txt = ", ".join(f"`{c}`" for c in literais_descartados)
+        linhas.append(
+            f"- Literais não reconhecidos como caminho "
+            f"({len(literais_descartados)}): {descartados_txt}"
+        )
     linhas.append(f"- Arquivos tocados: {tocados_txt}")
+    if escopo.get("de_outra_tarefa"):
+        pares = ", ".join(
+            f"`{caminho}` → `{tarefa}`"
+            for caminho, tarefa in sorted(escopo["de_outra_tarefa"].items())
+        )
+        linhas.append(f"- Atribuídos a outra tarefa do mesmo plano: {pares}")
+    if escopo.get("registro_orquestracao"):
+        reg_txt = ", ".join(f"`{c}`" for c in escopo["registro_orquestracao"])
+        linhas.append(f"- Registro da orquestração (não atribuível a tarefa): {reg_txt}")
+    if escopo.get("ato_do_dono"):
+        dono_txt = ", ".join(f"`{c}`" for c in escopo["ato_do_dono"])
+        linhas.append(f"- Ato do dono, fora do ciclo de tarefa: {dono_txt}")
     if escopo["veredito"] == "conforme":
         linhas.append("- Veredito mecânico: conforme")
     else:
         fora_txt = ", ".join(f"`{c}`" for c in escopo["fora_dos_alvos"])
-        linhas.append(f"- Fato: {len(escopo['fora_dos_alvos'])} arquivo(s) fora dos alvos: {fora_txt}")
+        linhas.append(
+            f"- Fato: {len(escopo['fora_dos_alvos'])} arquivo(s) fora dos alvos e sem "
+            f"atribuição: {fora_txt}"
+        )
         linhas.append(
             "- Veredito mecânico: (aberto — depende de declaração de desvio na entrega, "
             "não coletada por este script; ver docs/RUBRICA_DE_REVISAO.md:63-77)"
@@ -415,9 +573,11 @@ def montar_documento(
         raise ReviewEvidenceValidationError(str(exc)) from exc
 
     arquivos_alvo = extrair_arquivos_alvo(dossie.campos)
+    literais_descartados = extrair_literais_nao_caminho(dossie.campos)
     diff_stat = coletar_diff_stat(root)
     tocados = coletar_arquivos_tocados(root, desde)
-    escopo = confrontar_escopo(tocados, arquivos_alvo, root)
+    alvos_de_outras = mapear_alvos_de_outras_tarefas(plano_path, dossie.tarefa_id, root)
+    escopo = confrontar_escopo(tocados, arquivos_alvo, root, alvos_de_outras)
     trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars, tocados)
     resultados_guardas = rodar_bateria_guardas(root, comandos_guardas)
     veredito_guardas_valor = veredito_guardas(resultados_guardas)
@@ -432,6 +592,7 @@ def montar_documento(
         diff_stat=diff_stat,
         arquivos_tocados=tocados,
         arquivos_alvo=arquivos_alvo,
+        literais_descartados=literais_descartados,
         escopo=escopo,
         trechos=trechos,
         teto_diff_chars=teto_diff_chars,
@@ -444,6 +605,8 @@ def montar_documento(
 
 
 def main(argv: list[str] | None = None) -> int:
+    _forcar_utf8(sys.stdout)
+    _forcar_utf8(sys.stderr)
     parser = argparse.ArgumentParser(
         description=(
             "Evidência de revisão (metade git) — diff, arquivos tocados e confronto de escopo, "

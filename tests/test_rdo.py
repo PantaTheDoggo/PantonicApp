@@ -560,3 +560,150 @@ def test_tr_laudo_recusa_plano_e_tarefa_em_forma_de_caminho(tmp_path, capsys):
     assert exit_code != 0
     assert "--plano" in capsys.readouterr().err
     assert not laudos_dir.exists() or list(laudos_dir.glob("*.md")) == []
+
+
+def test_tf_extrair_dossie_id_prefixado(tmp_path):
+    """TF da BKL-T2a (`DB-22`): ID de tarefa com prefixo de plano (`BKL-T2`) é localizado pelo
+    cabeçalho e casado por igualdade exata, prefixo incluído."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(plano, "### BKL-T2 — Tarefa sintética [Sonnet · classe implementacao]")
+
+    dossie = rdo.extrair_dossie(
+        plano, "BKL-T2", esquema_legado=False, modelo_legado=None, classe_legado=None,
+    )
+
+    assert dossie.tarefa_id == "BKL-T2"
+    assert dossie.modelo == "Sonnet"
+    assert dossie.classe == "implementacao"
+    assert dossie.esquema == "padrao"
+
+
+def test_tf_extrair_dossie_id_prefixado_com_letra_e_teto_legado(tmp_path):
+    """TF da BKL-T2a (`DB-22`): ID prefixado com letra de subtarefa (`CTX-T1d`) e segmento de
+    teto histórico (`· teto 30`), aceito e descartado."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(plano, "### CTX-T1d — Tarefa sintética [Opus · classe redacao · teto 30]")
+
+    dossie = rdo.extrair_dossie(
+        plano, "CTX-T1d", esquema_legado=False, modelo_legado=None, classe_legado=None,
+    )
+
+    assert dossie.tarefa_id == "CTX-T1d"
+    assert dossie.classe == "redacao"
+    assert dossie.esquema == "padrao"
+
+
+def test_tf_extrair_dossie_bracket_com_aceite_do_dono(tmp_path):
+    """TF da BKL-T2a (`DB-20`): segmento ` + dono` no bracket é aceito e descartado."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(plano, "### BKL-T9 — Tarefa sintética [Opus + dono · classe redacao]")
+
+    dossie = rdo.extrair_dossie(
+        plano, "BKL-T9", esquema_legado=False, modelo_legado=None, classe_legado=None,
+    )
+
+    assert dossie.modelo == "Opus"
+    assert dossie.classe == "redacao"
+    assert dossie.esquema == "padrao"
+
+
+def test_tr_extrair_dossie_id_casa_por_igualdade_exata(tmp_path):
+    """TR da BKL-T2a: prefixo nunca casa por sufixo nem por ID parcial — `T1` não encontra
+    `BKL-T1`, e `BKL-T2` não encontra `BKL-T1`."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(plano, "### BKL-T1 — Tarefa sintética [Sonnet · classe redacao]")
+
+    with pytest.raises(rdo.RdoValidationError):
+        rdo.extrair_dossie(
+            plano, "T1", esquema_legado=False, modelo_legado=None, classe_legado=None,
+        )
+
+    with pytest.raises(rdo.RdoValidationError):
+        rdo.extrair_dossie(
+            plano, "BKL-T2", esquema_legado=False, modelo_legado=None, classe_legado=None,
+        )
+
+
+# --- laudo · achado de processo (BKL-T2d, RUBRICA_DE_REVISAO.md §6) ------------------------------
+
+
+def test_tf_laudo_achado_de_processo_grava_secao_com_os_tres_alvos(tmp_path):
+    """TF da BKL-T2d: `--achado-processo` repetível grava a seção `## Achado de processo` com uma
+    linha de tabela por alvo."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(
+        _argv_laudo(laudos_dir)
+        + [
+            "--achado-processo", "dossie", "criterio de pronto exige registro fora dos alvos",
+            "--achado-processo", "doutrina", "sem guardrail de atribuicao por tarefa",
+        ]
+    )
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "## Achado de processo" in conteudo
+    assert "| dossiê | criterio de pronto exige registro fora dos alvos |" in conteudo
+    assert "| doutrina | sem guardrail de atribuicao por tarefa |" in conteudo
+
+
+def test_tr_laudo_achado_de_processo_nao_muda_veredito_nem_recomendacao(tmp_path):
+    """TR da BKL-T2d: com um achado de processo, veredito, pendência e percentual são os mesmos do
+    laudo gerado sem achado — invariante 1 de `docs/RUBRICA_DE_REVISAO.md` §6."""
+    rdo = _load_rdo()
+    laudos_dir_com = tmp_path / "com-achado"
+    laudos_dir_sem = tmp_path / "sem-achado"
+
+    exit_com = rdo.main(
+        _argv_laudo(laudos_dir_com)
+        + ["--achado-processo", "rubrica", "invariante 1 poderia ser mais explicita"]
+    )
+    exit_sem = rdo.main(_argv_laudo(laudos_dir_sem))
+
+    assert exit_com == 0
+    assert exit_sem == 0
+    conteudo_com = (laudos_dir_com / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    conteudo_sem = (laudos_dir_sem / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "**Recomendação:** seguir" in conteudo_com
+    assert "**Pendência:** nenhuma" in conteudo_com
+    linha_percentual_com = next(l for l in conteudo_com.splitlines() if l.startswith("**Percentual:**"))
+    linha_percentual_sem = next(l for l in conteudo_sem.splitlines() if l.startswith("**Percentual:**"))
+    assert linha_percentual_com == linha_percentual_sem
+
+
+def test_tr_laudo_secao_achado_de_processo_existe_com_nenhum_sem_a_flag(tmp_path):
+    """TR da BKL-T2d: sem `--achado-processo`, a seção existe sempre, com corpo `nenhum`."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(_argv_laudo(laudos_dir))
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "## Achado de processo" in conteudo
+    assert "nenhum" in conteudo
+
+
+def test_tr_laudo_recusa_alvo_fora_dos_tres_e_linha_com_pipe(tmp_path):
+    """TR da BKL-T2d: alvo fora de `dossie`/`doutrina`/`rubrica` e linha com `|` são recusados, sem
+    escrever laudo nenhum."""
+    rdo = _load_rdo()
+
+    laudos_dir_alvo = tmp_path / "alvo-invalido"
+    exit_alvo = rdo.main(
+        _argv_laudo(laudos_dir_alvo) + ["--achado-processo", "escopo", "x"]
+    )
+    assert exit_alvo != 0
+    assert not laudos_dir_alvo.exists() or list(laudos_dir_alvo.glob("*.md")) == []
+
+    laudos_dir_pipe = tmp_path / "linha-com-pipe"
+    exit_pipe = rdo.main(
+        _argv_laudo(laudos_dir_pipe) + ["--achado-processo", "dossie", "a | b"]
+    )
+    assert exit_pipe != 0
+    assert not laudos_dir_pipe.exists() or list(laudos_dir_pipe.glob("*.md")) == []

@@ -21,7 +21,7 @@ Plano legado (cabeçalho sem colchete algum — a gramática fixa da `DX-15` é 
 flag nenhuma): `--esquema-legado` com `--modelo`/`--classe` explícitos é o único caminho para
 prosseguir (política de plano legado da `DP-C`, item 3) — o RDO registra `esquema=legado`.
 
-`laudo` (EXA-T8b/T18) não é tocado por esta rodada: `python .claude/tools/rdo.py laudo --plano
+`laudo` (EXA-T8b/T18, estendido pela `BKL-T2d` do `P-0739`): `python .claude/tools/rdo.py laudo --plano
 <id> --tarefa <id> [--laudos-dir <dir>] --<dimensao> <nivel> ...` (as sete dimensões de
 `docs/RUBRICA_DE_REVISAO.md` §4, na ordem canônica de §5) **calcula** percentual, veredito,
 dimensão bloqueante e recomendação de domínio fechado (`seguir` | `seguir com ressalva` | `refazer`
@@ -30,7 +30,11 @@ argumento (`DA-6`) — e grava documento próprio em `docs/RDO/laudos/<plano>-<t
 diretório se preciso. `--vermelho-mecanico <dimensao>` (repetível) declara o que a camada mecânica
 já reportou vermelho; marcar `conforme` contra uma dimensão declarada vermelha é recusado (`DA-7`).
 `--escalar "<uma linha>"` força `recomendacao=escalar` independentemente da tabela, e a linha
-gravada é a pendência que a regra `B1` consome.
+gravada é a pendência que a regra `B1` consome. `--achado-processo <alvo> "<uma linha>"`
+(repetível; alvo em `dossie`, `doutrina` ou `rubrica`) grava a seção `## Achado de processo` e
+**não** altera percentual, veredito, bloqueante nem recomendação — invariante 1 de
+`docs/RUBRICA_DE_REVISAO.md` §6; `--escalar` fica reservado ao achado que invalida a rota (decisão
+de arquitetura ou de requisito).
 
 Escrita atômica (arquivo temporário no mesmo diretório de destino + `os.replace`) e falha ruidosa
 (exit != 0, mensagem em stderr, nada escrito) no mesmo padrão de `.claude/tools/telemetria.py`."""
@@ -76,11 +80,11 @@ _CLASSE_ALIASES: dict[str, str] = {
     "redacao/planejamento": "redacao",
 }
 
-_ID_HEADER_RE = re.compile(r"^### (T[0-9]+[a-z]?)(?=[\s—])")
+_ID_HEADER_RE = re.compile(r"^### ((?:[A-Z0-9]+-)?T[0-9]+[a-z]?)(?=[\s—])")
 _ID_LAUDO_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")  # identificador, nunca caminho
 _HEADER_BRACKET_RE = re.compile(
-    r"^### (?P<id>T[0-9]+[a-z]?) — (?P<titulo>.+?) "
-    r"\[(?P<modelo>Opus|Sonnet|Haiku) · classe (?P<classe>.+?)"
+    r"^### (?P<id>(?:[A-Z0-9]+-)?T[0-9]+[a-z]?) — (?P<titulo>.+?) "
+    r"\[(?P<modelo>Opus|Sonnet|Haiku)(?: \+ dono)? · classe (?P<classe>.+?)"
     r"(?: · teto (?:prescrito )?[0-9]+)?\](?P<sufixo>.*)$"
 )
 _HEADER_LEGADO_TITULO_FMT = r"^### {id} — (?P<titulo>.+)$"
@@ -447,6 +451,21 @@ def calcular_laudo(
     )
 
 
+_ALVOS_ACHADO = {"dossie": "dossiê", "doutrina": "doutrina", "rubrica": "rubrica"}
+
+
+def _formatar_achados_processo(pares: list[list[str]] | None) -> str:
+    """`docs/RUBRICA_DE_REVISAO.md` §6: campo próprio, três alvos. Invariante 1 — o achado não
+    rebaixa dimensão de entrega e não muda recomendação; por isso nada disto passa por
+    `calcular_laudo`. Sem achado, o corpo é `nenhum` (a seção existe sempre)."""
+    if not pares:
+        return "nenhum"
+    linhas = ["| alvo | achado |", "|---|---|"]
+    for alvo, texto in pares:
+        linhas.append(f"| {_ALVOS_ACHADO[alvo]} | {texto.strip()} |")
+    return "\n".join(linhas)
+
+
 def cmd_laudo(args: argparse.Namespace) -> Path:
     """EXA-T18: laudo grava documento próprio em `docs/RDO/laudos/<plano>-<tarefa>.md` — não
     depende de RDO nenhum aberto, e o `close` (EXA-T19) não o lê: o `pacote` chega a `close` por
@@ -456,6 +475,18 @@ def cmd_laudo(args: argparse.Namespace) -> Path:
             raise RdoValidationError(
                 f"{flag} é identificador (ex.: P-0734, T18), não caminho: {valor!r}. "
                 "Laudo de sonda vai para --laudos-dir <scratchpad>."
+            )
+    for alvo, texto in (args.achado_processo or []):
+        if alvo not in _ALVOS_ACHADO:
+            raise RdoValidationError(
+                f"--achado-processo: alvo '{alvo}' fora de {sorted(_ALVOS_ACHADO)} "
+                "(RUBRICA_DE_REVISAO.md §6)"
+            )
+        if not texto.strip():
+            raise RdoValidationError("--achado-processo: a linha do achado não pode ser vazia")
+        if "|" in texto or "\n" in texto:
+            raise RdoValidationError(
+                "--achado-processo: uma linha, sem '|' — a tabela do laudo quebraria"
             )
     niveis = {d: getattr(args, d.replace("-", "_")) for d in _DIMENSOES_ORDEM}
     vermelhos = set(args.vermelho_mecanico or [])
@@ -483,6 +514,8 @@ def cmd_laudo(args: argparse.Namespace) -> Path:
         "| dimensão | nível |\n"
         "|---|---|\n"
         f"{tabela_niveis}\n\n"
+        "## Achado de processo\n\n"
+        f"{_formatar_achados_processo(args.achado_processo)}\n\n"
         "## Lições aprendidas na tarefa\n\n"
         f"{licoes_aprendidas}\n"
     )
@@ -701,6 +734,18 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "Uma linha de pendência; se presente, a recomendação é 'escalar' independentemente "
             "da tabela de veredito (dominante)."
+        ),
+    )
+    laudo_parser.add_argument(
+        "--achado-processo",
+        dest="achado_processo",
+        nargs=2,
+        action="append",
+        metavar=("ALVO", "LINHA"),
+        default=None,
+        help=(
+            "Achado de processo (repetivel): ALVO e dossie, doutrina ou rubrica, seguido de uma "
+            "linha. Nao altera percentual, veredito, bloqueante nem recomendacao (RUBRICA §6)."
         ),
     )
     laudo_parser.add_argument(

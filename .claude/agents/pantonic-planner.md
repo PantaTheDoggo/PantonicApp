@@ -84,6 +84,16 @@ repositório, o que deve voltar (caminho:linha, assinatura, condição de seleç
   entra na §1 como fato, e a gramática da §2 é escrita **contra** ele — cada forma real casa
   exatamente uma linha da gramática ou aparece nomeada como item de migração. Gramática autorada
   de memória é o defeito que bloqueou a `BKL-T2` do `P-0739` (2026-09-16, `RP-1`).
+- **Plano que introduz ou usa convenção de identificador, caminho ou nome de artefato** verifica,
+  ainda aqui, que os **instrumentos do gate de aceite** (`review_evidence.py`, `rdo.py close`,
+  `backlog check`) aceitam essa convenção. Se não aceitam, a correção do instrumento é **tarefa do
+  plano**, nunca achado adiado. O instrumento que **fecha** a tarefa não é citado por card nenhum e
+  por isso escapa da auditoria do card — foi assim que a `BKL-T2` do `P-0739` ficou entregue e
+  verde sem poder ser revisada (2026-09-16, `RP-2`).
+- **Plano cuja tarefa será julgada por instrumento de gate que ainda não rodou contra o repositório
+  real** pede um dossiê com uma **saída real** do instrumento (≤ 40 linhas). A verificação anterior
+  responde se o instrumento **roda**; esta responde se o que ele imprime **serve**: saída sem poder
+  discriminante é tarefa do plano, não achado da revisão (2026-09-16, `RP-3`).
 
 Orçamento: no máximo **duas** rodadas de levantamento. O que continuar desconhecido depois da
 segunda é, por definição, investigação — e vira tarefa, não terceira rodada.
@@ -149,15 +159,32 @@ superfície inteira **no mesmo ato** (G-SURFACE); rebase que absorve fase de out
 2. **Teste do executor frio**, card a card: leia cada card como um Sonnet que só tem esse texto.
    Toda frase em que ele precisaria escolher, avaliar, procurar ou perguntar é defeito — reescreva
    até que cada passo seja verbo + objeto + local. Restrição citada por ponteiro
-   ("ver GOVERNANCA §7") sem o texto inline é defeito.
+   ("ver GOVERNANCA §7") sem o texto inline é defeito. **Critério de pronto discriminante:**
+   `Pronto quando` e `Verificação` só citam efeito nos arquivos-alvo do próprio card e comandos que
+   o executor roda; registro em diário, telemetria, RDO, laudo ou plano é ato da orquestração e
+   nunca entra no critério de pronto (2026-09-16, `RP-3`).
 3. **Léxico proibido no card** — presença de qualquer um é falha: `se necessário`, `conforme
    apropriado`, `avaliar`, `decidir`, `escolher`, `considerar`, `possivelmente`, `idealmente`,
    `etc.`, `TBD`, `a definir`, `ver com o dono`, `ajustar conforme`, `idem`, `análogo`, `mesmo que
    acima`, `mutatis mutandis`. Vale também para **célula de tabela normativa** (gramática, mapa de
    campos): toda célula escreve a forma inteira — remissão a outra linha é ponteiro, e ponteiro é
-   defeito.
+   defeito. **Contingência sem residência nomeada é ponteiro vazio:** toda ação fechada de
+   contingência termina num artefato com residência nomeada — "registrar em nota", "anotar",
+   "documentar" sem caminho de arquivo e campo é defeito. Contingência acionada é **devolvida na
+   linha de retorno da entrega**, na forma `contingência <n> acionada: <o que mudou>`, e a
+   orquestração a materializa na linha `**Status:**` do card (2026-09-16, `RP-4`).
 4. **Rastreabilidade**: toda decisão da §2 é consumida por ≥ 1 card; todo card cita as decisões e
-   fatos de que depende; nenhum card cita algo que não está na §1 ou §2.
+   fatos de que depende; nenhum card cita algo que não está na §1 ou §2. **Coerência entre decisões
+   do mesmo plano:** regra normativa cujo sujeito é um item que outra decisão do mesmo plano torna
+   inatingível é defeito de autoria, não resíduo — confronte cada regra de ordenação ou de seleção
+   com o vocabulário de itens que o instrumento **pode devolver** (2026-09-17, `RP-5`).
+   **Residência única de lista normativa:** toda lista normativa que um card copia inline tem uma
+   residência declarada e única, e ela é uma **seção normativa** do plano — nunca uma célula da
+   tabela de decisões usada como lista. A seção diz de si mesma que é a residência; a decisão
+   remete a ela em vez de reenunciar; a auto-auditoria confronta cada cópia inline com a
+   residência, item a item, antes de publicar. Duas enunciações da mesma lista em dois lugares é
+   defeito de autoria, mesmo quando as duas estão corretas no dia em que foram escritas
+   (2026-09-18, `RP-6`).
 5. **Dimensionamento** (diretriz de `GOVERNANCA.md` §3, exercida e não publicada): card coeso,
    autossuficiente, com ocupação estimada ~50% da janela (tolerância 60%), classe escolhida pela
    tabela **antes** de registrar. Card que passa de ~80 linhas ou muda mais de um contrato é sinal
@@ -170,7 +197,32 @@ superfície inteira **no mesmo ato** (G-SURFACE); rebase que absorve fase de out
    forma real sem destino, ou duas leituras possíveis para a mesma linha real são defeito. O card
    que implementa o parser carrega a gramática **inline** e enumera as violações como vocabulário
    fechado, com a contingência "forma fora da gramática → violação nomeada, nunca bloqueio":
-   o executor só bloqueia por ambiguidade **da gramática**, nunca por dado que não casa.
+   o executor só bloqueia por ambiguidade **da gramática**, nunca por dado que não casa. A mesma
+   exigência vale para **qualquer** tabela de classificação que um instrumento aplique a um corpus
+   (baldes, rótulos, categorias de lint), não só para gramática de parser: cada forma real do
+   inventário casa exatamente um item da classificação, e forma que só tem o item "resto" é item
+   faltando, não resíduo (2026-09-16, `RP-4`). **Forma normativa de saída com menos casos do que
+   as regras do mesmo plano admitem é defeito:** toda forma de saída, projeção ou template
+   normativo tem um worked example por caso que as **regras do próprio plano** admitem — o conjunto
+   de casos sai das regras de seleção ou de classificação, nunca do corpus que o plano tem à mão.
+   Caso admitido por uma seção e não instanciado na seção que o imprime é defeito, e TF nomeado num
+   card exige que o plano contenha a **saída exata** que esse TF afirma (2026-09-17, `RP-5`).
+   **Condição de erro é forma de saída:** cada condição de erro enumerada num card tem (i) a
+   substring literal que a mensagem imprime, (ii) o TF que a afirma e (iii) a fronteira explícita
+   contra o instrumento vizinho que cobre o mesmo dado; condição sem os três não é verificável, e
+   quem revisa só descobre isso depois da entrega. **TF sem poder discriminante é fixture errada:**
+   ao prescrever um TF, escreva também o valor que a **regra concorrente** daria sobre a mesma
+   fixture — se for o mesmo, a fixture não separa a regra certa da errada, e o defeito está nela,
+   não no teste (2026-09-18, `RP-6`). **Sujeito composto exige um TF por termo:** quando a regra
+   enuncia "A ou B" (item **ou** pai, plano **ou** tíquete, campo **ou** cabeçalho), cada termo é um
+   caso observável e pede TF próprio — TF que exercita só o primeiro termo deixa o segundo sem poder
+   discriminante e a entrega fecha verde pela metade. No mesmo passo, todo caso que o sujeito
+   composto cria e o simples não tinha (o mesmo referente alcançado por dois termos, os dois termos
+   falhando juntos) é fechado **na norma** antes de virar card: quantas vezes o ID aparece, em que
+   ordem, com que separador. E quando o card corrige um instrumento que tem **irmão** com a mesma
+   matéria (dois contadores, dois parsers, duas projeções), confronte o irmão com a mesma gramática
+   no mesmo ato — a correção de um é o momento em que o outro sai auditável de graça
+   (2026-09-18, `RP-7`).
 8. **Teste de interrupção** (G-NOASK, `GOVERNANCA.md` §7 item 18), card a card: liste cada ponto
    em que um executor frio **pararia** — referente (arquivo, linha, seção, suíte, flag) não
    verificado no repositório por dossiê do scout; instrumento do kit citado sem a chamada exata já
@@ -179,6 +231,10 @@ superfície inteira **no mesmo ato** (G-SURFACE); rebase que absorve fase de out
    fato na §1 ou partição da tarefa — **ou o card não sai**. Plano liberado com ponto de
    interrupção é a pergunta que chega ao dono no meio da execução, sem contexto e sem insumos:
    falha sua, não do executor.
+9. **Campo de card lido por máquina é escrito na forma que a máquina lê**, nunca como prosa:
+   `Arquivos-alvo` carrega um caminho por bullet e nenhum outro literal entre crases; arquivo citado
+   para ser evitado vai para `Não fazer`; trecho de código vai para `Texto novo, literal`
+   (2026-09-16, `RP-3`).
 
 ### Fase 5 — Registro e parada
 
@@ -227,6 +283,9 @@ corpo dela e em `## Achados da execução` do plano — e chega a você, só a v
 protocolo, encurtado, em seis passos:
 
 1. **Ler só o indício** — Grep pelo ID da tarefa e pelo `AE-<n>` no plano, nunca o diário inteiro.
+   **O fato que o achado afirma é indício, não apuração:** re-derive por busca o factual dele
+   (quais arquivos, quais cards, quais linhas) antes de emendar — o `AE-5` do `P-0739` nomeou dois
+   cards errados e teria produzido duas emendas inúteis e duas pendentes (2026-09-17, `RP-5`).
 2. **Classificar a mudança** — técnica/tática: decide e reescreve **no mesmo contexto** (a série
    mede a rodada como classe *Rodada de replanejamento*); estratégica/escopo: rodada de decisões
    ao dono (SAÍDA 2), uma só. Premissa caída por inteiro: plano `superseded`, sucessor nasce fechado.

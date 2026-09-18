@@ -16,6 +16,43 @@ reescritas nem revogadas.
 
 ## [Não lançado]
 
+- `pantonic-planner`: lição da rodada `RP-7` do `P-0739` publicada no protocolo — fase 4 item 7
+  passa a exigir **um TF por termo de sujeito composto** ("A ou B": item ou pai, plano ou tíquete),
+  o fechamento **na norma** dos casos que só o sujeito composto cria (mesmo referente alcançado por
+  dois termos, dois termos falhando juntos — quantas vezes o ID aparece, em que ordem, com que
+  separador) e o confronto do **instrumento irmão** com a mesma gramática quando um card corrige um
+  de um par. Motivo: a `BKL-T3a` fechou verde cobrindo só a metade "item candidato" da condição E-2
+  de `next`, e o contador irmão de fila de memória seguiu com o prefixo `-` sem o espaço, contando
+  régua markdown `---` como candidato.
+
+- `pantonic-planner`: duas lições da rodada `RP-6` do `P-0739` publicadas no protocolo — fase 4
+  item 4 passa a exigir **residência única declarada para toda lista normativa copiada inline**
+  num card (seção normativa do plano, nunca célula da tabela de decisões), com a auto-auditoria
+  confrontando cada cópia com a residência item a item; fase 4 item 7 passa a exigir, para cada
+  **condição de erro** enumerada num card, a substring literal da mensagem, o TF que a afirma e a
+  fronteira contra o instrumento vizinho, e a escrever, ao prescrever um TF, o valor que a **regra
+  concorrente** daria sobre a mesma fixture (fixture onde as duas regras concordam não
+  discrimina).
+
+- `pantonic-planner`: três lições da rodada `RP-5` do `P-0739` publicadas no protocolo — fase 4
+  item 7 passa a exigir **um worked example por caso que as regras do próprio plano admitem** (o
+  conjunto de casos sai das regras de seleção/classificação, nunca do corpus à mão, e TF nomeado
+  num card exige a saída exata dentro do plano); item 4 ganha a **coerência entre decisões do mesmo
+  plano** (regra normativa cujo sujeito outra decisão do mesmo plano torna inatingível é defeito de
+  autoria, não resíduo); e a rodada de replanejamento passa a tratar o fato afirmado por achado de
+  execução como **indício**, re-derivado por busca antes de qualquer emenda. Motivo: a `BKL-T3`
+  voltou `blocked` razão `premissa` porque §2.6 do plano fixava uma única forma de linha de
+  contexto do pai enquanto §2.5 admitia vencedor com pai-tíquete; e o `AE-5` nomeou dois cards
+  errados, que teriam virado duas emendas inúteis e duas pendentes.
+- `pantonic-planner`: cinco lições das rodadas `RP-3` e `RP-4` do `P-0739` publicadas no protocolo
+  — fase 1 ganha a exigência de **saída real** do instrumento de gate que ainda não rodou contra o
+  repositório (responde se o que ele imprime *serve*, não só se *roda*); fase 4 item 2 fixa critério
+  de pronto restrito aos arquivos-alvo do card (registro em diário/telemetria/RDO/laudo é ato da
+  orquestração); item 3 proíbe ação de contingência sem residência nomeada e fixa a forma da linha
+  de retorno da entrega; item 7 estende a classificação exaustiva de vocabulário fechado a qualquer
+  tabela que um instrumento aplique a um corpus; item 9 (novo) exige campo de card lido por máquina
+  escrito na forma que a máquina lê.
+- `review_evidence.py`: confronto de escopo atribui arquivo tocado a outra tarefa do plano e separa o registro da orquestração, em vez de reportar tudo como fora-de-alvo (`P-0739` `BKL-T2c`, `DB-25`).
 - `G-NOASK` (`GOVERNANCA.md` §7 item 18, 2026-09-16, decisão do dono): interrupção para escalar
   ao dono durante a execução é falha de planejamento — quem executa (executor e orquestração)
   não fica com dúvida e não escala direto: para, registra `AE-<n>`, bloqueia `premissa` e
@@ -36,6 +73,14 @@ reescritas nem revogadas.
   `scrum-master` `A3b`, `proximo-passo` e `diario-de-obras` alinhados. `pantonic-planner` ganha
   inventário de corpus (fase 1), teste do parser frio (fase 4) e `idem`/`análogo` no léxico
   proibido. Origem: `P-0739` `AE-1`/`RP-1`.
+- `pantonic-planner` fase 1 ganha a verificação dos **instrumentos do gate de aceite**
+  (2026-09-16): plano que introduz ou usa convenção de identificador, caminho ou nome de artefato
+  confere ainda na fase 1 que `review_evidence.py`, `rdo.py close` e `backlog check` aceitam essa
+  convenção; se não aceitam, corrigir o instrumento é tarefa do plano, nunca achado adiado.
+  Origem: `P-0739` `AE-2`/`RP-2`.
+- `rdo.py laudo`: campo `--achado-processo <alvo> "<linha>"` com os três alvos da
+  `RUBRICA_DE_REVISAO.md` §6, sem mexer em percentual, veredito nem recomendação — `--escalar`
+  volta a ser só pendência de arquitetura ou de requisito (`P-0739` `BKL-T2d`, `DB-28`).
 - `.claude/agents/pantonic-planner.md` reescrito como doutrina operacional do papel de planejamento (2026-09-15): protocolo em cinco fases com duas saídas antes do plano (campanha de investigação delegada ao `pantonic-scout`/tarefa `investigacao`; rodada única de decisões ao dono), anatomia do card autossuficiente para executor frio (camada, domínio, restrições inline, contingências fechadas), auto-auditoria G-PLANREADY + teste do executor frio + léxico proibido, e proibição de publicar plano com questão aberta. Motivo: executores ignorando restrições e decidindo sob plano com dúvida pendurada; sessões de planejamento longas com medição própria. `.claude/README.md` regenerado.
 - `GOVERNANCA.md` §4.3 reconciliada (`DX-10`/`G-SURFACE`): a doutrina deixa inequívoco que a
   janela de orquestração atravessa as tarefas atômicas do mesmo plano e só encerra na troca de
@@ -147,6 +192,9 @@ reescritas nem revogadas.
   materialização (`-Mode check-drift`). Os treze artefatos que só existiam em `~/.claude/` (4 hooks
   registrados, 6 skills, 1 agente, 2 docs de doutrina) mais o `CLAUDE.md` global são promovidos a
   projeção de canônico versionado (`RPC-T1..T7`).
+- `rdo.py`: `extrair_dossie` aceita ID de tarefa prefixado (`(?:[A-Z0-9]+-)?T[0-9]+[a-z]?`, `DB-14`) e bracket com ` + dono` (`DB-20`) — `review_evidence.py` e `rdo.py close` passam a funcionar para `AUT-*`/`CTX-*`/`BKL-*` (`P-0739` `BKL-T2a`, `DB-22`).
+- `review_evidence.py`: campo `Arquivos-alvo` lido por gramática de caminho (`DB-27`) — arquivo de raiz volta a ser alvo, literal de regex deixa de ser; `stdout`/`stderr` forçados a UTF-8 (`P-0739` `BKL-T2b`).
+- `review_evidence.py`: confronto de escopo separa o ato do dono (`.claude/agents/`) do arquivo fora dos alvos sem atribuição (`P-0739` `BKL-T2e`, `DB-32`).
 
 ## 2.0.0 — 2026-08-05
 

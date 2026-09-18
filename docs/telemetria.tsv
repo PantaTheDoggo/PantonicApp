@@ -217,3 +217,28 @@ data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
 2026-09-16	PantonicApp	BKL-RP1	fable	17			contado
 2026-09-16	PantonicApp	BKL-T2	sonnet	46	200	980	usage
 2026-09-16	PantonicApp	BKL-AE2-pickup	opus	29			contado
+2026-09-16	PantonicApp	BKL-RP2	opus	31	98.445	476	usage
+2026-09-16	PantonicApp	BKL-T2a	sonnet	15	82.313	182	usage
+2026-09-16	PantonicApp	BKL-RP2-doutrina	opus	10			contado
+2026-09-16	PantonicApp	BKL-T2-revisao	opus	15	67.161	232	usage
+2026-09-16	PantonicApp	BKL-T2a-revisao	opus	11	51.239	131	usage
+2026-09-16	PantonicApp	BKL-REV-pickup	opus	29			contado
+2026-09-16	PantonicApp	BKL-RP3	opus	45	158.137	1062	usage
+2026-09-16	PantonicApp	BKL-T2b	sonnet	22	84.865	162	usage
+2026-09-16	PantonicApp	BKL-T2c	sonnet	23	93.705	216	usage
+2026-09-16	PantonicApp	BKL-T2bc-revisao	opus	15	67.780	191	usage
+2026-09-16	PantonicApp	BKL-RP4	opus	20	85.321	466	usage
+2026-09-16	PantonicApp	BKL-T2d	sonnet	23	82.925	202	usage
+2026-09-17	PantonicApp	BKL-T2d-revisao	opus	11	52.353	104.928	usage
+2026-09-17	PantonicApp	BKL-T2e	sonnet	31	92.454	189.672	usage
+2026-09-17	PantonicApp	BKL-T2e-revisao	opus	14	53.650	114.987	usage
+2026-09-17	PantonicApp	BKL-T3-devolvida	sonnet	23	125.878	434.503	usage
+2026-09-17	PantonicApp	BKL-RP5	opus	29	108.154	616.861	usage
+2026-09-17	PantonicApp	BKL-T3	sonnet	46	179.305	1020.648	usage
+2026-09-17	PantonicApp	BKL-T3-revisao	opus	19	90.225	307.822	usage
+2026-09-18	PantonicApp	BKL-RP6	opus	23	124.985	722.474	usage
+2026-09-18	PantonicApp	BKL-T3a	sonnet	27	86.429	248.836	usage
+2026-09-18	PantonicApp	BKL-T3a-revisao	sonnet	18	67.794	301.706	usage
+2026-09-18	PantonicApp	BKL-RP7	opus	48	153.754	664.885	usage
+2026-09-18	PantonicApp	BKL-T3b	sonnet	22	78	97	usage
+2026-09-18	PantonicApp	BKL-T3b-revisao	opus	21	63.768	176.714	usage
