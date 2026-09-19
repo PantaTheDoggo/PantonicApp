@@ -8,6 +8,27 @@ ato posterior, e até lá o consultor de plano permanece figura ad-hoc.
 não comportamento desejado. Nenhuma recomendação entra sem lastro. Os identificadores do lastro
 ficam nas linhas `Lastro` e nas tabelas, nunca no corpo do texto.
 
+
+**Nota de leitura — três números de série deste documento estão defasados, por decisão registrada
+(dono, 2026-09-19).** A série de acionamentos do consultor é incrementada **pelo próprio ato de
+escalonar**, inclusive pelos escalonamentos que autoraram e corrigiram este documento. Todas as
+contagens abaixo valem no recorte fechado **até o `ESC-36`**; três delas ficaram sem esse recorte e
+**não se corrigem aqui**:
+
+- **§10** diz que o empréstimo de autoria de card *"é fato medido **nove** vezes"* — a árvore mede
+  **11**, porque a figura autorou mais dois cards depois do `ESC-36`.
+- **§6** diz que o plano *"cresceu de 29 para **33** cards numa janela"* — fechou em **35**.
+- **§1** atribui as **14** linhas `ESC-23-consultor`..`ESC-36-consultor` à instância do recorte
+  `ESC-27`..`ESC-36`, que a tabela da mesma seção conta em **10** acionamentos: as 14 linhas cobrem
+  **duas** instâncias, porque a marcação `-consultor` começa no `ESC-23`.
+
+**Por que não se corrigem:** cada correção do censo descobriu uma superfície que o aceite anterior
+não alcançava — foram quatro rodadas —, e o teto escrito no `P-0740` encerrou a série. Estas
+imprecisões deixam de ser defeito a reparar aqui e passam a ser **estatística da spec de
+robustez**, cujo acumulador é o tíquete `TK-55`. As afirmações que sustentam as decisões deste
+documento — as quatro instâncias, o censo por recorte, o consumo por papel — estão corretas; o que
+está defasado são três contagens de série.
+
 ---
 
 ## 1. A figura, em uma página
