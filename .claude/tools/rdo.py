@@ -41,6 +41,7 @@ Escrita atômica (arquivo temporário no mesmo diretório de destino + `os.repla
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import re
 import sys
@@ -84,7 +85,9 @@ _ID_HEADER_RE = re.compile(r"^### ((?:[A-Z0-9]+-)?T[0-9]+[a-z]?)(?=[\s—])")
 _ID_LAUDO_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")  # identificador, nunca caminho
 _HEADER_BRACKET_RE = re.compile(
     r"^### (?P<id>(?:[A-Z0-9]+-)?T[0-9]+[a-z]?) — (?P<titulo>.+?) "
-    r"\[(?P<modelo>Opus|Sonnet|Haiku)(?: \+ dono)? · classe (?P<classe>.+?)"
+    r"\[(?P<modelo>Opus|Sonnet|Haiku)(?: \+ dono)?"
+    r"(?: · esforço (?:low|medium|high|xhigh|max))?"
+    r" · classe (?P<classe>.+?)"
     r"(?: · teto (?:prescrito )?[0-9]+)?\](?P<sufixo>.*)$"
 )
 _HEADER_LEGADO_TITULO_FMT = r"^### {id} — (?P<titulo>.+)$"
@@ -103,6 +106,35 @@ _CAMPOS_CANONICOS = {
 
 class RdoValidationError(ValueError):
     """Dossiê ou argumento inválido (mensagem já nomeia o campo/identificador)."""
+
+
+def _validar_inteiro_nao_negativo(nome: str, valor: str) -> int:
+    """Guarda de domínio de `tool_uses` (`P-0740` `LM-T1a`, `DM-15`). Mesmo vocabulário de recusa
+    de `telemetria.py` (`_validar_inteiro_nao_negativo`), duplicado aqui — sem import cruzado
+    entre os dois módulos (`DM-11`)."""
+    try:
+        numero = int(valor)
+    except ValueError as exc:
+        raise RdoValidationError(f"{nome}: '{valor}' não é inteiro") from exc
+    if numero < 0:
+        raise RdoValidationError(f"{nome}: '{valor}' é negativo")
+    return numero
+
+
+def _validar_numero_nao_negativo_finito(nome: str, valor: str) -> float:
+    """Guarda de domínio de `tokens_k`/`duracao_s` (`P-0740` `LM-T1a`, `DM-15`) — os dois campos
+    compartilham este validador. Mesmo vocabulário de recusa de `telemetria.py`
+    (`_validar_numero_nao_negativo`), duplicado aqui — sem import cruzado entre os dois módulos
+    (`DM-11`)."""
+    try:
+        numero = float(valor)
+    except ValueError as exc:
+        raise RdoValidationError(f"{nome}: '{valor}' não é numérico") from exc
+    if not math.isfinite(numero):
+        raise RdoValidationError(f"{nome}: '{valor}' não é finito")
+    if numero < 0:
+        raise RdoValidationError(f"{nome}: '{valor}' é negativo")
+    return numero
 
 
 class DossieTarefa:
@@ -602,6 +634,13 @@ def _regenerar_indice(rdo_dir: Path) -> Path:
 
 
 def cmd_close(args: argparse.Namespace) -> Path:
+    # Guarda de domínio do consumo (`P-0740` `LM-T1a`, `DM-15` (iii)) — corre antes de qualquer
+    # outra checagem de `cmd_close`, `--plano` incluso: nada é lido nem escrito se um dos três
+    # campos estiver fora do domínio.
+    tool_uses = _validar_inteiro_nao_negativo("tool_uses", args.tool_uses)
+    tokens_k = _validar_numero_nao_negativo_finito("tokens_k", args.tokens_k)
+    duracao_s = _validar_numero_nao_negativo_finito("duracao_s", args.duracao_s)
+
     plano_path = Path(args.plano)
     if not plano_path.is_file():
         raise RdoValidationError(f"plano: arquivo não encontrado '{plano_path}'")
@@ -636,8 +675,9 @@ def cmd_close(args: argparse.Namespace) -> Path:
         if valor is not None and _contar_linhas(valor) > 1:
             raise RdoValidationError(f"{nome_campo}: aceita no máximo uma linha")
 
-    # Consumo (`args.tool_uses`) é medido e vai para o documento via TOOL_USES no `mapping`
-    # abaixo — não decide o desdobramento (`DP-Q`, §21 do `P-0734`).
+    # Consumo (`tool_uses`/`tokens_k`/`duracao_s`, validados no topo desta função) é medido e vai
+    # para o documento via TOOL_USES/TOKENS_K/DURACAO_S no `mapping` abaixo — não decide o
+    # desdobramento (`DP-Q`, §21 do `P-0734`).
     desdobramento = calcular_desdobramento(args.veredito)
 
     linhas_pendencia = []
@@ -671,9 +711,9 @@ def cmd_close(args: argparse.Namespace) -> Path:
         "PRONTO_QUANDO": dossie.campos["pronto-quando"],
         "DOSSIE_FECHADO_POR": dossie.campos.get("dossie-fechado-por") or "nenhum",
         "EXTRAS": extras_bloco,
-        "TOOL_USES": str(args.tool_uses),
-        "TOKENS_K": str(args.tokens_k),
-        "DURACAO_S": str(args.duracao_s),
+        "TOOL_USES": str(tool_uses),
+        "TOKENS_K": f"{tokens_k:.1f}",
+        "DURACAO_S": f"{duracao_s:.1f}",
         "PENDENCIA": pendencia_final,
         "VEREDITO": args.veredito,
         "PERCENTUAL": str(args.percentual),
@@ -765,16 +805,16 @@ def main(argv: list[str] | None = None) -> int:
     close_parser.add_argument("--plano", required=True, help="Caminho do .md do plano.")
     close_parser.add_argument("--tarefa", required=True, help="Identificador da tarefa (ex.: T19).")
     close_parser.add_argument(
-        "--tool-uses", required=True, type=int, dest="tool_uses",
-        help="Tool uses gastos, medidos (nunca auto-relatados).",
+        "--tool-uses", required=True, dest="tool_uses",
+        help="Tool uses gastos, medidos (nunca auto-relatados). Validado em código (LM-T1a).",
     )
     close_parser.add_argument(
-        "--tokens-k", required=True, type=int, dest="tokens_k",
-        help="Milhares de tokens gastos, medidos.",
+        "--tokens-k", required=True, dest="tokens_k",
+        help="Milhares de tokens gastos, medidos. Validado em código (LM-T1a).",
     )
     close_parser.add_argument(
-        "--duracao-s", required=True, type=int, dest="duracao_s",
-        help="Duração em segundos, medida.",
+        "--duracao-s", required=True, dest="duracao_s",
+        help="Duração em segundos, medida (aceita decimal). Validado em código (LM-T1a).",
     )
     close_parser.add_argument(
         "--veredito", required=True, choices=("aprovado", "ressalva"),

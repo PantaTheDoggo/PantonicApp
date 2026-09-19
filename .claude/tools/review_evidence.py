@@ -206,6 +206,20 @@ def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
     return sorted(tocados.keys())
 
 
+def coletar_estado_git(root: Path) -> dict[str, str]:
+    """Código `XY` de `git status --porcelain=v1 --untracked-files=all` por caminho (mesma chave
+    que `coletar_arquivos_tocados` já extrai via `_extrair_caminho_status`) — a evidência `git`
+    que comprova a atribuição de cada arquivo na seção `## Arquivos tocados` (`LM-T3`, `AE-13`).
+    Não classifica nada: só devolve o estado bruto que o `git` já relata."""
+    saida_status = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
+    estados: dict[str, str] = {}
+    for linha in saida_status.splitlines():
+        if not linha:
+            continue
+        estados.setdefault(_extrair_caminho_status(linha), linha[:2])
+    return estados
+
+
 def _normalizar_separador(caminho: str) -> str:
     return caminho.replace("\\", "/")
 
@@ -331,6 +345,35 @@ def confrontar_escopo(
         "ato_do_dono": ato_do_dono,
         "veredito": "conforme" if not fora else None,
     }
+
+
+def formatar_atribuicoes(tocados: list[str], escopo: dict) -> list[str]:
+    """Verbo `--atribuir` (`LM-T2a`): uma linha `atribuicao: <caminho> -> <balde>` por arquivo
+    tocado, na ordem de `sorted()`, mais a linha de resumo por último. O balde `alvo-do-card` sai
+    por **diferença de conjuntos** sobre os quatro baldes alheios que `confrontar_escopo` já
+    devolve (`de_outra_tarefa`, `registro_orquestracao`, `ato_do_dono`, `fora_dos_alvos`) — nunca
+    por uma segunda checagem de cobertura. Informa, não julga: não há exit diferente por balde."""
+    de_outra = escopo.get("de_outra_tarefa", {})
+    registro = set(escopo.get("registro_orquestracao", []))
+    ato_do_dono = set(escopo.get("ato_do_dono", []))
+    fora = set(escopo.get("fora_dos_alvos", []))
+
+    linhas: list[str] = []
+    sem_atribuicao = 0
+    for caminho in sorted(tocados):
+        if caminho in de_outra:
+            linhas.append(f"atribuicao: {caminho} -> alvo-de-outra-tarefa ({de_outra[caminho]})")
+        elif caminho in registro:
+            linhas.append(f"atribuicao: {caminho} -> registro-da-orquestracao")
+        elif caminho in ato_do_dono:
+            linhas.append(f"atribuicao: {caminho} -> ato-do-dono")
+        elif caminho in fora:
+            linhas.append(f"atribuicao: {caminho} -> sem-atribuicao")
+            sem_atribuicao += 1
+        else:
+            linhas.append(f"atribuicao: {caminho} -> alvo-do-card")
+    linhas.append(f"atribuicao: OK - {len(tocados)} arquivo(s), {sem_atribuicao} sem atribuicao.")
+    return linhas
 
 
 def _diff_para_arquivo(root: Path, caminho_rel: str) -> str:
@@ -463,6 +506,7 @@ def _renderizar(
     arquivos_alvo: list[str],
     literais_descartados: list[str] | None = None,
     escopo: dict,
+    estado_git: dict[str, str] | None = None,
     trechos: dict[str, dict],
     teto_diff_chars: int,
     resultados_guardas: list[dict],
@@ -481,7 +525,18 @@ def _renderizar(
     linhas.append("")
     linhas.append("## Arquivos tocados")
     if arquivos_tocados:
-        linhas.extend(f"- `{caminho}`" for caminho in arquivos_tocados)
+        estados = estado_git or {}
+        alheio = (
+            set(escopo.get("fora_dos_alvos", []))
+            | set(escopo.get("de_outra_tarefa", {}).keys())
+            | set(escopo.get("registro_orquestracao", []))
+            | set(escopo.get("ato_do_dono", []))
+        )
+        for caminho in arquivos_tocados:
+            atribuicao = "alheio" if caminho in alheio else "da entrega"
+            codigo = estados.get(caminho)
+            estado_txt = f"`{codigo}`" if codigo is not None else "(sem entrada em `git status`)"
+            linhas.append(f"- `{caminho}` — atribuição: {atribuicao}; estado git: {estado_txt}")
     else:
         linhas.append("- nenhum arquivo tocado")
     linhas.append("")
@@ -578,6 +633,7 @@ def montar_documento(
     tocados = coletar_arquivos_tocados(root, desde)
     alvos_de_outras = mapear_alvos_de_outras_tarefas(plano_path, dossie.tarefa_id, root)
     escopo = confrontar_escopo(tocados, arquivos_alvo, root, alvos_de_outras)
+    estado_git = coletar_estado_git(root)
     trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars, tocados)
     resultados_guardas = rodar_bateria_guardas(root, comandos_guardas)
     veredito_guardas_valor = veredito_guardas(resultados_guardas)
@@ -594,6 +650,7 @@ def montar_documento(
         arquivos_alvo=arquivos_alvo,
         literais_descartados=literais_descartados,
         escopo=escopo,
+        estado_git=estado_git,
         trechos=trechos,
         teto_diff_chars=teto_diff_chars,
         resultados_guardas=resultados_guardas,
@@ -636,7 +693,36 @@ def main(argv: list[str] | None = None) -> int:
             "dela, em vez da árvore de trabalho inteira (AUT-T5b)."
         ),
     )
+    parser.add_argument(
+        "--atribuir",
+        action="store_true",
+        help=(
+            "Imprime a atribuição de cada arquivo tocado desde --desde nos cinco baldes de "
+            "confrontar_escopo e sai (LM-T2a); não monta nem grava o dossiê."
+        ),
+    )
     args = parser.parse_args(argv)
+
+    if args.atribuir:
+        rdo = _load_rdo(args.root)
+        try:
+            dossie = rdo.extrair_dossie(
+                args.plano,
+                args.tarefa,
+                esquema_legado=False,
+                modelo_legado=None,
+                classe_legado=None,
+            )
+        except rdo.RdoValidationError as exc:
+            print(f"review_evidence: FALHOU - {exc}", file=sys.stderr)
+            return 1
+        arquivos_alvo = extrair_arquivos_alvo(dossie.campos)
+        tocados = coletar_arquivos_tocados(args.root, args.desde)
+        alvos_de_outras = mapear_alvos_de_outras_tarefas(args.plano, dossie.tarefa_id, args.root)
+        escopo = confrontar_escopo(tocados, arquivos_alvo, args.root, alvos_de_outras)
+        for linha in formatar_atribuicoes(tocados, escopo):
+            print(linha)
+        return 0
 
     try:
         documento = montar_documento(

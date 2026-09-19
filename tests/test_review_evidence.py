@@ -593,3 +593,186 @@ def test_tf_confrontar_escopo_devolve_a_chave_ato_do_dono_com_separador_do_windo
     assert resultado["ato_do_dono"] == [".claude\\agents\\pantonic-planner.md"]
     assert resultado["fora_dos_alvos"] == []
     assert resultado["veredito"] == "conforme"
+
+
+def test_tf_arquivo_tocado_dentro_dos_alvos_sai_marcado_como_da_entrega(tmp_path):
+    """TF da LM-T3 (`AE-13`): na seção `## Arquivos tocados`, um arquivo coberto pelos
+    `Arquivos-alvo` do card sai com a atribuição `da entrega` — derivada por diferença de
+    conjuntos sobre o que `confrontar_escopo` já devolve, sem segundo laço de cobertura."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "edita `src/b.py`.")
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 9\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "- `src/b.py` — atribuição: da entrega; estado git: `" in documento
+
+
+def test_tf_arquivo_tocado_fora_dos_alvos_sai_marcado_como_alheio_com_estado_git(tmp_path):
+    """TF da LM-T3 (`AE-13`): arquivo tocado fora dos `Arquivos-alvo` sai com a atribuição
+    `alheio` e o estado `git` (`??` — untracked) que a comprova, sem exigir injeção manual de
+    contexto do orquestrador para o reviewer não reprovar a entrega correta."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 1\n", encoding="utf-8")
+    (repo / "docs").mkdir()
+    (repo / "docs" / "nota.txt").write_text("fora do escopo\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "- `docs/nota.txt` — atribuição: alheio; estado git: `??`" in documento
+
+
+def test_tr_atribuicao_de_arquivos_tocados_cobre_os_quatro_baldes_alheios_de_confrontar_escopo(
+    tmp_path,
+):
+    """Regressão da LM-T3: a atribuição `alheio` da seção `## Arquivos tocados` cobre os quatro
+    baldes alheios que `confrontar_escopo` devolve (`fora_dos_alvos`, `de_outra_tarefa`,
+    `registro_orquestracao`, `ato_do_dono`) — não só `fora_dos_alvos`. Prova que a seção lê o
+    dicionário que `confrontar_escopo` já calcula em vez de reimplementar uma segunda checagem de
+    cobertura (`DM-19`): um arquivo do balde `registro_orquestracao`, que nunca aparece em
+    `fora_dos_alvos`, ainda assim sai marcado `alheio`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 1\n", encoding="utf-8")
+    (repo / "docs").mkdir()
+    (repo / "docs" / "telemetria.tsv").write_text("t\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "- `docs/telemetria.tsv` — atribuição: alheio; estado git: `??`" in documento
+
+
+def test_tf_atribuir_classifica_nos_cinco_baldes(tmp_path, capsys):
+    """TF da LM-T2a: com `--atribuir`, a saída traz uma linha por arquivo tocado com o balde certo
+    dos cinco da `DB-25`/`DB-32`, inclusive `alvo-do-card` para o arquivo coberto pelos
+    `Arquivos-alvo` do próprio card. *Concorrente:* hoje o argumento nem é reconhecido (exit 2)."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "cria `src/a.py`.", "cria `src/z.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 1\n", encoding="utf-8")
+    (repo / "src" / "z.py").write_text("def z():\n    return 1\n", encoding="utf-8")
+    (repo / "docs").mkdir()
+    (repo / "docs" / "telemetria.tsv").write_text("t\n", encoding="utf-8")
+    (repo / "docs" / "nota.txt").write_text("fora do escopo\n", encoding="utf-8")
+    (repo / ".claude" / "agents").mkdir(parents=True)
+    (repo / ".claude" / "agents" / "foo.md").write_text("agente\n", encoding="utf-8")
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--atribuir"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    linhas_atribuicao = [l for l in saida.out.splitlines() if l.startswith("atribuicao:")]
+    assert linhas_atribuicao == [
+        "atribuicao: .claude/agents/foo.md -> ato-do-dono",
+        "atribuicao: docs/nota.txt -> sem-atribuicao",
+        "atribuicao: docs/telemetria.tsv -> registro-da-orquestracao",
+        "atribuicao: src/a.py -> alvo-do-card",
+        "atribuicao: src/z.py -> alvo-de-outra-tarefa (T2)",
+        "atribuicao: OK - 5 arquivo(s), 1 sem atribuicao.",
+    ]
+
+
+def test_tf_atribuir_sai_0_mesmo_com_arquivo_sem_atribuicao(tmp_path, capsys):
+    """TF da LM-T2a: `--atribuir` sai exit 0 mesmo havendo arquivo `sem-atribuicao` na saída — o
+    verbo informa, quem julga é o reviewer pela rubrica. *Concorrente:* uma implementação que
+    tratasse o balde como falha (exit 1) faria o `B0` do loop encerrar janela por informação, o
+    defeito 4 da §3."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 1\n", encoding="utf-8")
+    (repo / "docs").mkdir()
+    (repo / "docs" / "nota.txt").write_text("fora do escopo\n", encoding="utf-8")
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--atribuir"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "atribuicao: docs/nota.txt -> sem-atribuicao" in saida.out
+
+
+def test_tr_atribuir_nao_monta_dossie(tmp_path, capsys):
+    """Regressão da LM-T2a: com `--atribuir`, nenhum documento é montado nem impresso e o caminho
+    de `--out` não é criado. *Concorrente:* implementar a flag depois da montagem do documento
+    gravaria o dossiê como efeito colateral."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+    (repo / "src" / "a.py").write_text("def a():\n    return 1\n", encoding="utf-8")
+    saida_out = tmp_path / "saida.md"
+
+    codigo = review_evidence.main(
+        [
+            "--plano",
+            str(plano),
+            "--tarefa",
+            "T1",
+            "--root",
+            str(repo),
+            "--atribuir",
+            "--out",
+            str(saida_out),
+        ]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "# Evidência de revisão" not in saida.out
+    assert "## Arquivos tocados" not in saida.out
+    assert not saida_out.exists()
+
+
+def test_tf_atribuir_alvo_diretorio_casa_por_prefixo(tmp_path, capsys):
+    """TF da LM-T2a (`ESC-4`, `DM-21` (ii)(a)): `Arquivos-alvo` declarado como diretório casa por
+    prefixo com arquivo tocado dentro dele e sai `alvo-do-card`. *Concorrente:* é este o caso em
+    que uma segunda implementação por caminho exato — a reimplementação que a `Restrição` da
+    `LM-T2a` proíbe — devolveria `sem-atribuicao`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "toca `.claude/tools/`.")
+
+    (repo / ".claude" / "tools" / "novo.py").write_text(
+        "def novo():\n    return 1\n", encoding="utf-8"
+    )
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--atribuir"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "atribuicao: .claude/tools/novo.py -> alvo-do-card" in saida.out
+    assert "sem-atribuicao" not in saida.out

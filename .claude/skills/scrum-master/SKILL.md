@@ -63,7 +63,9 @@ Dez passos, nesta ordem.
 
 - **Gatilho:** gates do passo 3 aprovados e tarefa materializada em `in-progress`.
 - **Entrada:** dossiê da tarefa copiado do plano; modelo declarado no cabeçalho.
-- **Ação:** gravar `.claude/estado/tarefa-corrente.json` (objeto único: `tarefa`, `projeto`,
+- **Ação:** garantir o diretório `.claude/estado/` (ele viaja versionado com `.gitkeep`, `DM-10`
+  do `P-0740`; recriá-lo se tiver sido apagado nesta máquina) e gravar
+  `.claude/estado/tarefa-corrente.json` (objeto único: `tarefa`, `projeto`,
   `modelo`, `plano`, `despachado_em` ISO 8601), insumo do hook `SubagentStop` (`T55`) para
   `docs/telemetria.tsv`. Capturar `git rev-parse HEAD` como `<ref>` (schema `DP-S`), usada no
   passo 6 (`AUT-T5b`).
@@ -122,12 +124,12 @@ Dez passos, nesta ordem.
 - **Ação:** ler `veredito` ∈ {`aprovado`, `ressalva`, `reprovado`}, `bloqueante` e o caminho do
   laudo — calculados pelo gerador, não recalculados pelo loop. Colher a `recomendação` **do
   laudo**, campo fechado (`seguir`, `seguir com ressalva`, `refazer`, `escalar`), lido por `A6`,
-  `A8`, `A9` e `B1`.
+  `A8a`, `A8`, `A9` e `B1`.
 - **Saída:** tripla (`veredito`, `bloqueante`, `recomendação`) para o roteamento.
 
 ### Passo 8 — Roteamento, bloco A
 
-- **Gatilho:** passo 5 concluído (regras `A1`..`A3b`) e passo 7 concluído (`A6`..`A9`).
+- **Gatilho:** passo 5 concluído (regras `A1`..`A3b`) e passo 7 concluído (`A6`..`A9`, inclusive `A8a`).
 - **Entrada:** `status`, `veredito`, `bloqueante`, `recomendação`, contador de retentativas.
 - **Ação:** aplicar a tabela do bloco A **em ordem de precedência** — a primeira regra que casa
   vence.
@@ -144,7 +146,7 @@ Dez passos, nesta ordem.
 
   ```
   python .claude/tools/rdo.py close --plano <plano> --tarefa <ID> \
-    --tool-uses <N> --tokens-k <N> --duracao-s <N> \
+    --tool-uses <N> --tokens-k <tokens_k> --duracao-s <N> \
     --veredito <aprovado|ressalva> --percentual <0..100> --bloqueante <dimensão|nenhuma> \
     --recomendacao "…" --pendencia-laudo "…" [--pendencia "<pendência autoral do executor>"]
   ```
@@ -154,7 +156,15 @@ Dez passos, nesta ordem.
 
   Depois do fechamento, apender **uma linha** a `docs/telemetria.tsv` com o dado do bloco `<usage>`
   via `python .claude/tools/telemetria.py append` (`--fonte usage`; sem `<usage>`,
-  `--fonte nao_medido`) — nunca copiado para o diário.
+  `--fonte nao_medido`) — nunca copiado para o diário. O número da linha é o do bloco `<usage>` da
+  notificação, **conferido**: o hook `SubagentStop` grava sozinho e já gravou valor inflado
+  (`AE-3`); linha do hook que divergir do `<usage>` é corrigida à mão pelo loop. E o hook **não
+  dispara** quando o subagente é retomado por `SendMessage` — nesse caso a linha é apensada pelo
+  loop, como todas as outras.
+
+  O `<tokens_k>` é o mesmo literal nas duas chamadas — decimal de uma casa (ex.: `203.7`), a forma
+  que o hook `SubagentStop` já produz. O loop não converte, não arredonda e não trunca o número
+  entre uma chamada e outra (`DM-11` do `P-0740`).
 - **Saída:** RDO escrito com o desdobramento calculado, laudo apagado, linha nova em
   `docs/telemetria.tsv`, contadores da janela atualizados.
 
@@ -164,7 +174,7 @@ Dez passos, nesta ordem.
 - **Entrada:** `pendencia` da tarefa recém-fechada; sinal de coesão do contexto do loop; medida de
   ocupação da janela, injetada pelo hook `PreToolUse` de medida ao cruzar o teto de trabalho;
   próxima tarefa do plano.
-- **Ação:** aplicar a tabela do bloco B, também por precedência. O encerramento por capacidade lê a
+- **Ação:** aplicar a tabela do bloco B, também por precedência, começando por `B0` — a atribuição de arquivo é **medida** pelo comando do `B0`, não julgada de memória. O encerramento por capacidade lê a
   medida de ocupação (`GOVERNANCA.md` §4.3).
 - **Saída:** volta ao passo 2 com a próxima tarefa, ou relatório de encerramento.
 
@@ -184,22 +194,27 @@ esta tabela e essas seções resolve a favor da seção.
 | `A3b` | `status=blocked` com `motivo=premissa` | materializa `blocked` com a razão na tarefa e no plano; **não** despacha o `reviewer` e **não** escreve RDO: **PARA**. A escalada é ao **planejador**: a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17) e o relatório de janela a nomeia; ao dono só chega o que o planejador classificar como estratégico |
 | `A6` | `recomendacao=refazer` e retentativas gastas = 0 | despacha um executor **novo, em contexto novo**, com o dossiê original mais as **diretivas atualizadas** que o loop extraiu da recomendação — **nunca** o caminho do laudo, e **sem reescrever o dossiê**; contador := 1: segue |
 | `A7` | `veredito=reprovado` e retentativas gastas = 1 | fecha o RDO como `reprovado`: **PARA** |
+| `A8a` | `recomendacao=escalar` (com `bloqueante=nenhuma`) | **escalar não é desfecho de tarefa**: fecha o RDO pelo **veredito** transcrito — `aprovado` quando o veredito é `aprovado`, `aprovado com ressalva` quando é `ressalva` —, com cada achado do laudo saindo com rota, como em `A8`. A pendência **não** morre com o laudo: segue ao bloco B, onde o `B1` a registra como `AE-<n>` e a roteia ao consultor de plano. Precedência: `A6` e `A7` vencem esta regra — `bloqueante` diferente de `nenhuma` implica `veredito=reprovado`, que é `A7` —, e esta vence `A8` e `A9`, que leem a mesma recomendação |
 | `A8` | `recomendacao=seguir com ressalva` | fecha o RDO como `aprovado com ressalva`; cada ressalva e cada achado do laudo sai **com rota** (tíquete ou `sem ação`): segue |
 | `A9` | `recomendacao=seguir` | fecha o RDO como `aprovado`: segue |
 
 A recomendação é de domínio fechado — o loop a **lê**, não a deriva do veredito. `bloqueante`
 diferente de `nenhuma` implica `veredito=reprovado`. O consumo medido é **medida e registro, nunca
 critério de rota** (`DP-Q`): vai para `docs/telemetria.tsv`. **O laudo morre no consumo, em
-qualquer ramo** (`DP-K` §14.4): `A6`, `A7`..`A9` e `B1` — o que a reexecução precisa saber viaja
-nas **diretivas atualizadas**.
+qualquer ramo** (`DP-K` §14.4): `A6`, `A7`..`A9` (inclusive `A8a`) e `B1` — o que a reexecução
+precisa saber viaja nas **diretivas atualizadas**. A `A8a` existe porque o caso foi medido
+**quatro vezes** na janela de 2026-09-18/19 (`LM-T7`, `LM-T3`, `LM-T2a` e `LM-T2`), todas com
+`bloqueante=nenhuma`, e em todas o loop materializou o fechamento **por julgamento próprio** —
+improviso que a `DP-G` proíbe.
 
 ### Bloco B — continuar ou encerrar a janela
 
-Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bloco A disse "segue".
+Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bloco A disse "segue". A precedência dentro do bloco é `B0` → `B1` → `B2` → `B3` → `B4`: o que é atribuível a arquivo alheio sai em `B0` e nunca chega a `B1`.
 
 | # | condição | ação |
 |---|---|---|
-| `B1` | `pendencia=` no retorno do executor, ou `recomendacao=escalar` no laudo | registra a pendência como `AE-<n>` em `## Achados da execução` do plano, descarta o laudo e escala ao **planejador** — a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`) e o relatório de encerramento a nomeia; ao dono chega só o que o planejador classificar como estratégico (`G-NOASK`, `GOVERNANCA.md` §7 item 18): **PARA**, mesmo com veredito `aprovado` |
+| `B0` | vermelho de verificação, ou item de `pendencia=`, **atribuível a arquivo fora dos `Arquivos-alvo` da tarefa** — atribuição **medida** por `python .claude/tools/review_evidence.py --plano <plano> --tarefa <ID> --desde <ref> --atribuir`, nunca julgada de memória | não é pendência da tarefa: registra `AE-<n>` com a atribuição medida, **não rebaixa** a entrega, não refaz laudo e **segue** por `B4` |
+| `B1` | **pendência substantiva**: `recomendacao=escalar` no laudo, **ou** `pendencia=` cujo texto **não** seja integralmente atribuível a arquivo fora dos alvos por `B0` | registra a pendência como `AE-<n>` em `## Achados da execução` do plano, descarta o laudo e escala ao **consultor de plano** (`pantonic-consultant`, instanciado uma vez por execução), que devolve decisão e reparo: a janela **segue** com o que ele devolver. **PARA** só se o consultor classificar o impedimento como **estratégico**; ao dono chega só isso (`G-NOASK`, `GOVERNANCA.md` §7 item 18) |
 | `B2` | sinal de poluição do contexto do loop (**coesão**) **ou** aviso de ocupação da janela no teto de trabalho, injetado no contexto pelo hook de medida (**capacidade**) — as duas condições do `GOVERNANCA.md` §4.3 | encerra com relatório de janela: **PARA** (encerramento normal, não falha). Por coesão o encerramento **não é gracioso**: nada produzido depois do sinal de poluição se aproveita. Sem o aviso na rodada, valem a coesão e o fim do plano |
 | `B3` | a próxima tarefa é recusada pelo `G-PLANREADY` ou pelo gate de delegação | não delega: **PARA**, com o que falta fechar |
 | `B4` | nenhuma das anteriores | despacha a próxima tarefa do plano, sempre sequencial |
@@ -207,9 +222,9 @@ Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bl
 ### O que obriga parada e o que segue com registro
 
 - **Obriga parada:** decisão de arquitetura ou de requisito, que chega **sempre** pelo `pendencia=`
-  do retorno do executor ou pela recomendação `escalar` do laudo (`B1`), roteada ao planejador —
+  do retorno do executor ou pela recomendação `escalar` do laudo (`B1`), roteada ao **consultor de plano** —
   inclusive achado que invalida a rota do plano; executor `blocked` por `motivo=premissa` (`A3b`); reprovação depois da
-  última retentativa (`A7`); plano não-pronto (`B3`).
+  última retentativa (`A7`); plano não-pronto (`B3`). Escalonamento ao consultor **não** encerra a janela: encerra-a só a classificação `estratégico` que ele devolver.
 - **Segue com registro:** ressalva não bloqueante e achado fora de escopo com rota, pelo laudo
   (`A8`); e o `blocked` por `motivo=dependencia` (`A3a`), que reordena a fila e segue para a
   próxima elegível.
@@ -228,7 +243,7 @@ aqui.
 
 Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:
 
-- Plano conduzido e regra que encerrou a janela (`A1`..`A9` ou `B1`..`B4`, pelo identificador).
+- Plano conduzido e regra que encerrou a janela (`A1`..`A9`, inclusive `A8a`, ou `B0`..`B4`, pelo identificador).
 - Tarefas fechadas na janela, cada uma com identificador, desdobramento e caminho do RDO.
 - Contadores finais: tarefas fechadas na janela e consumo acumulado, como medida para a série.
 - **Pendências ao dono**, uma a uma, com o fato medido que a originou, o que cada opção implica, o

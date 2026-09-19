@@ -9,11 +9,11 @@ por máquina" — replicada aqui igual, `DB-17`/`DB-18`):
 
 - plano: linha 1 `# P-NNNN — <título>`; nas 20 primeiras linhas `**Status:** \\`<estado>\\`` e
   `**Prefixo das tarefas no diário:** \\`<PFX>-T<n>\\``; opcional `**Ordem de execução:** ID → ID`.
-- tarefa de plano: `### <ID> — <título> [<modelo>[ + dono] · classe <classe>[ · teto <n>]]`,
+- tarefa de plano: `### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe <classe>[ · teto <n>]]`,
   `<ID>` = `(?:[A-Z0-9]+-)?T[0-9]+[a-z]?` (`DB-14`); ` + dono` e ` · teto <n>` são tolerados e
   ignorados, nunca violação (`DB-20`).
 - tíquete: `## TK-<n> — <título>` (nível 2, sem bracket).
-- subtarefa de tíquete: `### TK-<n><letra> — <título> [<modelo> · classe <classe>]`, dentro da
+- subtarefa de tíquete: `### TK-<n><letra> — <título> [<modelo>[ · esforço <esforço>] · classe <classe>]`, dentro da
   seção do tíquete-pai — mesma gramática de bracket da tarefa de plano (`DB-17`).
 - campos: 1º bullet `- **Status:** \\`<estado>\\` · AAAA-MM-DD[ · <razão>]`; opcional
   `- **Depende de:** ...`.
@@ -31,6 +31,8 @@ violação) e ``python .claude/tools/backlog.py show <ID> [--repo <caminho>]``. 
 from __future__ import annotations
 
 import argparse
+import datetime
+import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -46,7 +48,11 @@ _VOCAB_ITEM = _VOCAB_BASE
 
 _MODELOS = "Opus|Sonnet|Haiku"
 _CLASSES = "mecanica|implementacao|comportamental|investigacao|redacao"
-_BRACKET = rf"\[({_MODELOS})(?: \+ dono)? · classe ({_CLASSES})(?: · teto \d+)?\]"
+_ESFORCOS = "low|medium|high|xhigh|max"
+_BRACKET = (
+    rf"\[({_MODELOS})(?: \+ dono)?(?: · esforço (?:{_ESFORCOS}))?"
+    rf" · classe ({_CLASSES})(?: · teto \d+)?\]"
+)
 
 PLANO_HEADER_RE = re.compile(r"^# (P-\d{4}) — (.+)$")
 STATUS_CAMPO_RE = re.compile(r"\*\*Status:\*\* `([a-z-]+)`")
@@ -652,17 +658,35 @@ def _tier(c: Candidato) -> int:
     return 2
 
 
+def _mensagem_e2(pares: list[tuple["Plano | Item", "Plano | Item"]]) -> str | None:
+    """E-2 (DB-37, DB-40) — item ou pai sem a linha de `Status` recusa a seleção/transição.
+
+    `pares` é a lista de (item, pai) sob avaliação; a mensagem cobre a união dos dois
+    papéis, um `<ID>` distinto por vez, em ordem alfabética crescente, separados por
+    `, `. Residência única do cálculo de E-2 — `next`, `status` e `start` reusam esta
+    função, nenhum a reescreve (`DB-40`)."""
+    ids = sorted({obj.id for item, pai in pares for obj in (item, pai) if obj.status is None})
+    if not ids:
+        return None
+    return ", ".join(f"linha de status ausente para {id_}" for id_ in ids)
+
+
+def _eh_elegivel(modelo: Modelo, c: Candidato) -> bool:
+    """§2.5 item 3 — elegibilidade de um candidato."""
+    return (
+        c.item.status == "ready"
+        and c.pai.status in ("ready", "in-progress")
+        and (not c.item.depende_de or all(_status_do_id(modelo, d) == "done" for d in c.item.depende_de))
+    )
+
+
 def selecionar_next(modelo: Modelo) -> SelecaoNext:
     """§2.5 — ordem total de seleção. Somente-leitura: só lê `modelo`."""
     candidatos = _aplicar_diretiva(modelo, _candidatos(modelo))
 
-    ids_sem_status = sorted(
-        {c.item.id for c in candidatos if c.item.status is None}
-        | {c.pai.id for c in candidatos if c.pai.status is None}
-    )
-    if ids_sem_status:
-        ids = ", ".join(f"linha de status ausente para {id_}" for id_ in ids_sem_status)
-        return SelecaoNext(3, None, ids)
+    mensagem_e2 = _mensagem_e2([(c.item, c.pai) for c in candidatos])
+    if mensagem_e2 is not None:
+        return SelecaoNext(3, None, mensagem_e2)
 
     em_progresso = [c for c in candidatos if c.item.status == "in-progress"]
     if len(em_progresso) == 1:
@@ -674,13 +698,7 @@ def selecionar_next(modelo: Modelo) -> SelecaoNext:
         ids = ", ".join(sorted(c.item.id for c in em_progresso))
         return SelecaoNext(3, None, f"dois ou mais itens in-progress: {ids}")
 
-    elegiveis = [
-        c
-        for c in candidatos
-        if c.item.status == "ready"
-        and c.pai.status in ("ready", "in-progress")
-        and (not c.item.depende_de or all(_status_do_id(modelo, d) == "done" for d in c.item.depende_de))
-    ]
+    elegiveis = [c for c in candidatos if _eh_elegivel(modelo, c)]
 
     if not elegiveis:
         n_blocked = sum(1 for c in candidatos if c.item.status == "blocked")
@@ -865,6 +883,207 @@ def renderizar_next(
 
 
 # --------------------------------------------------------------------------- #
+# status / start / diretiva — transição e projeções (BKL-T4, §2.7 e §3 de
+# docs/plans/P-0739-backlog-instrumento.md). As funções recebem `repo`/`modelo` e
+# caminhos já resolvidos por parâmetro e nunca leem `sys.argv` (DB-1).
+# --------------------------------------------------------------------------- #
+
+_TRANSICOES: dict[tuple[str, str], bool] = {
+    ("triage", "ready"): True,
+    ("triage", "cancelled"): True,
+    ("ready", "in-progress"): True,
+    ("ready", "blocked"): True,
+    ("ready", "cancelled"): True,
+    ("blocked", "ready"): True,
+    ("blocked", "cancelled"): True,
+    ("in-progress", "review"): True,
+    ("in-progress", "blocked"): True,
+    ("review", "done"): True,
+    ("review", "in-progress"): True,
+    ("review", "blocked"): True,
+}
+
+
+@dataclass
+class ResultadoStatus:
+    exit_code: int
+    mensagem: str | None = None
+    arquivos: list[str] = field(default_factory=list)
+
+
+def _pai_do_alvo(modelo: Modelo, alvo: "Plano | Item") -> tuple["Plano | Item", str]:
+    """Pai para as projeções de `<done>/<total>` e do bloco `Fila corrente` (DB-36,
+    DB-33): plano e tiquete são pai de si mesmos; tarefa é filha do plano `alvo.pai`;
+    subtarefa é filha do tiquete `alvo.pai`."""
+    if isinstance(alvo, Plano):
+        return alvo, "plano"
+    if alvo.tipo == "tiquete":
+        return alvo, "tiquete"
+    if alvo.tipo == "tarefa":
+        for plano in modelo.planos:
+            if plano.id == alvo.pai:
+                return plano, "plano"
+    if alvo.tipo == "subtarefa":
+        for tiquete in modelo.tiquetes:
+            if tiquete.id == alvo.pai:
+                return tiquete, "tiquete"
+    raise ValueError(f"pai não localizado para {alvo.id}")
+
+
+def _proxima_do_pai(modelo: Modelo, pai: "Plano | Item", tipo_pai: str) -> str | None:
+    filhos = pai.tarefas if tipo_pai == "plano" else pai.filhos
+    candidatos_pai = [Candidato(item=f, pai=pai, tipo_pai=tipo_pai) for f in filhos]
+    elegiveis = [c for c in candidatos_pai if _eh_elegivel(modelo, c)]
+    if not elegiveis:
+        return None
+    ordenados = sorted(elegiveis, key=lambda c: (_tier(c), _ordem_interna(c)))
+    return ordenados[0].item.id
+
+
+def _bloco_fila_corrente(modelo: Modelo) -> list[str]:
+    """§2.3 (DB-33) — um bullet por pai vivo, na ordem das linhas do índice."""
+    linhas: list[str] = []
+    for linha_idx in modelo.indice:
+        alvo: "Plano | Item | None" = None
+        tipo = "plano"
+        for plano in modelo.planos:
+            if plano.id == linha_idx.id:
+                alvo, tipo = plano, "plano"
+                break
+        if alvo is None:
+            for tiquete in modelo.tiquetes:
+                if tiquete.id == linha_idx.id:
+                    alvo, tipo = tiquete, "tiquete"
+                    break
+        if alvo is None:
+            continue
+        filhos = alvo.tarefas if tipo == "plano" else alvo.filhos
+        if not any(f.status not in ("done", "cancelled") for f in filhos):
+            continue
+        done, total = _done_total(filhos)
+        proxima = _proxima_do_pai(modelo, alvo, tipo)
+        proxima_txt = f"próxima `{proxima}`" if proxima else "próxima —"
+        linhas.append(f"- `{alvo.id}` (`{alvo.status}`, {done}/{total}): {proxima_txt}")
+    return linhas
+
+
+def _escrever_atomico(caminho: Path, linhas: list[str]) -> None:
+    """DB-1 — temp no mesmo diretório + `os.replace`, num ato só."""
+    texto = "\n".join(linhas) + "\n"
+    tmp = caminho.with_name(caminho.name + ".tmp")
+    tmp.write_text(texto, encoding="utf-8")
+    os.replace(tmp, caminho)
+
+
+def _inserir_nota(linhas: list[str], alvo: Item, linha_nota: str) -> None:
+    faixa = _range_notas(alvo)
+    if faixa is not None:
+        _, fim_linha = faixa
+        linhas.insert(fim_linha, linha_nota)
+        return
+    pos_insercao = alvo.linha_fim
+    while pos_insercao > alvo.linha_header and linhas[pos_insercao - 1].strip() == "":
+        pos_insercao -= 1
+    linhas[pos_insercao:pos_insercao] = ["- **Notas de execução:**", linha_nota]
+
+
+def transacionar_status(
+    repo: Path,
+    modelo: Modelo,
+    id_: str,
+    estado: str,
+    razao: str | None = None,
+    nota: str | None = None,
+) -> ResultadoStatus:
+    """§2.7 + §3 — `status`/`start`: transição e escrita atômica das projeções, num ato
+    só. Nenhuma escrita ocorre antes de todas as checagens (E-2, E-3, tabela de §2.7,
+    `blocked` exige `--razao`) passarem."""
+    alvo = _localizar(modelo, id_)
+    if alvo is None:
+        return ResultadoStatus(1, f"id não encontrado: {id_}")
+
+    pai, tipo_pai = _pai_do_alvo(modelo, alvo)
+
+    mensagem_e2 = _mensagem_e2([(alvo, pai)])
+    if mensagem_e2 is not None:
+        return ResultadoStatus(3, mensagem_e2)
+
+    if _posicao_indice(modelo, pai.id) is None:
+        return ResultadoStatus(3, f"linha de índice ausente para {pai.id}")
+
+    atual = alvo.status
+    if (atual, estado) not in _TRANSICOES:
+        return ResultadoStatus(1, f"transição fora da tabela de §2.7: {atual} → {estado} para {id_}")
+
+    if estado == "blocked" and not razao:
+        return ResultadoStatus(1, "blocked exige --razao")
+
+    if estado == "in-progress" and pai is not alvo:
+        irmaos = pai.tarefas if tipo_pai == "plano" else pai.filhos
+        if any(irmao is not alvo and irmao.status == "in-progress" for irmao in irmaos):
+            return ResultadoStatus(1, f"já há item in-progress no mesmo pai: {pai.id}")
+
+    # Checagens concluídas — nenhum arquivo tocado até aqui. Muta o modelo em memória
+    # (mesmos objetos referenciados por `pai.tarefas`/`pai.filhos`) para que done/total,
+    # "próxima" e o bloco `Fila corrente` já reflitam a transição.
+    hoje = datetime.date.today().isoformat()
+    alvo.status = estado
+    alvo.status_razao = razao
+
+    plano_arquivo = alvo.arquivo if (isinstance(alvo, Plano) or alvo.tipo == "tarefa") else None
+    plano_linhas = (repo / plano_arquivo).read_text(encoding="utf-8").splitlines() if plano_arquivo else None
+    diario_linhas = list(modelo.diario_linhas)
+
+    if isinstance(alvo, Plano):
+        idx = alvo.status_linha - 1
+        plano_linhas[idx] = STATUS_CAMPO_RE.sub(f"**Status:** `{estado}`", plano_linhas[idx], count=1)
+    else:
+        sufixo = f" · {razao}" if razao else ""
+        nova_linha = f"- **Status:** `{estado}` · {hoje}{sufixo}"
+        if alvo.tipo == "tarefa":
+            plano_linhas[alvo.status_linha - 1] = nova_linha
+        else:
+            diario_linhas[alvo.status_linha - 1] = nova_linha
+
+    linha_indice_pai = next(l for l in modelo.indice if l.id == pai.id)
+    done, total = _done_total(pai.tarefas if tipo_pai == "plano" else pai.filhos)
+    novo_status_bruto = f"{pai.status} {done}/{total}" if total else pai.status
+    diario_linhas[linha_indice_pai.linha - 1] = (
+        f"| {linha_indice_pai.id} | {linha_indice_pai.titulo} | {novo_status_bruto} | {linha_indice_pai.ancora} |"
+    )
+
+    if nota is not None and isinstance(alvo, Item):
+        linha_nota = f"  - {hoje} `{estado}` — {nota}"
+        _inserir_nota(plano_linhas if alvo.tipo == "tarefa" else diario_linhas, alvo, linha_nota)
+
+    ini = diario_linhas.index("<!-- fila:gerada -->")
+    fim = diario_linhas.index("<!-- /fila:gerada -->", ini)
+    diario_linhas[ini + 1 : fim] = _bloco_fila_corrente(modelo)
+
+    arquivos_tocados = [modelo.diario_arquivo]
+    _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
+    if plano_arquivo is not None:
+        _escrever_atomico(repo / plano_arquivo, plano_linhas)
+        arquivos_tocados.append(plano_arquivo)
+
+    return ResultadoStatus(0, None, sorted(set(arquivos_tocados)))
+
+
+def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoStatus:
+    """§3 — `diretiva`: reescreve a linha `**Diretiva de priorização:**`."""
+    diario_linhas = list(modelo.diario_linhas)
+    nova_linha = f"**Diretiva de priorização:** {texto}"
+    for i, linha in enumerate(diario_linhas):
+        if DIRETIVA_RE.match(linha):
+            diario_linhas[i] = nova_linha
+            break
+    else:
+        diario_linhas.insert(1, nova_linha)
+    _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
+    return ResultadoStatus(0, None, [modelo.diario_arquivo])
+
+
+# --------------------------------------------------------------------------- #
 # CLI — só embrulha (DB-1)
 # --------------------------------------------------------------------------- #
 
@@ -892,6 +1111,21 @@ def main(argv: list[str] | None = None) -> int:
     next_parser.add_argument("--repo", default=None)
     next_parser.add_argument("--memoria-inbox", default=None)
     next_parser.add_argument("--inbox-planos", default=None)
+
+    status_parser = subparsers.add_parser("status", help="Transição de status + projeções atômicas.")
+    status_parser.add_argument("id")
+    status_parser.add_argument("estado")
+    status_parser.add_argument("--razao", default=None)
+    status_parser.add_argument("--nota", default=None)
+    status_parser.add_argument("--repo", default=None)
+
+    start_parser = subparsers.add_parser("start", help="= status <ID> in-progress.")
+    start_parser.add_argument("id")
+    start_parser.add_argument("--repo", default=None)
+
+    diretiva_parser = subparsers.add_parser("diretiva", help="Reescreve a linha de diretiva de priorização.")
+    diretiva_parser.add_argument("texto")
+    diretiva_parser.add_argument("--repo", default=None)
 
     args = parser.parse_args(argv)
 
@@ -927,6 +1161,22 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(selecao.mensagem, file=sys.stderr if selecao.exit_code == 3 else sys.stdout)
         return selecao.exit_code
+
+    if args.comando in ("status", "start"):
+        estado = args.estado if args.comando == "status" else "in-progress"
+        razao = args.razao if args.comando == "status" else None
+        nota = args.nota if args.comando == "status" else None
+        resultado = transacionar_status(repo, modelo, args.id, estado, razao=razao, nota=nota)
+        if resultado.exit_code == 0:
+            print(f"{args.comando}: {args.id} → {estado}. arquivos tocados: {', '.join(resultado.arquivos)}")
+            return 0
+        print(resultado.mensagem, file=sys.stderr if resultado.exit_code == 3 else sys.stdout)
+        return resultado.exit_code
+
+    if args.comando == "diretiva":
+        resultado = transacionar_diretiva(repo, modelo, args.texto)
+        print(f"diretiva atualizada. arquivos tocados: {', '.join(resultado.arquivos)}")
+        return 0
 
     parser.error(f"comando desconhecido: {args.comando}")
     return 2

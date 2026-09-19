@@ -94,6 +94,11 @@ repositório, o que deve voltar (caminho:linha, assinatura, condição de seleç
   real** pede um dossiê com uma **saída real** do instrumento (≤ 40 linhas). A verificação anterior
   responde se o instrumento **roda**; esta responde se o que ele imprime **serve**: saída sem poder
   discriminante é tarefa do plano, não achado da revisão (2026-09-16, `RP-3`).
+- **Todo comando que vai aparecer numa linha de `Verificação` com literal esperado entra na campanha
+  como pergunta fechada**: "rode `<comando exato>` no repositório e devolva o stdout literal e o
+  exit code" (≤ 40 linhas). Vale para ferramenta externa do dia a dia — `git`, `pytest`, `pwsh` —,
+  não só para instrumento do kit: o erro que custou a `LM-T1` do `P-0740` foi escrever a saída de
+  `git check-ignore -v` e de `git status --porcelain` de memória (2026-09-18, `RP-2`).
 
 Orçamento: no máximo **duas** rodadas de levantamento. O que continuar desconhecido depois da
 segunda é, por definição, investigação — e vira tarefa, não terceira rodada.
@@ -235,6 +240,34 @@ superfície inteira **no mesmo ato** (G-SURFACE); rebase que absorve fase de out
    `Arquivos-alvo` carrega um caminho por bullet e nenhum outro literal entre crases; arquivo citado
    para ser evitado vai para `Não fazer`; trecho de código vai para `Texto novo, literal`
    (2026-09-16, `RP-3`).
+10. **Entregável que cria, versiona, move ou apaga arquivo é confrontado com a regra de
+   configuração vigente do repositório antes de publicar** — `.gitignore`, `.gitattributes`, filtro
+   de hook, allowlist de permissões, exclusão do instrumento que vai listar o artefato. A regra
+   vigente decide se o arquivo **existe para a máquina que vai julgá-lo**: entregável que a
+   contradiz não é executável, e o executor frio descobre isso na primeira leitura, para e devolve
+   `premissa`. Duas consequências de autoria: (i) o texto da regra vigente entra no card como fato
+   e, quando a rota exige mudá-la, o arquivo de configuração entra **nominalmente** nos
+   `Arquivos-alvo`; (ii) o critério de pronto discrimina o mundo **com** a mudança do mundo **sem**
+   ela — "o diretório existe", "o arquivo está lá" passam igual nos dois e são fixture errada, ao
+   passo que `git check-ignore` sobre o caminho exato separa. Caso medido: o `AE-2` do `P-0740`
+   mandou versionar `.claude/estado/` com `.gitkeep` contra um `.gitignore` que excluía o
+   diretório inteiro — 61,8k tk de triagem, nenhum arquivo tocado (2026-09-18, `RP-1`).
+11. **Saída esperada de comando é fato observado, nunca deduzida do que você sabe da ferramenta.**
+   Você não roda comando — logo, todo literal que uma linha de `Verificação` afirma ("imprime X",
+   "não imprime nada", "sai 0") vem de uma execução **medida**: dossiê pedido na fase 1, achado da
+   execução ou evidência de RDO já registrada. Sem execução medida, o aceite se reescreve como
+   efeito **no arquivo-alvo** (linha literal presente ou ausente, verificável por busca), que não
+   depende da semântica de flag de ferramenta externa. Duas regras derivadas, ambas de caso medido:
+   (i) **pergunta binária usa a flag binária e o exit code** — `git check-ignore -q <path>` + exit
+   code responde "está ignorado?"; a flag de **diagnóstico** (`-v`, `--stat`, `--porcelain` sem
+   `-uall`) responde outra pergunta e engana quem a lê como binária: com `-v` o git imprime o padrão
+   decisivo **inclusive quando é a negação que desfaz o ignore**, e sai `0`; `--porcelain` sem
+   `-uall` **colapsa** diretório não rastreado. (ii) **Nenhum card exige "verde" de instrumento que
+   a tarefa não pode deixar verde** — lint de corpus que a tarefa não toca, com violações
+   pré-existentes, sai vermelho faça o executor o que fizer, e o aceite vira impossível. Caso
+   medido: a `LM-T1` do `P-0740` teve a entrega inteira produzida e devolvida `blocked premissa`
+   porque duas das cinco verificações eram insatisfazíveis por comportamento documentado do `git`
+   (2026-09-18, `RP-2`, `AE-4`).
 
 ### Fase 5 — Registro e parada
 

@@ -120,6 +120,44 @@ else {
         $onlyOnDiskSkills = @($diskSkills | Where-Object { $_ -notin $readmeSkills })
         foreach ($s in $onlyInReadmeSkills) { $errors.Add("Skill na tabela de 'Anatomia do kit' sem SKILL.md correspondente em .claude/skills/: '$s'") }
         foreach ($s in $onlyOnDiskSkills) { $errors.Add("Skill '$s' (.claude/skills/$s/SKILL.md) não aparece na tabela de Skills de 'Anatomia do kit'.") }
+
+        # --- 5. Invariante de contagem: a frase 'O kit são ...' == contagem do disco
+        $numeralMap = @{
+            'zero' = 0; 'um' = 1; 'dois' = 2; 'três' = 3; 'quatro' = 4; 'cinco' = 5
+            'seis' = 6; 'sete' = 7; 'oito' = 8; 'nove' = 9; 'dez' = 10
+            'onze' = 11; 'doze' = 12; 'treze' = 13; 'quatorze' = 14; 'quinze' = 15
+            'dezesseis' = 16; 'dezessete' = 17; 'dezoito' = 18; 'dezenove' = 19; 'vinte' = 20
+        }
+        $countLine = $secKit | Where-Object { $_ -match '^O kit são ' } | Select-Object -First 1
+        $agentToken = $null
+        $skillToken = $null
+        if ($countLine -match '(\S+) agentes') { $agentToken = $Matches[1] }
+        if ($countLine -match '(\S+) skills') { $skillToken = $Matches[1] }
+
+        $agentNum = $null
+        if ($null -ne $agentToken) {
+            if ($agentToken -match '^\d+$') { $agentNum = [int]$agentToken }
+            elseif ($numeralMap.ContainsKey($agentToken)) { $agentNum = $numeralMap[$agentToken] }
+        }
+        $skillNum = $null
+        if ($null -ne $skillToken) {
+            if ($skillToken -match '^\d+$') { $skillNum = [int]$skillToken }
+            elseif ($numeralMap.ContainsKey($skillToken)) { $skillNum = $numeralMap[$skillToken] }
+        }
+
+        if ($null -eq $agentNum) {
+            $errors.Add("Frase de contagem de 'Anatomia do kit' ausente ou com numeral fora do vocabulário (dígito ou por extenso até vinte): '$agentToken'.")
+        }
+        elseif ($agentNum -ne $diskAgents.Count) {
+            $errors.Add("Divergência na contagem de agentes: a frase de 'Anatomia do kit' declara $agentNum vs $($diskAgents.Count) agente(s) em .claude/agents/.")
+        }
+
+        if ($null -eq $skillNum) {
+            $errors.Add("Frase de contagem de 'Anatomia do kit' ausente ou com numeral fora do vocabulário (dígito ou por extenso até vinte): '$skillToken'.")
+        }
+        elseif ($skillNum -ne $diskSkills.Count) {
+            $errors.Add("Divergência na contagem de skills: a frase de 'Anatomia do kit' declara $skillNum vs $($diskSkills.Count) skill(s) em .claude/skills/.")
+        }
     }
 }
 

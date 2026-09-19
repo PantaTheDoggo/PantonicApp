@@ -16,6 +16,35 @@ reescritas nem revogadas.
 
 ## [Não lançado]
 
+- Projeções canônicas do kit em dia com as definições de agente em disco: `.claude/README.md`
+  regenerado por `kit_check -Mode generate` e a tabela de Agentes de `README.md` passa a listar
+  o `pantonic-consultant`. `check-drift` e `check-readme.ps1` voltam a exit 0.
+- `GOVERNANCA.md` §7 item 17 (`G-REPLAN`): a cláusula do **segundo bloqueio `premissa`** deixa de se
+  julgar pela contagem e passa a se julgar pelo **objeto** do bloqueio — "existe entrega que
+  satisfaz o entregável do card sob as decisões vigentes?": não existe → bloqueio de rota → plano
+  `superseded`; existe → bloqueio **de aceite** → a rodada corrige a redação. Dois tetos anti-abuso
+  (terceiro bloqueio na mesma tarefa; segundo bloqueio de aceite sobre a mesma verificação já
+  reescrita). A saída (c) ganhou o ramo **`review`** para a tarefa cuja entrega material já está na
+  árvore, e a transição `blocked` → `review` (autoria do planejador, gatilho 1) entrou na tabela de
+  transições de `.claude/skills/diario-de-obras/SKILL.md`. Motivo: a `LM-T1` do `P-0740` voltou
+  `blocked premissa` pela segunda vez com a entrega inteira produzida e verde — a cláusula antiga
+  mandaria descartar o plano (`RP-2`, `AE-4`, `DM-12`).
+- `pantonic-planner`: lição da rodada `RP-2` do `P-0740` publicada no protocolo — fase 4, **item 11
+  (novo)**: saída esperada de comando é fato **observado**, nunca deduzida do que se sabe da
+  ferramenta; pergunta binária usa a flag binária e o exit code (não a flag de diagnóstico); nenhum
+  card exige "verde" de instrumento que a tarefa não pode deixar verde. Mais o gatilho
+  correspondente na fase 1 (todo comando de `Verificação` com literal esperado entra na campanha
+  como pergunta ao scout). Motivo: `git check-ignore -v` reporta o padrão decisivo mesmo quando é
+  negação e `git status --porcelain` sem `-uall` colapsa diretório não rastreado — duas verificações
+  impossíveis publicadas de memória (`AE-4`).
+- `pantonic-planner`: lição da rodada `RP-1` do `P-0740` publicada no protocolo — fase 4, **item 10
+  (novo)**: entregável que cria, versiona, move ou apaga arquivo é confrontado com a regra de
+  configuração vigente do repositório (`.gitignore`, `.gitattributes`, filtro de hook, allowlist)
+  **antes** de publicar; quando a rota exige mudá-la, o arquivo de configuração entra nominalmente
+  nos `Arquivos-alvo`, e o critério de pronto tem de discriminar o mundo com a mudança do mundo sem
+  ela. Motivo: a `LM-T1` mandava versionar `.claude/estado/` com `.gitkeep` contra um `.gitignore`
+  que excluía o diretório inteiro — o executor parou em 61,8k tk sem tocar arquivo (`AE-2`).
+
 - `pantonic-planner`: lição da rodada `RP-7` do `P-0739` publicada no protocolo — fase 4 item 7
   passa a exigir **um TF por termo de sujeito composto** ("A ou B": item ou pai, plano ou tíquete),
   o fechamento **na norma** dos casos que só o sujeito composto cria (mesmo referente alcançado por

@@ -288,6 +288,125 @@ def test_tf_close_gera_rdo_completo_a_partir_do_plano_pacote_e_consumo(tmp_path)
     assert gerados[0].name in indice
 
 
+def test_tf_close_tokens_k_decimal_grava_sem_conversao(tmp_path):
+    """TF (`P-0740` `LM-T1`, `DM-11`): `--tokens-k` aceita decimal de uma casa (`type=float`) e o
+    grava no RDO sem conversão — `203.7` sai idêntico no documento."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(_argv_close(tmp_path, **{"--tokens-k": "203.7"}))
+
+    assert exit_code == 0
+    gerados = [p for p in tmp_path.glob("*.md") if p.name != "INDEX.md"]
+    conteudo = gerados[0].read_text(encoding="utf-8")
+    assert "203.7" in conteudo
+
+
+def test_tr_close_tokens_k_inteiro_grava_uma_casa_decimal_sempre(tmp_path):
+    """TR (`DM-11`): `--tokens-k 80` grava `80.0` — uma casa decimal sempre, o que discrimina da
+    regra concorrente `str(int)`, que daria `80` sem o `.0`."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(_argv_close(tmp_path, **{"--tokens-k": "80"}))
+
+    assert exit_code == 0
+    gerados = [p for p in tmp_path.glob("*.md") if p.name != "INDEX.md"]
+    conteudo = gerados[0].read_text(encoding="utf-8")
+    assert "80.0" in conteudo
+
+
+def test_tf_close_tokens_k_negativo_recusa(tmp_path, capsys):
+    """TF (`P-0740` `LM-T1a`, `DM-15`): `--tokens-k -5` com `--plano` apontando arquivo
+    **inexistente** sai exit 1 com `tokens_k: '-5' é negativo` no stderr — a regra concorrente
+    (medida na `RP-5`) também saía exit 1, mas com `plano: arquivo não encontrado`; quem
+    discrimina é a mensagem, provando que a guarda de domínio corre antes da checagem de
+    `--plano` (`DM-15` (iii))."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(
+        _argv_close(tmp_path, **{"--plano": "NAO-EXISTE.md", "--tokens-k": "-5"})
+    )
+
+    assert exit_code == 1
+    saida = capsys.readouterr()
+    assert "rdo: FALHOU - tokens_k: '-5' é negativo" in saida.err
+    assert [p for p in tmp_path.glob("*.md")] == []
+
+
+def test_tf_close_tokens_k_nao_finito_recusa(tmp_path, capsys):
+    """TF (`DM-15`): `--tokens-k nan` sai exit 1 com `tokens_k: 'nan' não é finito` — a regra
+    concorrente (`argparse` `type=float`) convertia `nan` sem reclamar e a execução seguia até a
+    checagem de `--plano`."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(
+        _argv_close(tmp_path, **{"--plano": "NAO-EXISTE.md", "--tokens-k": "nan"})
+    )
+
+    assert exit_code == 1
+    saida = capsys.readouterr()
+    assert "rdo: FALHOU - tokens_k: 'nan' não é finito" in saida.err
+    assert [p for p in tmp_path.glob("*.md")] == []
+
+
+def test_tf_close_tool_uses_negativo_recusa(tmp_path, capsys):
+    """TF (`DM-15`): `--tool-uses -1` sai exit 1 com `tool_uses: '-1' é negativo` — a regra
+    concorrente (`argparse` `type=int`) convertia e a execução seguia."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(_argv_close(tmp_path, **{"--tool-uses": "-1"}))
+
+    assert exit_code == 1
+    saida = capsys.readouterr()
+    assert "rdo: FALHOU - tool_uses: '-1' é negativo" in saida.err
+    assert [p for p in tmp_path.glob("*.md")] == []
+
+
+def test_tf_close_tokens_k_nao_numerico_recusa_com_exit_1(tmp_path, capsys):
+    """TF (`DM-15`): `--tokens-k abc` sai exit **1** com `tokens_k: 'abc' não é numérico` — a
+    regra concorrente (`argparse` `type=float`) saía exit **2** com o bloco de `usage`; é esta
+    linha que tranca a remoção do `type=`."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(_argv_close(tmp_path, **{"--tokens-k": "abc"}))
+
+    assert exit_code == 1
+    saida = capsys.readouterr()
+    assert "rdo: FALHOU - tokens_k: 'abc' não é numérico" in saida.err
+    assert [p for p in tmp_path.glob("*.md")] == []
+
+
+def test_tf_close_duracao_s_decimal_aceita_e_grava_uma_casa(tmp_path):
+    """TF (`DM-15`, `DM-11`): sobre o plano de fixture que os testes de `close` já usam,
+    `--duracao-s 1020.6` — o literal que o hook `SubagentStop` emite — fecha o RDO normalmente e
+    o documento contém `1020.6`. A regra concorrente (`argparse` `type=int`) saía exit 2,
+    `invalid int value: '1020.6'`."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(_argv_close(tmp_path, **{"--duracao-s": "1020.6"}))
+
+    assert exit_code == 0
+    gerados = [p for p in tmp_path.glob("*.md") if p.name != "INDEX.md"]
+    conteudo = gerados[0].read_text(encoding="utf-8")
+    assert "1020.6" in conteudo
+
+
+def test_tr_close_consumo_valido_segue_igual(tmp_path):
+    """TR: o caminho feliz de hoje (`--tool-uses 5 --tokens-k 80 --duracao-s 300`) continua
+    fechando o RDO, com `80.0` e `300` legíveis no documento — uma guarda escrita com `>` no
+    lugar de `>=` derrubaria o zero e quebraria este caminho."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(
+        _argv_close(tmp_path, **{"--tool-uses": "5", "--tokens-k": "80", "--duracao-s": "300"})
+    )
+
+    assert exit_code == 0
+    gerados = [p for p in tmp_path.glob("*.md") if p.name != "INDEX.md"]
+    conteudo = gerados[0].read_text(encoding="utf-8")
+    assert "80.0" in conteudo
+    assert "300" in conteudo
+
+
 def _escrever_plano_sintetico(caminho: Path, cabecalho: str) -> None:
     caminho.write_text(
         "# Plano de teste\n\n"
@@ -707,3 +826,33 @@ def test_tr_laudo_recusa_alvo_fora_dos_tres_e_linha_com_pipe(tmp_path):
     )
     assert exit_pipe != 0
     assert not laudos_dir_pipe.exists() or list(laudos_dir_pipe.glob("*.md")) == []
+
+
+def test_tf_rdo_3campos():
+    """TF da LM-T4a: `_HEADER_BRACKET_RE` aceita o cabeçalho de três campos (`DM-5`), com o campo
+    `esforço` opcional entre modelo e classe. Concorrente: com a gramática de hoje o match é
+    `None`, e é esse `None` que leva `extrair_dossie` ao ramo legado e produz o exit 1 do `AE-5`."""
+    rdo = _load_rdo()
+
+    match = rdo._HEADER_BRACKET_RE.match(
+        "### XX-T1 — Título [Sonnet · esforço medium · classe implementacao]"
+    )
+
+    assert match is not None
+    assert match.group("modelo") == "Sonnet"
+    assert match.group("classe") == "implementacao"
+
+
+def test_tr_rdo_2campos():
+    """TR da LM-T4a: `_HEADER_BRACKET_RE` continua aceitando o cabeçalho de dois campos (sem
+    `esforço`) — o corpus inteiro de planos vivos está nessa forma. Concorrente: com o campo
+    `esforço` implementado como obrigatório, esta linha passaria a dar `None`."""
+    rdo = _load_rdo()
+
+    match = rdo._HEADER_BRACKET_RE.match(
+        "### XX-T2 — Título [Opus + dono · classe investigacao]"
+    )
+
+    assert match is not None
+    assert match.group("modelo") == "Opus"
+    assert match.group("classe") == "investigacao"

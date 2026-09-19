@@ -757,7 +757,7 @@ registrado, com motivo — nunca erosão silenciosa.
 
 > Fonte da verdade: `.claude/README.md`
 
-O kit são oito agentes, onze skills, quatro verificadores executáveis e a declaração de projeções,
+O kit são nove agentes, onze skills, quatro verificadores executáveis e a declaração de projeções,
 que viajam juntos para todo projeto consumidor. O índice abaixo é derivado do conteúdo real do diretório e verificado por script
 nos dois sentidos — item listado aqui sem arquivo no disco, e arquivo no disco sem item aqui, são as
 duas falhas.
@@ -769,6 +769,7 @@ duas falhas.
 | `pantonic-planner` | Opus | Produzir os quatro artefatos iniciais ou decompor um procedimento complexo em tarefas atômicas. Não implementa. |
 | `pantonic-executor` | Sonnet | Implementar **uma** tarefa atômica por contexto, com TDD e guardrails. Não replaneja escopo. |
 | `pantonic-reviewer` | Opus | Julgar a entrega de **uma** tarefa contra o dossiê dela, marcar as sete dimensões da rubrica e emitir o laudo pelo gerador. Não corrige o que aponta. |
+| `pantonic-consultant` | Opus | Consultor de **um** plano em execução: instanciado uma vez, mantido de standby com o cenário inteiro e acionado a cada escalonamento para desbloquear impedimento de executor e reparar o modelo funcional do plano. Não implementa entrega, não julga e não commita. |
 | `pantonic-scout` | Haiku | Buscas, greps e leitura de codebase e documentos; devolve dossiê compacto para preservar o contexto dos caros. |
 | `pantonic-auditor-arch` | Opus | Auditoria de clean architecture **e DDD**: checklist de desvios de camada e de modelagem de domínio, com ações de recuperação. Não altera código. |
 | `pantonic-auditor-cleancode` | Sonnet | Auditoria de clean code: code smells, coesão e acoplamento. Não altera código. |

@@ -1708,7 +1708,7 @@ real. Teto de linhas é instrumentação (`DU-14`), não comando.
   migrar os documentos vivos (é a `BKL-T6`).
 
 ### BKL-T4 — `status`, `start`, `diretiva`: transição e projeções [Sonnet · classe implementacao]
-- **Status:** `ready` · 2026-09-15 · restrições, `Não fazer` e contingências autorados pela `RP-6`
+- **Status:** `done` · 2026-09-15 · fechada 2026-09-18 (`ressalva` 85%, bloqueante `nenhuma`, RDO `docs/RDO/P-0739-BKL-T4-status-start-diretiva-transicao-e-projecoes.md`; ressalva roteada como `AE-10`) · restrições, `Não fazer` e contingências autorados pela `RP-6`
   (2026-09-18) a partir do achado 1 do `AE-7`; `Depende de` e a forma da mensagem de E-2 emendados
   pela `RP-7` (2026-09-18, `DB-40`, `DB-42`).
 - **Depende de:** `BKL-T3`, `BKL-T3a`, `BKL-T3b`; decisões `DB-33`, `DB-36` (forma do bullet por pai
@@ -2941,3 +2941,35 @@ não commitadas**, e o recorte `--desde 6d7433c` trouxe **33 arquivos tocados pa
 Enquanto o plano acumular entregas sem commit, o custo de revisão por tarefa cresce com o número de
 tarefas anteriores em aberto. Commitar é **ato do dono**, não decisão do planejamento — apresentado
 no relatório de encerramento da janela.
+
+**Checkpoint de orquestração (2026-09-18, janela nova):** Descoberto/decidido: dono decidiu sobre `AE-9` — seguir para `BKL-T4` sem abrir `RP-8`; commit das 7 entregas `BKL-T2a`..`BKL-T3b` já estava feito em `428246c` (17:57:52) antes desta janela abrir — o texto de `Fila corrente` que dizia "não commitadas" estava desatualizado, não a árvore (`git status` limpo). · Falta: despachar `BKL-T4` (não iniciada nesta janela). · Tocados: `docs/DIARIO_DE_OBRAS.md` (duas correções na `Fila corrente`: resolução do `AE-9`/commit, base de recorte `--desde 428246c`). · Próximo passo: delegar `BKL-T4` ao `pantonic-executor`, dossiê em `docs/plans/P-0739-backlog-instrumento.md:1710-1791` (re-derivar âncora no despacho, item 3 do gate). · Não refazer: drenagem dos dois inboxes (vazios/já marcados), decisão do dono sobre `AE-9`, verificação do commit `428246c`.
+
+- **`AE-10` (2026-09-18, `BKL-T4`, regra `B1` do `scrum-master`) — `transacionar_status` depende de
+  marcadores que a `BKL-T6` ainda não inseriu no diário vivo.** Achado do laudo (dimensão `dossiê`,
+  ressalva não bloqueante, veredito 85% `ressalva`, bloqueante `nenhuma`): a função chama
+  `diario_linhas.index('<!-- fila:gerada -->')` **sem guarda**, e o `docs/DIARIO_DE_OBRAS.md` real
+  ainda não tem os marcadores — a inserção deles é o item (a) da `BKL-T6`. Enquanto a migração não
+  rodar, `status` e `start` estouram `ValueError` contra o diário vivo em vez de sair `exit 1`/
+  `exit 3` como a tabela de §2.7 prescreve. Não afeta a suíte (os TF rodam sobre cópia de fixture
+  no `tmp_path`, onde os marcadores existem), por isso a entrega fechou verde e com ressalva.
+  **Rota:** rodada de replanejamento fixando ou a dependência de ordem (`BKL-T6` item (a) antes de
+  qualquer uso de `status`/`start` contra o diário real) ou a guarda com exit code próprio. Achado
+  de ordenação entre tarefas do mesmo plano, portanto matéria de planejamento — não se resolve na
+  execução (`G-REPLAN`).
+- **`AE-11` (2026-09-18, achado do próprio run de aferição do `scrum-master`, sem ação nesta
+  janela).** A `BKL-T4` foi executada como caso-teste para medir o loop de ponta a ponta. Cinco
+  defeitos do instrumento apareceram e estão no relatório de janela; o que toca este plano é um só:
+  a regra `B1` **para a janela sempre que houver `pendencia=`**, sem distinguir pendência
+  substantiva de observação transitória já resolvida. Nesta rodada o `pendencia=` do executor
+  relatava uma falha de teste que era WIP da própria orquestração, corrigida antes da revisão — e
+  ainda assim `B1` encerra a janela. Rota: matéria do plano do `scrum-master`, não deste.
+
+- **`AE-12` (2026-09-18) — este plano fica PARADO até a baseline do `scrum-master` fechar
+  (`DM-9` do `P-0740-loop-de-modulos`).** Nenhuma das 6 tarefas `ready` restantes é delegável neste
+  intervalo, e o `AE-10` **não** abre rodada de replanejamento própria: ele foi absorvido pela
+  `LM-T5` do `P-0740`, que reescreve os 6 cards como módulos coesos sob a gramática nova
+  (`DM-2`..`DM-5`) e resolve a dependência de ordem dentro do reagrupamento. Este plano volta à
+  fila como **fila de módulos**, e fecha em **rodada única** na `LM-T6`. Razão: os 6 cards foram
+  autorados sob a régua atômica; executá-los um a um reproduziria os seis defeitos que o run de
+  aferição de 2026-09-18 mediu (`P-0740` §3).
+

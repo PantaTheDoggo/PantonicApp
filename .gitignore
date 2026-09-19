@@ -4,10 +4,12 @@
 .claude/settings.local.json
 .claude/settings.json
 
-# Estado de sessão do loop autônomo (ex.: tarefa-corrente.json, escrito pelo `scrum-master` no
-# despacho e consumido pelo hook `SubagentStop` — T55) — fato de uma sessão numa máquina, nunca
-# canônico do framework.
-.claude/estado/
+# Slot de estado de sessão do loop autônomo. O diretório é canônico do framework e viaja
+# versionado (`.gitkeep`), para que o Passo 4 do `scrum-master` nunca grave em caminho
+# inexistente; o conteúdo (ex.: tarefa-corrente.json, escrito no despacho e consumido pelo hook
+# `SubagentStop` — T55) é fato de uma sessão numa máquina e nunca se versiona.
+.claude/estado/*
+!.claude/estado/.gitkeep
 
 # Bytecode do Python — a suíte do hub (`tests/`) carrega os verificadores de
 # `.claude/checks/` por caminho, e cada rodada grava `__pycache__/` ao lado deles

@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import math
 import os
 import sys
 import tempfile
@@ -74,6 +75,8 @@ def _validar_numero_nao_negativo(nome: str, valor: str, permite_vazio: bool = Fa
         numero = float(valor)
     except ValueError as exc:
         raise TelemetriaValidationError(f"{nome}: '{valor}' não é numérico") from exc
+    if not math.isfinite(numero):
+        raise TelemetriaValidationError(f"{nome}: '{valor}' não é finito")
     if numero < 0:
         raise TelemetriaValidationError(f"{nome}: '{valor}' é negativo")
     # Preserva a forma original recebida (ex.: "44", não "44.0") — só a validação usa float().

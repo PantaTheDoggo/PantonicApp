@@ -21,8 +21,11 @@ tenha bloco `message.usage` dá `input_tokens + cache_read_input_tokens +
 cache_creation_input_tokens`. Nenhuma entrada com `usage` ⇒ ramo de fallback: estimativa por
 `soma(len(linha)) / 4` sobre todas as linhas do transcript, fonte `"estimado"`.
 
-**Denominador:** `JANELA_TOKENS`, default 200000, sobrescrevível pela variável de ambiente
-`PANTONIC_JANELA_TOKENS`. **Limiar:** 0.50 — o "~50% da janela" que a diretriz de dimensionamento
+**Denominador:** `JANELA_TOKENS`, default 1000000 (janela real do Claude Opus 5),
+sobrescrevível por `PANTONIC_CONTEXT_TOKENS_MAX` (nome canônico) ou `PANTONIC_JANELA_TOKENS`
+(nome legado, ainda honrado). Aceita sufixo `k`/`M`. **O default anterior era 200000** — errado
+por 5x, fazia o aviso disparar a ~10% da janela real e encerrava janelas com folga de sobra
+(corrigido em 2026-09-18; ver `docs/CUSTO_DO_PICKUP.md` `## 13`). **Limiar:** 0.50 — o "~50% da janela" que a diretriz de dimensionamento
 de `GOVERNANCA.md` §3 já doutrina, não um número novo. A reclassificação do instrumento como aviso
 informativo não mexe no valor nem no comportamento: muda o estatuto do que ele emite.
 
@@ -50,9 +53,32 @@ import os
 import sys
 from pathlib import Path
 
-JANELA_TOKENS_ENV = "PANTONIC_JANELA_TOKENS"
-JANELA_TOKENS_DEFAULT = 200_000
-JANELA_TOKENS = int(os.environ.get(JANELA_TOKENS_ENV) or JANELA_TOKENS_DEFAULT)
+JANELA_TOKENS_ENV = "PANTONIC_CONTEXT_TOKENS_MAX"
+JANELA_TOKENS_ENV_LEGADO = "PANTONIC_JANELA_TOKENS"
+JANELA_TOKENS_DEFAULT = 1_000_000
+
+
+def _parse_tokens(bruto, default):
+    """Aceita '1000000', '1M', '200k'. Valor inválido cai no default, sem quebrar o hook."""
+    if not bruto:
+        return default
+    texto = str(bruto).strip().replace("_", "").replace(".", "")
+    mult = 1
+    if texto[-1:].lower() == "k":
+        mult, texto = 1_000, texto[:-1]
+    elif texto[-1:].lower() == "m":
+        mult, texto = 1_000_000, texto[:-1]
+    try:
+        valor = int(float(texto) * mult)
+    except ValueError:
+        return default
+    return valor if valor > 0 else default
+
+
+JANELA_TOKENS = _parse_tokens(
+    os.environ.get(JANELA_TOKENS_ENV) or os.environ.get(JANELA_TOKENS_ENV_LEGADO),
+    JANELA_TOKENS_DEFAULT,
+)
 
 LIMIAR = 0.50  # GOVERNANCA.md §3 — "~50% da janela", não um número novo (DP-Q)
 

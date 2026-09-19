@@ -2,7 +2,7 @@
 
 Cada linha aponta para um `docs/plans/P-NNNN-<slug>.md`, com `NNNN` um contador global monotônico
 (nunca reutilizado, zero-padded) e a data de origem registrada como campo de cabeçalho do próprio
-plano — não no nome do arquivo. **Próximo id de plano: P-0740.** Os planos já existentes
+plano — não no nome do arquivo. **Próximo id de plano: P-0741.** Os planos já existentes
 `P-0721`..`P-0729` mantêm o nome atual e não são renomeados (renomear quebraria ponteiros
 cruzados de planos fechados sem ganho — DP-G5). Uma vez promovida ao índice/heading do
 `docs/DIARIO_DE_OBRAS.md`, a linha é marcada como drenada e migra para

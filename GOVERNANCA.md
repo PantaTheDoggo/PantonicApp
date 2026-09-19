@@ -728,15 +728,30 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    tem entrada, saída e residência fixas. **Entrada:** o achado registrado no corpo da tarefa e em
    `## Achados da execução` do plano. **Saída:** (a) a decisão nova, com id, na tabela de decisões;
    (b) os cards que a decisão invalida reescritos — inclusive o fato que faltou na §1; (c) a tarefa
-   bloqueada de volta a `ready` (ou `cancelled`, se a rota mudou) e o plano de volta ao estado
-   anterior; (d) o achado marcado como absorvido, com ponteiro para a decisão; (e) a **lição para o
+   bloqueada de volta a `ready`, ou a `cancelled` se a rota mudou, ou a **`review`** se a entrega
+   material já está na árvore e o defeito era do aceite — redespachar refaria trabalho feito, e a
+   entrega existente se julga contra o dossiê corrigido pelo `pantonic-reviewer`, sem retorno novo
+   de executor —, e o plano de volta ao estado anterior; (d) o achado marcado como absorvido, com
+   ponteiro para a decisão; (e) a **lição para o
    planejador** — a verificação de autoria que teria evitado o bloqueio — aplicada ao arquivo do
    agente `pantonic-planner` quando a classe de erro for nova. **Residência:** uma entrada `RP-<n>`
    sob `## Achados da execução` do plano, com a classificação da mudança. O planejador decide
    sozinho o que for técnico ou tático (escada de revisão de plano, §3) e leva ao dono, em **uma**
    rodada de decisões, só o que for estratégico ou alterar escopo; o dono não desempata card.
-   Segundo bloqueio `premissa` na mesma tarefa depois de uma rodada é sinal de que a premissa caiu
-   por inteiro: o plano vira `superseded` e o sucessor nasce fechado. *Enforcement:* roteamento
+   Segundo bloqueio `premissa` na mesma tarefa depois de uma rodada **não se julga pela contagem, e
+   sim pelo objeto do bloqueio**: contar bloqueios não distingue rota inviável de card mal redigido,
+   e tratar os dois como a mesma coisa joga fora um plano cuja entrega já está na árvore, verde
+   (caso medido: `AE-4` do `P-0740`, 2026-09-18). O teste que discrimina é uma pergunta sobre a
+   árvore — **existe entrega que satisfaz o entregável do card sob as decisões vigentes?** (i) Não
+   existe, e nenhuma reescrita de card a faria existir: o bloqueio é **de rota**, a premissa caiu por
+   inteiro, o plano vira `superseded` e o sucessor nasce fechado. (ii) Existe — a entrega foi
+   produzida e o que falhou foi a **verificação** do card, insatisfazível ou contraditória com o
+   comportamento real do instrumento: o bloqueio é **de aceite**, a rota fica confirmada pelo próprio
+   fato medido, e a rodada corrige a redação em vez de matar o plano (saída (c), ramo `review`). Dois
+   tetos fecham o abuso da distinção: **terceiro** bloqueio `premissa` na mesma tarefa, qualquer que
+   seja o objeto, é `superseded`; e segundo bloqueio **de aceite** sobre a **mesma** verificação já
+   reescrita por uma rodada anterior também é `superseded` — errar duas vezes o mesmo aceite não é
+   corrigir redação, é descobrir que não se sabe o que o card exige. *Enforcement:* roteamento
    `A3b` da skill `scrum-master` (escala ao planejador, não ao dono); guardrail da `proximo-passo`
    (tarefa `blocked premissa` no plano priorizado → a próxima tarefa é a rodada, nunca outra do
    plano); seção "Rodada de replanejamento" do agente `pantonic-planner`; ledger

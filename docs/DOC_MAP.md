@@ -101,7 +101,7 @@ caso de uso de um plugin, ou o grau de aderência medido da implementação de r
 **Acesso:** `Grep pattern:"^### 9\.1" path:ARQUITETURA_PANTONICA.md -n` (trocar a âncora por
 qualquer heading `##`/`###` da lista acima).
 
-## docs/CUSTO_DO_PICKUP.md (~402 linhas)
+## docs/CUSTO_DO_PICKUP.md (~431 linhas)
 **Propósito:** medida por fonte do que uma retomada de backlog ingere — orçamento em chars e
 tokens, veredito das hipóteses, rota candidata por fonte, orçamento-alvo e anatomia medida de
 uma janela de orquestração real.
@@ -126,6 +126,8 @@ remedir; e para o valor de referência contra o qual uma correção se afere.
 - `## 12 Onde e quando o degrau do 1º usage acontece (2026-08-24)` — discriminação por tempo/tipo
   de janela/projeto do degrau (`TK-53a`): série diária, `depois` linha a linha, papel de subagente
   e projeto antes × depois, veredito por eixo e a janela temporal do degrau
+- `## 13 Extrato do custo de abertura de uma janela principal (2026-09-18)` — uma linha por
+  fonte carregada, com chars medidos, estrato E1/E2/E3, regime e a classificacao que o dono ratifica
 **Acesso:** `Grep pattern:"^## 5 " path:docs/CUSTO_DO_PICKUP.md -n` (trocar `5` pela seção
 desejada).
 

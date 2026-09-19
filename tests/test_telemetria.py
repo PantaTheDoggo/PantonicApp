@@ -135,6 +135,57 @@ def test_tf_celula_vazia_aceita_com_fonte_nao_medido(tmp_path):
     assert nova_linha == b"2026-08-08\tPantonicApp\tEXA-T7\tSonnet\t\t\t\tnao_medido\n"
 
 
+def test_tf_append_tokens_k_decimal_grava_sem_conversao(tmp_path):
+    """TF (`P-0740` `LM-T1`, `DM-11`): `--tokens_k` aceita o literal decimal de uma casa (ex.:
+    `203.7`, a forma que o hook `SubagentStop` produz) e a linha apensada traz o mesmo literal na
+    coluna `tokens_k`, sem conversão."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    conteudo_anterior = (_HEADER + _LINHA_EXISTENTE).encode("utf-8")
+    tsv.write_bytes(conteudo_anterior)
+
+    exit_code = telemetria.main(_args(tsv, tokens_k="203.7"))
+
+    assert exit_code == 0
+    conteudo_final = tsv.read_bytes()
+    nova_linha = conteudo_final[len(conteudo_anterior):]
+    assert nova_linha == b"2026-08-08\tPantonicApp\tEXA-T7\tSonnet\t20\t203.7\t120\tusage\n"
+
+
+def test_tf_append_tokens_k_nao_finito_recusa_sem_escrever(tmp_path, capsys):
+    """TF (`P-0740` `LM-T1a`, `DM-15`): `--tokens_k nan` sai exit != 0 com
+    `tokens_k: 'nan' não é finito` e o TSV de destino não chega a ser criado — a regra
+    concorrente (medida na `RP-5`) saía exit 0 e gravava a linha com o literal `nan` na coluna de
+    tokens."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+
+    exit_code = telemetria.main(_args(tsv, tokens_k="nan"))
+
+    assert exit_code != 0
+    assert not tsv.exists()
+    saida = capsys.readouterr()
+    assert "telemetria: FALHOU - tokens_k: 'nan' não é finito" in saida.err
+
+
+def test_tf_append_duracao_s_nao_finito_recusa(tmp_path, capsys):
+    """TF (`DM-15`): `--duracao_s inf` sai exit != 0 com `duracao_s: 'inf' não é finito` — a
+    regra concorrente saía exit 0 e gravava `inf`. `tokens_k` e `duracao_s` passam pelo mesmo
+    validador (`_validar_numero_nao_negativo`); este teste tranca o segundo termo, o anterior
+    tranca o primeiro."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    conteudo_anterior = (_HEADER + _LINHA_EXISTENTE).encode("utf-8")
+    tsv.write_bytes(conteudo_anterior)
+
+    exit_code = telemetria.main(_args(tsv, duracao_s="inf"))
+
+    assert exit_code != 0
+    assert tsv.read_bytes() == conteudo_anterior
+    saida = capsys.readouterr()
+    assert "telemetria: FALHOU - duracao_s: 'inf' não é finito" in saida.err
+
+
 def test_tr_celula_vazia_recusada_com_fonte_usage(tmp_path, capsys):
     """TR da AUT-T5a: com `fonte=usage` a célula vazia continua sendo falha ruidosa — o bloco de
     uso reportado sempre carrega os três campos, e vazio ali é medida perdida, não ausente."""

@@ -45,6 +45,13 @@ cuja fonte é de juízo, e nas faixas que a evidência mecânica deixa em aberto
 
 Dimensão de fonte mista tem a parte mecânica travada e a parte de juízo livre.
 
+A seção `## Arquivos tocados` do dossiê de evidência (`.claude/tools/review_evidence.py`) carrega
+essa mesma autoridade por arquivo: cada arquivo tocado sai marcado `da entrega` (coberto pelos
+`Arquivos-alvo` da tarefa) ou `alheio` (fora deles), com o estado `git` que comprova a marcação —
+atribuição derivada da mesma `confrontar_escopo` que resolve a dimensão `escopo` abaixo, nunca uma
+segunda classificação. O reviewer lê a atribuição já calculada; não a julga de memória nem depende
+de injeção manual de contexto do orquestrador (`AE-13`).
+
 ## 4. As sete dimensões
 
 ### `criterio-de-pronto`

@@ -85,8 +85,9 @@ item 17): o plano só sai de `blocked` quando a rodada fecha — a tarefa volta 
 ### Máquina de transições
 
 Toda transição é **materializada** pelo `scrum-master`; a **autoria** de `in-progress` → `review` e
-de `in-progress` → `blocked` é do executor (`DP-G`). A coluna **gatilho** cita os dois — e só os
-dois — gatilhos que disparam ação automática.
+de `in-progress` → `blocked` é do executor (`DP-G`); a de `blocked` → `review` é do **planejador**,
+na rodada de replanejamento (`G-REPLAN`, `GOVERNANCA.md` §7 item 17), e nunca do executor. A coluna
+**gatilho** cita os dois — e só os dois — gatilhos que disparam ação automática.
 
 | transição | quando | gatilho |
 |---|---|---|
@@ -98,6 +99,7 @@ dois — gatilhos que disparam ação automática.
 | `ready` → `cancelled` | escopo descartado ou absorvido por outro item | — |
 | `blocked` → `ready` | a razão registrada não se aplica mais | — |
 | `blocked` → `cancelled` | o bloqueio é permanente ou a rota mudou | — |
+| `blocked` → `review` | a rodada de replanejamento corrigiu o **aceite** de um `blocked premissa` cuja entrega material já está na árvore (`G-REPLAN`, saída (c)); nenhum retorno novo de executor é exigido | **gatilho 1** — o `scrum-master` invoca o `pantonic-reviewer` |
 | `in-progress` → `review` | o executor devolve a linha de retorno da `DP-G` | **gatilho 1** — o `scrum-master` invoca o `pantonic-reviewer` |
 | `in-progress` → `blocked` | o executor para e escala | — |
 | `review` → `done` | laudo `seguir` ou `seguir com ressalva`, mais o aceite do dono onde ele é o teste de sentido | **gatilho 2** — o `scrum-master` escreve o RDO |

@@ -11,6 +11,7 @@ para `tmp_path` — nunca contra o repositório real (`docs/DIARIO_DE_OBRAS.md` 
 insumo, nunca alvo desta suíte)."""
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import shutil
 import sys
@@ -39,6 +40,25 @@ def _load_backlog():
 def _copiar_fixture(origem: Path, destino: Path) -> Path:
     shutil.copytree(origem, destino)
     return destino
+
+
+def _hashes(repo: Path) -> dict[str, str]:
+    return {
+        str(caminho.relative_to(repo)): hashlib.sha256(caminho.read_bytes()).hexdigest()
+        for caminho in repo.rglob("*")
+        if caminho.is_file()
+    }
+
+
+def _inserir_bloco_gerado(repo: Path) -> None:
+    """Prepara a cópia da fixture para os TF de escrita da `BKL-T4`: a fixture
+    `next_tk90` não carrega os marcadores `<!-- fila:gerada -->`/`<!-- /fila:gerada -->`
+    ainda — `status`/`start` são os primeiros verbos de escrita do instrumento (§2.3) —
+    então o próprio TF os insere na cópia em `tmp_path`, nunca na fixture do repositório."""
+    diario = repo / "docs" / "DIARIO_DE_OBRAS.md"
+    linhas = diario.read_text(encoding="utf-8").splitlines()
+    linhas[1:1] = ["<!-- fila:gerada -->", "<!-- /fila:gerada -->"]
+    diario.write_text("\n".join(linhas) + "\n", encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- #
@@ -635,3 +655,210 @@ def test_tf_contador_de_memoria_ignora_regua_e_marcadas(tmp_path):
 
     assert "fila de memória: 2 candidato(s)" in saida
     assert "fila de memória: 3 candidato(s)" not in saida
+
+
+# --------------------------------------------------------------------------- #
+# BKL-T4 (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T4`) — `status`, `start`,
+# `diretiva`: transição (§2.7) e escrita atômica das projeções (§3), reusando E-2/E-3
+# de §2.5 item 6 (`DB-37`, `DB-40`) já entregues por `next`.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_status_transicao_valida_escreve_projecoes(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    modelo = backlog.carregar(repo)
+
+    resultado = backlog.transacionar_status(repo, modelo, "TK-90a", "in-progress")
+
+    assert resultado.exit_code == 0
+    assert resultado.arquivos == ["docs/DIARIO_DE_OBRAS.md"]
+
+    diario = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8")
+    assert "- **Status:** `in-progress` · " in diario
+    linha_indice = next(l for l in diario.splitlines() if l.startswith("| TK-90 "))
+    assert "ready 0/2" in linha_indice
+    assert "<!-- fila:gerada -->" in diario
+    assert "`TK-90`" in diario
+
+
+def test_tf_status_transicao_em_tarefa_de_plano_escreve_os_dois_arquivos(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    modelo = backlog.carregar(repo)
+
+    resultado = backlog.transacionar_status(repo, modelo, "FFO-T2", "in-progress")
+
+    assert resultado.exit_code == 0
+    assert resultado.arquivos == ["docs/DIARIO_DE_OBRAS.md", "docs/plans/P-0090-fifo.md"]
+
+    plano_texto = (repo / "docs" / "plans" / "P-0090-fifo.md").read_text(encoding="utf-8")
+    assert "### FFO-T2" in plano_texto
+    assert "- **Status:** `in-progress` · " in plano_texto
+
+    diario = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8")
+    linha_indice = next(l for l in diario.splitlines() if l.startswith("| P-0090 "))
+    assert "ready 1/2" in linha_indice  # DB-36: FFO-T1 done, FFO-T2 (agora in-progress) — 1/2 inalterado
+
+
+def test_tf_bloco_gerado_tem_bullet_por_pai(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+
+    for estado in ("in-progress", "review", "done"):
+        modelo = backlog.carregar(repo)
+        resultado = backlog.transacionar_status(repo, modelo, "TK-90a", estado)
+        assert resultado.exit_code == 0, resultado.mensagem
+
+    diario_texto = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8")
+    ini = diario_texto.index("<!-- fila:gerada -->")
+    fim = diario_texto.index("<!-- /fila:gerada -->")
+    bloco = diario_texto[ini:fim]
+
+    assert "- `P-0090` (`ready`, 1/2): próxima `FFO-T2`" in bloco
+    assert "- `TK-90` (`ready`, 1/2): próxima `TK-90b`" in bloco
+    assert bloco.index("`P-0090`") < bloco.index("`TK-90`")  # DB-33: ordem das linhas do índice
+
+    linha_indice = next(l for l in diario_texto.splitlines() if l.startswith("| TK-90 "))
+    assert "ready 1/2" in linha_indice  # DB-36: TK-90a done, TK-90b ready — 1/2
+
+
+def test_tf_status_blocked_sem_razao_recusa(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    antes = _hashes(repo)
+    modelo = backlog.carregar(repo)
+
+    resultado = backlog.transacionar_status(repo, modelo, "TK-90a", "blocked")
+
+    assert resultado.exit_code == 1
+    assert _hashes(repo) == antes
+
+
+def test_tf_status_transicao_invalida_nao_escreve_nada(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    antes = _hashes(repo)
+    modelo = backlog.carregar(repo)
+
+    # `ready` → `done` não está em `_TRANSICOES` (§2.7 exige passar por in-progress/review).
+    resultado = backlog.transacionar_status(repo, modelo, "TK-90a", "done")
+
+    assert resultado.exit_code == 1
+    assert _hashes(repo) == antes
+
+
+def test_tf_status_nota_apensa_subbullet_e_nao_toca_indice(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    modelo = backlog.carregar(repo)
+
+    resultado = backlog.transacionar_status(repo, modelo, "TK-90b", "in-progress", nota="anotação de execução")
+
+    assert resultado.exit_code == 0
+    diario = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8")
+    assert "- **Notas de execução:**" in diario
+    assert "`in-progress` — anotação de execução" in diario
+
+    linha_indice = next(l for l in diario.splitlines() if l.startswith("| TK-90 "))
+    assert "anotação de execução" not in linha_indice
+
+
+def test_tf_start_recusa_com_outro_in_progress_no_mesmo_pai(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    modelo = backlog.carregar(repo)
+    primeiro = backlog.transacionar_status(repo, modelo, "TK-90a", "in-progress")
+    assert primeiro.exit_code == 0
+
+    antes = _hashes(repo)
+    modelo2 = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo2, "TK-90b", "in-progress")
+
+    assert resultado.exit_code == 1
+    assert _hashes(repo) == antes
+
+
+def test_tf_diretiva_preserva_texto_livre(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    diario = repo / "docs" / "DIARIO_DE_OBRAS.md"
+    linhas = diario.read_text(encoding="utf-8").splitlines()
+    linhas.insert(1, "**Diretiva de priorização:** nada por ora")
+    diario.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+
+    modelo = backlog.carregar(repo)
+    texto = "Priorize `P-0090` — motivo livre com **markdown** e crases `X`"
+    resultado = backlog.transacionar_diretiva(repo, modelo, texto)
+
+    assert resultado.exit_code == 0
+    diario_depois = diario.read_text(encoding="utf-8")
+    assert f"**Diretiva de priorização:** {texto}" in diario_depois
+    assert "nada por ora" not in diario_depois
+
+
+def test_tf_status_recusa_pai_sem_linha_de_indice(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90_SEM_INDICE, tmp_path / "repo")
+    antes = _hashes(repo)
+
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "TK-90a", "in-progress")
+
+    assert resultado.exit_code == 3
+    assert "linha de índice ausente para " in resultado.mensagem
+    assert "TK-90" in resultado.mensagem
+    assert _hashes(repo) == antes
+
+
+def test_tf_bkl_3campos():
+    """TF da LM-T4a: `TAREFA_HEADER_RE` aceita o cabeçalho de três campos (`DM-5`), com `esforço`
+    opcional entre modelo e classe. Concorrente: hoje o match é `None`, e é isso que faz o `Item`
+    nascer `header_valido=False`, sem modelo e sem classe (`F-6`)."""
+    backlog = _load_backlog()
+
+    match = backlog.TAREFA_HEADER_RE.match(
+        "### XX-T1 — Título [Sonnet · esforço medium · classe implementacao]"
+    )
+
+    assert match is not None
+    assert match.group(1) == "XX-T1"
+    assert match.group(2) == "Título"
+    assert match.group(3) == "Sonnet"
+    assert match.group(4) == "implementacao"
+
+
+def test_tr_bkl_grupos_posicionais():
+    """TR da LM-T4a: o grupo novo de `esforço` é não capturante — `group(3)`/`group(4)` continuam
+    lendo modelo/classe por posição. Concorrente: com um grupo capturante no `_BRACKET`,
+    `group(3)`/`group(4)` devolveriam valores deslocados, exatamente a leitura que
+    `backlog.py:229`/`:232` fazem."""
+    backlog = _load_backlog()
+
+    match = backlog.TAREFA_HEADER_RE.match(
+        "### XX-T2 — Título [Opus + dono · classe investigacao · teto 3]"
+    )
+
+    assert match is not None
+    assert match.group(3) == "Opus"
+    assert match.group(4) == "investigacao"
+
+
+def test_tf_bkl_esforco_fora_do_vocabulario():
+    """TF da LM-T4a: `esforço` fora do vocabulário fechado (`low|medium|high|xhigh|max`) não casa.
+    Concorrente: com o campo escrito como `.+?` em vez do vocabulário fechado, esta linha
+    casaria — a gramática é fechada."""
+    backlog = _load_backlog()
+
+    match = backlog.TAREFA_HEADER_RE.match(
+        "### XX-T3 — Título [Sonnet · esforço enorme · classe implementacao]"
+    )
+
+    assert match is None

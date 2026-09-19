@@ -141,11 +141,31 @@ def test_tr_avaliar_janela_zero_nao_cruza_e_nao_lanca_zerodivisionerror():
 
 
 def test_tr_janela_tokens_default_e_sobrescrita_por_variavel_de_ambiente(monkeypatch):
-    """TR: JANELA_TOKENS nasce 200000 por default; a variável de ambiente
-    PANTONIC_JANELA_TOKENS sobrescreve — sem ela, o módulo preserva o default doutrinado."""
+    """TR: JANELA_TOKENS nasce 1000000 por default — a janela real do Claude Opus 5, corrigida em
+    2026-09-18 (o default anterior, 200000, errava por 5x e fazia o aviso disparar a ~10% da janela
+    real). PANTONIC_CONTEXT_TOKENS_MAX é o nome canônico da sobrescrita; PANTONIC_JANELA_TOKENS
+    segue honrado como nome legado."""
     ocupacao_default = _load_ocupacao()
-    assert ocupacao_default.JANELA_TOKENS == 200_000
+    assert ocupacao_default.JANELA_TOKENS == 1_000_000
 
-    monkeypatch.setenv("PANTONIC_JANELA_TOKENS", "50000")
+    monkeypatch.setenv("PANTONIC_CONTEXT_TOKENS_MAX", "50000")
     ocupacao_sobrescrito = _load_ocupacao()
     assert ocupacao_sobrescrito.JANELA_TOKENS == 50_000
+    monkeypatch.delenv("PANTONIC_CONTEXT_TOKENS_MAX")
+
+    monkeypatch.setenv("PANTONIC_JANELA_TOKENS", "50000")
+    ocupacao_legado = _load_ocupacao()
+    assert ocupacao_legado.JANELA_TOKENS == 50_000
+    monkeypatch.delenv("PANTONIC_JANELA_TOKENS")
+
+
+def test_tr_janela_tokens_aceita_sufixo_e_ignora_lixo(monkeypatch):
+    """TR: o denominador aceita as formas que o dono escreve à mão ('1M', '200k') e nunca quebra o
+    hook com valor inválido — lixo cai no default, porque o hook falha aberto."""
+    for bruto, esperado in (("1M", 1_000_000), ("200k", 200_000), ("1000000", 1_000_000)):
+        monkeypatch.setenv("PANTONIC_CONTEXT_TOKENS_MAX", bruto)
+        assert _load_ocupacao().JANELA_TOKENS == esperado
+
+    for lixo in ("lixo", "", "-5", "0"):
+        monkeypatch.setenv("PANTONIC_CONTEXT_TOKENS_MAX", lixo)
+        assert _load_ocupacao().JANELA_TOKENS == 1_000_000
