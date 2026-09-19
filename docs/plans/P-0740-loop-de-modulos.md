@@ -2,7 +2,7 @@
 
 **Data:** 2026-09-18 · **Origem:** aferição empírica do `scrum-master` conduzida em janela de
 orquestração (run de ponta a ponta sobre a `BKL-T4` do `P-0739`), mais a correção da premissa de
-tamanho de janela · **Status:** `in-progress` (2026-09-18 — rodadas `RP-2` e `RP-3` fechadas: o segundo bloqueio da `LM-T1` era **de aceite**, não de rota, `DM-12`; e a gramática de cabeçalho da `DM-5` recuou para a forma que os parsers leem, com a tarefa nova `LM-T4a` ensinando-lhes a de três campos, `DM-13`. A `LM-T1` fechou `done`, aprovada 100%, e a rodada `RP-5` — a primeira conduzida pelo `pantonic-consultant` — absorveu o `AE-8` e o `AE-7` com `DM-15`/`DM-16` e os cards `LM-T1a` e `LM-T7`; o plano passa a 9 tarefas) · **Iniciativa:** `EXECUCAO-AUTONOMA` · **Prefixo das
+tamanho de janela · **Status:** `done` (2026-09-18 — rodadas `RP-2` e `RP-3` fechadas: o segundo bloqueio da `LM-T1` era **de aceite**, não de rota, `DM-12`; e a gramática de cabeçalho da `DM-5` recuou para a forma que os parsers leem, com a tarefa nova `LM-T4a` ensinando-lhes a de três campos, `DM-13`. A `LM-T1` fechou `done`, aprovada 100%, e a rodada `RP-5` — a primeira conduzida pelo `pantonic-consultant` — absorveu o `AE-8` e o `AE-7` com `DM-15`/`DM-16` e os cards `LM-T1a` e `LM-T7`; o plano passa a 9 tarefas) · **Iniciativa:** `EXECUCAO-AUTONOMA` · **Prefixo das
 tarefas:** `LM-T<n>` · **Prefixo das decisões:** `DM-<n>` · **Checagem de versão do kit:** modo
 hub — congelada em `0.0.0` (`DE-7`), comparação local × remoto suspensa, nada a comparar.
 
