@@ -36,3 +36,6 @@ PantonicForDesktop/
 # Embriao da ramificacao container/Docker do framework — conhecimento extraido do hub
 # universal, preservado fora do versionamento ate virar repositorio proprio.
 PantonicForContainer/
+
+# Residuo de crash do msys (AE-68) - nao e autoria
+*.stackdump

@@ -52,6 +52,13 @@ atribuição derivada da mesma `confrontar_escopo` que resolve a dimensão `esco
 segunda classificação. O reviewer lê a atribuição já calculada; não a julga de memória nem depende
 de injeção manual de contexto do orquestrador (`AE-13`).
 
+**Nota (2026-09-19):** a atribuição do dossiê é **por arquivo** e segue dispensando injeção manual
+para a pergunta de **escopo**; enquanto o commit for por marco (diretiva de execução do dono,
+2026-09-18, item 3), o recorte `--desde <commit>` acumula as entregas do marco e um mesmo
+arquivo-alvo carrega autoria de várias tarefas — neste regime a injeção manual de contexto **é
+obrigatória** e faz parte do despacho do reviewer, não é desvio de quem orquestra; o que suspende
+essa obrigação é **capacidade**, não card: atribuição por **hunk**.
+
 ## 4. As sete dimensões
 
 ### `criterio-de-pronto`
@@ -296,6 +303,9 @@ correção do que o laudo aponta pertence a uma execução seguinte, com o laudo
 | (xiii) | nenhum número de corpus — total de suíte, contagem de cards, de ocorrências ou de linhas — entra como constante de aceite: entra como **relação**, com o literal citado só como referência datada | `AE-21` |
 | (xiv) | card **reescrito** re-declara as rotas de achado que apontam para ele | `AE-9` |
 | (xv) | regra nova de tabela declara o efeito sobre **cada** valor do domínio que toca, e confronta a ação com o domínio que o instrumento de fechamento aceita | `AE-20`, `AE-22` |
+| (xvi) | **rótulo de campo termina na mesma linha em que começa.** Decoração no rótulo (data, `ESC-n`, `DM-n`, ressalva) é permitida enquanto o `:**` couber na primeira linha; o parser de campos do kit lê **linha a linha**, de modo que rótulo quebrado faz o campo **desaparecer**, não apenas ficar feio | `AE-34` |
+| (xvii) | **o aceite cobre o mundo que o próprio produto cria.** Quando o módulo **emite** uma forma, a `Verificação` exercita **essa** forma, e não só a que ele consome: produto que escreve num formato e é aferido noutro deixa o ramo que ele mesmo produz sem nenhuma linha que o discrimine | `AE-35` |
+| (xviii) | **o valor publicado no literal `Medido antes` é invariante ao que outras entregas movem.** Ele mede o que **este** card possui — exit code do comando, veredito binário, recorte do arquivo-alvo —, nunca um total de corpus que qualquer outra entrega desloca (total de suíte, contagem de módulo compartilhado, contagem de cards ou de insumos do próprio plano); quando a pergunta é sobre corpus, o comando publica o **veredito** (`exit 0`, `iguais`, `1`) e o número absoluto desce para a prosa como referência **datada**, fora do literal | `AE-49` |
 
 ### 8.1 A forma normativa do bloco `Verificação`
 
@@ -307,10 +317,18 @@ Todo item de `Verificação` tem **três** elementos, nesta ordem e legíveis po
 
 O item começa em `N.` seguido **imediatamente** do bloco cercado — nenhuma prosa entre o número e a abertura do comando. Prosa explicativa, quando houver, vai **depois** do `**Medido antes: <valor>**`, nunca antes do comando.
 
-Não é forma nova: 32 itens do `P-0740` já a usam, e o que a norma acrescenta é torná-la obrigatória e **parseável**. A razão de ser norma, e não um décimo sexto critério, está medida: quinze critérios em vigor não impediram oito defeitos numa janela, e o `AE-30` nasceu no mesmo ato que escreveu o critério contra ele, três parágrafos acima da linha defeituosa.
+Não é forma nova: 32 itens do `P-0740` já a usam, e o que a norma acrescenta é torná-la obrigatória e **parseável**. A razão de ser norma, e não um décimo sexto critério, está medida: dezoito critérios em vigor não impediram oito defeitos numa janela, e o `AE-30` nasceu no mesmo ato que escreveu o critério contra ele, três parágrafos acima da linha defeituosa.
 Checklist lido pelo autor não fecha defeito de autoria; o que fecha é comando que falha ruidosamente no ato da autoria.
 
 **Passo mecânico, e o ciclo:** `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>`. **Card cujo `card_check` não sai 0 não se despacha.**
+
+**Nota (2026-09-19):** o gate está **suspenso em efeito** desde 2026-09-19, por decisão do loop
+endossada pelo consultor (`DM-39` (ii), `DM-40` (i)); a conferência dos três elementos segue
+**manual**, como esta seção já prescreve para o período sem instrumento; **o vermelho do
+`card_check` não é evidência** enquanto o `AE-33` item 1 estiver aberto — ele produz **item
+fantasma** sobre card conforme; o ponteiro é o `AE-33` no `P-0740`, e a reativação do gate depende
+dele.
+
 Enquanto o instrumento não existir — ele é a `LM-T5b`, e em 2026-09-19 não estava na árvore —, o passo é a conferência **manual** dos três
 elementos, item a item, por quem despacha.
 

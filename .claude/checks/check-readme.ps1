@@ -7,7 +7,7 @@
     implementações, escrito para que se possa argumentar sobre as práticas (o que é / por quê /
     onde o gerente intervém) sem abrir skill, agente e hook um a um. Um espelho sem guarda nasce
     fiel e envelhece mentindo — com autoridade, porque é o único arquivo lido. Este script falha
-    (exit != 0) quando o README diverge do disco/doutrina em qualquer uma das 5 checagens mecânicas
+    (exit != 0) quando o README diverge do disco/doutrina em qualquer uma das 6 checagens mecânicas
     abaixo; zero julgamento de conteúdo, só forma e paridade de números.
 
     As seções são localizadas pelo TÍTULO, não pelo número — o número muda a cada reescrita do
@@ -22,6 +22,12 @@
     4. O número de guardrails da tabela da seção "Os guardrails" do README é igual ao número de
        itens da lista numerada de `GOVERNANCA.md` §7 ("## 7. Guardrails dos agentes" até "### 7.1").
     5. Toda seção `## ` do README tem a linha `> Fonte da verdade:` e o arquivo citado nela existe.
+    6. As duas frases de contagem em prosa da seção "Os guardrails" batem com o disco: o numeral da
+       frase de regras mínimas obrigatórias é igual ao número de linhas da tabela, e os numerais da
+       frase das três formas são iguais às contagens derivadas da coluna "Como é enforceada", com a
+       identidade teste + gate - ambos + permissão fechando no total. No corpo do script ela vive no
+       bloco rotulado `4b`, por adjacência com a checagem de guardrails; a numeração desta prosa
+       conta checagens, não rótulos.
 
 .PARAMETER Root
     Raiz do repositório a checar (onde `README.md`, `VERSION` e `GOVERNANCA.md` vivem). Default:
@@ -127,12 +133,15 @@ else {
             'seis' = 6; 'sete' = 7; 'oito' = 8; 'nove' = 9; 'dez' = 10
             'onze' = 11; 'doze' = 12; 'treze' = 13; 'quatorze' = 14; 'quinze' = 15
             'dezesseis' = 16; 'dezessete' = 17; 'dezoito' = 18; 'dezenove' = 19; 'vinte' = 20
+            'vinte e um' = 21; 'vinte e uma' = 21; 'vinte e dois' = 22; 'vinte e duas' = 22
+            'vinte e três' = 23; 'vinte e quatro' = 24; 'vinte e cinco' = 25; 'vinte e seis' = 26
+            'vinte e sete' = 27; 'vinte e oito' = 28; 'vinte e nove' = 29; 'trinta' = 30
         }
         $countLine = $secKit | Where-Object { $_ -match '^O kit são ' } | Select-Object -First 1
         $agentToken = $null
         $skillToken = $null
-        if ($countLine -match '(\S+) agentes') { $agentToken = $Matches[1] }
-        if ($countLine -match '(\S+) skills') { $skillToken = $Matches[1] }
+        if ($countLine -match '^O kit são (.+?) agentes') { $agentToken = $Matches[1] }
+        if ($countLine -match 'agentes, (.+?) skills') { $skillToken = $Matches[1] }
 
         $agentNum = $null
         if ($null -ne $agentToken) {
@@ -146,14 +155,14 @@ else {
         }
 
         if ($null -eq $agentNum) {
-            $errors.Add("Frase de contagem de 'Anatomia do kit' ausente ou com numeral fora do vocabulário (dígito ou por extenso até vinte): '$agentToken'.")
+            $errors.Add("Frase de contagem de 'Anatomia do kit' ausente ou com numeral fora do vocabulário (dígito ou por extenso até trinta): '$agentToken'.")
         }
         elseif ($agentNum -ne $diskAgents.Count) {
             $errors.Add("Divergência na contagem de agentes: a frase de 'Anatomia do kit' declara $agentNum vs $($diskAgents.Count) agente(s) em .claude/agents/.")
         }
 
         if ($null -eq $skillNum) {
-            $errors.Add("Frase de contagem de 'Anatomia do kit' ausente ou com numeral fora do vocabulário (dígito ou por extenso até vinte): '$skillToken'.")
+            $errors.Add("Frase de contagem de 'Anatomia do kit' ausente ou com numeral fora do vocabulário (dígito ou por extenso até trinta): '$skillToken'.")
         }
         elseif ($skillNum -ne $diskSkills.Count) {
             $errors.Add("Divergência na contagem de skills: a frase de 'Anatomia do kit' declara $skillNum vs $($diskSkills.Count) skill(s) em .claude/skills/.")
@@ -236,6 +245,85 @@ if ($null -ne $readmeGuardrailCount -and $null -ne $governancaGuardrailCount -an
     $errors.Add("Divergência no número de guardrails: a seção 'Os guardrails' do README tem $readmeGuardrailCount linha(s) vs GOVERNANCA.md §7 com $governancaGuardrailCount item(ns).")
 }
 
+# --- 4b. Invariante de contagem em prosa da seção 'Os guardrails' -----------
+$guardCountPhraseChecked = $false
+$guardFormsPhraseChecked = $false
+if ($null -ne $secGuard) {
+    $guardTableRows = @($secGuard | Where-Object { $_ -match '^\|\s*\d+\s*\|' })
+
+    $guardCountLine = $secGuard | Where-Object { $_ -match 'regras mínimas obrigatórias' } | Select-Object -First 1
+    if ($null -eq $guardCountLine) {
+        $errors.Add("Seção 'Os guardrails' sem a frase de contagem 'regras mínimas obrigatórias'.")
+    }
+    else {
+        $guardCountToken = $null
+        if ($guardCountLine -match '^(.+?) regras mínimas obrigatórias') { $guardCountToken = $Matches[1] }
+        $guardCountNum = $null
+        if ($null -ne $guardCountToken) {
+            if ($guardCountToken -match '^\d+$') { $guardCountNum = [int]$guardCountToken }
+            elseif ($numeralMap.ContainsKey($guardCountToken.ToLower())) { $guardCountNum = $numeralMap[$guardCountToken.ToLower()] }
+        }
+        if ($null -eq $guardCountNum) {
+            $errors.Add("Frase 'regras mínimas obrigatórias' com numeral fora do vocabulário (dígito ou por extenso até trinta): '$guardCountToken'.")
+        }
+        elseif ($null -ne $readmeGuardrailCount -and $guardCountNum -ne $readmeGuardrailCount) {
+            $errors.Add("Divergência na contagem de 'regras mínimas obrigatórias': a frase declara $guardCountNum vs $readmeGuardrailCount linha(s) na tabela de 'Os guardrails'.")
+        }
+        else {
+            $guardCountPhraseChecked = $true
+        }
+    }
+
+    $guardFormsLine = $secGuard | Where-Object { $_ -match 'regras falham como teste executável' } | Select-Object -First 1
+    if ($null -eq $guardFormsLine) {
+        $errors.Add("Seção 'Os guardrails' sem a frase de contagem 'regras falham como teste executável'.")
+    }
+    else {
+        $guardTesteToken = $null
+        $guardGateToken = $null
+        if ($guardFormsLine -match '^\*\*(.+?)\*\* regras falham como teste executável') { $guardTesteToken = $Matches[1] }
+        if ($guardFormsLine -match 'falham como teste executável, \*\*(.+?)\*\* dependem de gate de review') { $guardGateToken = $Matches[1] }
+
+        $guardTesteNum = $null
+        if ($null -ne $guardTesteToken) {
+            if ($guardTesteToken -match '^\d+$') { $guardTesteNum = [int]$guardTesteToken }
+            elseif ($numeralMap.ContainsKey($guardTesteToken.ToLower())) { $guardTesteNum = $numeralMap[$guardTesteToken.ToLower()] }
+        }
+        $guardGateNum = $null
+        if ($null -ne $guardGateToken) {
+            if ($guardGateToken -match '^\d+$') { $guardGateNum = [int]$guardGateToken }
+            elseif ($numeralMap.ContainsKey($guardGateToken.ToLower())) { $guardGateNum = $numeralMap[$guardGateToken.ToLower()] }
+        }
+
+        if ($null -eq $guardTesteNum -or $null -eq $guardGateNum) {
+            $errors.Add("Frase 'regras falham como teste executável' com numeral fora do vocabulário (dígito ou por extenso até trinta): teste='$guardTesteToken', gate='$guardGateToken'.")
+        }
+        else {
+            $guardTesteCount = @($guardTableRows | Where-Object { $_ -match 'Teste executável' }).Count
+            $guardGateCount = @($guardTableRows | Where-Object { $_ -match 'Gate de review|Instrução de agente|Gate de planejamento' }).Count
+            $guardPermissaoCount = @($guardTableRows | Where-Object { $_ -match 'Enforcement de permissão' }).Count
+            $guardAmbosCount = @($guardTableRows | Where-Object { ($_ -match 'Teste executável') -and ($_ -match 'Gate de review|Instrução de agente|Gate de planejamento') }).Count
+
+            if ($guardTesteNum -ne $guardTesteCount) {
+                $errors.Add("Divergência na contagem de 'teste executável' da seção 'Os guardrails': a frase declara $guardTesteNum vs $guardTesteCount linha(s) medida(s).")
+            }
+            if ($guardGateNum -ne $guardGateCount) {
+                $errors.Add("Divergência na contagem de 'gate de review/instrução de agente/gate de planejamento' da seção 'Os guardrails': a frase declara $guardGateNum vs $guardGateCount linha(s) medida(s).")
+            }
+            $guardIdentityTotal = $guardTesteCount + $guardGateCount - $guardAmbosCount + $guardPermissaoCount
+            if ($null -ne $readmeGuardrailCount -and $guardIdentityTotal -ne $readmeGuardrailCount) {
+                $errors.Add("Identidade 'teste + gate - ambos + permissão' da seção 'Os guardrails' fecha em $guardIdentityTotal vs $readmeGuardrailCount linha(s) na tabela.")
+            }
+            if ($guardTesteNum -eq $guardTesteCount -and $guardGateNum -eq $guardGateCount -and ($null -eq $readmeGuardrailCount -or $guardIdentityTotal -eq $readmeGuardrailCount)) {
+                $guardFormsPhraseChecked = $true
+            }
+        }
+    }
+}
+else {
+    $errors.Add("Seção 'Os guardrails' não encontrada no README: frases de contagem em prosa não conferidas.")
+}
+
 # --- 5. Toda seção '## ' tem 'Fonte da verdade' apontando para arquivo real
 for ($i = 0; $i -lt $headingIdx.Count; $i++) {
     $title = $lines[$headingIdx[$i]]
@@ -265,5 +353,5 @@ if ($errors.Count -gt 0) {
 
 $agentCount = if ($diskAgents) { $diskAgents.Count } else { 0 }
 $skillCount = if ($diskSkills) { $diskSkills.Count } else { 0 }
-Write-Host "check-readme: OK - $agentCount agente(s), $skillCount skill(s), $readmeGuardrailCount guardrail(s), versão '$($versions['VERSION'])', $($headingIdx.Count) seção(ões) com Fonte da verdade válida."
+Write-Host "check-readme: OK - $agentCount agente(s), $skillCount skill(s), $readmeGuardrailCount guardrail(s), versão '$($versions['VERSION'])', $($headingIdx.Count) seção(ões) com Fonte da verdade válida; frases de contagem de 'Os guardrails' conferidas: 'regras mínimas obrigatórias'=$guardCountPhraseChecked, 'regras falham como teste executável'=$guardFormsPhraseChecked."
 exit 0

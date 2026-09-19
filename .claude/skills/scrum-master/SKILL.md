@@ -78,7 +78,7 @@ Dez passos, nesta ordem.
 
   ```
   <tarefa> review [pendencia=<uma linha>]
-  <tarefa> blocked motivo=<dependencia|premissa> <uma linha de razão>
+  <tarefa> blocked motivo=<dependencia|premissa|ferramenta> <uma linha de razão>
   ```
 
   Desempate (`DP-G` item 3): na dúvida sobre o motivo, `premissa`. RDO e guardrails de
@@ -94,8 +94,8 @@ Dez passos, nesta ordem.
 - **Entrada:** a linha devolvida, em uma das duas formas da gramática do passo 4.
 - **Ação:** ler a palavra devolvida — ela **é** o `status` da tarefa (`DP-G` item 2) — e, quando
   `blocked`, o `motivo=`. Materializa **sem discricionariedade** (`DP-G` item 1): não converte
-  status nem reclassifica o motivo — quem decide é o roteamento (passo 8). Palavra fora das duas, `blocked` sem `motivo=`, `motivo=` fora do par
-  `dependencia|premissa`, ou prosa no lugar da linha: **retorno inválido**, regra `A2`.
+  status nem reclassifica o motivo — quem decide é o roteamento (passo 8). Palavra fora das duas, `blocked` sem `motivo=`, `motivo=` fora do trio
+  `dependencia|premissa|ferramenta`, ou prosa no lugar da linha: **retorno inválido**, regra `A2`.
 - **Saída:** `status` materializado (`review` ou `blocked`), o `motivo` quando `blocked`, a
   `pendencia` quando presente, e os `tools` gastos lidos do `<usage>`.
 
@@ -131,7 +131,7 @@ Dez passos, nesta ordem.
 
 ### Passo 8 — Roteamento, bloco A
 
-- **Gatilho:** passo 5 concluído (regras `A1`..`A3b`) e passo 7 concluído (`A6`..`A9`, inclusive `A6a` e `A8a`).
+- **Gatilho:** passo 5 concluído (regras `A1`..`A3c`) e passo 7 concluído (`A6`..`A9`, inclusive `A6a` e `A8a`).
 - **Entrada:** `status`, `veredito`, `bloqueante`, `recomendação`, contador de retentativas.
 - **Ação:** aplicar a tabela do bloco A **em ordem de precedência** — a primeira regra que casa
   vence.
@@ -194,6 +194,7 @@ esta tabela e essas seções resolve a favor da seção.
 | `A2` | retorno ausente ou inválido (campo faltando, teto de campo estourado, linha fora da gramática) | um reenvio de **formato** ao mesmo executor; **não** consome a retentativa de conteúdo. Inválido de novo: **PARA** |
 | `A3a` | `status=blocked` com `motivo=dependencia` | reordena a fila para que a bloqueada suceda a que a bloqueia e materializa `blocked` com a razão; **não** despacha o `reviewer`, **não** escreve RDO, **não** consome a retentativa e **não** incrementa o contador de tarefas fechadas: segue para a próxima elegível |
 | `A3b` | `status=blocked` com `motivo=premissa` | materializa `blocked` com a razão na tarefa e no plano; **não** despacha o `reviewer` e **não** escreve RDO: **PARA**. A escalada é ao **planejador**: a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17) e o relatório de janela a nomeia; ao dono só chega o que o planejador classificar como estratégico |
+| `A3c` | `status=blocked` com `motivo=ferramenta` | materializa `blocked` com a razão, **sem** reclassificar o motivo; lê o **fallback declarado** da superfície no card e, havendo, **redespacha a mesma tarefa** por ele, **sem** consumir retentativa — a tarefa não falhou, a ferramenta foi negada; não havendo fallback declarado, **PARA** e a recusa sobe como matéria de plano, com a ferramenta, o caminho e a linha literal da recusa. **Não** despacha o `reviewer` e **não** escreve RDO |
 | `A6` | `recomendacao=refazer` e retentativas gastas = 0 | despacha um executor **novo, em contexto novo**, com o dossiê original mais as **diretivas atualizadas** que o loop extraiu da recomendação — **nunca** o caminho do laudo, e **sem reescrever o dossiê**; contador := 1: segue |
 | `A6a` | `veredito=reprovado` e `recomendacao=escalar` (qualquer `bloqueante`, qualquer contador de retentativas) | **não** fecha RDO e **não** gasta retentativa: materializa a tarefa como `blocked` razão `premissa`, com a pendência do laudo transcrita na razão, registra o achado como `AE-<n>` em `## Achados da execução` do plano e escala ao **consultor de plano**, que decide entre refazer com diretivas novas, emendar o card ou mudar a rota; a janela **segue** com o que ele devolver (Diretiva de execução do `P-0740`, item 2). Refazer antes de escalar gastaria a retentativa numa rota que o laudo já pediu para rever. Precedência: `A6` vence esta regra — lá o próprio laudo mandou refazer —, e esta vence `A7` e `A8a` |
 | `A7` | `veredito=reprovado` e retentativas gastas = 1 | `reprovado` **não é desfecho de RDO** e esta regra **não** fecha RDO: o RDO só nasce na transição `review` → `done` (`DP-F` item 3, fechamento c), e `rdo.py close --veredito` aceita só `aprovado` e `ressalva` (medido: exit 2, `invalid choice`; `calcular_desdobramento('reprovado')` levanta `RdoValidationError`). Materializa a tarefa como `blocked` razão `premissa` — reprovada duas vezes, o que caiu foi a premissa de que o card é executável como está —, com o `bloqueante` e a pendência do laudo transcritos na razão, e registra o achado como `AE-<n>` em `## Achados da execução` do plano: **PARA**. A escalada é a do `A3b`: a reprovação depois da última retentativa é nomeada no relatório de encerramento e a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17). Precedência: `A6` e `A6a` vencem esta regra; ela vence `A8a`, `A8` e `A9` |
@@ -226,13 +227,15 @@ Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bl
 
 ### O que obriga parada e o que segue com registro
 
-- **Obriga parada:** decisão de arquitetura ou de requisito, que chega **sempre** pelo `pendencia=`
+- **Obriga parada:** decisão de arquitetura ou de requisito, que chega pelo `pendencia=`
   do retorno do executor ou pela recomendação `escalar` do laudo (`B1`), roteada ao **consultor de plano** —
-  inclusive achado que invalida a rota do plano; executor `blocked` por `motivo=premissa` (`A3b`); reprovação depois da
+  inclusive achado que invalida a rota do plano; executor `blocked` por `motivo=premissa` (`A3b`); o `blocked`
+  por `motivo=ferramenta` como recusa de ferramenta sem fallback declarado (`A3c`); reprovação depois da
   última retentativa (`A7`); plano não-pronto (`B3`). Escalonamento ao consultor **não** encerra a janela: encerra-a só a classificação `estratégico` que ele devolver.
 - **Segue com registro:** ressalva não bloqueante e achado fora de escopo com rota, pelo laudo
-  (`A8`); e o `blocked` por `motivo=dependencia` (`A3a`), que reordena a fila e segue para a
-  próxima elegível.
+  (`A8`); o `blocked` por `motivo=dependencia` (`A3a`), que reordena a fila e segue para a
+  próxima elegível; e o `blocked` por `motivo=ferramenta` como recusa de ferramenta com fallback
+  declarado, que redespacha a mesma tarefa sem consumir retentativa (`A3c`).
 - **Parada defeituosa:** solicitar o dono em caminho feliz, sem pendência aberta e sem demanda
   dele. Despachar a próxima tarefa, criar o contexto novo e passar o bastão são execução
   normal. Uma única ocorrência é defeito da entrega (`GOVERNANCA.md` §4.3).
@@ -248,7 +251,7 @@ fronteira do ponto do dono", e não se redecide aqui.
 
 Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:
 
-- Plano conduzido e regra que encerrou a janela (`A1`..`A9`, inclusive `A6a` e `A8a`, ou `B0`..`B4`, pelo identificador).
+- Plano conduzido e regra que encerrou a janela (`A1`..`A9`, inclusive `A3c`, `A6a` e `A8a`, ou `B0`..`B4`, pelo identificador).
 - Tarefas fechadas na janela, cada uma com identificador, desdobramento e caminho do RDO.
 - Contadores finais: tarefas fechadas na janela e consumo acumulado, como medida para a série.
 - **Pendências ao dono**, uma a uma, com o fato medido que a originou, o que cada opção implica, o

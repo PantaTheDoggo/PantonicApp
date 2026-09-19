@@ -938,3 +938,200 @@ def test_tf_escrita_preserva_a_cauda(tmp_path):
     plano_depois = plano_path.read_text(encoding="utf-8").splitlines()
     linha_status = next(l for l in plano_depois if l.startswith("- **Status:** `in-progress`"))
     assert linha_status.endswith(" — cauda em prosa que precisa sobreviver")
+
+
+# --------------------------------------------------------------------------- #
+# LM-T4c (`docs/plans/P-0740-loop-de-modulos.md` `### LM-T4c`) — a fronteira entre razão e
+# cauda no ramo canônico do bullet de `Status`: a razão não contém ` — `, e a cauda começa no
+# primeiro ` — ` da linha.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_ramo_canonico_separa_razao_de_cauda():
+    """TF da `LM-T4c`: caso medido por introspeção no `ESC-19` — a razão gulosa engolia a
+    cauda inteira (`razao='premissa — cauda viva'`, `cauda=None`). Com a fronteira nova, a
+    razão para no primeiro ` — ` e a cauda fica livre a partir dali."""
+    backlog = _load_backlog()
+    linha = "- **Status:** `blocked` · 2026-09-19 · premissa — cauda viva"
+
+    match = backlog.STATUS_BULLET_RE.match(linha)
+
+    assert match.group(2) == "premissa"
+    assert match.group(3) == "cauda viva"
+
+
+def test_tr_round_trip_blocked_ready_preserva_a_cauda(tmp_path):
+    """Regressão da `LM-T4c`: sobre cópia da fixture `verde` em `tmp_path`, o round-trip
+    `ready → blocked --razao premissa → ready` preserva a cauda em prosa no fim da linha nas
+    duas transições. Concorrente: com a razão gulosa antiga, a segunda transição (`blocked →
+    ready`) perde a prosa porque a primeira leitura já tinha engolido a cauda na razão."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+
+    plano_path = repo / "docs" / "plans" / "P-0001-alfa.md"
+    linhas = plano_path.read_text(encoding="utf-8").splitlines()
+    idx = linhas.index("- **Status:** `done` · 2026-01-01")
+    linhas[idx] = "- **Status:** `ready` · 2026-01-01 — cauda viva"
+    plano_path.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "blocked", razao="premissa")
+    assert resultado.exit_code == 0, resultado.mensagem
+
+    modelo2 = backlog.carregar(repo)
+    resultado2 = backlog.transacionar_status(repo, modelo2, "ALF-T1", "ready")
+    assert resultado2.exit_code == 0, resultado2.mensagem
+
+    plano_depois = plano_path.read_text(encoding="utf-8").splitlines()
+    linha_status = next(l for l in plano_depois if l.startswith("- **Status:** `ready`"))
+    assert linha_status.endswith(" — cauda viva")
+
+
+# --------------------------------------------------------------------------- #
+# LM-T13 (`docs/plans/P-0740-loop-de-modulos.md` `### LM-T13`) — o escritor de `razão`
+# recusa o travessão que o leitor (`STATUS_BULLET_RE`, `LM-T4c`) trata como fronteira entre
+# razão e cauda: sem a recusa a borda não é round-trippável (`ESC-30`).
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_razao_com_travessao_recusada(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+
+    plano_path = repo / "docs" / "plans" / "P-0001-alfa.md"
+    linhas = plano_path.read_text(encoding="utf-8").splitlines()
+    idx = linhas.index("- **Status:** `done` · 2026-01-01")
+    linhas[idx] = "- **Status:** `ready` · 2026-01-01"
+    plano_path.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+
+    antes = _hashes(repo)
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "blocked", razao="premissa — suja")
+
+    assert resultado.exit_code == 1
+    assert "travessão" in resultado.mensagem
+    assert _hashes(repo) == antes
+
+
+def test_tf_razao_legitima_faz_round_trip(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+
+    plano_path = repo / "docs" / "plans" / "P-0001-alfa.md"
+    linhas = plano_path.read_text(encoding="utf-8").splitlines()
+    idx = linhas.index("- **Status:** `done` · 2026-01-01")
+    linhas[idx] = "- **Status:** `ready` · 2026-01-01 — cauda viva"
+    plano_path.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "blocked", razao="premissa")
+    assert resultado.exit_code == 0, resultado.mensagem
+
+    modelo2 = backlog.carregar(repo)
+    alvo = backlog._localizar(modelo2, "ALF-T1")
+    assert alvo.status_razao == "premissa"
+    assert alvo.status_cauda == "cauda viva"
+
+
+def _indice_com_sufixo(repo: Path, de: str, para: str) -> None:
+    """Reescreve o id publicado na tabela de índice da cópia em `tmp_path` para a forma
+    com sufixo mnemônico que o diário real usa (`P-0740-LM` para o plano `P-0740`).
+    Nunca toca a fixture do repositório."""
+    diario = repo / "docs" / "DIARIO_DE_OBRAS.md"
+    linhas = diario.read_text(encoding="utf-8").splitlines()
+    for i, linha in enumerate(linhas):
+        if linha.startswith(f"| {de} |"):
+            linhas[i] = linha.replace(f"| {de} |", f"| {para} |", 1)
+            break
+    else:  # pragma: no cover - fixture mudou
+        raise AssertionError(f"linha de índice de {de} não encontrada na fixture")
+    diario.write_text(chr(10).join(linhas) + chr(10), encoding="utf-8")
+
+
+def _alf_t1_ready(repo: Path) -> Path:
+    plano_path = repo / "docs" / "plans" / "P-0001-alfa.md"
+    texto = plano_path.read_text(encoding="utf-8")
+    plano_path.write_text(
+        texto.replace("- **Status:** `done` · 2026-01-01", "- **Status:** `ready` · 2026-01-01"),
+        encoding="utf-8",
+    )
+    return plano_path
+
+
+def test_tf_indice_com_sufixo_mnemonico_casa_o_plano(tmp_path):
+    """`ESC-27` do `P-0740`: o índice publica o id do plano com sufixo (`P-0001-ALF`), o
+    cabeçalho do arquivo declara só `P-0001` (`PLANO_HEADER_RE`). Antes do reparo,
+    `_posicao_indice` casava por igualdade exata e `status`/`start`/`next` saíam exit 3
+    (`linha de índice ausente`) para **toda** tarefa de **todo** plano do repo real."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+    _indice_com_sufixo(repo, "P-0001", "P-0001-ALF")
+    _alf_t1_ready(repo)
+
+    modelo = backlog.carregar(repo)
+    assert backlog._posicao_indice(modelo, "P-0001") is not None
+    assert backlog._linha_indice(modelo, "P-0001").id == "P-0001-ALF"
+    # sufixo é `-<alfanumérico>` fechado: prefixo parcial e id vizinho não casam
+    assert backlog._posicao_indice(modelo, "P-000") is None
+    assert backlog._posicao_indice(modelo, "P-0003") is None
+
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "in-progress")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+    diario = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8")
+    assert "| P-0001-ALF | Plano alfa | ready 0/1 |" in diario
+
+
+def test_tf_indice_exato_vence_o_sufixado(tmp_path):
+    """Precedência da regra: havendo linha com o id nu, ela vence a sufixada, mesmo que a
+    sufixada venha antes no documento (tíquete publica id nu e continua casando)."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    modelo = backlog.carregar(repo)
+    exata = backlog._linha_indice(modelo, "P-0001")
+    sufixada = backlog.LinhaIndice(
+        id="P-0001-ALF", titulo="x", status_bruto="ready", arquivo=exata.arquivo, linha=0
+    )
+    modelo.indice.insert(0, sufixada)
+
+    assert backlog._linha_indice(modelo, "P-0001") is exata
+
+
+def test_tf_status_sem_marcadores_do_bloco_gerado_projeta_e_avisa(tmp_path):
+    """`AE-10` do `P-0739` medido no repo real em 2026-09-19 (`ESC-27`): os marcadores
+    `<!-- fila:gerada -->` só entram no diário com a `BKL-T6`, e até lá `transacionar_status`
+    estourava `ValueError` no `.index(...)`. A transação passa a projetar card + linha de
+    índice e **declara** a omissão — pular em silêncio é a classe do `TK-55`."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")  # sem `_inserir_bloco_gerado`
+    plano_path = _alf_t1_ready(repo)
+
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "in-progress")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+    assert "fila:gerada" in (resultado.mensagem or "")
+    assert "- **Status:** `in-progress`" in plano_path.read_text(encoding="utf-8")
+    assert "| P-0001 | Plano alfa | ready 0/1 |" in (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(
+        encoding="utf-8"
+    )
+
+
+def test_tf_escrita_do_instrumento_preserva_lf(tmp_path):
+    """`ESC-27` do `P-0740`: `.gitattributes` declara `* text=auto eol=lf` e o drift-guard
+    `DP-5` depende disso. `_escrever_atomico` em modo texto no Windows gravava CRLF e virava o
+    terminador de todo arquivo que o instrumento tocasse."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    plano_path = _alf_t1_ready(repo)
+
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "in-progress")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+    for alvo in (plano_path, repo / "docs" / "DIARIO_DE_OBRAS.md"):
+        assert b"\r" not in alvo.read_bytes(), alvo

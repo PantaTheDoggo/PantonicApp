@@ -850,6 +850,17 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    **ponta a ponta**, não só as partes; parsers de cabeçalho e de `Status` em `.claude/tools/rdo.py`
    e `.claude/tools/backlog.py`.
 
+20. **G-TOOLDENY — ferramenta recusada ao executor é desfecho nomeado, nunca improviso nem
+    silêncio** — quando o harness nega ao executor a ferramenta de que o card depende, ele
+    **não** contorna por outra ferramenta, **não** pede a terceiro que aplique e **não** segue
+    em silêncio: devolve `blocked motivo=ferramenta`, nomeando a **ferramenta** negada e o
+    **caminho** sobre o qual foi negada, e cola a linha literal da recusa. Quem recebe é o loop,
+    que roteia pela `A3c`: a superfície tem **fallback declarado** — outro instrumento que faça a
+    mesma escrita —, e então a tarefa segue por ele; ou não tem, e então a recusa é **matéria de
+    plano**, não de janela. Superfície de escrita sem fallback declarado é defeito de
+    planejamento. Medida que o originou: três recusas do classificador sobre
+    `.claude/agents/**` dentro de uma tarefa só, em 2026-09-19 (`AE-11`, `AE-42`, `AE-44`).
+
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra
 que não é testável por código deve, no mínimo, constar como checklist de review.

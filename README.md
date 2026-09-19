@@ -723,7 +723,7 @@ própria — a disciplina fica com o agente.
 
 > Fonte da verdade: `GOVERNANCA.md` §7
 
-Dezenove regras mínimas obrigatórias, válidas em todo projeto da família, sem exceção.
+Vinte regras mínimas obrigatórias, válidas em todo projeto da família, sem exceção.
 A coluna do meio distingue o que **falha por si** do que depende de
 alguém ler um checklist.
 
@@ -748,8 +748,9 @@ alguém ler um checklist.
 | 17 | `G-REPLAN`: bloqueio de tarefa por `premissa` abre uma rodada de replanejamento como próxima tarefa do plano, roteada ao planejador — nunca fica esperando o dono nem é contornado pela tarefa seguinte | **Instrução de agente** + roteamento das skills `scrum-master`/`scrum-master` |
 | 18 | `G-NOASK`: interrupção para escalar ao dono durante a execução é falha de planejamento — quem executa não fica com dúvida e não escala direto: para, registra, bloqueia e encerra; o planejador não libera plano com alto risco de interrupção | **Instrução de agente** + **gate de review** |
 | 19 | `G-MODULO`: a unidade de trabalho é o módulo coeso — um tema fechado por card, divisão por assunto e não por volume, coesão interna como critério de aceite, e cabeçalho e bullet de `Status` na gramática que os instrumentos do kit leem | **Instrução de agente** + **gate de review** (o módulo é exercitado ponta a ponta, não só as partes) |
+| 20 | `G-TOOLDENY`: ferramenta recusada ao executor vira `blocked motivo=ferramenta` com a ferramenta, o caminho e a linha literal da recusa — nunca contorno por outra ferramenta, delegação a terceiro ou silêncio; o loop roteia pela `A3c` ao fallback declarado da superfície, e superfície sem fallback é matéria de plano | **Instrução de agente** + roteamento da skill `scrum-master` |
 
-**Sete** regras falham como teste executável, **doze** dependem de gate de review ou de instrução de
+**Sete** regras falham como teste executável, **treze** dependem de gate de review ou de instrução de
 agente — uma delas soma as duas formas, e por isso aparece nas duas contagens —, e uma é negada pelo
 sistema de permissões. As três formas têm forças distintas: um teste falha sem ninguém presente, um
 gate de review falha só se alguém executar o gate, e uma instrução de agente falha apenas se o

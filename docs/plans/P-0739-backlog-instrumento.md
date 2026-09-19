@@ -1792,6 +1792,7 @@ real. Teto de linhas é instrumentação (`DU-14`), não comando.
 ### BKL-T5 — `drain`: o inbox sai do contexto [Sonnet · classe implementacao]
 - **Status:** `ready` · 2026-09-15 · restrições inline e `Pronto quando` discriminante autorados pela
   `RP-6` (2026-09-18) a partir do achado 3 do `AE-7`.
+- **Absorvida por:** `BKL-T10` na retomada (ESC-34/ESC-35)
 - **Depende de:** `BKL-T4`; decisão `DB-38` (gramática de linha viva do inbox de planos).
 - **Objetivo:** §2.4 — cada linha viva vira linha de índice (`status` do plano lido do cabeçalho
   dele, título da linha 1, âncora = caminho) e é movida verbatim com marca ao histórico; contador
@@ -1821,6 +1822,7 @@ real. Teto de linhas é instrumentação (`DU-14`), não comando.
 
 ### BKL-T6 — Migração dos documentos vivos até `check` verde [Sonnet · classe mecanica]
 - **Status:** `ready` · 2026-09-15
+- **Absorvida por:** `BKL-T10` na retomada (ESC-34/ESC-35)
 - **Depende de:** `BKL-T5`
 - **Objetivo:** aplicar §2 ao estado real: (a) cabeçalho do diário → diretiva de `DB-11` + bloco
   gerado, com o parágrafo atual da `Fila corrente` movido verbatim para `## TK-54`/`## TK-53`
@@ -1849,6 +1851,7 @@ real. Teto de linhas é instrumentação (`DU-14`), não comando.
 
 ### BKL-T7 — O hook e o ponto de carga [Sonnet · classe implementacao]
 - **Status:** `ready` · 2026-09-15
+- **Absorvida por:** `BKL-T11` na retomada (ESC-34/ESC-35)
 - **Depende de:** `BKL-T6`
 - **Objetivo:** `backlog_hook.py` (`DB-8`): lê o JSON do `UserPromptSubmit` em stdin, casa o
   gatilho, roda `next` por importação e devolve `{"hookSpecificOutput": {"hookEventName":
@@ -1864,6 +1867,7 @@ real. Teto de linhas é instrumentação (`DU-14`), não comando.
 
 ### BKL-T8 — As skills passam a invocar o instrumento [Sonnet · classe redacao]
 - **Status:** `ready` · 2026-09-15
+- **Absorvida por:** `BKL-T11` na retomada (ESC-34/ESC-35)
 - **Depende de:** `BKL-T7`
 - **Objetivo:** `proximo-passo` passos 1–3 e 5 → "rode `backlog.py next` / `status`" (a heurística
   em prosa vira ponteiro para §2.5 na skill `diario-de-obras`); `handover` §2 → `status` + nota;
@@ -1885,6 +1889,7 @@ real. Teto de linhas é instrumentação (`DU-14`), não comando.
 
 ### BKL-T9 — Aferição e revisão do `README.md` com veredito do dono [Opus + dono · classe redacao]
 - **Status:** `ready` · 2026-09-15
+- **Absorvida por:** `BKL-T12` na retomada (ESC-34/ESC-35)
 - **Depende de:** `BKL-T8`
 - **Objetivo:** (a) medir o pickup novo pelo método de `CUSTO_DO_PICKUP.md` `DC-4` (chars da
   saída do hook numa sessão nova + 1º `usage`) e publicar `## 15` (≤ 30 linhas) contra os 77.457
@@ -2972,4 +2977,39 @@ no relatório de encerramento da janela.
   fila como **fila de módulos**, e fecha em **rodada única** na `LM-T6`. Razão: os 6 cards foram
   autorados sob a régua atômica; executá-los um a um reproduziria os seis defeitos que o run de
   aferição de 2026-09-18 mediu (`P-0740` §3).
+  **Reconciliado pelo `AE-13` desta série (2026-09-19, `ESC-36` do `P-0740`):** os números desta
+  entrada **envelheceram**, e fecham juntos, não um a um — são **5** tarefas `ready`
+  (`BKL-T5`..`BKL-T9`), **11** `done` e **16** no total, medidos no ato, porque a `BKL-T4` fechou em
+  2026-09-18 **depois** desta redação; e a reescrita dos cards **não** é mais da `LM-T5`/`LM-T5a` do
+  `P-0740`: ela é o **primeiro ato da retomada** deste plano, conforme o `AE-13` abaixo. O texto
+  acima fica **literal**, como registro do que se sabia no dia.
+
+- **`AE-13` (2026-09-19) — decisão de reagrupamento (`ESC-34`) e mapa de herança das superfícies
+  mortas (`ESC-35`), transcritas sem re-decisão pela `LM-T5a` do `P-0740`.**
+
+  **Identificador, e a regra que a colisão expôs (`ESC-36`):** a série `AE-<n>` é **por plano**.
+  Este `AE-13` é da série **deste** arquivo (o `P-0739` ia de `AE-1` a `AE-12`) e **não** tem
+  relação com o `AE-13` do `P-0740`, que nomeia achado vivo e diferente — citado **14** vezes
+  naquele plano, inclusive em `docs/RUBRICA_DE_REVISAO.md` §3. A escolha da entrega foi correta (o
+  próximo livre da série local); o que faltava era a regra escrita: **citação de achado de outro
+  plano leva sempre o qualificador** — `AE-<n>` **do** `<plano>` —, como este arquivo e o `P-0740`
+  já fazem em prosa. Nenhum instrumento confere isso hoje; publicar a regra em doutrina do kit é
+  matéria **pós-marco**.
+
+  **Partição** (`ESC-34`): três módulos absorvem os cinco cards `ready` — `BKL-T10` (absorve
+  `BKL-T5` + `BKL-T6`), `BKL-T11` (absorve `BKL-T7` + `BKL-T8`), `BKL-T12` (absorve `BKL-T9`
+  sozinha). Ordem de execução: `BKL-T10` → `BKL-T11` → `BKL-T12`. O `AE-10` encerra no `BKL-T10`:
+  a dependência de ordem que ele nomeava (`transacionar_status` contra os marcadores
+  `<!-- fila:gerada -->` ausentes) deixou de existir quando o `AE-47` pôs em `transacionar_status`
+  a guarda que declara a ausência dos marcadores em vez de estourar. **A transcrição dos três
+  módulos `BKL-T10`..`BKL-T12` é o primeiro ato da retomada deste plano, não desta nota.**
+
+  **Mapa de herança** (`ESC-35`): `passagem-de-bastao` é a **herdeira da matéria** de skill da
+  `BKL-T8` — sucessora de `.claude/skills/proximo-passo/SKILL.md` e
+  `.claude/skills/handover/SKILL.md`, ambas aposentadas e removidas da árvore pela `LM-T4` do
+  `P-0740` —, com `scrum-master` recebendo a parte de condução do loop. Isto **ratifica** o que a
+  `LM-T4` já fez (ela criou a skill nova com o mesmo conteúdo); não inventa sucessão. O aceite
+  herdado da `BKL-T8` — *Grep `backlog.py` em `.claude/skills/` ≥ 3 arquivos* — **não se
+  transcreve** como número: a regra que se transcreve é *toda skill que invoca o instrumento o
+  cita*, e o número se re-deriva na retomada, sobre a árvore de então.
 

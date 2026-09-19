@@ -16,6 +16,30 @@ reescritas nem revogadas.
 
 ## [Não lançado]
 
+- `docs/consultant-spec.md`: a figura ad-hoc do consultor de plano ganha especificação escrita a
+  partir do medido — gatilho e os dois tetos de não-acionamento, domínio de decisão e critério de
+  estratégico, fronteira com o `pantonic-planner` (autorar card novo é **empréstimo**, registrado e
+  não promovido), o porquê do instrumento de execução, a série de custo (68,5% e 63% da janela em
+  duas medidas), encerramento por decisão de janela, fim de vida por limite com handover e sucessão,
+  e a estatística do próprio acionamento com o panorama dos pontos inconclusivos. Indexado no
+  `docs/DOC_MAP.md`. **Não é doutrina:** documento de figura provisória, que não altera
+  `GOVERNANCA.md`, não cria guardrail e não se cita como fonte normativa.
+
+- `check-readme.ps1`: o vocabulário do guarda fica coerente entre os quatro sítios — as quatro
+  capturas de numeral (agentes, skills, regras teste executável, regras gate de review) passam a
+  aceitar forma composta com âncora que impede captura gulosa, e as três mensagens de vocabulário
+  que ainda anunciavam `até vinte` passam a `até trinta`, alinhadas ao `$numeralMap`.
+
+- `check-readme.ps1`: o guarda passa a contar acima de vinte — a captura do numeral da frase de
+  regras mínimas obrigatórias aceita forma composta (`^(.+?) regras…`) e o `$numeralMap` ganha as
+  entradas de vinte e um a trinta, incluindo as formas femininas (`vinte e uma`, `vinte e duas`); e
+  a enumeração do `.SYNOPSIS`/`.DESCRIPTION` passa de cinco para seis checagens, descrevendo a `4b`.
+
+- `check-readme.ps1`: a enumeração em prosa entra no guarda — as duas frases de contagem da seção
+  *Os guardrails* do `README.md` (regras mínimas obrigatórias; teste executável/gate de review)
+  passam a ser conferidas pelo script, reusando o `$numeralMap`; e a `A3c` entra nas três
+  enumerações de `.claude/skills/scrum-master/SKILL.md` que roteiam o bloco A do loop.
+
 - `pantonic-planner` ganha `Bash` no toolset (decisão do dono, 2026-09-18): planner e executor
   passam a acessar a mesma ferramenta de validação, e o dever "comando de aceite não se deduz,
   se roda" deixa de ser inexequível pelo papel a que se dirige.
@@ -232,6 +256,15 @@ reescritas nem revogadas.
 - `rdo.py`: `extrair_dossie` aceita ID de tarefa prefixado (`(?:[A-Z0-9]+-)?T[0-9]+[a-z]?`, `DB-14`) e bracket com ` + dono` (`DB-20`) — `review_evidence.py` e `rdo.py close` passam a funcionar para `AUT-*`/`CTX-*`/`BKL-*` (`P-0739` `BKL-T2a`, `DB-22`).
 - `review_evidence.py`: campo `Arquivos-alvo` lido por gramática de caminho (`DB-27`) — arquivo de raiz volta a ser alvo, literal de regex deixa de ser; `stdout`/`stderr` forçados a UTF-8 (`P-0739` `BKL-T2b`).
 - `review_evidence.py`: confronto de escopo separa o ato do dono (`.claude/agents/`) do arquivo fora dos alvos sem atribuição (`P-0739` `BKL-T2e`, `DB-32`).
+
+- A recusa de ferramenta ao executor deixa de ser improviso e vira desfecho nomeado: guarda
+  `G-TOOLDENY`, motivo `ferramenta` no domínio fechado do retorno e regra de roteamento `A3c` ao
+  fallback declarado da superfície. A exceção aberta em 2026-09-19, em que a orquestração
+  implementou uma tarefa por instrução do dono, fica **fechada** e não é precedente.
+
+- `backlog.py` `transacionar_status`: o escritor de razão para de emitir o que o leitor não relê
+  — `--razao` contendo travessão (`—`, U+2014) sai recusado, `ResultadoStatus(1, ...)`, antes de
+  qualquer escrita (decisão do consultor, `ESC-30`).
 
 ## 2.0.0 — 2026-08-05
 

@@ -147,3 +147,27 @@ de um tíquete podado/absorvido/encaminhado, ou o dossiê de uma `AUT-T<n>`.
 - `## 11. Riscos`
 **Acesso:** `Grep pattern:"^### AUT-T5 " path:docs/plans/P-0737-loop-autonomo.md -n` (trocar
 `AUT-T5` pela tarefa desejada).
+
+## docs/consultant-spec.md (~339 linhas)
+**Propósito:** especificação da figura **provisória** do consultor de plano (`pantonic-consultant`)
+como ela se comportou em três instâncias medidas — gatilho, domínio de decisão, fronteira com o
+`pantonic-planner`, instrumento, custo e teto, encerramento, fim de vida e sucessão, e estatística
+do próprio acionamento. **Não é doutrina** e não se cita como fonte normativa.
+**Quando consultar:** antes de planejar, acionar ou redesenhar o consultor de plano; para o número
+medido do custo do papel em vez de remedi-lo; e para o panorama dos pontos inconclusivos que serve
+de insumo à especificação de robustez da figura.
+**Seções:**
+- `## 1. A figura, em uma página` — o mecanismo da permanência + tabela das três instâncias medidas
+- `## 2. (a) Gatilho — o que aciona e o que não aciona` — as três classes de gatilho e os dois
+  tetos de saída (teste de saturação; capacidade × término)
+- `## 3. (b) Domínio de decisão — o que ela fecha e o que sobe` — critério de estratégico
+- `## 4. (c) Fronteira com o planejador — e o veredito sobre autoria de card`
+- `## 5. (d) Instrumento — por que a figura nasce com execução de comando` — os quatro modos de uso
+- `## 6. (e) Custo e teto — a série, e quando não acionar` — 68,5% e 63%, e a baseline por módulo
+- `## 7. (f) Encerramento — decisão de janela × poluição`
+- `## 8. (g) Fim de vida por limite, e a sucessão` — handover, seus três itens, e a forma ad-hoc
+- `## 9. (h) Estatística do próprio acionamento` — o que se coleta, onde mora, quem lê + tabela do
+  panorama dos dez acionamentos
+- `## 10. O que esta especificação não fecha` — as cinco matérias sem rota decidida
+**Acesso:** `Grep pattern:"^## 6\." path:docs/consultant-spec.md -n` (trocar `6` pela seção
+desejada; as perguntas (a)..(h) mapeiam nas seções 2..9).

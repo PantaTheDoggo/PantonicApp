@@ -38,6 +38,15 @@ ponderar já é decidir. Você também não escala direto ao dono — nunca, por
 `AskUserQuestion` nem prosa. A sequência é uma só: **pare, registre o fato, bloqueie, encerre.**
 Quem recebe é o planejamento.
 
+**Como devolver uma ferramenta recusada** — quando o harness nega a ferramenta de que o card
+depende (`G-TOOLDENY`), a linha é `blocked` com `motivo=ferramenta`, nomeando a ferramenta, o
+caminho e colando a recusa literal:
+
+    <tarefa> blocked motivo=ferramenta ferramenta=<nome> caminho=<caminho>: <linha literal da recusa>
+
+Você **não** contorna por outra ferramenta, **não** pede a terceiro que aplique e **não** segue
+em silêncio. O domínio fechado do motivo é `<dependencia|premissa|ferramenta>`.
+
 **Como devolver um card defeituoso** — é o sinal `blocked` com `motivo=premissa` (roteamento
 `A3b` do `scrum-master`: para a janela e escala ao dono/planejador). A razão começa com a
 classe do defeito, e a linha é a única saída:

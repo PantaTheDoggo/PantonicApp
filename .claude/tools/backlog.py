@@ -18,11 +18,15 @@ por máquina" — replicada aqui igual, `DB-17`/`DB-18`):
 - campos: 1º bullet `- **Status:** \\`<estado>\\``, estado entre crases obrigatório (`LM-T4b`).
   Duas regras: (i) **leitura** — a forma canônica `· AAAA-MM-DD[ · <razão>]` continua aceita, e
   a forma em prosa também (qualquer texto livre depois do estado); tudo que vier depois de
-  ` — ` é cauda livre, lida e preservada, nunca interpretada. Medido no despacho da `LM-T4b`
-  (`P-0740-loop-de-modulos.md`): 25 bullets de `Status`, 0 casavam com o regex estrito antes
-  desta regra. (ii) **escrita** — `transacionar_status` reescreve só o prefixo de máquina
-  (estado, data, razão) e preserva a cauda a partir de ` — `. Opcional
-  `- **Depende de:** ...`.
+  ` — ` é cauda livre, lida e preservada, nunca interpretada. No ramo canônico a fronteira é
+  estrita (`LM-T4c`): a razão não contém ` — `; a cauda começa no primeiro ` — ` da linha e vai
+  até o fim. Medido por introspeção no `ESC-19` sobre
+  `` - **Status:** `blocked` · 2026-09-19 · premissa — cauda viva ``: antes desta regra
+  razão='premissa — cauda viva' e cauda=None; depois, razão='premissa' e cauda='cauda viva'. O
+  ramo em prosa não muda. Medido no despacho da `LM-T4b` (`P-0740-loop-de-modulos.md`): 25
+  bullets de `Status`, 0 casavam com o regex estrito antes desta regra. (ii) **escrita** —
+  `transacionar_status` reescreve só o prefixo de máquina (estado, data, razão) e preserva a
+  cauda a partir de ` — `. Opcional `- **Depende de:** ...`.
 - índice: `| <ID> | <título> | <estado>[ <done>/<total>] | <âncora> |`.
 
 `carregar` só lê `docs/DIARIO_DE_OBRAS.md` e `docs/plans/P-*.md` — nunca abre `*_HISTORICO.md`
@@ -74,7 +78,7 @@ SUBTAREFA_HEADER_RE = re.compile(rf"^### (TK-\d+[a-z]) — (.+?) {_BRACKET}$")
 TAREFA_HEADER_RE = re.compile(rf"^### ((?:[A-Z0-9]+-)?T\d+[a-z]?) — (.+?) {_BRACKET}$")
 
 STATUS_BULLET_RE = re.compile(
-    r"^- \*\*Status:\*\* `([a-z-]+)`(?: · \d{4}-\d{2}-\d{2}(?: · (.+))?|.*?)(?: — (.+))?$"
+    r"^- \*\*Status:\*\* `([a-z-]+)`(?: · \d{4}-\d{2}-\d{2}(?: · ([^—]+?))?|.*?)(?: — (.+))?$"
 )
 DEPENDE_BULLET_RE = re.compile(r"^- \*\*Depende de:\*\* (.+)$")
 TIPO_BULLET_RE = re.compile(r"^- \*\*Tipo:\*\* (.+)$")
@@ -206,7 +210,8 @@ def _extrair_status(
             continue
         m = STATUS_BULLET_RE.match(bruta)
         if m:
-            return m.group(1), j + 1, m.group(2), m.group(3)
+            razao = m.group(2).strip() if m.group(2) is not None else None
+            return m.group(1), j + 1, razao, m.group(3)
         return None, None, None, None
     return None, None, None, None
 
@@ -627,10 +632,33 @@ def _aplicar_diretiva(modelo: Modelo, candidatos: list[Candidato]) -> list[Candi
 
 
 def _posicao_indice(modelo: Modelo, pai_id: str) -> int | None:
+    """Residencia unica do casamento pai -> linha de indice.
+
+    O indice do diario publica o id de um plano com **sufixo mnemonico**
+    (`P-0740-LM`, `P-0739-BKL`), enquanto o cabecalho do arquivo de plano declara so
+    `P-NNNN` (`PLANO_HEADER_RE`). Igualdade exata nunca casa nenhum plano vivo — o
+    guarda "linha de indice ausente" disparava para **toda** tarefa de **todo** plano
+    (medido em 2026-09-19 no `ESC-27` do `P-0740`).
+
+    Regra: id exato vence; na falta dele, a primeira linha — em ordem de documento —
+    cujo id seja `<pai_id>-<SUFIXO>` com `SUFIXO` em `[A-Za-z0-9]+`. O sufixo fechado
+    impede que celula de tabela ilustrativa (o lixo que o `AE-1` mede no parser de
+    indice) case por acidente. Tiquete publica o id nu e cai no ramo exato."""
+    padrao = re.compile(rf"^{re.escape(pai_id)}-[A-Za-z0-9]+$")
+    sufixado: int | None = None
     for pos, linha in enumerate(modelo.indice):
         if linha.id == pai_id:
             return pos
-    return None
+        if sufixado is None and padrao.match(linha.id):
+            sufixado = pos
+    return sufixado
+
+
+def _linha_indice(modelo: Modelo, pai_id: str) -> LinhaIndice | None:
+    """A linha de indice do pai, pela mesma regra de `_posicao_indice` — nenhum ponto
+    do instrumento reescreve o casamento."""
+    pos = _posicao_indice(modelo, pai_id)
+    return modelo.indice[pos] if pos is not None else None
 
 
 def _irmaos_ordenados(pai: Plano | Item, tipo_pai: str) -> list[Item]:
@@ -753,10 +781,8 @@ def _residencia_tiquete(modelo: Modelo, tiquete: Item) -> str:
 
 
 def _indice_ancora(modelo: Modelo, pai_id: str) -> str:
-    for linha in modelo.indice:
-        if linha.id == pai_id:
-            return linha.ancora
-    return ""
+    linha = _linha_indice(modelo, pai_id)
+    return linha.ancora if linha is not None else ""
 
 
 def _antecessora(pai: Plano | Item, tipo_pai: str, vencedor_item: Item) -> Item | None:
@@ -985,7 +1011,11 @@ def _escrever_atomico(caminho: Path, linhas: list[str]) -> None:
     """DB-1 — temp no mesmo diretório + `os.replace`, num ato só."""
     texto = "\n".join(linhas) + "\n"
     tmp = caminho.with_name(caminho.name + ".tmp")
-    tmp.write_text(texto, encoding="utf-8")
+    # newline="\n": o canone do repo e LF em toda parte (`.gitattributes`: `* text=auto
+    # eol=lf`, motivo declarado - sem isso o drift-guard `DP-5` entre hub e filho marca toda
+    # linha como divergente). Sem o parametro, o modo texto do Windows grava CRLF e todo ato de
+    # escrita do instrumento vira o terminador do arquivo tocado (`ESC-27` do `P-0740`).
+    tmp.write_text(texto, encoding="utf-8", newline="\n")
     os.replace(tmp, caminho)
 
 
@@ -1032,6 +1062,13 @@ def transacionar_status(
     if estado == "blocked" and not razao:
         return ResultadoStatus(1, "blocked exige --razao")
 
+    if razao and "—" in razao:
+        return ResultadoStatus(
+            1,
+            "razão contém travessão (—, U+2014): o leitor (STATUS_BULLET_RE) usa o "
+            "travessão como fronteira entre razão e cauda — escreva --razao sem travessão",
+        )
+
     if estado == "in-progress" and pai is not alvo:
         irmaos = pai.tarefas if tipo_pai == "plano" else pai.filhos
         if any(irmao is not alvo and irmao.status == "in-progress" for irmao in irmaos):
@@ -1060,7 +1097,8 @@ def transacionar_status(
         else:
             diario_linhas[alvo.status_linha - 1] = nova_linha
 
-    linha_indice_pai = next(l for l in modelo.indice if l.id == pai.id)
+    # Nao pode ser None: o guarda de `_posicao_indice` acima ja recusou o caso.
+    linha_indice_pai = _linha_indice(modelo, pai.id)
     done, total = _done_total(pai.tarefas if tipo_pai == "plano" else pai.filhos)
     novo_status_bruto = f"{pai.status} {done}/{total}" if total else pai.status
     diario_linhas[linha_indice_pai.linha - 1] = (
@@ -1071,9 +1109,27 @@ def transacionar_status(
         linha_nota = f"  - {hoje} `{estado}` — {nota}"
         _inserir_nota(plano_linhas if alvo.tipo == "tarefa" else diario_linhas, alvo, linha_nota)
 
-    ini = diario_linhas.index("<!-- fila:gerada -->")
-    fim = diario_linhas.index("<!-- /fila:gerada -->", ini)
-    diario_linhas[ini + 1 : fim] = _bloco_fila_corrente(modelo)
+    # `AE-10` do `P-0739` / `ESC-27` do `P-0740`: os marcadores do bloco gerado so entram
+    # no diario com a `BKL-T6` item (a), e o `P-0739` esta parado (`DM-9`). Projetar o que
+    # ainda nao existe nao e erro do chamador — sem os dois marcadores a transacao segue e
+    # projeta card + linha de indice, declarando a omissao em `mensagem` (skip silencioso
+    # e a classe de defeito que o `TK-55` acumula). Com eles, o bloco e regenerado.
+    aviso: str | None = None
+    if "<!-- fila:gerada -->" in diario_linhas:
+        ini = diario_linhas.index("<!-- fila:gerada -->")
+        fim = next(
+            (i for i in range(ini + 1, len(diario_linhas)) if diario_linhas[i] == "<!-- /fila:gerada -->"),
+            None,
+        )
+        if fim is None:
+            aviso = f"bloco `Fila corrente` nao projetado: marcador de fechamento ausente em {modelo.diario_arquivo}"
+        else:
+            diario_linhas[ini + 1 : fim] = _bloco_fila_corrente(modelo)
+    else:
+        aviso = (
+            f"bloco `Fila corrente` nao projetado: marcadores `<!-- fila:gerada -->` ausentes em "
+            f"{modelo.diario_arquivo} (`AE-10`; chegam com a `BKL-T6` do `P-0739`)"
+        )
 
     arquivos_tocados = [modelo.diario_arquivo]
     _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
@@ -1081,7 +1137,7 @@ def transacionar_status(
         _escrever_atomico(repo / plano_arquivo, plano_linhas)
         arquivos_tocados.append(plano_arquivo)
 
-    return ResultadoStatus(0, None, sorted(set(arquivos_tocados)))
+    return ResultadoStatus(0, aviso, sorted(set(arquivos_tocados)))
 
 
 def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoStatus:
@@ -1184,6 +1240,8 @@ def main(argv: list[str] | None = None) -> int:
         resultado = transacionar_status(repo, modelo, args.id, estado, razao=razao, nota=nota)
         if resultado.exit_code == 0:
             print(f"{args.comando}: {args.id} → {estado}. arquivos tocados: {', '.join(resultado.arquivos)}")
+            if resultado.mensagem:
+                print(resultado.mensagem)
             return 0
         print(resultado.mensagem, file=sys.stderr if resultado.exit_code == 3 else sys.stdout)
         return resultado.exit_code
