@@ -32,7 +32,7 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
 - O índice fica **no topo** e tem UMA linha por item — é por ele que o executor localiza sua
   tarefa sem ler seções irrelevantes. Toda mudança de status atualiza índice E seção.
 - **A célula "Título" do índice NUNCA recebe prosa de resultado de execução.** O handover de
-  fechamento (skill `handover`) escreve o detalhe (o que foi feito, testes, consumo) na seção
+  fechamento (skill `passagem-de-bastao`) escreve o detalhe (o que foi feito, testes, consumo) na seção
   própria (`### <ID>` no diário) ou, para sprint que vive inteiramente em `docs/plans/P-*.md`
   (linha única no índice, sem heading no diário), numa seção do próprio plano (`## Notas de
   execução` / `## Achados da execução`) — nunca de volta na linha do índice. A célula do índice
@@ -42,7 +42,7 @@ e tíquete avulso é arquivado, com identificação imediata do trabalho e seu s
   ~2.5k para ~5k chars por handovers sucessivos apensando parágrafos). Mesmo mecanismo do
   "Guardrail anti-log-narrativo" abaixo, generalizado para toda tarefa — não só planos derivados.
 - **Diretiva de priorização** é a linha imediatamente abaixo do título. Guia a
-  skill `proximo-passo` quando o usuário pede para seguir o backlog sem nomear tarefa. Vazia por
+  skill `scrum-master` quando o usuário pede para seguir o backlog sem nomear tarefa. Vazia por
   padrão — heurística: destravar `blocked` → concluir `in-progress` (WIP de 1 iniciativa por vez)
   → bugs → demais por FIFO (ordem de entrada no índice).
 - **Sprints multi-tarefa** (`## SPRINT-<nome>`) têm, imediatamente abaixo do `**Objetivo:**`, a
@@ -225,7 +225,7 @@ quando a linha exata não existe no momento do planejamento (`C-06`, padrão de 
    Gatilhos adicionais: (c) uma única seção — mesmo `ready` — que passe de ~300 linhas migra
    para arquivo satélite próprio (`docs/DIARIO_<ID>.md` ou `docs/audits/<ID>_LOG.md`,
    append-only), ficando no diário só a linha de índice + "última rodada: N / último achado:
-   M"; (d) o dono do gatilho é o fechamento de cada tarefa (skill `handover`) — não existe
+   M"; (d) o dono do gatilho é o fechamento de cada tarefa (skill `passagem-de-bastao`) — não existe
    "ninguém verifica". Tíquete acumulador (log de evidência que não fecha por desenho) nasce
    já como arquivo satélite + linha de índice, nunca como seção crescente do diário — também
    elimina colisão de append concorrente entre sessões.
@@ -238,7 +238,7 @@ quando a linha exata não existe no momento do planejamento (`C-06`, padrão de 
 5. **Drenar inbox de planos** — forma canônica: `python .claude/tools/backlog.py drain [--data
    AAAA-MM-DD]` (verbo de `docs/plans/P-0739-backlog-instrumento.md` §3); a prosa abaixo descreve o
    efeito. Efeito: no início de qualquer sessão que vá tocar o diário (em especial
-   ao abrir a skill `proximo-passo`), ler `docs/plans/_INBOX.md` — única fonte da drenagem; o
+   ao abrir a skill `scrum-master`), ler `docs/plans/_INBOX.md` — única fonte da drenagem; o
    pickup nunca lê o histórico. Cada linha não drenada aponta
    para um `docs/plans/P-NNNN-<slug>.md` gravado por um agente de planejamento (possivelmente em
    paralelo com outros); promover cada plano ainda não promovido para uma entrada no índice +
@@ -298,4 +298,4 @@ frase** + status + ponteiro. Cada handover da saga escreve no satélite, nunca e
   `## Achados da execução` apensada ao FINAL do próprio `docs/plans/P-*.md` (nunca fora do
   plano); o diário guarda só a linha de índice com âncora para lá. `TK-*` com seção no diário
   é reservado a demanda sem plano de origem. A sprint só flipa para `done` com todos os
-  achados do plano triados (rota registrada) — ver skill `handover` §2.
+  achados do plano triados (rota registrada) — ver skill `passagem-de-bastao` §2.

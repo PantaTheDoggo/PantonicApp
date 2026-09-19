@@ -185,6 +185,16 @@ def _slugify(titulo: str) -> str:
 
 
 def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]:
+    """Extrai os campos canônicos (`_CAMPOS_CANONICOS`) e os extras de um bloco de card.
+
+    Regra de fim de campo (`AE-27` item 2, caso `LM-T2b`): um **bullet de topo** encerra o campo
+    corrente, case ele `_CAMPO_RE` (campo canônico) ou não. Antes deste reparo, só um bullet que
+    casasse `_CAMPO_RE` encerrava o campo — um bullet de prosa cujo rótulo não termina em `:**`
+    (ex.: `- **A calibração medida no \\`ESC-3\\`... — residência única desta tabela.**`) não
+    encerrava nada, e todas as linhas indentadas seguintes (uma tabela inteira, no caso medido)
+    continuavam sendo anexadas ao campo canônico anterior. Linha indentada continua alimentando
+    o campo corrente, como sempre — só o bullet de topo fecha.
+    """
     campos: dict[str, str] = {}
     extras: list[list[str]] = []
     chave_atual: str | None = None
@@ -214,7 +224,14 @@ def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]
             elif chave_atual is not None:
                 campos[chave_atual] = (campos[chave_atual] + " " + texto).strip()
             continue
-        # linha sem indentação que não é campo novo: fora da gramática, ignorada.
+        if linha.startswith("- "):
+            # Bullet de topo que não casa `_CAMPO_RE` (rótulo sem ':**'): encerra o campo
+            # corrente do mesmo jeito que um campo canônico encerraria (AE-27 item 2).
+            chave_atual = None
+            em_extra = False
+            continue
+        # linha sem indentação que não é campo novo nem bullet de topo: fora da gramática,
+        # ignorada.
 
     return campos, extras
 

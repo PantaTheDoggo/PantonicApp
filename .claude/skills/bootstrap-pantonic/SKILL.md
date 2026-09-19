@@ -50,7 +50,7 @@ plugins/<nome>/  manifest.json + plugin.py + use_case.py + adhoc/
 tests/  tools/
 CLAUDE.md        ≤ 200 linhas, só regras que mudam comportamento
 .claude/agents/  copiar pantonic-planner, pantonic-executor, pantonic-scout do kit
-.claude/skills/  copiar diario-de-obras, proximo-passo, integrar-poc, guardrails-check, handover
+.claude/skills/  copiar diario-de-obras, integrar-poc, guardrails-check, passagem-de-bastao
 ```
 
 ## Aceitação

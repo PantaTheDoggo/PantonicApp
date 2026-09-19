@@ -272,3 +272,74 @@ A decisão de mudar rota é do dono.
 O reviewer marca dimensões, anexa achados e emite o laudo pelo gerador. O reviewer não corrige o que
 aponta, não replaneja, não edita os arquivos da tarefa e não escreve percentual nem veredito. A
 correção do que o laudo aponta pertence a uma execução seguinte, com o laudo em mãos.
+
+## 8. Rubrica de criação de tarefa
+
+> Fonte da verdade: régua de **autoria** do card, aplicada **antes** do despacho — a §1..§7 julga a entrega, esta julga o dossiê que a pediu.
+> Medida que a originou (`P-0740`, `ESC-9`..`ESC-14`): oito defeitos de autoria numa janela, três cards seguidos parados por linha de aceite
+> quebrada, e 867k tk em cinco passagens de consultor contra quatro tarefas fechadas.
+
+| # | o card passa quando | caso medido |
+|---|---|---|
+| (i) | não exige do executor **avaliar**, **decidir** ou **tratar ambiguidade** | `AE-1` |
+| (ii) | é um tema só, fechado, sem matéria transversal, e despachável **inteiro** num ato (`DM-2`/`DM-4`) | — |
+| (iii) | o cabeçalho segue a gramática que os **parsers** aceitam **na data do card**, nunca a que só a doutrina conhece | `AE-5` |
+| (iv) | declara o aceite de coerência do módulo (`DM-3`) | — |
+| (v) | os números de aceite são re-deriváveis por comando, não copiados | `AE-21` |
+| (vi) | todo entregável que cria, versiona ou apaga arquivo foi confrontado com o `.gitignore` e com o filtro do instrumento que o julga, e a `Verificação` discrimina o mundo com a mudança do mundo sem ela | `AE-2` |
+| (vii) | toda linha de `Verificação` publica saída **observada**: comando com os argumentos exatos, pergunta binária pela flag binária e pelo exit code, e nenhum aceite exigindo verde que a tarefa não pode produzir | `AE-4` |
+| (viii) | card que mexe em item de lista ou de tabela enumerada fecha, no mesmo ato, a frase da **mesma seção** que a conta, e estende o instrumento que julga a seção | `AE-12` |
+| (ix) | exigência **estrutural** não é prometida como teste comportamental: ou vem com o caso em que a implementação certa e a reimplementação plausível divergem, ou vira inspeção mecânica, ou é `Restrição` sem teste | `AE-16` |
+| (x) | nenhum total de suíte entra como constante de aceite: o piso é relação (*não reduz o total re-medido no despacho, e soma os `<N>` testes novos*), e o literal é referência **datada** | `AE-18` |
+| (xi) | linha por efeito em arquivo publica **os dois** valores rodados; padrão que devolve o mesmo valor nos dois mundos é inválido por construção; literal com crase, asterisco ou barra invertida vai em **bloco cercado**, e padrão textual leva `-SimpleMatch` | `AE-19` |
+| (xii) | o comando de aceite é **medida, não afirmação**: (a) recorte do literal da fonte, nunca palavra reescrita de memória; (b) rodado nos dois mundos, com os dois valores no card; (c) com as opções que o tornam discriminante (`-SimpleMatch`, `-CaseSensitive`); (d) com **alvo alcançável dentro do escopo declarado do card** — *executando só o que este card manda executar, este comando pode sair como o card diz?* | `AE-23`, `AE-19`, `AE-25`, `AE-26`/`AE-27`/`AE-28` |
+| (xiii) | nenhum número de corpus — total de suíte, contagem de cards, de ocorrências ou de linhas — entra como constante de aceite: entra como **relação**, com o literal citado só como referência datada | `AE-21` |
+| (xiv) | card **reescrito** re-declara as rotas de achado que apontam para ele | `AE-9` |
+| (xv) | regra nova de tabela declara o efeito sobre **cada** valor do domínio que toca, e confronta a ação com o domínio que o instrumento de fechamento aceita | `AE-20`, `AE-22` |
+
+### 8.1 A forma normativa do bloco `Verificação`
+
+Todo item de `Verificação` tem **três** elementos, nesta ordem e legíveis por máquina:
+
+1. o **comando**, em bloco cercado, exatamente como foi rodado;
+2. o **valor esperado**, na linha iniciada por `→`;
+3. o **valor medido antes**, no literal `**Medido antes: <valor>**` — os elementos 2 e 3 saem juntos, na forma `→ **1**. **Medido antes: 0**.`
+
+O item começa em `N.` seguido **imediatamente** do bloco cercado — nenhuma prosa entre o número e a abertura do comando. Prosa explicativa, quando houver, vai **depois** do `**Medido antes: <valor>**`, nunca antes do comando.
+
+Não é forma nova: 32 itens do `P-0740` já a usam, e o que a norma acrescenta é torná-la obrigatória e **parseável**. A razão de ser norma, e não um décimo sexto critério, está medida: quinze critérios em vigor não impediram oito defeitos numa janela, e o `AE-30` nasceu no mesmo ato que escreveu o critério contra ele, três parágrafos acima da linha defeituosa.
+Checklist lido pelo autor não fecha defeito de autoria; o que fecha é comando que falha ruidosamente no ato da autoria.
+
+**Passo mecânico, e o ciclo:** `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>`. **Card cujo `card_check` não sai 0 não se despacha.**
+Enquanto o instrumento não existir — ele é a `LM-T5b`, e em 2026-09-19 não estava na árvore —, o passo é a conferência **manual** dos três
+elementos, item a item, por quem despacha.
+
+### 8.2 Julgamento dos cards do `P-0740` (2026-09-19)
+
+Vinte cards, re-contados no ato: 23 `LM-*` no plano, menos `LM-T5`, `LM-T5a` e `LM-T6` — contagem como relação, nunca constante, que é o critério (xiii) aplicado a esta própria linha.
+
+| card | veredito | defeito nomeado |
+|---|---|---|
+| `LM-T1` | não passa | (x) piso de suíte como constante de aceite (`total ≥ 145`, `142 + 3`) |
+| `LM-T1a` | não passa | (x) `piso ≥ 145` e a baseline de módulo `47 → 55` como constantes |
+| `LM-T2` | não passa | (xiv) a reescrita do `ESC-3` proibiu tocar o bloco A e não re-declarou a rota do `AE-9`, que apontava para este card; o buraco só apareceu no laudo da tarefa seguinte |
+| `LM-T2a` | não passa | (x) `piso ≥ 156` como constante |
+| `LM-T2b` | não passa | (xiii) o `Pronto quando` fixa `175 passed` como aceite; e a `Verificação` 4 só ficou exequível depois do reparo do `AE-25` |
+| `LM-T2c` | não passa | (xv) a `A8a` nova não partiu o domínio: dois pares (`veredito`, `recomendacao`) ficaram sem regra útil, um deles mandando fazer o que o instrumento recusa (`AE-20`) |
+| `LM-T2d` | não passa | (xv) publicou a frase de partição sem confrontar a ação da `A7` com o domínio que o `rdo.py close` aceita (`AE-22`) |
+| `LM-T2e` | **passa** | padrão por recorte da fonte, dois mundos por linha, invariante declarado com o casamento conferido, piso em relação |
+| `LM-T2f` | não passa | (xiii) aceite absoluto (`9 passed`, `174 passed`) onde a relação é `−1`; hoje ainda casa (suíte re-medida neste ato: `175 passed`) e envelhece no primeiro card que somar teste |
+| `LM-T3` | não passa | (x) `piso ≥ 153` como constante; e (vii) `Verificação` em prosa corrida, sem os dois valores rodados por linha |
+| `LM-T3a` | **passa** | piso em relação com literal datado, quatro linhas medidas, regra concorrente por teste, guarda de borda com residência única |
+| `LM-T3b` | **passa** | baselines re-medidas verdadeiras neste ato (`9`; `1, 2, 5, 1, 2`), concorrente nomeado, contingência que **para** se o invariante mudar |
+| `LM-T4` | não passa | (i) o item (c) manda **decidir** o que permanece, o que migra e o que é aposentado, sem decisão fechada no plano; e (viii) publica na §7, lista que o `check-readme` conta contra a tabela de `README.md` — arquivo fora dos alvos e guarda fora do aceite |
+| `LM-T4a` | não passa | (x) `piso ≥ 153 + os cinco testes novos` como constante |
+| `LM-T4b` | não passa | (xii)(d) o `Pronto quando` exige transitar **card real**, que o próprio card declara inalcançável (`AE-29`); a emenda do `ESC-13` moveu a `Verificação` 2 para fixture e não reconferiu o critério de pronto que dependia dela — mesma causa do `AE-30` |
+| `LM-T5b` | **passa** | três elementos em todo item, contingência que prevê o envelhecimento da própria baseline, lista fechada de comandos, piso em relação |
+| `LM-T7` | não passa | (viii) fechou o **item** da tabela e não a frase da mesma seção que o conta, com as cinco verificações verdes (`AE-12`); e (x) `piso ≥ 145` |
+| `LM-T7a` | não passa | (x) `piso ≥ 145` como constante — no resto, o card que melhor prova discriminação, ao rodar o guarda novo contra a prosa velha antes de corrigi-la |
+| `LM-T8` | não passa | (ii)/(xii)(d) dois estados de executabilidade no mesmo card: o `Pronto quando` condiciona o item (b) à `LM-T4`, e despacho nenhum fecha o card inteiro |
+| `LM-T9` | não passa | (i) exige juízo do executor — dizer se a autoria de cards é da figura ou empréstimo, e fixar a regra de quando **não** acionar o consultor |
+
+Dezesseis dos vinte não passam, e nenhum por conteúdo: o defeito mora sempre na linha de aceite — piso ou baseline como constante em oito, alvo
+inalcançável dentro do escopo em dois, juízo exigido do executor em dois, domínio de tabela não partido em dois, invariante de contagem em um, rota de achado órfã em um.

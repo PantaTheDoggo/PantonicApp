@@ -8,10 +8,16 @@ consumo (via `agent_transcript_path`) mas não a identidade da tarefa do plano. 
 
 **Números** (mesmo padrão de parse que `.claude/tools/ocupacao.py`, `T13`, já usa — nenhum leitor
 novo se inventa): `tokens_k` = soma de `input_tokens + cache_creation_input_tokens +
-cache_read_input_tokens + output_tokens` das entradas `assistant` do `.jsonl` apontado por
-`agent_transcript_path`, dividida por 1000; `tool_uses` = contagem de blocos `type == "tool_use"`
-no `message.content` dessas mesmas entradas; `duracao_s` = diferença, em segundos, entre o
-primeiro e o último `timestamp` do transcript.
+cache_read_input_tokens + output_tokens` da **última** entrada `assistant` com `usage` no
+`.jsonl` apontado por `agent_transcript_path`, dividida por 1000 — não a soma de todas as
+entradas (calibração `ESC-3`, 2026-09-18: seis de seis transcripts reais bateram a notificação
+`<usage>`, o número verdadeiro, só com a última mensagem; a soma por `message.id` reproduzia
+exatamente os valores errados que o hook vinha gravando, porque `cache_read_input_tokens` é o
+contexto **inteiro** relido a cada turno — somá-lo turno a turno multiplica o total pelo número
+de turnos); `tool_uses` = contagem de blocos `type == "tool_use"` no `message.content` de
+**todas** as entradas `assistant` (esse campo não sofre o mesmo problema — cada bloco aparece em
+exatamente uma entrada, nunca repetido); `duracao_s` = diferença, em segundos, entre o primeiro e
+o último `timestamp` do transcript.
 
 **Filtro** (`DP-S` `### 23.3` item 4): o hook só age quando `agent_type` é papel do kit —
 convenção de nome `pantonic-*`. Fora do filtro, ou sem estado gravado (despacho fora do loop),
@@ -47,17 +53,17 @@ def calcular_consumo(linhas: list[str]) -> tuple[float, int, float]:
     subagente (`agent_transcript_path`). Entrada malformada ou sem campo esperado é ignorada
     linha a linha (falha aberta na leitura), nunca propaga exceção.
 
-    **Deduplicação por `message.id`** (achado da calibração obrigatória do dossiê `T55`, contra
-    um despacho aninhado trivial real): uma única resposta da API vira **múltiplas** entradas
-    `type == "assistant"` no transcript quando a mensagem tem mais de um bloco de conteúdo (ex.:
-    `thinking` + `text`, ou `text` + `tool_use`) — cada entrada carrega o **mesmo**
-    `message.usage`, não um incremento. Somar `usage` por entrada, sem dedupe, dobrava (ou mais)
-    o total medido: `subagent_tokens` reportado pelo harness = 8863; soma ingênua por entrada =
-    17726 (exatamente 2x, transcript com 2 entradas para a mesma mensagem). A correção soma
-    `usage` **uma vez por `message.id`** — `tool_uses` não sofre o mesmo problema, porque cada
-    bloco de conteúdo (incluindo `tool_use`) aparece em exatamente uma entrada, nunca repetido."""
-    tokens_por_mensagem: dict[str, int] = {}
-    tokens_sem_id = 0
+    **`tokens_k` é o `usage` da última mensagem, não a soma de todas** (achado da calibração
+    obrigatória do dossiê `ESC-3`, 2026-09-18, sobre seis transcripts reais de subagente
+    confrontados com o `<usage>` real da notificação): a soma por `message.id` reproduzia
+    exatamente os valores errados que o hook vinha gravando (fatores medidos de até ×20 sobre o
+    valor real), porque `cache_read_input_tokens` é o contexto **inteiro** relido a cada turno —
+    somá-lo turno a turno multiplica o total pelo número de turnos. A última entrada `assistant`
+    com `usage` já carrega o total acumulado da conversa inteira do subagente; usar só ela deu,
+    nos seis casos medidos, exatamente o número da notificação. `tool_uses` continua somando
+    todos os blocos `tool_use` de todas as entradas — cada bloco de conteúdo aparece em
+    exatamente uma entrada, nunca repetido, e essa contagem já bate com a notificação."""
+    tokens_ultima_mensagem = 0
     tool_uses = 0
     primeiro_ts: str | None = None
     ultimo_ts: str | None = None
@@ -87,19 +93,12 @@ def calcular_consumo(linhas: list[str]) -> tuple[float, int, float]:
 
         usage = mensagem.get("usage")
         if isinstance(usage, dict) and usage:
-            tokens_desta_entrada = (
+            tokens_ultima_mensagem = (
                 int(usage.get("input_tokens", 0) or 0)
                 + int(usage.get("cache_creation_input_tokens", 0) or 0)
                 + int(usage.get("cache_read_input_tokens", 0) or 0)
                 + int(usage.get("output_tokens", 0) or 0)
             )
-            message_id = mensagem.get("id")
-            if isinstance(message_id, str) and message_id:
-                tokens_por_mensagem[message_id] = tokens_desta_entrada
-            else:
-                # Sem `message.id` (formato antigo/inesperado): soma a entrada isolada em vez de
-                # arriscar perder o número — pior caso vira dupla contagem rara, não ausência.
-                tokens_sem_id += tokens_desta_entrada
 
         conteudo = mensagem.get("content")
         if isinstance(conteudo, list):
@@ -107,9 +106,8 @@ def calcular_consumo(linhas: list[str]) -> tuple[float, int, float]:
                 1 for bloco in conteudo if isinstance(bloco, dict) and bloco.get("type") == "tool_use"
             )
 
-    tokens_total = sum(tokens_por_mensagem.values()) + tokens_sem_id
     duracao_s = _duracao_segundos(primeiro_ts, ultimo_ts)
-    return tokens_total / 1000, tool_uses, duracao_s
+    return tokens_ultima_mensagem / 1000, tool_uses, duracao_s
 
 
 def _duracao_segundos(primeiro: str | None, ultimo: str | None) -> float:
@@ -147,7 +145,7 @@ def montar_args_append(
         "--data", data,
         "--projeto", str(estado.get("projeto", "")),
         "--tarefa", str(estado.get("tarefa", "")),
-        "--modelo", str(estado.get("modelo", "")),
+        "--modelo", str(estado.get("modelo", "")).strip().lower(),
         "--tool_uses", str(tool_uses),
         "--tokens_k", f"{tokens_k:.1f}",
         "--duracao_s", f"{duracao_s:.1f}",

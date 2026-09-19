@@ -71,6 +71,14 @@ class ReviewEvidenceValidationError(ValueError):
     """Dossiê, plano, tarefa ou repositório git inválido (mensagem já nomeia o problema)."""
 
 
+def _exigir_plano(plano_path: Path) -> None:
+    """Guarda única da borda: caminho de plano que não existe falha pelo canal do módulo
+    (`ReviewEvidenceValidationError` → `review_evidence: FALHOU - …`), em **todos** os verbos
+    (`DM-22`, `AE-17`)."""
+    if not plano_path.is_file():
+        raise ReviewEvidenceValidationError(f"plano: arquivo não encontrado '{plano_path}'")
+
+
 def _default_root() -> Path:
     return Path(__file__).resolve().parent.parent.parent
 
@@ -206,17 +214,32 @@ def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
     return sorted(tocados.keys())
 
 
-def coletar_estado_git(root: Path) -> dict[str, str]:
+def coletar_estado_git(root: Path, desde: str | None = None) -> dict[str, str]:
     """Código `XY` de `git status --porcelain=v1 --untracked-files=all` por caminho (mesma chave
     que `coletar_arquivos_tocados` já extrai via `_extrair_caminho_status`) — a evidência `git`
     que comprova a atribuição de cada arquivo na seção `## Arquivos tocados` (`LM-T3`, `AE-13`).
-    Não classifica nada: só devolve o estado bruto que o `git` já relata."""
+    Não classifica nada: só devolve o estado bruto que o `git` já relata.
+
+    Com `desde=<ref>` (`LM-T3a`): a árvore de trabalho vence sempre; na ausência dela, e só então,
+    entra a letra de `git diff <ref> --name-status`, marcada como commitada (`<letra> (commitado
+    desde <ref>)`) via `setdefault` — é o `setdefault`, e não uma atribuição, que materializa essa
+    precedência. Para renomeação (`R100\t<velho>\t<novo>`), a chave é o último campo da linha e a
+    letra é o primeiro campo inteiro (`R100`)."""
     saida_status = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
     estados: dict[str, str] = {}
     for linha in saida_status.splitlines():
         if not linha:
             continue
         estados.setdefault(_extrair_caminho_status(linha), linha[:2])
+    if desde is not None:
+        saida_diff = _git(["diff", desde, "--name-status"], root)
+        for linha in saida_diff.splitlines():
+            if not linha.strip():
+                continue
+            campos = linha.split("\t")
+            letra = campos[0]
+            caminho = campos[-1]
+            estados.setdefault(caminho, f"{letra} (commitado desde {desde})")
     return estados
 
 
@@ -612,8 +635,7 @@ def montar_documento(
     desde: str | None = None,
 ) -> str:
     plano_path = Path(plano_path)
-    if not plano_path.is_file():
-        raise ReviewEvidenceValidationError(f"plano: arquivo não encontrado '{plano_path}'")
+    _exigir_plano(plano_path)
 
     rdo = _load_rdo(root)
     try:
@@ -633,7 +655,7 @@ def montar_documento(
     tocados = coletar_arquivos_tocados(root, desde)
     alvos_de_outras = mapear_alvos_de_outras_tarefas(plano_path, dossie.tarefa_id, root)
     escopo = confrontar_escopo(tocados, arquivos_alvo, root, alvos_de_outras)
-    estado_git = coletar_estado_git(root)
+    estado_git = coletar_estado_git(root, desde)
     trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars, tocados)
     resultados_guardas = rodar_bateria_guardas(root, comandos_guardas)
     veredito_guardas_valor = veredito_guardas(resultados_guardas)
@@ -706,6 +728,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.atribuir:
         rdo = _load_rdo(args.root)
         try:
+            _exigir_plano(args.plano)
             dossie = rdo.extrair_dossie(
                 args.plano,
                 args.tarefa,
@@ -713,7 +736,7 @@ def main(argv: list[str] | None = None) -> int:
                 modelo_legado=None,
                 classe_legado=None,
             )
-        except rdo.RdoValidationError as exc:
+        except (ReviewEvidenceValidationError, rdo.RdoValidationError) as exc:
             print(f"review_evidence: FALHOU - {exc}", file=sys.stderr)
             return 1
         arquivos_alvo = extrair_arquivos_alvo(dossie.campos)

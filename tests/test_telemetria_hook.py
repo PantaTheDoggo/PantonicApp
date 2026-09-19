@@ -68,9 +68,11 @@ def _payload(**overrides) -> dict:
 
 
 def test_tf_calcular_consumo_soma_tokens_e_conta_tool_uses_de_n_entradas_assistant():
-    """TF: `tokens_k` = soma de (input+cache_creation+cache_read+output)/1000 das entradas
-    assistant; `tool_uses` = contagem de blocos `tool_use`; `duracao_s` = diferença entre o
-    primeiro e o último timestamp."""
+    """TF: `tokens_k` = `usage` (input+cache_creation+cache_read+output)/1000 da **última**
+    entrada assistant (LM-T2b — contingência 2 acionada: esta asserção afirmava a soma por
+    `message.id`/sem id, que era a fórmula antiga; ajustada para a fórmula nova, caso mantido);
+    `tool_uses` = contagem de blocos `tool_use` de todas as entradas; `duracao_s` = diferença
+    entre o primeiro e o último timestamp."""
     hook = _load_hook()
     linhas = [
         _linha_assistant(
@@ -97,17 +99,65 @@ def test_tf_calcular_consumo_soma_tokens_e_conta_tool_uses_de_n_entradas_assista
 
     tokens_k, tool_uses, duracao_s = hook.calcular_consumo(linhas)
 
-    assert tokens_k == (135 + 250) / 1000
+    assert tokens_k == 250 / 1000
     assert tool_uses == 3
     assert duracao_s == 90.0
 
 
-def test_tr_calcular_consumo_deduplica_por_message_id_uma_mensagem_duas_entradas():
-    """TR (achado da calibração obrigatória do dossiê `T55` contra um despacho aninhado real):
-    uma mensagem com dois blocos de conteúdo (`thinking` + `text`) vira duas entradas
-    `assistant` no transcript, cada uma com o **mesmo** `message.usage` — somar por entrada sem
-    dedupe por `message.id` dobra o total. Números medidos na calibração: `usage` real (uma
-    mensagem) = 8863 tokens; soma ingênua por entrada = 17726 (2x)."""
+def test_tr_calcular_consumo_sem_entradas_assistant_e_zero_em_tudo():
+    """TR: transcript sem nenhuma entrada assistant não lança exceção — devolve zeros."""
+    hook = _load_hook()
+
+    tokens_k, tool_uses, duracao_s = hook.calcular_consumo(
+        [json.dumps({"type": "user", "timestamp": "2026-08-19T10:00:00+00:00"})]
+    )
+
+    assert tokens_k == 0.0
+    assert tool_uses == 0
+    assert duracao_s == 0.0
+
+
+def _linhas_tres_mensagens_usage_crescente() -> list[str]:
+    """Transcript sintético com três entradas `assistant` de `message.id` distintos e `usage`
+    crescente (10k, 30k, 60k) — o transcript compartilhado pelos dois testes de LM-T2b que
+    precisam do mesmo cenário."""
+    return [
+        _linha_assistant(
+            {"input_tokens": 10000, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+            "2026-09-19T10:00:00+00:00",
+            n_tool_uses=1,
+            message_id="msg-1",
+        ),
+        _linha_assistant(
+            {"input_tokens": 30000, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+            "2026-09-19T10:01:00+00:00",
+            n_tool_uses=2,
+            message_id="msg-2",
+        ),
+        _linha_assistant(
+            {"input_tokens": 60000, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+            "2026-09-19T10:02:30+00:00",
+            n_tool_uses=3,
+            message_id="msg-3",
+        ),
+    ]
+
+
+def test_tf_calcular_consumo_usa_a_ultima_mensagem_assistant():
+    """TF (LM-T2b, calibração `ESC-3`): `tokens_k` é o `usage` da **última** entrada assistant
+    com `usage`, não a soma das três. Concorrente: o código antigo (soma por `message.id`)
+    devolvia 100.0 (10k+30k+60k)."""
+    hook = _load_hook()
+
+    tokens_k, _tool_uses, _duracao_s = hook.calcular_consumo(_linhas_tres_mensagens_usage_crescente())
+
+    assert tokens_k == 60.0
+
+
+def test_tr_calcular_consumo_mesma_mensagem_duas_entradas_nao_dobra():
+    """TR (LM-T2b, o caso da calibração histórica do `T55`): duas entradas com o mesmo
+    `message.id` e o mesmo `usage` — continua devolvendo o valor de uma, não o dobro.
+    Concorrente: somar por entrada (o defeito que a dedupe por `message.id` corrigia) dobrava."""
     hook = _load_hook()
     usage = {
         "input_tokens": 10,
@@ -126,23 +176,40 @@ def test_tr_calcular_consumo_deduplica_por_message_id_uma_mensagem_duas_entradas
     assert tool_uses == 0
 
 
-def test_tr_calcular_consumo_sem_entradas_assistant_e_zero_em_tudo():
-    """TR: transcript sem nenhuma entrada assistant não lança exceção — devolve zeros."""
+def test_tr_calcular_consumo_tool_uses_e_duracao_ficam_intocados():
+    """TR (LM-T2b): no mesmo transcript de `test_tf_calcular_consumo_usa_a_ultima_mensagem_assistant`,
+    `tool_uses` conta todos os blocos `tool_use` de todas as entradas (1+2+3=6) e `duracao_s`
+    segue vindo do primeiro e do último timestamp (10:00:00 a 10:02:30 = 150s). Concorrente:
+    aplicar "só a última mensagem" também a `tool_uses` derrubaria a contagem, que hoje está
+    certa."""
     hook = _load_hook()
 
-    tokens_k, tool_uses, duracao_s = hook.calcular_consumo(
-        [json.dumps({"type": "user", "timestamp": "2026-08-19T10:00:00+00:00"})]
+    _tokens_k, tool_uses, duracao_s = hook.calcular_consumo(_linhas_tres_mensagens_usage_crescente())
+
+    assert tool_uses == 6
+    assert duracao_s == 150.0
+
+
+def test_tf_montar_args_append_normaliza_modelo_para_minusculo():
+    """TF (LM-T2b, `AE-3`): `montar_args_append` normaliza `modelo` para minúsculas, evitando
+    duas grafias do mesmo modelo na série. Concorrente: hoje devolve `Sonnet` sem normalizar."""
+    hook = _load_hook()
+
+    args = hook.montar_args_append(
+        _estado_valido(modelo="Sonnet"), tokens_k=1.0, tool_uses=1, duracao_s=1.0, data="2026-09-19"
     )
 
-    assert tokens_k == 0.0
-    assert tool_uses == 0
-    assert duracao_s == 0.0
+    assert args[args.index("--modelo") + 1] == "sonnet"
 
 
 def test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv(tmp_path):
     """TF: payload válido (agent_type de papel do kit + estado presente + transcript com
     usage) produz a linha esperada em `docs/telemetria.tsv` (via `--file` de teste) e consome
-    (apaga) o estado."""
+    (apaga) o estado.
+
+    A grafia esperada do modelo é minúscula desde a `LM-T2b` (`AE-3`, `DM-33`): o payload
+    entrega `Sonnet` e o hook normaliza — a asserção mede a normalização ponta a ponta, não a
+    grafia de entrada."""
     hook = _load_hook()
 
     estado_path = tmp_path / "estado" / "tarefa-corrente.json"
@@ -184,7 +251,7 @@ def test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv(tmp_path):
     assert escreveu is True
     linhas = tsv_path.read_text(encoding="utf-8").splitlines()
     assert linhas[0] == _HEADER.rstrip("\n")
-    assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tSonnet\t5\t1.0\t0.0\tusage"
+    assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tsonnet\t5\t1.0\t0.0\tusage"
     assert not estado_path.exists()
 
 

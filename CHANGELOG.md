@@ -16,6 +16,14 @@ reescritas nem revogadas.
 
 ## [Não lançado]
 
+- `pantonic-planner` ganha `Bash` no toolset (decisão do dono, 2026-09-18): planner e executor
+  passam a acessar a mesma ferramenta de validação, e o dever "comando de aceite não se deduz,
+  se roda" deixa de ser inexequível pelo papel a que se dirige.
+
+- Piloto do loop de módulos medido sobre a execução do próprio `P-0740` (veículo (B), decisão do
+  dono de 2026-09-19): a série por módulo, a decomposição de consumo por papel e o confronto com
+  a baseline de tarefa atômica da `BKL-T4` ficam publicados na seção 10 do plano, com o veredito
+  do dono.
 - Projeções canônicas do kit em dia com as definições de agente em disco: `.claude/README.md`
   regenerado por `kit_check -Mode generate` e a tabela de Agentes de `README.md` passa a listar
   o `pantonic-consultant`. `check-drift` e `check-readme.ps1` voltam a exit 0.

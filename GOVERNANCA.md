@@ -133,8 +133,36 @@ Regras de operação:
   o consumo total.** O subagente parte frio e paga de novo CLAUDE.md + definição do agente +
   skills carregadas em todos os seus turnos. Tarefa pequena (< ~15 turnos estimados) prefere
   execução inline a abrir um subagente.
+- **A unidade de trabalho é o módulo coeso.** O card despachado cobre uma **disciplina fechada** —
+  um tema, com os seus verbos, os seus testes e a sua verificação ponta a ponta no mesmo despacho —,
+  e não um fragmento do tema partido para caber num contexto. Três consequências, e valem juntas:
+  **(i) coesão é critério de aceite, não só de recorte** — divergência interna do módulo (forma de
+  mensagem, contrato de erro, exit code) é defeito da entrega ainda que cada parte passe no seu
+  próprio teste, e a revisão exercita o módulo ponta a ponta, não só as partes; **(ii) o que não é
+  do tema continua fora** — módulo coeso é o oposto de tarefa grande: informação transversal,
+  matéria alheia ao tema ou "aproveitando que estou aqui" seguem proibidas, e card que as exija é
+  card defeituoso (G-EXECREADY, §7 item 12); **(iii) divide-se por tema, nunca por volume** — o teto
+  de regiões editadas do gate de delegação deixa de valer como limite de volume e passa a valer como
+  limite de **tema**: divide-se quando o card cruza dois assuntos, nunca quando cruza muitas regiões
+  do mesmo assunto, e a contagem de regiões volta a ser o que sempre foi, medida informativa de quem
+  dimensiona.
+- **Gramática do card — forma lida por máquina.** Duas formas, e são exatamente as que os
+  instrumentos do kit (`.claude/tools/rdo.py`, `.claude/tools/backlog.py`) aceitam: doutrina não
+  publica forma que o parser recusa.
+  - **Cabeçalho:** `### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe
+    <classe>[ · teto <n>]]`, com `<modelo>` ∈ `Opus|Sonnet|Haiku`, `<esforço>` ∈
+    `low|medium|high|xhigh|max` e `<classe>` ∈
+    `mecanica|implementacao|comportamental|investigacao|redacao`. O campo `esforço` é **opcional** e
+    fica **entre** modelo e classe; ausente, o cabeçalho continua válido. Quem despacha aplica o
+    modelo; quem executa calibra a profundidade à classe e ao esforço declarados. Forma fora da
+    gramática não trava o instrumento — cai no tratamento de cabeçalho inválido que cada um já tem —,
+    e a tarefa é recusada pelo gate de delegação.
+  - **Bullet de `Status`:** `- **Status:**` seguido do estado **entre crases**, obrigatório e em
+    minúsculas; `· AAAA-MM-DD` e a razão são **opcionais**; tudo que vier depois de ` — ` é **cauda
+    em prosa**, lida e preservada, nunca interpretada. A escrita pelo instrumento reescreve só o
+    prefixo de máquina — estado, data e razão — e preserva a cauda.
 - **Diretriz de dimensionamento de tarefa (do planejador).** Quem planeja delimita o escopo de
-  cada tarefa atômica, e a delimita para satisfazer três critérios: **(a)** caber num contexto
+  cada tarefa, e a delimita para satisfazer três critérios: **(a)** caber num contexto
   **coerente e coeso**; **(b)** ser **autossuficiente em contexto para a execução** — o dossiê
   entrega tudo de que a execução precisa, sem leitura ad hoc no meio dela; **(c)** respeitar uma
   estimativa de **50% de ocupação da janela, com tolerância até 60%**. O número não é arbitrário
@@ -304,7 +332,7 @@ uma equipe humana com memória entre reuniões. Daí as modulações — e só e
 | Sprint com entregável ao fim | **plano** (`P-NNNN`) com tarefas na ordem de execução; o entregável passa pelo gate de validação antes de a sprint seguinte começar (§4.5) |
 | Item de backlog / história | **tarefa atômica** — uma por contexto (§4.3); quem a dimensiona é o **planejador**, sob a *Diretriz de dimensionamento de tarefa* (§3) |
 | Time auto-organizado | **papéis fixos e não intercambiáveis** — matriz de responsabilidades (§3) |
-| Cerimônias (daily, planning, review) | **atos escritos**: dossiê de tarefa, handover e veredito de validação no diário — o que só existe em conversa não sobrevive à troca de contexto e, portanto, não existe |
+| Cerimônias (daily, planning, review) | **atos escritos**: dossiê de tarefa, registro de fechamento e veredito de validação no diário — o que só existe em conversa não sobrevive à troca de contexto e, portanto, não existe |
 | Definition of done | **critério de pronto** no dossiê + guardrails executáveis (§7), gate de conformance e piso de regressão (§4.4) |
 
 Duas práticas ágeis **não** viajam. Estimativa em story points: o recorte de uma tarefa sai da
@@ -333,6 +361,23 @@ também como um kanban adaptado:
   alcance de cada estado por objeto (tarefa, plano/iniciativa, tíquete) têm **residência única** —
   skill `diario-de-obras`, seção "Status — residência única". Nenhum outro artefato reenuncia a
   lista: quem precisa de um estado aponta para lá.
+- **`status` de tarefa e veredito de revisão são vocabulários distintos, e um não traduz o outro.**
+  O **`status`** diz em que ponto do fluxo a tarefa está; ele é **materializado** pela orquestração,
+  em qualquer estado, e quem executa é apenas **autor** de `review` e `blocked` — de mais nada. O
+  **veredito** (`aprovado`, `ressalva`, `reprovado`) e a **recomendação** (`seguir`, `seguir com
+  ressalva`, `refazer`, `escalar`) são campos do **laudo**, escrito só pela revisão e calculados
+  pelo gerador; quem roteia os **lê**, não os deriva um do outro. Três arestas fecham a fronteira:
+  - **`escalar` não é desfecho de tarefa — é desfecho da pendência.** O roteamento parte **primeiro
+    pelo veredito**, e a tarefa fecha pelo veredito transcrito; a pendência que motivou o
+    escalonamento não morre com o laudo: é registrada como achado do plano e roteada a quem decide.
+  - **`reprovado` não é desfecho de registro de tarefa.** O registro canônico nasce só na transição
+    `review` → `done`; `blocked` e `cancelled` não o disparam. Entrega reprovada depois da última
+    retentativa materializa `blocked` com razão `premissa` — o que caiu foi a premissa de que o card
+    é executável como está — e a matéria vai ao replanejamento (G-REPLAN, §7 item 17).
+  - **Regra nenhuma manda fazer o que o instrumento de fechamento recusa.** Divergência entre uma
+    regra de roteamento e o instrumento que materializa o fechamento resolve-se **fechando a regra
+    ao instrumento**, nunca abrindo no instrumento um ramo que o fluxo não prevê — ramo sem entrada
+    é código morto (G-DEADCODE, §7 item 8).
 - Possui um **índice abrangente no topo** (uma linha por item: ID, título, status, âncora), de
   modo que o agente de execução encontre seu trabalho **sem ler seções irrelevantes** ao seu
   contexto. O índice é atualizado a cada mudança de status.
@@ -433,14 +478,18 @@ também como um kanban adaptado:
   sem demanda que seja dele: parar para que ele limpe o contexto e invoque a tarefa seguinte o põe a
   **mediar execução normal**, e uma única ocorrência dessas é defeito.
 - **Retomada sem tarefa nomeada** — quando o usuário abre um contexto novo e pede apenas para
-  seguir o backlog ("execute o próximo passo"), o ponto de entrada é a skill `proximo-passo`: ela
-  drena o inbox de planos, aplica a diretiva de priorização (ou a heurística padrão), escolhe uma
-  única tarefa e delega ao agente de execução. O handover final sempre reporta a tarefa feita, a
-  iniciativa/plano de origem, e o **índice de conclusão do plano** (`<done>/<total>` no diário).
+  seguir o backlog ("execute o próximo passo"), o ponto de entrada é a skill `scrum-master`, a
+  mesma de um plano nomeado: não há segundo procedimento de retomada. A transição entre tarefas —
+  drenar os inboxes, aplicar a diretiva de priorização (ou a heurística padrão), apurar a fila,
+  montar o dossiê sob o gate de delegação, herdar o contexto da tarefa anterior e fechar a tarefa no
+  registro canônico — é maquinário interno dela, na skill `passagem-de-bastao`, **transparente para
+  o gerente**: ele não a invoca, não a lê e não a acompanha. O relatório de encerramento da janela
+  reporta as tarefas feitas, a iniciativa/plano de origem e o **índice de conclusão do plano**
+  (`<done>/<total>` no diário).
 - **Checkpoint intermediário** — é da **orquestração**: quando a janela de orquestração se
   encerra (coesão ou ocupação) com tarefas do plano ainda abertas, quem orquestra grava até 5
-  linhas de ponteiro de estado no plano em curso (skill `handover`, seção "Checkpoint
-  intermediário"), teto de 2 tool uses, para que a janela seguinte retome sem redescobrir o que já
+  linhas de ponteiro de estado no plano em curso (skill `passagem-de-bastao`, seção "Checkpoint da
+  janela"), teto de 2 tool uses, para que a janela seguinte retome sem redescobrir o que já
   foi pago. A tarefa que não chegou a ser entregue volta ao estado em que estava — nunca `done`.
 - **Dois casos que não são checkpoint** — contexto acabando **dentro** de uma tarefa não é evento
   a mitigar: é sintoma de que o recorte errou o dimensionamento (§3), registra-se o fato no corpo
@@ -651,23 +700,23 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    5. **Gate de publicação — plano não se publica em aberto.** Um plano só é registrado no
       `_INBOX.md` e no diário quando está **fechado**: sem questão pendente, sem bloco a preencher,
       sem tarefa cujo conteúdo dependa de artefato que ainda não existe. Plano aberto é escolhível
-      pela `proximo-passo` e **para o executor no meio**, forçando o retrabalho de revisitar a
+      pelo loop de execução e **para o executor no meio**, forçando o retrabalho de revisitar a
       questão no pior momento. Revisar um plano publicado é legítimo e esperado; publicá-lo
       incompleto não é. **Consequência operacional:** quando parte do trabalho depende de um insumo
       futuro, não se publica um plano com um vão — **divide-se em dois**: o fechado agora, e o
       dependente, autorado **já fechado** como a última tarefa do plano que produz o insumo. Um
       plano por nascer não é backlog invisível: ele tem dono, é uma tarefa nomeada de outro plano.
    *Enforcement:* checklist de fechamento de plano (as 5 condições); a skill `diario-de-obras`
-   ("Registrar plano") verifica o gate antes de apensar; a `proximo-passo` recusa delegar tarefa de
-   plano que viole qualquer uma; o executor recusa performar (G-EXECREADY); o `_INBOX.md` é o
-   registro do contador sequencial.
+   ("Registrar plano") verifica o gate antes de apensar; o gate de delegação da `passagem-de-bastao`
+   recusa delegar tarefa de plano que viole qualquer uma; o executor recusa performar (G-EXECREADY);
+   o `_INBOX.md` é o registro do contador sequencial.
 12. **G-EXECREADY — o executor não decide, não pergunta e recusa plano não-pronto** (dever do
    **executor**) — conduta universal de executor (não doutrina específica de Pantonic), promovida
    ao `CLAUDE.md` global (Regra 8, `V2M-T3`, 2026-07-30): nunca inicia o trabalho fazendo perguntas
    ao dono, e recusa performar enquanto o plano não estiver pronto por G-PLANREADY — ver texto
    normativo lá. Complementa G-PLANFIDELITY (não muda rota) e o modelo por fase (§3): a decisão
    nunca desce para o modelo barato. *Enforcement:* instrução no arquivo do agente
-   `pantonic-executor`; a `proximo-passo` só delega tarefa de plano fechado; gate de review.
+   `pantonic-executor`; a `passagem-de-bastao` só delega tarefa de plano fechado; gate de review.
 13. **Allowlist de subcomandos destrutivos** — **Comando destrutivo não é decisão de agente.**
    Reescrita de histórico, descarte de trabalho não commitado e remoção de branch/repositório
    ficam negados em `.claude/settings.json` (`permissions.deny`) para todo agente com `Bash`. O
@@ -689,7 +738,7 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    pelo dono **lendo o README**, não os artefatos. *Enforcement:* a tarefa de encerramento de sprint
    (dever 2), que roda `pwsh .claude/checks/check-readme.ps1` para a paridade estrutural e registra o
    veredito do dono. **Não é gate mecânico** (`DR-8`, 2026-08-05 — decisão do dono): pendurar o
-   aceite como bloqueio automático na skill `handover` foi **rejeitado**, por gerar artefato
+   aceite como bloqueio automático na skill de fechamento de tarefa foi **rejeitado**, por gerar artefato
    especializado e confuso no lugar de uma responsabilidade clara de quem planeja.
 15. **G-SCOPE — o agente se atém estritamente às suas responsabilidades declaradas; o que não está
    escrito é proibido.** A residência do escopo de cada papel é a **matriz de responsabilidades**
@@ -752,7 +801,7 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    seja o objeto, é `superseded`; e segundo bloqueio **de aceite** sobre a **mesma** verificação já
    reescrita por uma rodada anterior também é `superseded` — errar duas vezes o mesmo aceite não é
    corrigir redação, é descobrir que não se sabe o que o card exige. *Enforcement:* roteamento
-   `A3b` da skill `scrum-master` (escala ao planejador, não ao dono); guardrail da `proximo-passo`
+   `A3b` da skill `scrum-master` (escala ao planejador, não ao dono); guardrail da `scrum-master`
    (tarefa `blocked premissa` no plano priorizado → a próxima tarefa é a rodada, nunca outra do
    plano); seção "Rodada de replanejamento" do agente `pantonic-planner`; ledger
    `docs/telemetria.tsv` (a rodada é medida na classe própria).
@@ -779,10 +828,27 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    ponto vira contingência fechada, fato na §1 ou partição da tarefa, **ou o card não sai**. Plano
    com ponto de interrupção sem contingência é plano aberto (G-PLANREADY condição 5).
    *Enforcement:* instrução nos agentes `pantonic-executor` (parada por dúvida) e
-   `pantonic-planner` (teste de interrupção, fase 4); `scrum-master` e `proximo-passo` (nenhuma
+   `pantonic-planner` (teste de interrupção, fase 4); `scrum-master` e `passagem-de-bastao` (nenhuma
    pergunta ao dono entre o despacho e o relatório de encerramento; `B1` roteia ao planejador);
    gate de review — decisão tomada pela entrega que o card não fechou, e parada por dúvida que o
    card não previu, são achado de processo de alvo `dossiê`.
+
+19. **G-MODULO — a unidade de trabalho é o módulo coeso, e a coesão dele é critério de aceite**
+   (dever do **planejador** na autoria; dever da **revisão** no julgamento). O card despachado cobre
+   uma **disciplina fechada** — um tema, com os seus verbos, os seus testes e a sua verificação
+   ponta a ponta no mesmo despacho (§3, *A unidade de trabalho é o módulo coeso*). Três deveres.
+   **(1) Recorte por tema, não por volume:** divide-se quando o card cruza dois assuntos, nunca
+   quando cruza muitas regiões do mesmo assunto; contagem de regiões editadas é medida de
+   dimensionamento, não gatilho de divisão, e o que não é do tema continua fora. **(2) Coesão como
+   aceite:** divergência interna do módulo — forma de mensagem, contrato de erro, exit code — é
+   defeito da entrega ainda que cada parte passe no seu próprio teste, e o card declara esse aceite
+   ao lado dos demais. **(3) Gramática do card:** cabeçalho e bullet de `Status` saem na forma que
+   os instrumentos do kit leem (§3, *Gramática do card*); cabeçalho fora dela é tarefa fora da
+   gramática e não se despacha. *Enforcement:* instrução nos arquivos de agente (`pantonic-planner`,
+   autoria do card; `pantonic-executor`, entrega do módulo inteiro) e o gate de delegação, que
+   recusa recorte e cabeçalho fora da gramática; gate de review — a revisão exercita o módulo
+   **ponta a ponta**, não só as partes; parsers de cabeçalho e de `Status` em `.claude/tools/rdo.py`
+   e `.claude/tools/backlog.py`.
 
 Esses guardrails são materializados em cada projeto como: instruções nos arquivos de agente
 (`.claude/agents/*.md`, CLAUDE.md do projeto) **e** testes de conformance executáveis — a regra
@@ -913,8 +979,8 @@ desde o primeiro dia; CLAUDE.md do projeto ≤ 200 linhas, só regras que mudam 
 
 Os agentes (§3) e os fluxos (§4–§6) estão materializados como kit em
 [.claude/](.claude/README.md): agentes `pantonic-planner`, `pantonic-executor` e
-`pantonic-scout`, e skills `bootstrap-pantonic`, `diario-de-obras`, `proximo-passo`,
-`integrar-poc`, `guardrails-check` e `handover`. Cada projeto consumidor **materializa** esse kit
+`pantonic-scout`, e skills `bootstrap-pantonic`, `diario-de-obras`, `scrum-master`,
+`passagem-de-bastao`, `integrar-poc` e `guardrails-check`. Cada projeto consumidor **materializa** esse kit
 a partir do hub via `git subtree` — nunca copia manualmente. `.claude/kit/` é o subtree do branch
 `kit` deste repo; `.claude/kit/sync-kit.ps1` aplica a versão publicada sobre a árvore local,
 respeitando os overrides declarados em `kit-exclude.txt`. O consumidor ajusta apenas os "fatos

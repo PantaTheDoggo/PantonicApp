@@ -151,7 +151,7 @@ apagar reduz o que o recall carrega, escrever aumenta. Não existe exceção de 
 e indexado no `MEMORY.md`) ou `[descartado — motivo]`; enquanto pendente, fica intocada. Linha
 nunca é apagada: o inbox é o registro de que o agente propôs e de como o dono decidiu.
 
-**Drenagem:** a fila é apresentada ao dono no mesmo ato em que a skill `proximo-passo` drena o
+**Drenagem:** a fila é apresentada ao dono no mesmo ato em que a skill `scrum-master` drena o
 inbox de planos (passo 1). Fila sem hábito de drenagem acumula e o agente volta a gravar direto —
 esse é o risco real desta regra, e a drenagem acoplada é a mitigação.
 

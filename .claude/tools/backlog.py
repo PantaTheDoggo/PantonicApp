@@ -15,7 +15,13 @@ por máquina" — replicada aqui igual, `DB-17`/`DB-18`):
 - tíquete: `## TK-<n> — <título>` (nível 2, sem bracket).
 - subtarefa de tíquete: `### TK-<n><letra> — <título> [<modelo>[ · esforço <esforço>] · classe <classe>]`, dentro da
   seção do tíquete-pai — mesma gramática de bracket da tarefa de plano (`DB-17`).
-- campos: 1º bullet `- **Status:** \\`<estado>\\` · AAAA-MM-DD[ · <razão>]`; opcional
+- campos: 1º bullet `- **Status:** \\`<estado>\\``, estado entre crases obrigatório (`LM-T4b`).
+  Duas regras: (i) **leitura** — a forma canônica `· AAAA-MM-DD[ · <razão>]` continua aceita, e
+  a forma em prosa também (qualquer texto livre depois do estado); tudo que vier depois de
+  ` — ` é cauda livre, lida e preservada, nunca interpretada. Medido no despacho da `LM-T4b`
+  (`P-0740-loop-de-modulos.md`): 25 bullets de `Status`, 0 casavam com o regex estrito antes
+  desta regra. (ii) **escrita** — `transacionar_status` reescreve só o prefixo de máquina
+  (estado, data, razão) e preserva a cauda a partir de ` — `. Opcional
   `- **Depende de:** ...`.
 - índice: `| <ID> | <título> | <estado>[ <done>/<total>] | <âncora> |`.
 
@@ -67,7 +73,9 @@ TIQUETE_HEADER_RE = re.compile(r"^## (TK-\d+) — (.+)$")
 SUBTAREFA_HEADER_RE = re.compile(rf"^### (TK-\d+[a-z]) — (.+?) {_BRACKET}$")
 TAREFA_HEADER_RE = re.compile(rf"^### ((?:[A-Z0-9]+-)?T\d+[a-z]?) — (.+?) {_BRACKET}$")
 
-STATUS_BULLET_RE = re.compile(r"^- \*\*Status:\*\* `([a-z-]+)` · \d{4}-\d{2}-\d{2}(?: · (.+))?$")
+STATUS_BULLET_RE = re.compile(
+    r"^- \*\*Status:\*\* `([a-z-]+)`(?: · \d{4}-\d{2}-\d{2}(?: · (.+))?|.*?)(?: — (.+))?$"
+)
 DEPENDE_BULLET_RE = re.compile(r"^- \*\*Depende de:\*\* (.+)$")
 TIPO_BULLET_RE = re.compile(r"^- \*\*Tipo:\*\* (.+)$")
 NOTAS_BULLET_RE = re.compile(r"^- \*\*Notas de execução:\*\*\s*$")
@@ -111,6 +119,7 @@ class Item:
     status: str | None = None
     status_linha: int | None = None
     status_razao: str | None = None
+    status_cauda: str | None = None
     depende_de: list[str] = field(default_factory=list)
     campo_tipo: str | None = None
     pai: str | None = None
@@ -184,18 +193,22 @@ def _classify_item_heading(linha: str) -> tuple[str, str, bool] | None:
 
 def _extrair_status(
     linhas: list[str], inicio_idx: int, fim_idx: int
-) -> tuple[str | None, int | None, str | None]:
+) -> tuple[str | None, int | None, str | None, str | None]:
     """1º bullet não-branco após o heading. Se não for `- **Status:** ...`, o item não tem
-    status (`C-2`), qualquer que seja o conteúdo."""
+    status (`C-2`), qualquer que seja o conteúdo.
+
+    Aceita a forma canônica (`· AAAA-MM-DD[ · <razão>]`) e a forma em prosa por igual — só o
+    estado entre crases é obrigatório (`LM-T4b`). O 4º valor é a cauda livre (tudo depois de
+    ` — `), devolvida verbatim e nunca interpretada."""
     for j in range(inicio_idx, fim_idx + 1):
         bruta = linhas[j]
         if bruta.strip() == "":
             continue
         m = STATUS_BULLET_RE.match(bruta)
         if m:
-            return m.group(1), j + 1, m.group(2)
-        return None, None, None
-    return None, None, None
+            return m.group(1), j + 1, m.group(2), m.group(3)
+        return None, None, None, None
+    return None, None, None, None
 
 
 def _extrair_depende(linhas: list[str], inicio_idx: int, fim_idx: int) -> list[str]:
@@ -243,7 +256,7 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
         linha_fim = fim_idx + 1
         texto_secao = "\n".join(linhas[i : fim_idx + 1])
 
-        status, status_linha, status_razao = _extrair_status(linhas, i + 1, fim_idx)
+        status, status_linha, status_razao, status_cauda = _extrair_status(linhas, i + 1, fim_idx)
         depende_de = _extrair_depende(linhas, i + 1, fim_idx)
         campo_tipo = _extrair_tipo(linhas, i + 1, fim_idx)
 
@@ -262,6 +275,7 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
                 status=status,
                 status_linha=status_linha,
                 status_razao=status_razao,
+                status_cauda=status_cauda,
                 depende_de=depende_de,
                 campo_tipo=campo_tipo,
             )
@@ -1039,7 +1053,8 @@ def transacionar_status(
         plano_linhas[idx] = STATUS_CAMPO_RE.sub(f"**Status:** `{estado}`", plano_linhas[idx], count=1)
     else:
         sufixo = f" · {razao}" if razao else ""
-        nova_linha = f"- **Status:** `{estado}` · {hoje}{sufixo}"
+        cauda_sufixo = f" — {alvo.status_cauda}" if alvo.status_cauda else ""
+        nova_linha = f"- **Status:** `{estado}` · {hoje}{sufixo}{cauda_sufixo}"
         if alvo.tipo == "tarefa":
             plano_linhas[alvo.status_linha - 1] = nova_linha
         else:

@@ -21,10 +21,10 @@ a leitura de quem adota (`G-README`, §10).
 | 3 | O modelo econômico |
 | 4 | Modelo por fase |
 | 5 | O fluxo plano → execução |
-| 6 | O procedimento `próxima tarefa` |
+| 6 | O loop de execução |
 | 7 | O diário de obras |
 | 8 | Planos: o que é um plano fechado |
-| 9 | Handover e uma tarefa por contexto |
+| 9 | O fechamento de tarefa e uma tarefa por contexto |
 | 10 | Os guardrails |
 | 11 | Anatomia do kit |
 | 12 | Memória e telemetria |
@@ -94,9 +94,10 @@ a leitura de quem adota (`G-README`, §10).
 - **Tarefa atômica** — a unidade de execução, definida por uma propriedade: executável por um agente
   que não conhece o projeto, em contexto limpo, sem busca transversal. Onde
   a regra mora: `GOVERNANCA.md` §4.1 (§5 desta página).
-- **Handover** — o procedimento fixo que encerra toda tarefa: gate verde, registro no diário,
-  achados fora de escopo, decisões e a mensagem final de ponteiro mais deltas. Onde a regra mora:
-  `.claude/skills/handover/SKILL.md` (§9 desta página).
+- **Passagem de bastão** — o procedimento fixo que fecha uma tarefa e abre a seguinte: gate verde,
+  registro no RDO e no diário, achados fora de escopo, decisões e a herança de contexto para a
+  tarefa sucessora. É maquinário interno do loop de execução, transparente ao gerente. Onde a regra
+  mora: `GOVERNANCA.md` §4.2 e §4.3 (§9 desta página).
 - **Guardrail** — uma regra mínima obrigatória com forma de enforcement declarada (teste executável,
   gate de review, instrução de agente ou negação de permissão); o que não é verificável não é
   guardrail. Onde a regra mora: `GOVERNANCA.md` §7 (§10 desta página).
@@ -174,8 +175,8 @@ a leitura de quem adota (`G-README`, §10).
   desta página).
 - **Decisão `DR-` / `DP-`** — um *decision record* datado, ratificado pelo dono, que registra uma
   mudança comportamental intencional e o motivo dela; bifurcar rota exige um aprovado **antes** de a
-  alternativa ser codada. Onde a regra mora: `GOVERNANCA.md` §3 (papéis) e
-  `.claude/skills/handover/SKILL.md` (§9 e §14 desta página).
+  alternativa ser codada. Onde a regra mora: `GOVERNANCA.md` §3 (papéis) e §4.2 (registro)
+  (§9 e §14 desta página).
 
 ## 1. O que é e o que ele governa
 
@@ -442,13 +443,17 @@ de refactor: ele registra no diário qual comportamento, por quê e em que commi
 do arquivo, no mesmo commit que remove o teste. Teste cujo significado muda de propósito é
 **reescrito**, junto com a linha do piso — nunca deletado.
 
-## 6. O procedimento `próxima tarefa`
+## 6. O loop de execução
 
-> Fonte da verdade: `.claude/skills/proximo-passo/SKILL.md`
+> Fonte da verdade: `.claude/skills/scrum-master/SKILL.md`
 
-**O que é.** O ponto de entrada canônico do fluxo "abro um contexto novo, digo *execute o próximo
-passo do backlog* e recebo um relatório". A sequência tem cinco passos, e FIFO aparece só no fim do
-segundo, como último desempate.
+**O que é.** O ponto de entrada canônico da execução de backlog, e é um só — vale tanto para
+"conduza o plano P" quanto para "abro um contexto novo e digo *execute o próximo passo*". Uma janela
+conduz um plano: cada tarefa é executada por um subagente e julgada por outro, o loop roteia pelo
+veredito calculado e o gerente não medeia tarefa a tarefa — ele lê um relatório no fim. A transição
+entre uma tarefa e a seguinte é maquinário interno do loop; os cinco passos abaixo são a parte dela
+que o gerente precisa conhecer para argumentar sobre o fluxo. FIFO aparece só no fim do segundo
+passo, como último desempate.
 
 **Passo 1 — drenar os dois inboxes, antes de escolher qualquer coisa.** O inbox de planos
 (`docs/plans/_INBOX.md`, append-only) tem suas linhas novas promovidas para o índice do diário; a fila
@@ -474,19 +479,22 @@ ao dono**, porque empate de WIP é prioridade que ninguém persistiu.
 correspondente. Para retomar uma sprint em andamento, o atalho é a linha `Próxima tarefa da sprint`.
 
 **Passo 4 — gate de delegação.** Antes de despachar o executor, sete verificações, das quais estas
-mudam o resultado com mais frequência: o alvo é único, sem cláusula "investigue X" (nem introduzida
+mudam o resultado com mais frequência: o tema é único, sem cláusula "investigue X" (nem introduzida
 pelo próprio orquestrador ao transcrever); números de aceite — piso, contagem de suíte, call sites —
 são **re-derivados por um comando barato agora**, nunca copiados do plano, porque contagens envelhecem
-dentro da própria sprint; string destinada a `assert` é citação colada do output, nunca paráfrase; e o
-volume é contado em regiões de escrita, com **mais de oito regiões obrigando a dividir antes de
-delegar**. O gate `G-PLANREADY` precede todas: tarefa de plano aberto é devolvida ao planejamento.
+dentro da própria sprint; string destinada a `assert` é citação colada do output, nunca paráfrase; e a
+divisão se decide **por assunto, não por volume** — um card se parte quando cruza dois assuntos, nunca
+quando cruza muitas regiões do mesmo assunto. O gate `G-PLANREADY` precede todas: tarefa de plano
+aberto é devolvida ao planejamento.
 
-**Passo 5 — handover.** O relatório final traz a tarefa executada e o status, a iniciativa de origem,
-o índice de conclusão do plano (`<done>/<total>`), a próxima tarefa sugerida **sem iniciá-la** e a
-recomendação de limpar o contexto. E aplica a regra "decisão pendente é o próximo passo": se a
-execução deixou algo para o dono decidir, o próximo passo sugerido é **a decisão**, apresentada com o
-fato medido que a originou, o que cada opção implica, o que fica bloqueado sem resposta e uma
-recomendação com motivo.
+**Passo 5 — fechar a tarefa e seguir, ou encerrar a janela.** Julgada a entrega, o loop registra o
+resultado no RDO da tarefa, apende a linha de consumo medido à série e passa ao próximo item da fila;
+a janela só para pelo fim do plano, por bloqueio que exija replanejamento ou pela condição de
+contexto. O relatório de encerramento traz as tarefas executadas e os seus status, a iniciativa de
+origem, o índice de conclusão do plano (`<done>/<total>`), a próxima tarefa **sem iniciá-la** e a
+recomendação de contexto novo. E aplica a regra "decisão pendente é o próximo passo": se a execução
+deixou algo para o dono decidir, o próximo passo é **a decisão**, apresentada com o fato medido que a
+originou, o que cada opção implica, o que fica bloqueado sem resposta e uma recomendação com motivo.
 
 Cinco travas cercam a escolha: nunca mais de
 uma tarefa por invocação; **nunca** tarefa de plano `superseded`, que é terminal — se ele parece a
@@ -527,7 +535,7 @@ Ele tem quatro partes fixas:
   agente localiza o seu trabalho sem ler seções irrelevantes, e ele é atualizado a cada mudança de
   status.
 - **Uma seção por sprint ou tíquete**, em apêndice cronológico. Sprints multi-tarefa carregam, logo
-  abaixo do objetivo, a linha `Próxima tarefa da sprint`, atualizada a cada handover.
+  abaixo do objetivo, a linha `Próxima tarefa da sprint`, atualizada a cada fechamento de tarefa.
 - **As notas de execução** de cada tarefa: até cerca de cinco linhas mais ponteiros.
 
 A forma no arquivo é literal, e cabe numa tela:
@@ -569,7 +577,7 @@ só a linha de índice com ponteiro. Uma única seção acima de ~300 linhas mig
 O gatilho tem dono declarado: o fechamento de cada tarefa o dispara.
 
 **Por quê.** O índice no topo existe para que localizar trabalho custe uma linha de leitura, em vez
-da varredura de um documento inteiro. Daí a trava da célula: handovers sucessivos apensando parágrafos à
+da varredura de um documento inteiro. Daí a trava da célula: fechamentos sucessivos apensando parágrafos à
 coluna "Título" a fazem crescer sem limite, e cada agente seguinte paga essa leitura em toda tarefa —
 por isso ela fica limitada a status, uma ou duas frases e um ponteiro, com o detalhe de execução na
 seção da tarefa ou do plano. A reconciliação obrigatória de planos derivados protege o mesmo custo:
@@ -608,9 +616,9 @@ autorado **já fechado** como a última tarefa do plano que produz o insumo. Um 
 dono: é uma tarefa nomeada de outro plano.
 
 O enforcement é distribuído por três artefatos, para que a regra valha por mecanismo: a skill
-`diario-de-obras`, na operação de registrar plano, verifica o gate **antes** de apensar; a skill
-`proximo-passo` recusa delegar tarefa de plano que viole qualquer condição; e o agente executor recusa
-performar (`G-EXECREADY`). O `_INBOX.md` é, ele próprio, o registro do contador sequencial.
+`diario-de-obras`, na operação de registrar plano, verifica o gate **antes** de apensar; o gate de
+delegação do loop de execução recusa delegar tarefa de plano que viole qualquer condição; e o agente
+executor recusa performar (`G-EXECREADY`). O `_INBOX.md` é, ele próprio, o registro do contador sequencial.
 
 Revisar um plano publicado é legítimo e esperado; publicar um plano incompleto é defeito. Quando a
 premissa que sustentava um plano cai, ele vira `superseded`, com ponteiro para o substituto, e
@@ -620,7 +628,7 @@ abandonada deletados **no mesmo commit**.
 Planos que antecipam várias rodadas de perguntas mantêm uma tabela única de decisões (id → valor → uma
 linha de motivo), referenciada pelas seções.
 
-**Por quê.** Um plano aberto é **escolhível** pelo procedimento de próxima tarefa e **para o executor
+**Por quê.** Um plano aberto é **escolhível** pelo loop de execução e **para o executor
 no meio**, quando o contexto de quem decidiu já não existe. Decisão adiada acaba tomada pelo executor,
 no modelo mais barato: é a fase intelectual vazando para a fase de execução. E o contador monotônico
 identifica de forma única — dois planos abertos no mesmo dia disputariam o mesmo nome derivado de
@@ -633,12 +641,14 @@ decide bifurcar é o gerente, com decision record aprovado **antes** de a altern
 revisão de rota registrada declara o que mudou, o que **não** mudou e não deve ser revisitado, e o que
 sai do escopo.
 
-## 9. Handover e uma tarefa por contexto
+## 9. O fechamento de tarefa e uma tarefa por contexto
 
-> Fonte da verdade: `.claude/skills/handover/SKILL.md`
+> Fonte da verdade: `GOVERNANCA.md` §4.3
 
-**O que é.** Toda tarefa termina com um handover, e a próxima começa em contexto limpo, invocada pelo
-usuário. O fluxo tem quatro passos.
+**O que é.** Toda tarefa termina com um fechamento fixo, e a próxima começa em contexto limpo. Quem
+fecha uma e abre a outra é o **loop de execução**, entre tarefas — nunca o agente que executou, e
+nunca o gerente: a passagem de bastão é maquinário agente↔agente, e o gerente não a invoca nem a
+acompanha. O fluxo tem quatro passos.
 
 **Gate.** Se a tarefa está sendo dada como concluída, a verificação de guardrails já passou — no
 mínimo os diretórios tocados mais a suíte de conformance verde. Sem gate verde, o destino é `blocked`
@@ -667,9 +677,10 @@ de um jeito que afeta as tarefas **restantes** do mesmo plano — arquivo movido
 escopo invalidado —, isso é registrado junto da sugestão de próxima tarefa. O plano histórico não se
 edita; a nota no diário é o canal vivo.
 
-**Mensagem final.** Até cerca de quinze linhas, **ponteiro mais deltas**, nunca repetindo o que já foi
-escrito no diário: tarefa e status, o que validar e como, iniciativa de origem, índice de conclusão do
-plano, próxima tarefa sugerida sem iniciá-la, e a recomendação explícita de limpar o contexto.
+**Relatório de encerramento.** A janela fala com o gerente **uma vez**, na parada: **ponteiro mais
+deltas**, nunca repetindo o que já foi escrito no registro canônico — tarefas fechadas e seus status,
+o que validar e como, iniciativa de origem, índice de conclusão do plano, próxima tarefa sem
+iniciá-la, e a recomendação explícita de contexto novo.
 
 Existe uma variante para o caso em que o **plano** não acabou e a janela vai acabar antes dele: o
 **checkpoint intermediário**. Ele é ato de quem **orquestra**, entre tarefas, quando a janela de
@@ -688,11 +699,11 @@ recorte errou o dimensionamento, matéria que volta ao planejamento; retomar a t
 contexto novo é o custo dobrado que a doutrina proíbe.
 
 Fecham o procedimento uma trava e três proibições. A trava vale para **qualquer** agente: depois do
-handover, se o usuário pedir a próxima tarefa no mesmo contexto, o agente não inicia — responde com o
-ID e o título, repete a recomendação de limpar o contexto e aguarda; a trava só cai se o usuário, já
+fechamento, se o usuário pedir a próxima tarefa no mesmo contexto, o agente não inicia — responde com
+o ID e o título, repete a recomendação de limpar o contexto e aguarda; a trava só cai se o usuário, já
 avisado, insistir explicitamente. As proibições: não iniciar outra tarefa no mesmo contexto, mesmo que
 "pequena"; não marcar `done` com conformance vermelho ou piso abaixo do registrado; e não deixar o
-diário desatualizado — se o handover não atualizou o diário, o handover não aconteceu.
+registro desatualizado — tarefa sem RDO e sem a linha de status no diário não está fechada.
 
 **Por quê.** Contexto acumulado degrada a qualidade da resposta, mistura escopo entre tarefas não
 relacionadas e é reenviado inteiro a cada turno — o mesmo material é pago repetidamente, com
@@ -701,18 +712,18 @@ com a janela e a janela seguinte a reexecuta do zero, pagando duas vezes pelo me
 checkpoint que custa mais do que a descoberta que preserva vira relatório; daí o teto de duas
 chamadas.
 
-**Onde o gerente intervém.** Ele é o destinatário do handover e o dono do gatilho de limpeza: se a
-recomendação de `/clear` for ignorada seguidamente, o efeito é acumular contexto e degradar tudo o que
-vier depois. É também quem decide o destino de cada achado no fechamento da sprint, e quem valida o
-que ficou `review`. Se o próprio gerente emendar instruções e fechar dois entregáveis distintos na
-mesma janela sem passar por handover, o agente emite o aviso por conta própria — a disciplina fica
-com o agente.
+**Onde o gerente intervém.** Ele é o destinatário do relatório de encerramento e o dono do gatilho de
+limpeza: se a recomendação de contexto novo for ignorada seguidamente, o efeito é acumular contexto e
+degradar tudo o que vier depois. É também quem decide o destino de cada achado no fechamento da
+sprint, e quem valida o que ficou `review`. Se o próprio gerente emendar instruções e fechar dois
+entregáveis distintos na mesma janela sem passar pelo fechamento, o agente emite o aviso por conta
+própria — a disciplina fica com o agente.
 
 ## 10. Os guardrails
 
 > Fonte da verdade: `GOVERNANCA.md` §7
 
-Dezoito regras mínimas obrigatórias, válidas em todo projeto da família, sem exceção.
+Dezenove regras mínimas obrigatórias, válidas em todo projeto da família, sem exceção.
 A coluna do meio distingue o que **falha por si** do que depende de
 alguém ler um checklist.
 
@@ -734,10 +745,11 @@ alguém ler um checklist.
 | 14 | `G-README`: o README é documento canônico — o contrato com o cliente; nenhuma mudança de doutrina fecha sem ele refletida na mesma sprint | **Gate de review** (atividade nomeada de revisão no encerramento da sprint, com aceite do dono; `check-readme.ps1` cobre drift estrutural) |
 | 15 | `G-SCOPE`: o agente se atém estritamente às responsabilidades declaradas na matriz de papéis — o que não está escrito é proibido; artefato existente que atribui ato não endossado, ou papel que a matriz sequer cita, é não-conformidade grave que se para e regulariza, e ato real que falta na matriz sobe ao dono em vez de virar responsabilidade nova no prompt | **Instrução de agente** + **gate de review** (prompt novo ou alterado e varredura dos existentes) |
 | 16 | `G-SURFACE`: mudança de decisão estruturante — objetivo-chave, requisito ou caso de uso — regulariza a superfície de contato inteira no ato, não só o artefato onde a decisão foi tomada; a rodada de planejamento que fecha a decisão emite os cards de regularização no mesmo ato e a fila não avança sem eles | **Gate de planejamento** (cards emitidos no mesmo ato, plano parado sem eles) + **gate de review** |
-| 17 | `G-REPLAN`: bloqueio de tarefa por `premissa` abre uma rodada de replanejamento como próxima tarefa do plano, roteada ao planejador — nunca fica esperando o dono nem é contornado pela tarefa seguinte | **Instrução de agente** + roteamento das skills `scrum-master`/`proximo-passo` |
+| 17 | `G-REPLAN`: bloqueio de tarefa por `premissa` abre uma rodada de replanejamento como próxima tarefa do plano, roteada ao planejador — nunca fica esperando o dono nem é contornado pela tarefa seguinte | **Instrução de agente** + roteamento das skills `scrum-master`/`scrum-master` |
 | 18 | `G-NOASK`: interrupção para escalar ao dono durante a execução é falha de planejamento — quem executa não fica com dúvida e não escala direto: para, registra, bloqueia e encerra; o planejador não libera plano com alto risco de interrupção | **Instrução de agente** + **gate de review** |
+| 19 | `G-MODULO`: a unidade de trabalho é o módulo coeso — um tema fechado por card, divisão por assunto e não por volume, coesão interna como critério de aceite, e cabeçalho e bullet de `Status` na gramática que os instrumentos do kit leem | **Instrução de agente** + **gate de review** (o módulo é exercitado ponta a ponta, não só as partes) |
 
-**Sete** regras falham como teste executável, **onze** dependem de gate de review ou de instrução de
+**Sete** regras falham como teste executável, **doze** dependem de gate de review ou de instrução de
 agente — uma delas soma as duas formas, e por isso aparece nas duas contagens —, e uma é negada pelo
 sistema de permissões. As três formas têm forças distintas: um teste falha sem ninguém presente, um
 gate de review falha só se alguém executar o gate, e uma instrução de agente falha apenas se o
@@ -757,7 +769,7 @@ registrado, com motivo — nunca erosão silenciosa.
 
 > Fonte da verdade: `.claude/README.md`
 
-O kit são nove agentes, onze skills, quatro verificadores executáveis e a declaração de projeções,
+O kit são nove agentes, dez skills, quatro verificadores executáveis e a declaração de projeções,
 que viajam juntos para todo projeto consumidor. O índice abaixo é derivado do conteúdo real do diretório e verificado por script
 nos dois sentidos — item listado aqui sem arquivo no disco, e arquivo no disco sem item aqui, são as
 duas falhas.
@@ -782,9 +794,8 @@ duas falhas.
 |---|---|
 | `bootstrap-pantonic` | Criar um projeto novo da família — os quatro artefatos, a estrutura de docs e o esqueleto do core. |
 | `diario-de-obras` | Registrar plano novo, abrir tíquete avulso, mudar status ou condensar itens concluídos. |
-| `proximo-passo` | Contexto novo pedindo "siga o backlog": drena os inboxes, aplica a diretiva, escolhe uma tarefa e delega. |
-| `scrum-master` | Conduzir um plano inteiro em regime de loop: despacha executor e reviewer por tarefa, roteia pelo veredito calculado e encerra a janela pelo fim do plano ou pela condição de contexto. |
-| `handover` | Fechar, bloquear ou interromper qualquer tarefa; atualiza o diário e prepara a troca de contexto. |
+| `scrum-master` | Ponto de entrada da execução de backlog — plano nomeado ou "siga o backlog": despacha executor e reviewer por tarefa, roteia pelo veredito calculado e encerra a janela pelo fim do plano ou pela condição de contexto. |
+| `passagem-de-bastao` | Maquinário interno do loop, entre uma tarefa e a seguinte: drena os inboxes, apura a fila, monta o dossiê sob o gate de delegação, herda o contexto e fecha a tarefa no registro canônico. |
 | `guardrails-check` | Antes de marcar qualquer tarefa como concluída: camadas, ACL, padrão de apresentação, egress, namespace de estado, conformance, piso, kit e README. |
 | `integrar-poc` | Uma prova de conceito foi validada e precisa virar plugin, dissecada nas camadas da arquitetura. |
 | `modelo-por-fase` | Início de tarefa ou troca de fase: confere o modelo ativo contra a tabela vinculante e para para pedir o correto. |
@@ -853,7 +864,7 @@ O ponto que muda a prática: **descobrir e aprovar são atos separados**. O agen
 direto**. Um
 candidato vira uma linha numa fila append-only, e **só o dono promove** — a única exceção é a remoção
 (ponteiro quebrado, memória obsoleta), que o agente faz na hora. A fila é apresentada ao dono no
-passo 1 do procedimento de próxima tarefa, candidato a candidato.
+passo 1 do loop de execução, na abertura da janela, candidato a candidato.
 
 A governança das memórias do harness — inclusive a fila de candidatos e a regra de que só o dono
 promove — passa na primeira pergunta do teste de residência: é **doutrina global**, canônica no kit e
@@ -872,8 +883,8 @@ ponteiro.
 colunas `data`, `projeto`, `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s` e `fonte`. A coluna
 `fonte` assume três valores e é o que torna a série auditável: `usage` (dado lido do bloco de uso da
 notificação de conclusão), `contado` (execução inline, sem bloco a ler) e `nao_medido` (consumo perdido
-com a sessão). Quem escreve a linha é **o orquestrador**, nos dois pontos de fechamento — a skill de
-handover e o passo final do procedimento de próxima tarefa. O valor registrado sai do dado medido da
+com a sessão). Quem escreve a linha é **o orquestrador**, nos dois pontos de fechamento — ao fechar
+cada tarefa e ao encerrar a janela. O valor registrado sai do dado medido da
 notificação e **nunca** de um número que o próprio agente medido informe; o diário aponta para a
 série.
 

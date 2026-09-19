@@ -106,8 +106,8 @@ qualquer heading `##`/`###` da lista acima).
 tokens, veredito das hipóteses, rota candidata por fonte, orçamento-alvo e anatomia medida de
 uma janela de orquestração real.
 **Quando consultar:** ao decidir ou implementar qualquer mudança no fluxo de pickup (skills
-`proximo-passo`/`diario-de-obras`, diário, inboxes), para partir do número medido em vez de
-remedir; e para o valor de referência contra o qual uma correção se afere.
+`scrum-master`/`passagem-de-bastao`/`diario-de-obras`, diário, inboxes), para partir do número
+medido em vez de remedir; e para o valor de referência contra o qual uma correção se afere.
 **Seções:**
 - `## 1 Pickup típico medido` — definição operacional e `HEAD` da medida
 - `## 2 Orçamento por fonte` — tabela ranqueada por chars ingeridos + cinco recortes internos

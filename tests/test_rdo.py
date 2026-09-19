@@ -856,3 +856,68 @@ def test_tr_rdo_2campos():
     assert match is not None
     assert match.group("modelo") == "Opus"
     assert match.group("classe") == "investigacao"
+
+
+# --- _parsear_campos: bullet de topo encerra o campo (LM-T3b, AE-27 item 2) ---------------------
+
+_REVIEW_EVIDENCE_PATH = _ROOT / ".claude" / "tools" / "review_evidence.py"
+
+
+def _load_review_evidence():
+    spec = importlib.util.spec_from_file_location("review_evidence", _REVIEW_EVIDENCE_PATH)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_tf_campo_termina_em_bullet_de_prosa():
+    """TF da LM-T3b (`AE-27` item 2): um bullet de topo cujo rótulo não termina em `:**` — logo
+    não casa `_CAMPO_RE` — encerra o campo corrente do mesmo jeito que um campo canônico
+    encerraria. Concorrente: o código de hoje só encerra campo em bullet que case `_CAMPO_RE`,
+    então as linhas indentadas sob o bullet de prosa (aqui, uma tabela com `251.1` e
+    `message.id` entre crases) continuam anexadas a `arquivos-alvo`, e `extrair_arquivos_alvo`
+    devolveria os dois caminhos **mais** esses dois literais que `_eh_caminho` aceita por
+    terem 'extensão'."""
+    rdo = _load_rdo()
+    review_evidence = _load_review_evidence()
+
+    linhas = [
+        "- **Arquivos-alvo:**",
+        "  - `.claude/tools/rdo.py`",
+        "  - `tests/test_rdo.py`",
+        "- **A calibração medida no `ESC-3` (2026-09-18) — residência única desta tabela.**",
+        "  | campo | valor |",
+        "  | --- | --- |",
+        "  | `251.1` | `message.id` |",
+    ]
+
+    campos, _ = rdo._parsear_campos(linhas)
+
+    assert review_evidence.extrair_arquivos_alvo(campos) == [
+        ".claude/tools/rdo.py",
+        "tests/test_rdo.py",
+    ]
+
+
+def test_tr_campo_multilinha_continua_valendo():
+    """TR da LM-T3b: campo canônico seguido de vários sub-bullets indentados continua sendo lido
+    por inteiro — o reparo encerra o campo em bullet de topo, não em qualquer linha nova.
+    Concorrente: encerrar o campo em qualquer linha nova quebraria a lista de `Arquivos-alvo` de
+    todo card do plano, que é multilinha."""
+    rdo = _load_rdo()
+    review_evidence = _load_review_evidence()
+
+    linhas = [
+        "- **Arquivos-alvo:**",
+        "  - `.claude/tools/rdo.py`",
+        "  - `tests/test_rdo.py`",
+        "  - `.claude/tools/review_evidence.py`",
+    ]
+
+    campos, _ = rdo._parsear_campos(linhas)
+
+    assert review_evidence.extrair_arquivos_alvo(campos) == [
+        ".claude/tools/rdo.py",
+        "tests/test_rdo.py",
+        ".claude/tools/review_evidence.py",
+    ]

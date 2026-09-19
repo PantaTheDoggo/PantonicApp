@@ -776,3 +776,128 @@ def test_tf_atribuir_alvo_diretorio_casa_por_prefixo(tmp_path, capsys):
     assert codigo == 0
     assert "atribuicao: .claude/tools/novo.py -> alvo-do-card" in saida.out
     assert "sem-atribuicao" not in saida.out
+
+
+def test_tf_estado_git_de_arquivo_commitado_desde_a_ref(tmp_path):
+    """LM-T3a: `coletar_estado_git(root, desde=<ref>)` compõe a evidência `git` de duas fontes —
+    um arquivo alterado e **commitado** depois da `ref` sai marcado `M (commitado desde <ref>)`,
+    lido de `git diff <ref> --name-status`. *Concorrente:* hoje (sem `desde`) essa entrada não
+    existe no mapa, e o renderizador imprime `(sem entrada em `git status`)`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    ref = _run_git(["rev-parse", "HEAD"], repo).strip()
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 2\n", encoding="utf-8")
+    _run_git(["add", "-A"], repo)
+    _run_git(["commit", "-m", "segunda rodada"], repo)
+
+    estados = review_evidence.coletar_estado_git(repo, desde=ref)
+
+    assert estados["src/b.py"] == f"M (commitado desde {ref})"
+
+
+def test_tr_estado_da_arvore_de_trabalho_vence(tmp_path):
+    """LM-T3a: quando o mesmo caminho tem mudança commitada desde a `ref` **e** mudança na árvore
+    de trabalho ainda não commitada, o código de duas letras do `git status` vence — a entrada
+    permanece ` M`, nunca a forma `(commitado desde ...)`, porque `setdefault` só preenche o que o
+    `git status` ainda não tinha marcado."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    ref = _run_git(["rev-parse", "HEAD"], repo).strip()
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 2\n", encoding="utf-8")
+    _run_git(["add", "-A"], repo)
+    _run_git(["commit", "-m", "segunda rodada"], repo)
+    (repo / "src" / "b.py").write_text("def b():\n    return 3\n", encoding="utf-8")
+
+    estados = review_evidence.coletar_estado_git(repo, desde=ref)
+
+    assert estados["src/b.py"] == " M"
+
+
+def test_tr_sem_desde_nada_muda(tmp_path, monkeypatch):
+    """LM-T3a: sem `desde`, `coletar_estado_git` devolve exatamente o mapa do `git status` e
+    nenhuma chamada de `git diff` acontece — a assinatura permanece compatível com a chamada de
+    um só argumento que já existia."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    (repo / "src" / "b.py").write_text("def b():\n    return 2\n", encoding="utf-8")
+
+    original_git = review_evidence._git
+
+    def _git_sem_diff(args, root):
+        assert args[0] != "diff", "coletar_estado_git sem `desde` não deve chamar git diff"
+        return original_git(args, root)
+
+    monkeypatch.setattr(review_evidence, "_git", _git_sem_diff)
+
+    estados = review_evidence.coletar_estado_git(repo)
+
+    assert estados == {"src/b.py": " M"}
+
+
+def test_tf_atribuir_com_plano_inexistente_falha_pelo_canal_do_modulo(tmp_path, capsys):
+    """LM-T3a (`AE-17`): `--atribuir` com `--plano` inexistente falha pelo mesmo canal que o
+    caminho sem `--atribuir` — `ReviewEvidenceValidationError` impressa como `review_evidence:
+    FALHOU - ...` no stderr, exit 1. *Concorrente:* hoje esse caminho estoura `FileNotFoundError`
+    cru, sem passar por `_exigir_plano`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano_inexistente = tmp_path / "NAO-EXISTE.md"
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano_inexistente), "--tarefa", "T1", "--root", str(repo), "--atribuir"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "review_evidence: FALHOU - plano: arquivo não encontrado" in saida.err
+
+
+def test_tr_dossie_com_plano_inexistente_nao_muda(tmp_path, capsys):
+    """Regressão: o mesmo caso do teste acima, sem `--atribuir`, continua saindo exit 1 com a
+    mesma mensagem — `_exigir_plano` não muda a forma já publicada da falha do caminho do
+    dossiê."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano_inexistente = tmp_path / "NAO-EXISTE.md"
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano_inexistente), "--tarefa", "T1", "--root", str(repo)]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "review_evidence: FALHOU - plano: arquivo não encontrado" in saida.err
+
+
+def test_tr_atribuir_com_tarefa_inexistente_continua_igual(tmp_path, capsys):
+    """Regressão: com plano válido e `--tarefa` inexistente, `--atribuir` continua saindo exit 1
+    com `review_evidence: FALHOU - tarefa: '<ID>' não encontrada em` — comportamento já correto
+    hoje, que o alargamento do `except` para `ReviewEvidenceValidationError` não pode quebrar."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+
+    codigo = review_evidence.main(
+        [
+            "--plano",
+            str(plano),
+            "--tarefa",
+            "T-inexistente",
+            "--root",
+            str(repo),
+            "--atribuir",
+        ]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "review_evidence: FALHOU - tarefa: 'T-inexistente' não encontrada em" in saida.err

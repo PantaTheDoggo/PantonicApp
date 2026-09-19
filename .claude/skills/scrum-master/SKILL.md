@@ -6,8 +6,9 @@ description: Conduz o loop de execução de um plano Pantonic* — despacha as t
 # scrum-master — o loop de execução de um plano
 
 Procedimento de **Orquestração** (`GOVERNANCA.md` §3) no **contexto principal**: cada tarefa é
-executada por um subagente e julgada por outro. **Modo tarefa única**:
-`.claude/skills/proximo-passo/SKILL.md`. Esta skill é o **modo loop** sobre um plano nomeado; não
+executada por um subagente e julgada por outro. Esta skill é o **ponto de entrada único** da
+execução de backlog — plano nomeado ou "execute o próximo passo" —, e o maquinário de transição
+entre uma tarefa e a seguinte é a `.claude/skills/passagem-de-bastao/SKILL.md`, interna a ela. Não
 implementa, não julga entrega e não substitui decisão do dono (`.claude/global/CLAUDE.md` Regra 8).
 
 ## Estado do loop
@@ -43,16 +44,17 @@ Dez passos, nesta ordem.
 - **Entrada:** fila corrente do plano; `status` das tarefas no índice de `docs/DIARIO_DE_OBRAS.md`.
 - **Ação:** tomar a **primeira** tarefa ainda não fechada na fila corrente. Sem tarefa aberta:
   encerrar pelo relatório de janela.
-- **Saída:** identificador da tarefa corrente e o cabeçalho dela, gramática
-  `### <ID> — <título> [<modelo> · classe <classe>]`.
+- **Saída:** identificador da tarefa corrente e o cabeçalho dela, na gramática de
+  `GOVERNANCA.md` §3 (*A unidade de trabalho*):
+  `### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe <classe>[ · teto <n>]]`.
 
 ### Passo 3 — Gates herdados
 
 - **Gatilho:** tarefa corrente selecionada.
 - **Entrada:** dossiê da tarefa no plano; estado do plano.
 - **Ação:** rodar `G-PLANREADY` (`GOVERNANCA.md` §7, item 11) e o Gate de delegação
-  (`.claude/skills/proximo-passo/SKILL.md`, seção "Gate de delegação", sete itens), sem recopiar o
-  texto de nenhum dos dois. Recusa de qualquer um: **não delega** — vai ao passo 10 por `B3`.
+  (`.claude/skills/passagem-de-bastao/SKILL.md`, seção "Gate de delegação", sete itens), sem
+  recopiar o texto de nenhum dos dois. Recusa de qualquer um: **não delega** — vai ao passo 10 por `B3`.
 
   Aprovados os dois, e **antes** de delegar, materializar `ready` → `in-progress` no kanban
   (`DP-G` item 1, consequência 3) — ato exclusivo do `scrum-master`.
@@ -124,12 +126,12 @@ Dez passos, nesta ordem.
 - **Ação:** ler `veredito` ∈ {`aprovado`, `ressalva`, `reprovado`}, `bloqueante` e o caminho do
   laudo — calculados pelo gerador, não recalculados pelo loop. Colher a `recomendação` **do
   laudo**, campo fechado (`seguir`, `seguir com ressalva`, `refazer`, `escalar`), lido por `A6`,
-  `A8a`, `A8`, `A9` e `B1`.
+  `A6a`, `A8a`, `A8`, `A9` e `B1`.
 - **Saída:** tripla (`veredito`, `bloqueante`, `recomendação`) para o roteamento.
 
 ### Passo 8 — Roteamento, bloco A
 
-- **Gatilho:** passo 5 concluído (regras `A1`..`A3b`) e passo 7 concluído (`A6`..`A9`, inclusive `A8a`).
+- **Gatilho:** passo 5 concluído (regras `A1`..`A3b`) e passo 7 concluído (`A6`..`A9`, inclusive `A6a` e `A8a`).
 - **Entrada:** `status`, `veredito`, `bloqueante`, `recomendação`, contador de retentativas.
 - **Ação:** aplicar a tabela do bloco A **em ordem de precedência** — a primeira regra que casa
   vence.
@@ -193,19 +195,22 @@ esta tabela e essas seções resolve a favor da seção.
 | `A3a` | `status=blocked` com `motivo=dependencia` | reordena a fila para que a bloqueada suceda a que a bloqueia e materializa `blocked` com a razão; **não** despacha o `reviewer`, **não** escreve RDO, **não** consome a retentativa e **não** incrementa o contador de tarefas fechadas: segue para a próxima elegível |
 | `A3b` | `status=blocked` com `motivo=premissa` | materializa `blocked` com a razão na tarefa e no plano; **não** despacha o `reviewer` e **não** escreve RDO: **PARA**. A escalada é ao **planejador**: a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17) e o relatório de janela a nomeia; ao dono só chega o que o planejador classificar como estratégico |
 | `A6` | `recomendacao=refazer` e retentativas gastas = 0 | despacha um executor **novo, em contexto novo**, com o dossiê original mais as **diretivas atualizadas** que o loop extraiu da recomendação — **nunca** o caminho do laudo, e **sem reescrever o dossiê**; contador := 1: segue |
-| `A7` | `veredito=reprovado` e retentativas gastas = 1 | fecha o RDO como `reprovado`: **PARA** |
-| `A8a` | `recomendacao=escalar` (com `bloqueante=nenhuma`) | **escalar não é desfecho de tarefa**: fecha o RDO pelo **veredito** transcrito — `aprovado` quando o veredito é `aprovado`, `aprovado com ressalva` quando é `ressalva` —, com cada achado do laudo saindo com rota, como em `A8`. A pendência **não** morre com o laudo: segue ao bloco B, onde o `B1` a registra como `AE-<n>` e a roteia ao consultor de plano. Precedência: `A6` e `A7` vencem esta regra — `bloqueante` diferente de `nenhuma` implica `veredito=reprovado`, que é `A7` —, e esta vence `A8` e `A9`, que leem a mesma recomendação |
+| `A6a` | `veredito=reprovado` e `recomendacao=escalar` (qualquer `bloqueante`, qualquer contador de retentativas) | **não** fecha RDO e **não** gasta retentativa: materializa a tarefa como `blocked` razão `premissa`, com a pendência do laudo transcrita na razão, registra o achado como `AE-<n>` em `## Achados da execução` do plano e escala ao **consultor de plano**, que decide entre refazer com diretivas novas, emendar o card ou mudar a rota; a janela **segue** com o que ele devolver (Diretiva de execução do `P-0740`, item 2). Refazer antes de escalar gastaria a retentativa numa rota que o laudo já pediu para rever. Precedência: `A6` vence esta regra — lá o próprio laudo mandou refazer —, e esta vence `A7` e `A8a` |
+| `A7` | `veredito=reprovado` e retentativas gastas = 1 | `reprovado` **não é desfecho de RDO** e esta regra **não** fecha RDO: o RDO só nasce na transição `review` → `done` (`DP-F` item 3, fechamento c), e `rdo.py close --veredito` aceita só `aprovado` e `ressalva` (medido: exit 2, `invalid choice`; `calcular_desdobramento('reprovado')` levanta `RdoValidationError`). Materializa a tarefa como `blocked` razão `premissa` — reprovada duas vezes, o que caiu foi a premissa de que o card é executável como está —, com o `bloqueante` e a pendência do laudo transcritos na razão, e registra o achado como `AE-<n>` em `## Achados da execução` do plano: **PARA**. A escalada é a do `A3b`: a reprovação depois da última retentativa é nomeada no relatório de encerramento e a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17). Precedência: `A6` e `A6a` vencem esta regra; ela vence `A8a`, `A8` e `A9` |
+| `A8a` | `recomendacao=escalar` e `veredito` ∈ {`aprovado`, `ressalva`} | **escalar não é desfecho de tarefa**: fecha o RDO pelo **veredito** transcrito — `aprovado` quando o veredito é `aprovado`, `aprovado com ressalva` quando é `ressalva` —, com cada achado do laudo saindo com rota, como em `A8`. A pendência **não** morre com o laudo: segue ao bloco B, onde o `B1` a registra como `AE-<n>` e a roteia ao consultor de plano. Precedência: `A6` e `A7` vencem esta regra — `bloqueante` diferente de `nenhuma` implica `veredito=reprovado`, que é `A7` —, e esta vence `A8` e `A9`, que leem a mesma recomendação |
 | `A8` | `recomendacao=seguir com ressalva` | fecha o RDO como `aprovado com ressalva`; cada ressalva e cada achado do laudo sai **com rota** (tíquete ou `sem ação`): segue |
 | `A9` | `recomendacao=seguir` | fecha o RDO como `aprovado`: segue |
 
 A recomendação é de domínio fechado — o loop a **lê**, não a deriva do veredito. `bloqueante`
 diferente de `nenhuma` implica `veredito=reprovado`. O consumo medido é **medida e registro, nunca
 critério de rota** (`DP-Q`): vai para `docs/telemetria.tsv`. **O laudo morre no consumo, em
-qualquer ramo** (`DP-K` §14.4): `A6`, `A7`..`A9` (inclusive `A8a`) e `B1` — o que a reexecução
+qualquer ramo** (`DP-K` §14.4): `A6`, `A6a`, `A7`..`A9` (inclusive `A8a`) e `B1` — o que a reexecução
 precisa saber viaja nas **diretivas atualizadas**. A `A8a` existe porque o caso foi medido
 **quatro vezes** na janela de 2026-09-18/19 (`LM-T7`, `LM-T3`, `LM-T2a` e `LM-T2`), todas com
 `bloqueante=nenhuma`, e em todas o loop materializou o fechamento **por julgamento próprio** —
 improviso que a `DP-G` proíbe.
+
+O bloco A parte **primeiro por veredito, depois por recomendação**: `veredito=reprovado` é decidido por `A6`, `A6a` ou `A7` e **nunca por `A8a`, `A8` ou `A9`**, que só são alcançadas com veredito `aprovado` ou `ressalva`. É essa partição que impede entrega reprovada de ser fechada como aprovada por uma recomendação `seguir`, e é ela que garante que nenhuma regra mande fechar o que o instrumento recusa — medido: `rdo.py close --veredito reprovado` sai exit 2, `invalid choice`.
 
 ### Bloco B — continuar ou encerrar a janela
 
@@ -229,21 +234,21 @@ Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bl
   (`A8`); e o `blocked` por `motivo=dependencia` (`A3a`), que reordena a fila e segue para a
   próxima elegível.
 - **Parada defeituosa:** solicitar o dono em caminho feliz, sem pendência aberta e sem demanda
-  dele. Despachar a próxima tarefa, criar o contexto novo e distribuir o handover são execução
+  dele. Despachar a próxima tarefa, criar o contexto novo e passar o bastão são execução
   normal. Uma única ocorrência é defeito da entrega (`GOVERNANCA.md` §4.3).
   Também defeituosa: qualquer pergunta ao dono (`AskUserQuestion` ou prosa) **entre o despacho de
   uma tarefa e o relatório de encerramento** — o loop não fica com dúvida: registra `AE-<n>`,
   materializa `blocked premissa` e para (`G-NOASK`). Toda opção de rota do relatório inclui
   **registrar e não agir** quando ela existir.
 
-A fronteira do **ponto do dono** é a de `.claude/skills/proximo-passo/SKILL.md`, e não se redecide
-aqui.
+A fronteira do **ponto do dono** é a de `.claude/skills/passagem-de-bastao/SKILL.md`, seção "A
+fronteira do ponto do dono", e não se redecide aqui.
 
 ## Relatório de encerramento
 
 Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:
 
-- Plano conduzido e regra que encerrou a janela (`A1`..`A9`, inclusive `A8a`, ou `B0`..`B4`, pelo identificador).
+- Plano conduzido e regra que encerrou a janela (`A1`..`A9`, inclusive `A6a` e `A8a`, ou `B0`..`B4`, pelo identificador).
 - Tarefas fechadas na janela, cada uma com identificador, desdobramento e caminho do RDO.
 - Contadores finais: tarefas fechadas na janela e consumo acumulado, como medida para a série.
 - **Pendências ao dono**, uma a uma, com o fato medido que a originou, o que cada opção implica, o
@@ -261,8 +266,10 @@ Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:
 
 - Uma janela conduz **um** plano. Troca de plano ou de iniciativa é troca de cenário: encerra a
   janela e recomeça em contexto novo (`.claude/global/CLAUDE.md` Regra 2).
-- O modelo de cada tarefa vem do cabeçalho dela no plano. Cabeçalho sem
-  `[<modelo> · classe <classe>]` é tarefa fora da gramática: cai em `B3`.
+- O modelo de cada tarefa vem do cabeçalho dela no plano, e o **esforço** declarado nele calibra a
+  profundidade que o executor aplica. Cabeçalho fora da gramática de `GOVERNANCA.md` §3 — sem
+  `[<modelo> · classe <classe>]`, que é o mínimo que os parsers do kit aceitam — é tarefa fora da
+  gramática: cai em `B3`.
 - O `scrum-master` **não revisa plano** (`GOVERNANCA.md` §3): indício de que o plano precisa de
   revisão leva o **plano** a `blocked`, com a razão registrada, e a matéria ao planejador.
 - O consumo da janela é lido de `docs/telemetria.tsv`, jamais auto-relatado.

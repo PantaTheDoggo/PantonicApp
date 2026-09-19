@@ -862,3 +862,79 @@ def test_tf_bkl_esforco_fora_do_vocabulario():
     )
 
     assert match is None
+
+
+# --------------------------------------------------------------------------- #
+# LM-T4b (`docs/plans/P-0740-loop-de-modulos.md` `### LM-T4b`) — o bullet de `Status` em
+# prosa: leitura aceita a forma canônica e a forma livre por igual, escrita preserva a
+# cauda a partir de ` — `.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_status_em_prosa_e_lido():
+    """Os cinco literais reais do card `LM-T4b` devolvem o estado certo — a forma em prosa
+    deixa de dar `linha de status ausente`. As duas formas que o card lista como devendo
+    continuar recusadas (sem estado entre crases; estado fora de minúsculas) continuam sem
+    status."""
+    backlog = _load_backlog()
+    literais = [
+        "- **Status:** `ready`",
+        "- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`",
+        "- **Status:** `blocked` razão `premissa` (2026-09-19, `A3b`) — o executor parou antes de entregar",
+        "- **Status:** `ready` · 2026-09-19",
+        "- **Status:** `ready` · 2026-09-19 · destravada pelo dono",
+    ]
+    estados_esperados = ["ready", "done", "blocked", "ready", "ready"]
+    for literal, esperado in zip(literais, estados_esperados):
+        linhas = ["### T1 — X [Sonnet · classe mecanica]", literal]
+        item = backlog._scan_items(linhas, "a.md")[0]
+        assert item.status == esperado, literal
+
+    for recusado in ("- **Status:** pendente", "- **Status:** `Ready`"):
+        linhas = ["### T1 — X [Sonnet · classe mecanica]", recusado]
+        item = backlog._scan_items(linhas, "a.md")[0]
+        assert item.status is None, recusado
+
+
+def test_tr_status_canonico_continua_lido():
+    """Regressão: a forma estrita `· AAAA-MM-DD[ · razão]` não muda de leitura com o
+    parser em prosa — mesmo caso de `test_tf_status_com_e_sem_razao`, conferido de novo
+    aqui sob o nome de regressão do card `LM-T4b`."""
+    backlog = _load_backlog()
+    linhas_com_razao = [
+        "### T1 — X [Sonnet · classe mecanica]",
+        "- **Status:** `blocked` · 2026-02-02 · aguardando dono",
+    ]
+    linhas_sem_razao = [
+        "### T1 — X [Sonnet · classe mecanica]",
+        "- **Status:** `ready` · 2026-02-02",
+    ]
+    item_com = backlog._scan_items(linhas_com_razao, "a.md")[0]
+    item_sem = backlog._scan_items(linhas_sem_razao, "a.md")[0]
+    assert item_com.status == "blocked"
+    assert item_com.status_razao == "aguardando dono"
+    assert item_sem.status == "ready"
+    assert item_sem.status_razao is None
+
+
+def test_tf_escrita_preserva_a_cauda(tmp_path):
+    """Aceite de escrita da `LM-T4b`, sobre a fixture `verde` (`AE-28`/`AE-29` — não sobre o
+    plano real): troca o bullet de `ALF-T1` pela forma em prosa, transita `ready →
+    in-progress` (está em `_TRANSICOES`) e exige exit 0 com a cauda preservada."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    _inserir_bloco_gerado(repo)
+
+    plano_path = repo / "docs" / "plans" / "P-0001-alfa.md"
+    linhas = plano_path.read_text(encoding="utf-8").splitlines()
+    idx = linhas.index("- **Status:** `done` · 2026-01-01")
+    linhas[idx] = "- **Status:** `ready` (2026-01-01) — cauda em prosa que precisa sobreviver"
+    plano_path.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+
+    modelo = backlog.carregar(repo)
+    resultado = backlog.transacionar_status(repo, modelo, "ALF-T1", "in-progress")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+    plano_depois = plano_path.read_text(encoding="utf-8").splitlines()
+    linha_status = next(l for l in plano_depois if l.startswith("- **Status:** `in-progress`"))
+    assert linha_status.endswith(" — cauda em prosa que precisa sobreviver")

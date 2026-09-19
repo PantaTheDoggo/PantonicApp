@@ -654,6 +654,760 @@ executa:
   pós-plano com a evidência nova de 2026-09-19 apensada. (iii) O `_CARD-mapa-de-custo-da-janela`
   foi **eliminado** — a matéria dele morreu com a ratificação da `TK-54a` e com esta decisão.
 
+- **`DM-31` — o loop roda em Opus enquanto o `P-0740` não encerrar (inversão registrada da tabela
+  do §3).** Ato do dono em 2026-09-19, sobre a parada do Passo 1 do `scrum-master`: *"pode manter
+  como opus durante esse plano"*. A tabela vinculante de `GOVERNANCA.md` §3 põe **Sonnet** na
+  linha *Orquestração*, e o §3 (penúltimo bullet) admite a inversão **só** com OK explícito e
+  registrado do dono — nunca por herança silenciosa. Este bullet **é** o registro, e é o que
+  impede a próxima janela de parar de novo no mesmo gate. Alcance: **o contexto principal do loop,
+  e só ele, e só até o `P-0740` encerrar**. Não alcança (i) os subagentes — o modelo de cada
+  tarefa continua vindo do cabeçalho dela, gramática `[<modelo> · classe <classe>]`, e o despacho
+  continua passando esse modelo ao `pantonic-executor`; (ii) nenhum outro plano, que volta ao
+  default da tabela. O nudge do hook `modelo_por_fase_userpromptsubmit.py` segue disparando por
+  palavra-chave: enquanto valer esta decisão, ele é falso positivo conhecido no loop deste plano.
+
+- **`DM-32` — `reprovado` não é desfecho de RDO: a `A7` se fecha ao instrumento, como a `A8a`.**
+  (Decisão do escalonamento `ESC-9`, 2026-09-19, `pantonic-consultant`, sobre o `AE-22` —
+  **técnica**, não escalada.) Três partes.
+  **(i) A rota (ii) do laudo está descartada.** Dar ao `rdo.py close` um caminho para `reprovado`
+  seria (a) inventar um fechamento de RDO que a `DP-F` não prevê — o RDO nasce **só** na
+  transição `review` → `done`, e `blocked`/`cancelled` não o disparam (Passo 9, fechamento c) —,
+  (b) reabrir, em sentido contrário, o que o `DM-26` (iii) já decidiu para a lacuna irmã
+  (*"fecha-se a regra ao instrumento, não o contrário"*), e (c) criar ramo morto na
+  `calcular_desdobramento`, cuja docstring ancora a ausência do ramo na própria `DP-F` e no
+  `G-DEADCODE`. O instrumento está certo pela terceira vez seguida; quem mente é a `A7`.
+  **(ii) A ação nova da `A7`.** Não fecha RDO: materializa a tarefa como `blocked` razão
+  `premissa`, com `bloqueante` e pendência do laudo transcritos na razão, registra `AE-<n>` e
+  **PARA** — exatamente a forma do `A3b`, e pela mesma substância: duas execuções reprovadas
+  derrubam a premissa de que o card é executável como está, o que é matéria de replanejamento e
+  não de fechamento. A `A7` **continua** sendo parada de janela, e por isso a linha *"reprovação
+  depois da última retentativa (`A7`)"* da seção *O que obriga parada* fica **literal**: nenhuma
+  rota do loop muda aqui — só o desfecho que a regra manda materializar. Não se escala ao
+  consultor como em `A6a`: lá a retentativa estava intacta e o laudo pedia revisão; aqui o
+  recurso já foi gasto até o fim, e a escalada é a do `G-REPLAN`, nomeada no relatório de
+  encerramento.
+  **(iii) Nenhuma linha de código, e a frase de partição passa a ser verdadeira.** Feita a troca,
+  a afirmação que a `LM-T2d` transcreveu — *"nenhuma regra mande fechar o que o instrumento
+  recusa"* — deixa de ser falsa sobre a tabela, que é o único defeito que o `AE-22` relata. A
+  `LM-T2d` **não se refaz**: está `done` aprovada 100% e entregou o que o card contratou.
+  Residência: card `LM-T2e`, **à frente da `LM-T2b`** e, como as duas irmãs, **antes da `LM-T4`**
+  (exclusão mútua do `.claude/skills/scrum-master/SKILL.md`).
+
+- **`DM-33` — teste pré-existente que afirma a **saída que o card reescreve** é alvo da tarefa, não
+  obstáculo a ela; e a fórmula do `ESC-3` está confirmada, inclusive pela linha que parecia
+  exceção.** (Decisão do escalonamento `ESC-10`, 2026-09-19, `pantonic-consultant`, sobre o
+  `AE-24` — **técnica**, não escalada.) Quatro partes.
+  **(i) O produto (b) fica; a autorização é que estava estreita.** A normalização do modelo para
+  minúsculas é o `AE-3` inteiro, e está medida: a série carrega **as duas** grafias do mesmo
+  modelo (`Opus` 103 × `opus` 55, `Sonnet` 72 × `sonnet` 50, `Haiku` 10, na coluna 4 de
+  `docs/telemetria.tsv`), e a **fonte** emite minúscula — o `meta.json` do subagente traz
+  `"model":"sonnet"`. O teste `test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv`
+  não afirma um invariante alheio: ele afirma **a linha que este card reescreve**. Ajustar a
+  grafia esperada não é afrouxar teste para o código passar — o caso, o nome e todas as outras
+  colunas da asserção ficam, e o payload continua entregando `Sonnet` **maiúsculo**, o que
+  transforma a asserção no guarda **ponta a ponta** da normalização, que antes ela não era.
+  **(ii) A contingência vira Passo.** A colisão não é eventualidade: está **medida** (`1 failed,
+  9 passed`, falha única na linha 274). `DP-G` manda materializar sem discricionariedade, e o que
+  é certo entra como passo com literal, não como contingência — foi a forma de contingência,
+  condicionada a *"afirmar a soma por `message.id`"*, que produziu o `blocked`. A autorização
+  alcança **uma** linha, a 274, e só a grafia do modelo nela.
+  **(iii) O trabalho já na árvore fica.** O executor aplicou (a), (b) e (c) e escreveu os quatro
+  testes antes de parar; nada disso se refaz nem se descarta — o `A3b` interrompe a **execução**,
+  não invalida arquivo medido. O card re-emitido abre com um **Passo 0 de conferência** do estado
+  exato (`1 failed, 9 passed`), que devolve `blocked` se a árvore não estiver como medida, e
+  proíbe reimplementar o que já está lá. Quem aplica a linha que falta é um **executor**, e quem
+  julga é o **reviewer**: o consultor não escreve entrega de card, nem quando ela tem uma linha —
+  fronteira que só vale se valer no caso barato.
+  **(iv) A quarta medida confirma a fórmula, não a contradiz.** Medido agora sobre os quatro
+  transcripts desta janela: a última entrada `assistant` com `usage` dá **exatamente** o
+  `<usage>` da notificação em **4/4** (86,0k, 50,6k, 44,4k, 72,9k) — com o `ESC-3`, **10/10**. A
+  linha exata da `LM-T2b` tem causa medida: o `SubagentStop` roda **depois** do subagente e
+  importa o hook do disco naquele instante; o executor reescreveu `calcular_consumo` às 05:40 e o
+  transcript fechou às 05:42, então a linha dele foi gravada **pelo código já corrigido** — o
+  código velho teria gravado 371,6k para o mesmo transcript, e o gravado foi 72,9k. As três
+  anteriores, fechadas antes das 05:40, batem **exatamente** com a soma por `message.id`. O que
+  muda na redação é só o alcance da palavra *sempre*: o hook gravava para mais em toda execução
+  fechada **antes** de o reparo entrar na árvore. A tabela de calibração do `ESC-3` permanece a
+  residência única, agora com a tabela do `ESC-10` ao lado. Residência: card `LM-T2b`, que volta a
+  `ready` **na mesma posição da fila**.
+
+- **`DM-34` — a cláusula que faltava na regra do padrão de aceite; e entrega completa não volta
+  para despacho, volta para laudo.** (Decisão do escalonamento `ESC-11`, 2026-09-19,
+  `pantonic-consultant`, sobre o `AE-25` — **técnica**, não escalada.) Três partes.
+  **(i) A linha 4 reparada, medida nos dois mundos.** `Select-String` é **case-insensitive por
+  padrão**, então `'EXA-T55\tSonnet' -SimpleMatch` casa a linha nova, minúscula, e devolve 1 onde
+  o card afirmava 0 — a linha era **inexequível**, não apenas imprecisa. Forma nova:
+  `'EXA-T55\tsonnet' -SimpleMatch -CaseSensitive` → **1** na árvore entregue e **0** numa cópia
+  pré-entrega (medido pelo consultor, os dois mundos, com o comando publicado); o mesmo padrão
+  **sem** `-CaseSensitive` dá **1 nos dois** e não mede nada. A regra do `AE-23` ganha a cláusula
+  do `AE-25`: *padrão de aceite é recorte do literal da fonte, rodado nos dois mundos **e com as
+  opções que tornam a medida discriminante***. Os três casos (`AE-21`, `AE-23`, `AE-25`) seguem
+  com residência no acumulador **`TK-55`** e leitura dentro do plano pela **`LM-T5`** — nenhum
+  deles abre rodada própria.
+  **(ii) Desfecho da `LM-T2b`: revisão, sem terceiro despacho.** O que faltou nas duas paradas foi
+  **instrumento de aceite**, nunca produto: os três aceites substantivos do card saem como
+  escritos, medidos pelo loop e re-medidos pelo consultor. Um terceiro executor não teria o que
+  entregar — e, pior, **fabricaria a terceira parada**: o Passo 0 exige `1 failed, 9 passed` e a
+  árvore está `10 passed`, de modo que o redespacho terminaria em `blocked` por um passo que já
+  cumpriu a função. O estado é materializado **pelo instrumento** (`backlog.py status ... review`),
+  nunca à mão. Autoria: o laudo julga **a árvore contra o card**, e a evidência `--desde 6eebccd`
+  cobre os dois atos num delta só; autor de registro é o 2º executor, com a nota dos dois atos no
+  RDO. As duas paradas foram `A3b`, que **não** consome retentativa: o contador chega ao laudo
+  em 0.
+  **(iii) Varredura estrutural do card, pedida pelo loop.** Confrontei **cada** passo e **cada**
+  linha de aceite com a árvore de hoje, não de memória: Passos 0, 1 e 2 aplicados; `Verificação`
+  1, 2 e 3 verdes (`10 passed`, `175 passed`, `cache_read_input_tokens` = 4); 4 reparada e medida
+  nos dois mundos. **Nada mais no card pode fazê-lo parar uma terceira vez**, porque nada mais
+  nele está por executar — o que resta é julgamento, que é do `reviewer`. Residência: card
+  `LM-T2b`, cujo bloco de abertura passa a declarar o estado medido, os passos consumidos e a
+  autoria.
+
+- **`DM-35` — as quatro matérias do laudo da `LM-T2b`, alocadas por **onde a medida diz que elas
+  moram**; e a varredura da `LM-T4` contra `DM-15`..`DM-34`.** (Decisão do escalonamento `ESC-12`,
+  2026-09-19, `pantonic-consultant`, sobre o `AE-26` e os três itens do `AE-27` — **técnica**, não
+  escalada.) Cinco partes.
+  **(i) `AE-26` (bullet de `Status`) vira card de instrumento, antes da `LM-T4`.** Medido:
+  `STATUS_BULLET_RE` (`.claude/tools/backlog.py:70`) exige ``- **Status:** `<estado>` ·
+  AAAA-MM-DD``; dos cards do `P-0740`, **0** casam — 0 de 18 quando o `ESC-12` mediu, 0 de **21** depois de
+  ele próprio acrescentar três cards, e é por isso que o aceite do card é **relação**, não
+  literal (`AE-21`) —, e no repositório inteiro **15 de 34** bullets de `Status` casam. Não é defeito de um plano: é o **instrumento que não lê a gramática
+  que o corpus usa**, e o `DM-34` mandou materializar estado por um instrumento que não alcança
+  card nenhum deste plano. Rota: o **parser aprende a forma em prosa** e a escrita preserva a
+  cauda — nunca o inverso, que seria reescrever 34 bullets e continuar com o planejador
+  produzindo a forma que o leitor recusa. É o mesmo movimento da `LM-T4a` (`DM-13` (ii),
+  `AE-5`/`AE-6`): **parser antes de doutrina**. Card `LM-T4b`, **antes da `LM-T4`**, que ganha o
+  item (d) para publicar a gramática copiando o literal do card do instrumento.
+  **(ii) `AE-27` item 1 (teste órfão) vira card próprio, fora do caminho crítico.** Medido: os
+  dois testes têm corpo **byte a byte idêntico** (mesmo `usage`, mesmas duas entradas, mesmas
+  asserções) e diferem só no nome e no docstring; o órfão (`:107`) nomeia o mecanismo que a
+  entrega **removeu**. Rota: apagar o órfão, manter o novo, cuja prosa já está certa sob a
+  fórmula nova. Não é matéria da `LM-T5` — aquela julga **autoria de card**, e isto é higiene de
+  suíte, com literal e aceite próprios. Card `LM-T2f`, despachável em qualquer janela.
+  **(iii) `AE-27` item 2 (alvos inflados) vira card de instrumento, antes da `LM-T6`.** Reproduzi
+  a inflação e medi a causa, que é **de gramática, não de heurística**: `_parsear_campos`
+  (`.claude/tools/rdo.py`) só encerra um campo quando encontra **outro campo canônico**, de modo
+  que um bullet de prosa (`- **A calibração … — residência única desta tabela.**`) **não** encerra
+  `Arquivos-alvo`, e todas as linhas indentadas seguintes — a tabela de calibração inteira —
+  continuam alimentando o campo; daí `message.id`, `251.1`, `505.2`, `2330.8`, `946.9`, `.jsonl` e
+  `telemetria_hook.py` virarem alvo. Emulei o reparo candidato (bullet de topo encerra o campo
+  corrente) sobre os cards reais: `LM-T2b` **9 → 2** (exatamente a lista declarada) e `LM-T2e`,
+  `LM-T3a`, `LM-T4`, `LM-T5` e `LM-T6` **inalterados** (1, 2, 5, 1, 2). A preocupação do laudo está
+  certa e é a razão da prioridade: alvo inflado **afrouxa a autoridade mecânica da dimensão
+  `escopo`**, que é contrato do `reviewer` e insumo do piloto. Card `LM-T3b`, **antes da `LM-T6`**.
+  **(iv) `AE-27` item 3 (`docs/telemetria.tsv`) NÃO vira card: o código já está certo, a rubrica é
+  que cala.** Medido agora: `_eh_registro_orquestracao('docs/telemetria.tsv')` → **True**, isto é,
+  o arquivo já cai no balde **`registro_orquestracao`** da `DB-25` e **não** entra em
+  `fora_dos_alvos` nem pesa no veredito mecânico — o mesmo valendo para `docs/RDO/`,
+  `docs/RDO/INDEX.md` e o diário. A camada mecânica **resolveu**; o que faltou foi o `reviewer`
+  saber que podia se apoiar nela, e isso é texto de **rubrica**. Residência: `LM-T5`, cujo
+  `Arquivos-alvo` é exatamente `docs/RUBRICA_DE_REVISAO.md`, como insumo declarado — **não** se
+  abre card de código para defeito que a medida não encontra no código.
+  **(v) A `LM-T4` está despachável, com três emendas feitas neste ato.** Varri o card contra
+  `DM-15`..`DM-34`, medindo o que ele afirma: (1) `check-drift` sai **exit 0** hoje (a `LM-T7`
+  fechou e recolocou a projeção; `check-readme.ps1` também **exit 0**) — a nota da `RP-5` que
+  dizia *exit 1* **envelheceu**, que é o `AE-21`, e o card passa a trazer a medida de hoje;
+  (2) o card absorve `AUT-T8` (**status × veredito**) sem citar `DM-25`, `DM-26` **nem `DM-32`** —
+  publicar status × veredito sem dizer que `reprovado` **não fecha RDO** (materializa `blocked`
+  razão `premissa`, `A7`) escreveria doutrina contra a tabela que esta janela acabou de corrigir;
+  a restrição entra no card; (3) o item (d) do `AE-26`. A baseline da `Verificação` 3 foi
+  **re-medida** e continua valendo: **uma** ocorrência de `>8 write-clusters`, em
+  `.claude/skills/proximo-passo/SKILL.md:126`. Todas as dependências estão `done` (`LM-T4a`,
+  `LM-T7`, `LM-T2c`, `LM-T2d`); com a `LM-T4b` entra uma nova. **Marco:** concordo com o loop — o
+  marco validável desta janela é a **`LM-T6`**, a única tarefa cujo produto é um **veredito do
+  dono** (Diretiva item 2). A `LM-T9` está listada depois dela, mas **não é insumo do veredito** e
+  não tem exclusão mútua com nada: corre antes da `LM-T6` ou na janela seguinte, à escolha do
+  loop (Diretiva item 4).
+
+- **`DM-36` — aceite não se contrata contra alvo que o card não alcança; e a auditoria de criação
+  de card sobe na fila, partida em duas.** (Decisão do escalonamento `ESC-13`, 2026-09-19,
+  `pantonic-consultant`, sobre o `AE-28` e sobre a antecipação da `LM-T5` pelo loop — **técnica**,
+  não escalada.) Seis partes.
+  **(i) A `Verificação` 2 da `LM-T4b`, reparada.** O executor está certo e parou no ponto mais
+  barato. Medido por mim: `('ready','ready')` não está em `_TRANSICOES`, e o card mandava transitar
+  para o estado em que a `LM-T2f` já está — **self-loop**, exit 1 garantido assim que o parser
+  passasse a ler o bullet. Forma nova: o aceite de **escrita** é um teste sobre cópia da fixture
+  `tests/fixtures/backlog/verde` em `tmp_path`, com bullet em prosa e transição `ready →
+  in-progress`, que **está** na tabela. Medido no mundo de hoje, com esse mesmo arranjo: exit **3**,
+  `linha de status ausente para ALF-T1`. Comando de aceite também **não muta o plano que o loop
+  conduz** — contratar `backlog.py status` sobre um card real era, além de insatisfazível, efeito
+  colateral em artefato vivo.
+  **(ii) A máquina de estados NÃO entra no escopo do card.** Self-loop e no-op são decisão sobre a
+  tabela de transições da `DP-F`; um card que ensina o instrumento a **ler e escrever um bullet**
+  não reabre tabela de transição para caber num aceite que ele mesmo escreveu errado — é o inverso
+  exato do `DM-26` (iii) e do `DM-32`. A restrição entrou no card.
+  **(iii) `AE-29`, medido neste ato e maior que o `AE-28`:** mesmo com o parser corrigido,
+  `backlog.py status` **não alcança tarefa nenhuma do `P-0740`**. Causa medida por introspeção: o
+  plano é carregado com `id = "P-0740"` e a linha de índice do diário tem `id = "P-0740-LM"`, de
+  modo que `_posicao_indice` devolve `None` e a transição morre em **exit 3**,
+  `linha de índice ausente para P-0740`. Não é matéria deste plano: o contrato entre plano e índice
+  é do **`backlog.py`**, isto é, do **`P-0739`**, que o dono estacionou até o `P-0740` encerrar.
+  Consequência imediata e **emenda ao `DM-34`**: enquanto o `AE-29` estiver aberto, a materialização
+  de estado pelo loop é **à mão, declarada** — não é improviso, é o único caminho disponível, e o
+  `DM-34` (ii) passa a ler-se com esta ressalva. A `LM-T4b` continua valendo: ela fecha a metade que
+  **é** deste plano (o bullet), e sem ela o `P-0739` corrigiria o índice para um leitor que
+  continuaria sem ler o estado.
+  **(iv) A regra de autoria de aceite vira critério de rubrica, não parágrafo de achado.** Os sete
+  casos desta janela (`AE-19`, `AE-21`, `AE-23`, `AE-25`, `AE-26`, `AE-27` item 2, `AE-28`) têm
+  **três autores diferentes** — planejador, consultor e loop —, o que os classifica como defeito de
+  **método**. A `LM-T5` ganha os critérios **(xii)** (comando de aceite é recorte do literal da
+  fonte, rodado nos dois mundos, com as opções que discriminam e com **alvo alcançável dentro do
+  escopo declarado**) e **(xiii)** (baseline de corpus real é **relação**, re-medida no despacho),
+  com os sete casos nomeados. Sem isso a `LM-T5` entregaria diagnóstico; com isso ela entrega régua.
+  **(v) A `LM-T5` é antecipável — a dependência de `LM-T4` estava errada e foi dissolvida.** Medido:
+  o critério (iii) da própria `LM-T5` afere a gramática **que os parsers aceitam**, e quem a ensinou
+  foi a `LM-T4a`, fechada; `DM-2`..`DM-5` são decisões **deste plano**, que a `LM-T4` publica mas não
+  cria. E a `LM-T5` **parte-se em duas**: a rubrica e o julgamento dos cards ficam na `LM-T5`,
+  antecipável agora; o reagrupamento dos 6 cards do `P-0739` vai para a **`LM-T5a`**, atrás da
+  `LM-T5` e da `LM-T4`, alinhada ao ato do dono que estaciona aquele plano. Não é partir um assunto
+  só (`DM-2`): são dois — uma régua de autoria e o reagrupamento do backlog de **outro** plano —,
+  unidos por conveniência de autoria, e mantê-los juntos faria a matéria urgente desta janela
+  esperar pela que o dono adiou. As contagens da `LM-T5` viram **relação** pelo critério (xiii) que
+  ela própria publica: eram 13 cards quando o card foi autorado, são **19** hoje.
+  **(vi) Dependência da `LM-T4b` e da `LM-T4` em relação à `LM-T5`: nenhuma.** A `LM-T5` toca só
+  `docs/RUBRICA_DE_REVISAO.md`; não há exclusão mútua com `backlog.py` nem com `GOVERNANCA.md`. O
+  loop pode ordenar como julgar (Diretiva item 4) e **eu endosso a antecipação**: três cards
+  seguidos parados por aceite é evidência suficiente. A única consequência técnica é que, fechada a
+  `LM-T5`, a `LM-T4b` e a `LM-T4` devem ser **re-varridas sob os critérios (xii) e (xiii)** antes do
+  despacho — varredura de consultor, barata, e é o que o `AE-14` ensinou sobre card sobrevivente.
+
+- **`DM-37` — aceite órfão de entregável retirado; e a régua de autoria passa a ser comando, não
+  item de checklist.** (Decisão do escalonamento `ESC-14`, 2026-09-19, `pantonic-consultant`, sobre
+  o `AE-30` — **técnica**, não escalada.) Três partes.
+  **(i) O reparo.** A `Verificação` 3 da `LM-T5` media
+  `docs/plans/P-0739-backlog-instrumento.md`, arquivo que o `ESC-13` **proibiu** a mesma tarefa de
+  tocar ao mover o segundo entregável para a `LM-T5a`. A linha **sai** da `LM-T5` — não precisa ser
+  "movida", porque já está escrita como `Verificação` 1 da `LM-T5a` — e as duas que ficam foram
+  reescritas na forma normativa, com as baselines re-medidas no `ESC-14` (**274** linhas na rubrica;
+  **0** ocorrências de `LM-T`; **0** ocorrências de `Medido antes` nela contra **20** no plano) e
+  com `-CaseSensitive` onde a caixa discrimina. A regra que faltava, e que passa a valer para toda
+  emenda: **quem retira entregável de um card reconfere, no mesmo ato, as linhas de aceite que
+  dependiam dele** — é o `DM-18` (i) aplicado à `Verificação`.
+  **(ii) O loop está certo sobre o remédio, e eu assino a leitura dele.** O `AE-30` é o oitavo caso
+  da décima segunda classe e viola a alínea (d) do critério **(xii)** — *alvo alcançável dentro do
+  escopo declarado* — que é **este mesmo card** que vai publicar na rubrica; o defeito sobreviveu
+  ao ato que escreveu a regra contra ele, três parágrafos acima. Doze critérios em vigor e oito
+  defeitos numa janela é evidência suficiente: **checklist lido pelo autor não fecha defeito de
+  autoria**. A `LM-T5` ganha o produto (b) — a **forma normativa** do bloco `Verificação`, com três
+  elementos legíveis por máquina (comando cercado, linha `→` com o esperado, literal
+  `**Medido antes: <valor>**`), que **20** itens deste plano já usam de fato — e a rubrica passa a
+  **prescrever o passo mecânico**: card cujo `card_check` não sai 0 **não se despacha**.
+  **(iii) O instrumento é card próprio, `LM-T5b`, logo depois da `LM-T5`.** Ele roda os comandos
+  que o card publica e compara com o `Medido antes` declarado — isto é, compara o card com **o
+  mundo**, que é a única coisa que nenhuma das oito falhas fez. Consequência sobre o `DM-36` (vi): a
+  re-varredura da `LM-T4b` e da `LM-T4` que eu prometi fazer à mão passa a ser **mecânica**, rodada
+  pelo loop, e eu entro só no que o instrumento recusar. **Insumo registrado, medido pelo loop
+  (`GOVERNANCA.md` §4.2, nunca auto-relato):** 867k tk em cinco passagens do consultor
+  (`ESC-9`..`ESC-13`) contra quatro tarefas fechadas e quatro executores despachados — número que
+  não governa rota (`DP-Q`) e que é insumo direto da `LM-T5` e do veredito da `LM-T6`.
+
+- **`DM-38` — a norma vale **no ato do despacho**, não em massa; e aceite de instrumento mede-se
+  sobre **fixture**, nunca sobre artefato vivo.** (Decisão do escalonamento `ESC-15`, 2026-09-19,
+  `pantonic-consultant`, sobre o `AE-31` — **técnica**, não escalada.) Cinco partes.
+  **(i) Prospectiva na autoria, exigível no despacho — e não retroativa em massa.** A `### 8.1` que
+  a `LM-T5` publicou já diz o que decide a questão: *"card cujo `card_check` não sai 0 não se
+  despacha"*. Logo a norma **não** manda reautorar 16 cards agora: manda que **nenhum card seja
+  despachado fora da forma**. Normaliza-se **um card por vez, no ato do despacho**, por quem
+  despacha — com o instrumento quando ele existir, à mão enquanto não existe, como a própria
+  `### 8.1` prescreve. Reautorar 20 cards de memória, numa janela cujo dado é que a memória do autor
+  **não** fecha esta classe, seria comprar o defeito 20 vezes para prevenir 20 ocorrências dele. A
+  contagem do laudo fica como está: **16 não passam** é o retrato verdadeiro da dívida, e ela se
+  paga na ocasião em que cada card for ao executor.
+  **(ii) Aceite de instrumento mede-se sobre fixture. É a regra geral que faltava, e ela fecha o
+  padrão.** Três aceites consecutivos morreram pela alínea (d) do critério (xii) — `AE-28`
+  (transição sobre card real), `AE-30` (arquivo de outro plano) e agora o `AE-31` item 1 (card vivo
+  que não satisfaz a norma que o card vizinho publicou). A causa comum **não** é desatenção: é ter
+  contratado aceite contra **artefato vivo**, que muda por ato de terceiro entre a autoria e o
+  despacho. Passa a valer: *instrumento se afere sobre fixture, que o próprio card entrega e
+  congela; artefato vivo é **uso** do instrumento, nunca aceite dele.* Materializado já: a
+  `Verificação` da `LM-T5b` passa a rodar sobre três cards sintéticos
+  (`tests/fixtures/card_check/plano-exemplo.md` — `EX-T1` conforme, `EX-T2` sem `Medido antes`,
+  `EX-T3` com valor divergente), e a exigência de sair 0 na `LM-T3b` e 1 na `LM-T2e` **saiu**. Nota
+  medida que confirma a escolha: **nem a `LM-T2e`** — o card que a auditoria aprovou — satisfaz a
+  `### 8.1` em todos os itens (o item do `pytest` está inline, sem bloco cercado e sem
+  `Medido antes`). Aceite apoiado nela nasceria morto em uma semana.
+  **(iii) `AE-31` item 2 — o `Pronto quando` da `LM-T4b`.** Reparado: passa a falar da **fixture**,
+  como a `Verificação` 2 desde o `ESC-13`. É o `AE-30` de novo, campo vizinho do mesmo card, e
+  confirma a regra que o `DM-37` (i) já enunciou: **quem emenda uma linha de aceite varre os outros
+  campos que a repetem** — `Pronto quando`, `Restrições`, `Contingências` e `Objetivo` citam o mesmo
+  fato e envelhecem juntos.
+  **(iv) `AE-31` item 3 — o invariante de contagem da `LM-T4`.** Reparado: `README.md` entra nos
+  `Arquivos-alvo` e a `Verificação` ganha `check-readme.ps1` → **exit 0** (medido hoje: exit 0, 9
+  agentes, 11 skills, 18 guardrails, 14 seções), declarado como **guarda de regressão**, com o
+  executor obrigado a publicar no retorno o número de guardrails antes e depois. Publicar item novo
+  em `GOVERNANCA.md` §7 sem fechar a tabela *Os guardrails* do `README.md` é exatamente o `AE-12`.
+  **(v) `AE-31` item 4 — o numeral.** A rubrica publicada tem **quinze** critérios, `(i)`..`(xv)`;
+  o executor numerou as duas aferições novas como `(xiv)` e `(xv)`, e o laudo julgou a decisão
+  dentro do escopo. Fica **assim**: a referência canônica é a rubrica, não a prosa do card. O card
+  da `LM-T5` está `done` e **não se reescreve** — ganha só a nota de reconciliação, porque corpo de
+  card fechado é registro histórico. E registro o nono caso pelo que ele é: as três linhas de
+  `Verificação` do card da **`LM-T5`** publicam `**Medido no ESC-14: 274**` em vez de
+  `**Medido antes: 274**` — o card que normatizou a forma não a usa. Autor: eu. É o segundo caso
+  em que a norma não sobrevive ao ato que a escreve, e é a evidência que sustenta (i) e (ii):
+  enquanto for texto que o autor deve lembrar, não fecha. Por isso a `LM-T5b` é a próxima da fila.
+
+- **`DM-39` — o silêncio é o defeito, não a regex; e o gate fica suspenso até o instrumento
+  merecê-lo.** (Decisão do escalonamento `ESC-16`, 2026-09-19, `pantonic-consultant`, sobre o
+  `AE-32` — **técnica**, não escalada.) Quatro partes.
+  **(i) As quatro matérias vão num card só, `LM-T5c`, à frente da fila.** Elas tocam os **mesmos
+  dois arquivos** (`card_check.py` e `docs/RUBRICA_DE_REVISAO.md`) e servem a **um** objetivo —
+  tornar o instrumento confiável o bastante para virar gate; parti-las criaria exclusão mútua sobre
+  os dois e entregaria, no meio, um gate que ainda não pode ser ligado (`DM-2`). A matéria 1 e a 2
+  são o movimento `LM-T4a`/`LM-T4b` outra vez — **norma e parser no mesmo ato** —, e o laudo está
+  certo sobre qual metade pesa: o **silêncio** é o defeito. Regra que sai daqui e vale para todo
+  instrumento do loop: *instrumento que decide despacho não descarta entrada em silêncio — o que
+  ele não sabe ler, ele **nomeia** e falha.*
+  **(ii) Endosso a suspensão do gate, e ela é da alçada do loop.** Ligar hoje bloquearia card
+  legítimo (matéria 3) e daria verde a card defeituoso (matéria 1) — o pior dos dois mundos, como o
+  loop disse. Registro o alcance: o `card_check` roda como **instrumento de apoio** no gate de
+  delegação, o loop segue re-derivando baseline à mão, e a frase da `### 8.1` (*"card cujo
+  `card_check` não sai 0 não se despacha"*) fica **suspensa em efeito, não revogada em texto** —
+  quem a reativa é a `LM-T5c`, que é também quem conserta o que a tornava perigosa. A `LM-T4b` e a
+  `LM-T4`, portanto, **não** exigem `card_check` verde no despacho: exigem a conferência manual dos
+  três elementos, como a própria `### 8.1` prescreve para o período sem instrumento.
+  **(iii) A matéria 3 tem causa medida, e não é a que o card supunha.** *"Fora do aceite mecânico"*
+  não precisa de porta própria: a recusa está **errada**, não o comando. `_rodar_comando` executa
+  `subprocess.run(tokens)` **sem `shell=True`** (medido, `card_check.py:136`), então `;`, `|` e `$`
+  dentro de um argumento citado são **texto**, não operadores — a varredura por substring recusa a
+  forma canônica do kit por um risco que o modo de execução já elimina. A decisão é **recusar por
+  token**, depois de `shlex.split`. O marcador `**Aferição: manual**` entra **só** como saída para
+  item sem comando executável, e é **rejeitado** sobre comando que o instrumento consegue rodar —
+  senão a porta dos fundos esvazia o gate no primeiro card difícil.
+  **(iv) Uma quinta matéria, achada ao escrever o card — e pelo instrumento.** Ao publicar a
+  `Verificação` da `LM-T5c` eu troquei a baseline dos itens 1..3 de `exit 1` (que valeria **nos
+  dois mundos** — antes por fixture ausente, depois por item fora da forma, isto é, vacuosa) para
+  **substring da saída**, e o `card_check` recusou: a saída capturada volta com a codificação
+  trocada (`tarefa: 'EX-T4' nÃ£o encontrada`), porque `_rodar_comando` usa `text=True` **sem
+  `encoding`** e o Windows decide pela `cp1252`. Efeito: **nenhum `Medido antes` com acento pode
+  bater**, e o autor é empurrado a reescrever o literal da fonte sem acento — que é o `AE-23`
+  induzido pelo próprio instrumento. Entrou como matéria 5 do card, com teste. Registro o método,
+  porque é a primeira vez na janela que isto acontece: **o defeito apareceu porque eu rodei o
+  instrumento contra o card que estava escrevendo**, que é precisamente o ciclo que a `### 8.1`
+  prescreve. Com a baseline recortada antes do acento, a `LM-T5c` sai
+  `card_check: OK — tarefa 'LM-T5c' fecha` (medido).
+  **(v) Nada espera o pós-plano.** As cinco matérias cabem num card de esforço baixo e pagam-se
+  no despacho seguinte. O que fica para depois do plano é só o **uso** do instrumento fora dele —
+  varrer os cards do `P-0739` com o `card_check`, que é da `LM-T5a`, e o acumulador `TK-55`, que
+  segue recebendo a série. E registro, porque é o décimo caso da classe e o primeiro que **um
+  instrumento** cometeu em vez de um autor: o `card_check` deu verde a um card por não ter lido um
+  item — exatamente o defeito que ele existe para pegar, agora um nível acima.
+
+- **`DM-40` — a cadeia do `card_check` para aqui; instrumento fora do caminho crítico não atrasa
+  marco.** (Decisão do escalonamento `ESC-17`, 2026-09-19, `pantonic-consultant`, sobre o `AE-33` e
+  sobre a pergunta de rota do loop — **técnica**; o impedimento da `LM-T6`, registrado no card, é
+  **estratégico** e sobe ao dono.) Cinco partes.
+  **(i) Rota escolhida: (b), com recorte.** A cadeia `LM-T5` → `LM-T5b` → `LM-T5c` **para aqui**. O
+  argumento do loop é o correto e eu o assino com o dado dele: o instrumento **nunca esteve no
+  caminho crítico** — as três tarefas até o marco não dependem dele, e o loop re-derivou baseline à
+  mão a janela inteira, inclusive quando o instrumento estava disponível. A curva 88% → 91% → 76%,
+  com cada iteração achando defeito na anterior, é a assinatura de **especificação sendo descoberta
+  pela implementação**, não de bug sendo consertado; e a Diretiva item 2 manda entregar no **marco
+  validável**, não na perfeição. Regra que fica: *cadeia de reparo de instrumento fora do caminho
+  crítico para no fim da janela corrente, não quando o instrumento ficar bom.*
+  **(ii) As duas matérias do `AE-33` são re-especificação, não conserto — e por isso ficam melhores
+  depois do piloto.** A matéria 1 não se resolve ajustando a âncora: o `card_check` lê o bloco
+  `Verificação` pelo `rdo._parsear_campos`, que **achata o campo numa linha só**, de modo que
+  `^\s*\d+\.` não tem como existir — a decisão devida é **ler o bloco bruto do card**, preservando
+  linhas, e isso muda o contrato de leitura do instrumento. A matéria 2 é política de codificação
+  **por tipo de filho** (o `python` que reconfigura `stdout`, o `python` simples em `cp1252`, o
+  `pwsh` em OEM — e `pwsh` é a forma canônica do kit): a saída provável é forçar o ambiente do
+  filho (`PYTHONIOENCODING`, `$OutputEncoding`) em vez de fixar `encoding` na leitura. Nenhuma das
+  duas é linha trocada; as duas se decidem melhor com a evidência do piloto na mão.
+  **(iii) O `AE-33` fica ABERTO e roteado ao pós-marco, sem card de código neste plano.** Não
+  pré-autoro card para trabalho cuja especificação eu acabei de declarar dependente de evidência que
+  ainda não existe — seria o `AE-14` de novo (card autorado antes das decisões que o governam). O
+  achado segue no acumulador **`TK-55`**, e o card nasce no planejamento pós-marco.
+  **(iv) O que não pode ficar como está é a superfície publicada.** A `### 8.1` prescreve *"card
+  cujo `card_check` não sai 0 não se despacha"* e hoje o instrumento **reprova card conforme** — uma
+  instrução publicada que, seguida, bloqueia despacho legítimo. É a lição do `AE-22` (arquivo
+  carregando afirmação falsa sobre si mesmo), e fecha-se do jeito mais barato: o card **`LM-T5d`**,
+  só a nota datada de suspensão, **fora do caminho crítico e não antes do marco**. Endosso também,
+  e registro no texto da nota, a frase do loop: **o vermelho do `card_check` não é evidência**
+  enquanto a matéria 1 estiver aberta.
+  **(v) A cadeia vira insumo declarado do piloto.** O loop está certo em ver aí o material mais rico
+  da janela: um instrumento que o próprio loop **especificou, construiu, mediu e corrigiu duas
+  vezes**, com cada defeito pego por um agente diferente do que o produziu — `LM-T5b` achou o que a
+  `LM-T5` não normatizou, o reviewer achou o falso verde do `LM-T5b`, o `LM-T5c` fechou-o e abriu um
+  falso vermelho, e o consultor achou a matéria 5 rodando o instrumento contra o card que o
+  reparava. Isso **é** medida do loop, e entra no piloto como insumo, qualquer que seja o corpus que
+  o dono escolher.
+
+- **`DM-41` — rótulo de campo termina na linha em que começa; e o reparo trivial continua sendo do
+  dono do plano.** (Decisão do escalonamento `ESC-18`, 2026-09-19, `pantonic-consultant`, sobre o
+  `AE-34` — **técnica**, não escalada.) Três partes.
+  **(i) O reparo, feito.** O rótulo do `Pronto quando` da `LM-T4b` foi **requebrado** para que o
+  `:**` caiba na primeira linha; **zero caractere de conteúdo alterado** — a decoração
+  (`reparado pelo ESC-15, DM-38 (iii)`) fica, e a oração que sobrava virou a primeira frase do
+  corpo. Medido depois: `review_evidence.py --tarefa LM-T4b --desde 6eebccd` → **exit 0**, dossiê
+  gerado, contra o **exit 1** (`campo obrigatório ausente … 'pronto-quando'`) de antes.
+  **(ii) O critério `(xvi)` entra na `LM-T5d`, e não espera o pós-marco.** É regra **fechada e
+  mecânica** — não tem nada a descobrir, ao contrário do `AE-33` —, cabe no card que já vai à mesma
+  seção do mesmo arquivo, e a `LM-T5d` segue **fora do caminho crítico**: o marco não atrasa um
+  minuto. Guardá-la para o pós-marco seria deixar a regra mais barata da janela esperar pela mais
+  cara. O card muda de título, porque agora são dois produtos sobre o mesmo assunto — *a rubrica
+  posta em dia* —, e a frase que conta os critérios fecha no mesmo ato (`DM-18` (i)).
+  **(iii) O loop está certo sobre a Regra 8, e o registro fica.** Ele recusou fazer um reparo de
+  **uma requebra de linha** porque o plano é do consultor — e essa disciplina é o que produziu os
+  treze achados desta janela. Abrir exceção pelo **tamanho** do defeito é exatamente como se perde
+  uma regra: não por revogação, por conveniência. Fica registrado como precedente: *o tamanho do
+  reparo não muda de quem ele é.*
+
+- **`DM-42` — a fronteira entre razão e cauda é matéria **deste** plano; e ela espera o marco.**
+  (Decisão do escalonamento `ESC-19`, 2026-09-19, `pantonic-consultant`, sobre o `AE-35` —
+  **técnica**, não escalada.) Três partes.
+  **(i) Residência: aqui, não no `P-0739`.** A pergunta do loop é a certa e a medida a responde. A
+  gramática do bullet de `Status` **não** é herança do `P-0739`: ela foi **decidida nesta janela**,
+  pelo `DM-35` (i), e contratada pela `LM-T4b` — que prometeu, com todas as letras, *"tudo que vier
+  depois de ` — ` é cauda livre, lida e preservada"*. O que falta é **a fronteira**, que eu
+  subespecifiquei ao autorar: medido por introspeção, o grupo da razão em `STATUS_BULLET_RE` é
+  `(.+)` **guloso** e engole ` — cauda`, de modo que a transição seguinte a descarta. Isso é
+  **completar o contrato do próprio card**, não matéria de outro plano — e mandá-la ao `P-0739`
+  seria despejar dívida nossa numa fila que o dono estacionou. A fronteira, decidida agora: **a
+  razão não contém ` — `; a cauda começa no primeiro ` — `**. Card `LM-T4c`.
+  **(ii) Pós-marco, e por um motivo medido.** O caminho que perde a prosa **não é alcançável hoje**
+  para card nenhum deste plano: o `AE-29` (índice `P-0740-LM` × id `P-0740`) faz `backlog.py status`
+  morrer antes, em `linha de índice ausente`, de modo que o loop materializa estado à mão e **nunca
+  percorre** o round-trip defeituoso. O defeito é **latente**, não vivo. Com duas tarefas até o
+  marco e o marco já travado num impedimento do dono, a janela não gasta despacho com dívida
+  latente. **Ressalva que vale enquanto o `LM-T4c` não fechar:** não se usa `backlog.py status` para
+  tirar card de `blocked` — o que, medido, é o que já acontece.
+  **(iii) O item 2 do `AE-35` vira critério `(xvii)`, no card que já cuida da rubrica.** *O aceite
+  cobre o mundo que o próprio produto cria.* É variação nova do critério (xii) — não é alvo
+  inalcançável, é **ramo não coberto**: a `LM-T4b` aferiu só o ramo em prosa e deixou sem nenhuma
+  linha o ramo canônico que a escrita dela **emite**. Entra na `LM-T5d`, que segue fora do caminho
+  crítico, com a contagem da seção indo a dezessete no mesmo ato (`DM-18` (i)).
+
+- **`DM-43` — o produto (c) da `LM-T4` não tem decisão a tomar: tem forma ratificada a transcrever;
+  o que estava errado era o aceite.** (Decisão do escalonamento `ESC-20`, 2026-09-19,
+  `pantonic-consultant`, sobre o `AE-36` — **técnica**, e a pergunta de alçada do loop está
+  respondida por medida, não por juízo.) Quatro partes.
+  **(i) A alçada: não é estratégico, e a evidência é do próprio dono.** O loop levantou a questão
+  certa — aposentar skill que o dono consome mudaria a superfície dele —, mas a premissa não se
+  sustenta quando medida. `DU-5` do `P-0737` é **ratificação do dono em 2026-08-22**:
+  *"`proximo-passo` é descontinuada; a responsabilidade é herdada pelo `scrum-master`"*, com a
+  alternativa de coexistência **explicitamente recusada**. E o `AUT-T6` registra que a natureza da
+  skill nova foi **fixada pelo dono em 2026-08-13** (`TK-36`): maquinário **agente↔agente**,
+  *"transparente para o gerente do projeto — **ele não a invoca, não a lê e não a acompanha**"*.
+  Quem declarou que esta superfície não é dele foi ele. Levar de volta ao dono uma decisão que ele
+  já tomou duas vezes não é prudência: é devolver trabalho decidido, e é o que o `G-NOASK` chama de
+  parada defeituosa. **Técnico.**
+  **(ii) O defeito é do aceite, não do produto.** A `LM-T4` foi autorada quando o `AUT-T6` ainda
+  era um card de outro plano, e herdou o produto sem herdar as consequências dele: `Arquivos-alvo`
+  listavam como **alvo de edição** duas skills que a forma ratificada manda **remover**, o
+  `Pronto quando` exigia reescrever o item 5 de uma delas, e três das quatro `Verificações`
+  exigiam as duas **vivas**. Reparado: os dois diretórios entram como **REMOVIDOS**, a
+  `passagem-de-bastao` entra como **NOVO**, e o gate passa a nascer na skill nova — mesmo conteúdo,
+  outro lar, que é literalmente o que a `AUT-T6` chama de *transposição, não reescrita*.
+  **(iii) A consequência que ninguém tinha escrito: a projeção.** Remover duas skills e criar uma
+  muda a contagem do kit — medido hoje: `ls .claude/skills` → **11**, `check-readme.ps1` → exit 0
+  **com 11 skills**. Depois da entrega são **10**, e as duas projeções (`.claude/README.md`
+  regenerado por `kit_check -Mode generate`, e a tabela de skills da *Anatomia do kit* em
+  `README.md`) fecham **no mesmo ato**, senão as `Verificações` 1 e 3 saem vermelhas. É o `DM-16`
+  (iv) — *quem toca a superfície fecha a projeção dela* — e o invariante de contagem do `AE-12`,
+  agora sobre skills. Os dois arquivos entraram nos `Arquivos-alvo`.
+  **(iv) A varredura de ponteiro, medida e transformada em aceite.** A `AUT-T7` (superfícies que
+  citam as aposentadas) já era absorvida por esta tarefa, mas **nenhuma linha a aferia**. Medido
+  agora, pelo **caminho** e não pela palavra — *handover* sobrevive legitimamente em prosa, o
+  caminho `.claude/skills/handover/` não: **4** citações de `proximo-passo/` e **3** de
+  `handover/` nas cinco superfícies. Viraram as `Verificações` 4 e 5 do card, com os dois mundos
+  publicados. Sem elas, a remoção deixaria ponteiro quebrado em quatro superfícies — que é
+  exatamente o defeito que o `AE-12` custou.
+
+- **`DM-44` — citação por **nome** é eixo próprio de varredura; e superfície de permissão não entra
+  em card.** (Decisão do escalonamento `ESC-21`, 2026-09-19, `pantonic-consultant`, sobre o `AE-37`
+  — **técnica**, não escalada.) Quatro partes.
+  **(i) As duas matérias num card só, `LM-T4d`, com recomendação de vir antes da `LM-T3b`.** São o
+  mesmo assunto — *regularizar a superfície que a aposentadoria deixou* (`G-SURFACE`, `GOVERNANCA.md`
+  §7 item 16) —, e a matéria 2 (o item 17 citando a skill apagada) é duas trocas de nome dentro
+  dele. A urgência é **assimétrica e medida**: `bootstrap-pantonic/SKILL.md:53` manda copiar
+  `proximo-passo` e `handover` para projeto novo, e o kit se propaga a cinco derivados — projeto
+  novo nasceria quebrado. A `LM-T3b` não tem urgência nenhuma, e o marco está travado no dono de
+  qualquer forma. A ordem continua sendo do loop.
+  **(ii) O mapa de sucessão fica fechado no card, porque senão o executor decide.** Citação sobre
+  **escolher tarefa, diretiva, inbox ou fila** → `scrum-master` (`DU-5`: responsabilidade herdada);
+  citação sobre **transição, fechamento, passagem de bastão ou herança de contexto** →
+  `passagem-de-bastao`; **a palavra** *handover* em prosa **não** é citação de skill e não se toca.
+  Citação que não couber nas duas regras **para e escala** — ampliar o mapa é decisão de consultor,
+  não de execução (Regra 8).
+  **(iii) `.claude/settings.json` sai do escopo e vira ato do dono.** As duas regras órfãs
+  (`Edit(/.claude/skills/handover/**)` e `Edit(/.claude/skills/proximo-passo/**)`, linhas 5 e 6
+  medidas) estão em **superfície de permissão** — a mesma que o `DM-27` registra como materializada
+  **por ato do dono**. Regra de permissão não se altera por card de plano, e nenhum agente altera a
+  própria permissão por instrução de outro agente. As duas são **inócuas** (concedem `Edit` sobre
+  diretório inexistente), então esperar não custa: vão nomeadas ao relatório de encerramento.
+  **(iv) O eixo que faltava ao critério (xii), e é o décimo sexto caso da série.** O aceite da
+  `LM-T4` estava **certo no que media** — varredura por **caminho**, `.claude/skills/handover/` —, e
+  incompleto **no eixo**: citação por **nome** (`` `handover` ``, com crase) é outra coisa, e vive em
+  arquivos que não estavam nos `Arquivos-alvo`. Regra que sai daqui, e que o planejamento pós-marco
+  leva à rubrica: *entregável que **remove ou renomeia** artefato varre os **dois** eixos — o
+  caminho e o nome — e varre o kit **inteiro**, não só os arquivos-alvo; o que a varredura achar
+  fora dos alvos vira card de regularização (`G-SURFACE`), nunca resíduo.* Não a escrevo na rubrica
+  agora: a `LM-T5d` está fechada em escopo e a janela encerra na `LM-T3b` — a regra entra com o
+  `AE-33` no pós-marco, onde a `LM-T5a` e o planejamento já têm residência.
+
+> **`DM-45` são atos do dono de 2026-09-19**, tomados sobre o relatório de encerramento da janela
+> de 2026-09-19. Entram pela mesma porta das `DM-27`..`DM-30`.
+
+- **`DM-45` — quatro atos do dono sobre o relatório de encerramento.**
+
+  **(i) O piloto muda de veículo: rota (B).** A `LM-T6` **não** roda sobre o `P-0739` — o corpus
+  dela passa a ser **esta janela**, já medida: 11 tarefas fechadas, zero reprovações, zero
+  retentativas consumidas, 18 achados (`AE-21`..`AE-39`), 14 passagens do consultor num contexto
+  só, e `6.004,3k tk` decompostos em execução `1.389,9k` (23%), revisão `812,2k` (14%) e consultor
+  `3.802,2k` (**63%**). O `P-0739` **permanece estacionado** e nada do ato do dono que o estacionou
+  é desfeito; a `LM-T5a` sai do caminho do marco. **Consequência a executar antes do despacho da
+  `LM-T6`:** o `Entregável` e o `Pronto quando` dela ainda falam da fila do `P-0739` e **precisam
+  ser reescritos para o veículo (B)** — reescrita de card é do consultor, **não** do loop, e é a
+  **primeira tarefa da próxima instanciação dele**.
+
+  **(ii) As duas regras órfãs de permissão foram removidas.** `.claude/settings.json` linhas 5 e 6
+  (`Edit(/.claude/skills/handover/**)` e `Edit(/.claude/skills/proximo-passo/**)`), que concediam
+  edição sobre diretórios apagados pela `LM-T4`. Removidas **por ato do dono em 2026-09-19**,
+  materializadas pelo loop no mesmo ato; `deny` e `hooks` intocados, JSON conferido. **Achado que
+  a remoção expôs e que NÃO foi resolvido:** não existe regra de permissão para
+  `.claude/skills/passagem-de-bastao/**`, a skill que a `LM-T4` criou — alargar permissão é ato do
+  dono e não se faz por iniciativa do loop, então fica **registrado, não agido**.
+
+  **(iii) O consultor que atinge o limite faz handover; o loop descomissiona e provisiona outro.**
+  Ato do dono, motivado pelo `ESC-22` desta janela — o consultor caiu por *session limit* **sem
+  devolver** as duas alocações do `AE-38` nem a varredura da `LM-T3b`, e o contexto inteiro dele
+  (14 passagens, o cenário acumulado) morreu junto. Regra nova, vinculante para a próxima
+  instanciação: **ao perceber que se aproxima do próprio limite, o consultor promove handover** —
+  entrega o estado do cenário, os escalonamentos abertos e o que estava em curso —, e o
+  **`scrum-master` descomissiona a instância e provisiona outra**, repassando esse handover. A
+  **forma de comunicação fica ad-hoc neste plano** (`DM-28`: técnica ainda não projetada se executa
+  ad-hoc, e o ad-hoc é insumo, não precedente) e **entra na spec do consultor** (`LM-T9`) para
+  resolução no plano próprio. Enquanto não houver forma projetada, o ad-hoc **não** é fonte
+  normativa e não se cita como tal.
+
+  **(iv) O consultor ganha responsabilidade de telemetria própria: estatística do próprio
+  acionamento.** Ato do dono. O consultor passa a **coletar estatísticas de cada acionamento** — o
+  que o motivou, que classe de impedimento era, o que ficou **inconclusivo** — de modo a produzir
+  um **panorama dos pontos inconclusivos**, que é insumo direto da **spec de robustez**. Base
+  medida que justifica: nesta janela ele respondeu 14 acionamentos e consumiu **63%** do total,
+  e hoje não há nenhum registro estruturado de *por que* cada acionamento existiu — só a linha de
+  consumo em `docs/telemetria.tsv`, que mede custo e não mede **causa**. Sem esse panorama, a spec
+  de robustez seria autorada sobre impressão. Entra na spec do consultor (`LM-T9`).
+
+- **`DM-46` — o item (b) da `LM-T8` ganha **local** e **literal**; e a concessão de `Bash` fecha,
+  no mesmo ato, as três frases do planner que ela torna falsas.** (Decisão do escalonamento
+  `ESC-23`, 2026-09-19, `pantonic-consultant`, sobre o `AE-41` — **técnica e tática**, nada
+  escalado.) Cinco partes.
+
+  **(i) O card fica inteiro; não se parte.** A `### 8.2` de `docs/RUBRICA_DE_REVISAO.md` já
+  reprovou a `LM-T8` por **(ii)/(xii)(d)**: *"dois estados de executabilidade no mesmo card — o
+  `Pronto quando` condiciona o item (b) à `LM-T4`, e despacho nenhum fecha o card inteiro"*. Esse
+  defeito morreu com o fechamento da `LM-T4`: hoje os três itens rodam no **mesmo** despacho, e o
+  card volta a ser **um tema só** — a definição do `pantonic-planner`. Partir agora criaria dois
+  cards sobre o **mesmo arquivo**, em exclusão mútua e sem tema próprio, que é o oposto da régua de
+  partição (`DM-2`, `DM-4`): parte-se por assunto, nunca por volume. Rota escolhida: **emendar**.
+  No mesmo ato o cabeçalho cai de `Opus + dono` para `Sonnet` — o ato do dono foi feito (`DM-27`) e
+  o que sobra é transcrição literal, que é trabalho de classe `mecanica`.
+
+  **(ii) O local de cada bloco, nomeado — nada fica com o executor.** Quatro pontos em
+  `.claude/agents/pantonic-planner.md`: **(a)** gramática de cabeçalho — o bullet de `## Fatos
+  estáveis (não redescobrir)` e a linha do esqueleto de `## Anatomia do card`, os dois pontos que
+  hoje a enunciam na forma aposentada; **(b)** régua de tema — o **item 5 (*Dimensionamento*)** da
+  Fase 4, cuja última frase é hoje a régua de volume que a `DM-2` substituiu (*"parta por ramo,
+  nunca por volume arbitrário"*); **(c)** os cinco critérios de autoria (`DM-18`, `DM-21`..`DM-24`)
+  — **item 12, novo**, no fim da Fase 4, depois do item 11 e antes de `### Fase 5`. **Seção nova
+  fica recusada:** a Fase 4 já é a residência do dever de autoria conferido antes de gravar, e
+  abrir seção para cinco critérios criaria uma segunda residência do mesmo assunto (`RP-6`).
+  **(d)** Nada disso é autoria nova: as residências canônicas são `GOVERNANCA.md` §3 (*Gramática do
+  card*; *A unidade de trabalho é o módulo coeso*) e `docs/RUBRICA_DE_REVISAO.md` (critérios
+  (viii)..(xi)). O card **transcreve**, e o literal dos quatro pontos vai **dentro** do card, com o
+  trecho `de` e o trecho `para` — o planner é papel sem card, então a transcrição é a única forma.
+
+  **(iii) O achado que o escalonamento não trazia: a concessão de `Bash` deixa três frases falsas
+  no mesmo arquivo.** Medido no `ESC-23`: `pantonic-planner.md` afirma hoje, em **três** pontos,
+  que o papel **não** roda comando — o parágrafo de abertura (*"não lê codebase para se situar,
+  **não roda comando e não mede**"*), a abertura do item **11** da Fase 4 (*"**Você não roda
+  comando** — logo…"*) e um bullet de `## O que você NUNCA faz` (*"rodar comando, medir ou
+  sondar"*). O item (a), como estava, acrescentaria o fato estável do `Bash` e deixaria o arquivo
+  **contradizendo a si mesmo** — exatamente o defeito do `AE-12` que a `DM-18` (i) fechou, agora
+  dentro do card que publica a própria `DM-18`. As três frases entram no item (a) com literal
+  fechado. A fronteira que o literal preserva: `Bash` serve a **um** uso — rodar o comando de
+  aceite que o próprio planner vai publicar (`DM-12`, `DM-24`) — e **não** é licença para
+  levantamento próprio, que segue delegado (fase 1, `pantonic-scout`).
+
+  **(iv) O parser já aprendeu a gramática que se publica.** Conferido no `ESC-23` **antes** de
+  fixar o literal, que é a lição do `AE-5`: `.claude/tools/rdo.py:86` (`_HEADER_BRACKET_RE`) aceita
+  `[ + dono]`, `[ · esforço …]` e o `[ · teto …]` legado, isto é, a forma de `GOVERNANCA.md` §3 é
+  exatamente a que o parser lê; e `.claude/checks/kit_check.ps1:165` valida `tools:` como lista
+  separada por vírgula, logo `Bash` no frontmatter não derruba o `validate`.
+
+  **(v) A `Verificação` passa a discriminar bloco a bloco, com os dois valores rodados.** Doze
+  linhas na forma normativa da `### 8.1`, **todas** medidas no `ESC-23` rodando o comando publicado
+  nos **dois** mundos — a árvore atual e a árvore com os dez literais do card aplicados, restaurada
+  no mesmo ato (`DM-12`, `DM-24` (iii)). Antes, a `Verificação` inteira media só o `tools:` e duas
+  regressões de `kit_check`: **nenhuma** das três linhas provava o item (b), e foi esse vazio que o
+  `AE-41` expôs. As duas linhas de `kit_check` permanecem, agora **declaradas** pelo que são —
+  guarda de regressão, não discriminante.
+
+- **`DM-47` — a `LM-T6` reescrita para o veículo (B): o piloto troca de corpus, não de
+  propósito.** (Reescrita do consultor em 2026-09-19, por **ordem de fila do `scrum-master`**,
+  executando a `DM-45` (i) do dono — **tática**, nada escalado. O `ESC-17` havia declarado o card
+  não despachável e devolvido a escolha ao dono; ele escolheu **(B)**, e a `DM-45` (i) atribuiu a
+  reescrita nominalmente ao consultor.) Cinco partes.
+
+  **(i) O que saiu.** O `Entregável` mandava *"um run do loop sobre a fila de **módulos** que a
+  `LM-T5` deixou no `P-0739`"* e o `Pronto quando` exigia *"o `P-0739` fecha `done`"*. As duas
+  cláusulas morreram: a fila não existe mais na `LM-T5` (saiu para a `LM-T5a`, `DM-36` (iii)) e o
+  `P-0739` **segue estacionado** por ato do dono. O `Objetivo` também dizia *"a rodada única que
+  encerra o `P-0739`"* e foi reescrito no mesmo ato — deixá-lo seria manter no card a premissa que
+  a reescrita existe para tirar.
+
+  **(ii) O que entrou.** O corpus passa a ser a execução do **próprio `P-0740`** sob o loop, em
+  duas janelas medidas: a de 2026-09-18/19 (11 tarefas fechadas, 7 em `aprovado 100%`, zero
+  reprovações, zero retentativas consumidas, 39 linhas de `docs/telemetria.tsv`, 6.004,3k tk, 900
+  tool uses, 3,06 h, decompostos em execução 23%, revisão 14% e consultor 63%) e a **corrente**,
+  cuja fatia se re-mede no despacho. O produto continua idêntico: a série por módulo, a regra que
+  encerrou cada janela, o confronto com a baseline de tarefa atômica da `BKL-T4` e o **veredito do
+  dono**.
+
+  **(iii) Onde o produto mora, e por que não é `Arquivos-alvo`.** O entregável é a seção **10** do
+  próprio plano, mais uma linha em `CHANGELOG.md`. O card **não** ganha campo `Arquivos-alvo`: o
+  `review_evidence.py` exige **exatamente um** entre `Arquivos-alvo` e `Entregável`, e ter os dois
+  é o defeito que derrubou o laudo da `LM-T9` (`AE-40`). Conferido rodando o instrumento depois da
+  reescrita: **exit 0**, com os alvos declarados lidos do `Entregável` — `docs/plans/P-0740-loop-de-modulos.md`
+  e `CHANGELOG.md`, exatamente os dois que a tarefa edita.
+
+  **(iv) O que é aceite e o que é relação declarada.** Nove linhas de `Verificação`, todas rodadas
+  nos dois mundos (árvore atual e árvore com a seção 10 simulada pelos literais prescritos,
+  restaurada no mesmo ato). As seis primeiras usam **regex ancorada em `^`**, deliberada e rodada
+  (`DM-24` (ii)): sem a âncora, o padrão publicado casaria **a própria linha de comando**, que vive
+  no mesmo arquivo, e o aceite mediria a si mesmo. A relação *uma linha de tabela por módulo
+  fechado* fica como **`Restrição` declarada, sem promessa de teste** (`DM-21` (ii)(c)) — o total
+  muda a cada despacho e constante nenhuma o aferiria sem envelhecer (`DM-23`); o comando que o
+  re-mede vive no **Método de sondagem**, que é onde a re-medida de despacho pertence. `README.md`
+  entra como **guarda de regressão**, não como edição.
+
+  **(v) O que continua sendo do dono.** O **veredito**. O card fica despachável **até a medida** —
+  a seção 10 fecha sem o dono —, e a `Contingência` 3 diz o que fazer se ele não estiver na janela:
+  `blocked` razão `dependencia`, com a medida já publicada e só a linha do veredito vazia. Nem o
+  consultor nem o loop escrevem essa linha.
+
+- **`DM-48` — regra instalada em `settings.json` **não** é permissão efetiva; a única evidência de
+  permissão é a edição que passa.** (Decisão do consultor em 2026-09-19, sobre o `AE-42` —
+  **tática**, nada escalado. Emenda a lição da `DM-27`.) Três partes.
+  **(i) O fato.** A `DM-27` registrou a permissão do dono como concedida porque a regra `Edit`
+  sobre `.claude/agents/**` **estava instalada** em `.claude/settings.json`. Com a regra instalada,
+  o gate verde (`card_check --tarefa LM-T8` → exit 0) e os literais conferidos, o `Edit` foi
+  recusado assim mesmo: **`Blocked by classifier`**. O classificador do harness é uma **camada a
+  mais**, independente da allowlist, e nenhuma leitura de `settings.json` a antecipa.
+  **(ii) A regra de autoria.** Card cuja entrega toca superfície de permissão (definição de agente,
+  `settings.json`, hook) **não** trata a allowlist como prova: a allowlist é condição
+  **necessária**, não suficiente. Enquanto a permissão não tiver sido **exercida** ao menos uma vez
+  na superfície, o card declara isso como risco nomeado e a devolução `blocked` razão `permissao`
+  é desfecho **previsto**, não defeito de autoria — foi exatamente o que a `LM-T8` fez, com o
+  executor acertando ao **não** contornar por `Bash`.
+  **(iii) Alcance, declarado.** Esta decisão vale como **régua de autoria deste plano** e não
+  reescreve doutrina publicada: promover a lição a `GOVERNANCA.md` exigiria card de superfície, que
+  este plano não tem e que é matéria do dono. Fica como insumo nomeado para o relatório de
+  encerramento, ao lado do ato de permissão que a `LM-T8` espera.
+
+- **`DM-49` — as duas matérias do `AE-45` ganham residência na fila pós-marco como item `PM-1`; e a
+  regra da superfície de permissão fica **reservada ao dono**, não decidida aqui.** (Decisão do
+  escalonamento `ESC-25`, 2026-09-19, `pantonic-consultant`, sobre o `AE-45` — **tática na
+  residência, com núcleo estratégico nomeado**.) Cinco partes.
+
+  **(i) A classificação, partida onde ela de fato se parte.** Dar **residência** a uma matéria de
+  replanejamento é trabalho de modelo funcional do plano, e é meu. Decidir **a regra** da matéria
+  (i) do `AE-45` — o que o loop faz quando o classificador do harness recusa o executor — **não**
+  é: qualquer resposta a ela mexe em uma de duas fronteiras que só o dono move, a de
+  `GOVERNANCA.md` §3 (*a orquestração não implementa*) ou a da superfície de permissão (§7 item
+  13). Registro a matéria, o que ela custa e as saídas que a janela já mediu; **não escolho entre
+  elas**, e nada aqui autoriza a exceção do `AE-44` a virar rotina.
+
+  **(ii) Por que não nasce card de execução agora.** Três razões, e bastam juntas: o plano está no
+  **marco**, e quem o destrava é o veredito do dono; abrir card sobre `.claude/agents/**` antes da
+  rota decidida é reincidir no ponto que o `AE-42` mediu — o card sairia autorado contra uma
+  permissão que já recusou três vezes; e a matéria (i) é insumo do próprio veredito, porque é um
+  limite **medido** do loop, não um defeito a esconder dele.
+
+  **(iii) O item `PM-1` fecha as duas matérias juntas, e a razão é de superfície.** Não é
+  conveniência: as duas tocam o **mesmo arquivo** (`.claude/agents/pantonic-planner.md`) e a mesma
+  camada de permissão. Fechá-las em cards separados faria a segunda esbarrar na primeira — e
+  qualquer card que mexa na `description` de um agente **regenera a projeção no mesmo ato**
+  (`DM-16` (iv)), então o dever de superfície é um só. É a régua de tema da `DM-2` aplicada a um
+  item de replanejamento: um assunto, um item.
+
+  **(iv) Correção de fato ao laudo, que o `AE-45` (ii) herdou.** O laudo diz que a matéria (ii)
+  *"depende da reprojeção de `.claude/README.md` que é da `LM-T7`"*. A `LM-T7` **já fechou** — o
+  `check-drift` sai exit 0 hoje, medido neste escalonamento. A dependência real é outra, e é mais
+  simples: mudar a `description` **reabre** o drift, logo o card que a mudar tem de **regenerar a
+  projeção no mesmo ato**. Não há tarefa a esperar; há dever de superfície a cumprir dentro do
+  próprio card.
+
+  **(v) O que sobe ao dono, enumerado sem preferência.** Saídas que a janela mediu para a matéria
+  (i), todas do dono porque todas mexem em fronteira dele: **(a)** alargar a permissão de modo que
+  o **executor** passe na superfície `.claude/agents/**`; **(b)** declarar que tarefa sobre essa
+  superfície é **ato do dono**, e o card nasce com ` + dono` no cabeçalho, com o dono aplicando o
+  literal — foi o que aconteceu de fato, duas vezes; **(c)** declarar exceção nominal e permanente
+  ao *a orquestração não implementa* para essa superfície, com a salvaguarda que o `AE-44`
+  preservou ad-hoc (quem escreve não julga: a revisão continua em papel e contexto próprios);
+  **(d)** tirar `.claude/agents/**` do escopo de plano conduzido pelo loop. O custo medido de
+  **não** decidir já está na série: três recusas dentro de uma tarefa só, e um fechamento que só
+  existiu por ato do dono na sessão (`AE-42`, `AE-44`).
+
+- **`DM-50` — a escrita em `.claude/agents/**` deixa de ser edição livre e passa a ser aplicação
+  mecânica de literais declarados, por instrumento; e ferramenta recusada ao executor vira desfecho
+  nomeado (`G-TOOLDENY`).** (Decisão do `scrum-master` **por delegação expressa do dono** em
+  2026-09-19 — *"eu já concedi permissão para você fazer funcionar, não quero ter que decidir sobre
+  esse tema que é de baixo nível; você veja a melhor forma de resolver, e torne isso como a
+  doutrina; o que não podemos é retornar a esse mesmo problema para a quarta vez"* —, autorada aqui
+  pelo `pantonic-consultant` no `ESC-26`. Substitui a reserva ao dono que a `DM-49` (i) havia
+  declarado: a matéria **desceu** de estratégica para técnica por ato de quem a tinha.) Cinco
+  partes.
+
+  **(i) O diagnóstico.** O impedimento nunca foi de conteúdo nem de card. As três recusas de
+  2026-09-19 (`AE-11`, `AE-42`, `AE-44`) caíram sobre a **ferramenta de escrita** aplicada a
+  `.claude/agents/**` — `Edit`/`Write` —, com o card correto, o gate verde e os literais
+  conferidos. Tratar isso como problema de permissão foi o erro de enquadramento que fez o mesmo
+  ponto voltar três vezes.
+
+  **(ii) O descarte das quatro saídas da `DM-49` (v), com a razão de cada uma.** **(a)** alargar a
+  allowlist — **já tentada e medida**: a regra `Edit` sobre `.claude/agents/**` está instalada em
+  `.claude/settings.json` desde `de28d01` e a recusa continuou, logo existe camada **acima** do
+  `settings.json` e a allowlist não é alavanca nossa. **(b)** card com ` + dono` — **recusada pelo
+  dono** no mesmo ato que delegou esta decisão. **(c)** exceção permanente ao *a orquestração não
+  implementa* — corrói a fronteira de `GOVERNANCA.md` §3, que é justamente o que separa quem
+  escreve de quem julga. **(d)** tirar `.claude/agents/**` do escopo do loop — tira do kit uma
+  superfície que ele precisa manter viva. Nenhuma das quatro ataca a causa do item (i).
+
+  **(iii) A quinta saída, que a enumeração não tinha.** A edição de definição de agente passa a ser
+  **aplicação mecânica de literais declarados, por instrumento**. Três peças, e valem juntas:
+  **(1) instrumento** `.claude/tools/agentdef.py`, verbo único `apply`, que exige **ocorrência
+  única** de cada `de`, é **tudo-ou-nada**, preserva encoding e line ending, recusa alvo fora de
+  `.claude/agents/*.md` e tem borda de **residência única** (`DM-22`); **(2) forma de card** — quem
+  muda definição de agente declara os literais em `de`/`para` e roda o instrumento na
+  `Verificação`; a forma **já se provou**, foi a da `LM-T8`, dez literais e doze linhas de aceite,
+  entregue sem um grau de liberdade para quem executa; **(3) guarda `G-TOOLDENY`** — ferramenta
+  recusada ao executor não vira improviso nem silêncio: ele devolve `blocked motivo=ferramenta`,
+  motivo **novo** no domínio fechado do retorno, nomeando ferramenta e caminho, e o loop roteia
+  pela `A3c` ao **fallback declarado** daquela superfície; superfície sem fallback declarado é
+  matéria de plano, não de janela. A exceção do `AE-44` **fecha** e a §3 volta a valer sem ressalva.
+
+  **(iv) A condição que impede a quarta repetição, e é inegociável.** O card que implementar isto
+  **prova a rota a partir de um contexto de executor**, com verificação discriminante — não supõe
+  que funciona. Se o executor também for recusado ao rodar o instrumento, **essa medida é o
+  achado**, e a escolha entre (b) e (d) se faz então **com dado**, não com hipótese. Por isso a
+  contingência 1 da `LM-T10` declara a recusa como **entregável**, e não como fracasso: ou a rota
+  funciona provada, ou se sabe exatamente por quê. O que não pode voltar a acontecer é descobrir
+  isso no meio de uma tarefa de conteúdo.
+
+  **(v) A partição, e a razão dela.** Dois cards, não um: **`LM-T10`** (o instrumento, os testes e
+  a prova da rota) e **`LM-T11`** (o contrato de recusa: `G-TOOLDENY`, o motivo `ferramenta`, a
+  `A3c` e o fim da exceção). São **dois temas** — um caminho de escrita e um contrato de retorno —,
+  e há dependência dura entre eles nos dois sentidos que importam: a `LM-T11` **edita
+  `.claude/agents/pantonic-executor.md`**, que é a superfície recusada, e só o instrumento da
+  `LM-T10` a torna editável; e se a `LM-T10` fechar `blocked` pela contingência 1, a rota caiu e a
+  `LM-T11` **não se despacha como está**. Juntá-las poria a doutrina refém de um experimento —
+  exatamente o que a `DM-2` proíbe ao mandar partir por tema. **Medido na autoria, e por isso
+  nenhum dos dois cards toca parser:** nenhum instrumento Python do kit lê o domínio de `motivo` —
+  ele vive só em prosa, em `.claude/skills/scrum-master/SKILL.md` e
+  `.claude/agents/pantonic-executor.md` —, e o `--razao` do `backlog.py` é texto livre. A lição do
+  `AE-5` foi conferida antes de fixar a gramática nova, não depois.
+
 ## 5. Tarefas
 
 ### LM-T1 — O pacote de fechamento: estado, telemetria e contratos [Sonnet · classe implementacao]
@@ -1118,13 +1872,38 @@ executa:
 
 ### LM-T2b — O número do hook: a fonte do `tokens_k` e a forma do `modelo` [Sonnet · classe implementacao]
 
-- **Status:** `ready` — card novo do `ESC-3` (`DM-20`), residência do item (c) da `LM-T2` antiga e
-  do `AE-3`.
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `escalar`; pendência substantiva roteada pelo `B1` como `AE-27`, quatro achados de processo no laudo (um já fechado por `DM-33`/`DM-34`). RDO: `docs/RDO/P-0740-LM-T2b-o-numero-do-hook-a-fonte-do-tokens-k-e-a-forma-do-modelo.md`. Fecha o `AE-3`, com confirmação em produção. Estado anterior: `review` (desfecho do `ESC-11`/`DM-34`) — chegou ao laudo depois de **dois** `blocked` razão `premissa` pelo `A3b`, nenhum deles por defeito de produto e **nenhum consumindo retentativa** (a tarefa chega com 0 gastas). Os Passos 0 e 1 e a Contingência 1 estão **consumidos** pelo 2º despacho e não se re-executam. Estado anterior, para registro: `blocked` razão `premissa` (2026-09-19, `A3b`, **segundo bloqueio**) — **desfecho
+  decidido no `ESC-11` (2026-09-19, `DM-34`): a tarefa não se redespacha.** O loop materializa
+  `review` **pelo instrumento** (`python .claude/tools/backlog.py status LM-T2b review`) e despacha
+  o `pantonic-reviewer` sobre o estado atual da árvore; o consultor não escreve estado à mão.
+  Histórico das duas paradas, as duas por conduta **correta** do executor (Regra 8 — ele não alarga
+  autorização nem conserta comando de aceite por conta própria): 1º despacho, `AE-24` (nenhuma
+  contingência autorizava tocar a asserção pré-existente; resolvido pelo `DM-33`); 2º despacho,
+  `AE-25` (a linha 4 da `Verificação` era inexequível; reparada pelo `DM-34`). **Nenhuma das duas
+  consumiu retentativa** (`A3b` não consome): a tarefa chega ao laudo com o contador em **0**, e
+  `A6` continua disponível se o veredito exigir. Card novo do `ESC-3` (`DM-20`), residência do item
+  (c) da `LM-T2` antiga e do `AE-3`.
+- **Estado medido no encerramento (`ESC-11`, 2026-09-19 — é o que o `reviewer` julga):** Passos 0,
+  1 e 2 **aplicados** (a frase do Passo 2 está no docstring do teste, conferida);
+  `python -m pytest tests/test_telemetria_hook.py -q` → **`10 passed`**;
+  `python -m pytest tests/ -q` → **`175 passed`**; a asserção da linha 274 espera `sonnet` com o
+  `_estado_valido` ainda entregando `Sonnet` maiúsculo; `cache_read_input_tokens` → **4**. As
+  quatro linhas de `Verificação` saem como escritas, com a 4 já na forma reparada. **Os Passos 0 e
+  1 e a Contingência 1 estão consumidos**: foram escritos contra a árvore **pré-entrega** e hoje
+  disparariam `blocked` numa terceira execução (o Passo 0 exige `1 failed, 9 passed`, e a árvore
+  está `10 passed`) — ficam como registro do 2º despacho e **não** se re-executam. É este o motivo
+  técnico de a tarefa ir à revisão em vez de a um terceiro despacho (`DM-34` (ii)).
+- **Autoria, para efeito de laudo (`DM-34` (ii)):** a entrega veio de **dois executores em
+  contextos distintos** — o 1º aplicou (a), (b), (c) e os quatro testes novos; o 2º aplicou a
+  asserção da linha 274 e a frase do docstring. O laudo julga **a árvore contra o card**, não o
+  autor, e o recorte de evidência `--desde 6eebccd` cobre os dois atos num delta só, porque **não
+  houve commit entre eles**. Autor de registro no RDO: o **2º executor**, com a nota de que a
+  entrega se deu em dois atos, por `AE-24` e `AE-25`.
 - **Esforço:** low
-- **Objetivo:** um só — o número que o hook grava passa a ser o mesmo que a notificação mede. Hoje
-  ele grava **sempre para mais**, com `fonte=usage`, e a série só não está corrompida porque o loop
-  corrigiu cinco linhas à mão nesta janela.
-- **Depende de:** `DM-20` (a fórmula, **calibrada** no `ESC-3`). Nenhuma tarefa anterior.
+- **Objetivo:** um só — o número que o hook grava passa a ser o mesmo que a notificação mede, e a
+  série passa a ter **uma** grafia por modelo.
+- **Depende de:** `DM-20` (a fórmula, **calibrada** no `ESC-3` e **re-confirmada** no `ESC-10`) e
+  `DM-33` (a autorização que destravou o card). Nenhuma tarefa anterior.
 - **Arquivos-alvo:**
   - `.claude/tools/telemetria_hook.py`
   - `tests/test_telemetria_hook.py`
@@ -1147,61 +1926,119 @@ executa:
   errados que o hook gravou hoje (`251.1`, `505.2`, `2330.8`, `946.9`) — a causa está identificada,
   não suposta: `cache_read_input_tokens` é o contexto **inteiro** relido a cada turno, e somá-lo
   turno a turno multiplica o total pelo número de turnos.
+- **Re-confirmação do `ESC-10` (2026-09-19) — quatro transcripts desta janela, medidos pelo
+  consultor com as duas fórmulas sobre o `.jsonl` real:**
+
+  | subagente (tool uses) | `<usage>` da notificação | soma por `message.id` | **usage da última mensagem** | o que o hook gravou |
+  |---|---|---|---|---|
+  | `LM-T3a` (36) | 86,0k | 1763,1k | **86,0k** | 1763,1k |
+  | `LM-T2d` (17) | 50,6k | 334,7k | **50,6k** | 334,7k |
+  | `LM-T2e` (7) | 44,4k | 212,5k | **44,4k** | 212,5k |
+  | `LM-T2b` (9) | 72,9k | 371,6k | **72,9k** | **72,9k** |
+
+  **Quatro de quatro** para a fórmula da última mensagem — com o `ESC-3`, **dez de dez**. A quarta
+  linha, que saiu **exata** e parecia exceção, tem causa **medida, não suposta**: o
+  `SubagentStop` roda **depois** que o subagente termina e importa `telemetria_hook.py` do disco
+  **naquele instante**; o executor da `LM-T2b` reescreveu `calcular_consumo` às **05:40** e o
+  transcript dele fechou às **05:42** (`mtime` dos dois arquivos, conferidos), de modo que o hook
+  que gravou a linha dele **já era o corrigido**. A prova é numérica: o código velho teria gravado
+  **371,6k** para esse mesmo transcript, e o gravado foi **72,9k**. Nas três anteriores — todas
+  fechadas antes das 05:40 — o gravado bate **exatamente** com a soma por `message.id`. Ou seja, a
+  quarta linha não contradiz a fórmula: é a fórmula funcionando **em produção, sobre a própria
+  execução que a escreveu**. Consequência para a redação: *"o hook grava sempre para mais"* é
+  verdade sobre toda execução fechada **antes** de o reparo entrar na árvore, e falsa depois —
+  o card não usa mais a palavra *sempre* sem esse recorte (`AE-24`).
 - **Produto do módulo:** (a) `calcular_consumo` passa a devolver, em `tokens_k`, o total de `usage`
   da **última** entrada `assistant` que tiver `usage`, em vez da soma por `message.id`; (b)
-  `montar_args_append` passa a normalizar o `modelo` para **minúsculas** (`str(...).strip().lower()`),
-  que é a convenção da série; (c) o docstring do módulo (`:10`) e o de `calcular_consumo` passam a
-  enunciar a fórmula nova e a razão medida, substituindo a nota de dedupe por `message.id`.
-- **Testes** (quatro, com a regra concorrente de cada):
-  - `TF-consumo-usa-a-ultima-mensagem` — transcript sintético com três entradas `assistant` de
-    `message.id` distintos e `usage` crescente (ex.: totais 10k, 30k, 60k): `calcular_consumo`
-    devolve `60.0`. *Concorrente:* o código de hoje devolve `100.0` — é a diferença que a tabela de
-    calibração mediu em escala real.
-  - `TR-consumo-uma-mensagem-so-nao-muda` — transcript com **duas entradas da mesma mensagem**
-    (mesmo `message.id`, mesmo `usage`), o caso da calibração histórica do `T55`: continua
-    devolvendo o valor de uma (não o dobro). *Concorrente:* somar por entrada dobrava — o defeito
-    que a dedupe corrigiu e que a fórmula nova não pode reintroduzir.
-  - `TR-tool-uses-e-duracao-intocados` — no mesmo transcript do primeiro teste, `tool_uses` conta
-    todos os blocos `tool_use` de todas as entradas e a duração segue vindo do primeiro e do último
-    `timestamp`. *Concorrente:* aplicar "só a última mensagem" também a `tool_uses` derrubaria a
-    contagem, que hoje está **certa** (medido: 4, 13, 17, 20, 25 e 30 batem com a notificação).
-  - `TF-modelo-minusculo-no-append` — `montar_args_append` com `modelo="Sonnet"` devolve
-    `--modelo sonnet`. *Concorrente:* hoje devolve `Sonnet`, e a série fica com duas grafias do
-    mesmo modelo (`AE-3`).
-- **Verificação:** (baseline medida no `ESC-3` — `DM-12`)
-  1. `python -m pytest tests/test_telemetria_hook.py -q` → verde, com **quatro testes a mais**
-     que o total re-medido no despacho (`DM-23`). Referência histórica, não aceite: `6 passed`
-     em 2026-09-18 — este arquivo não foi tocado por nenhuma tarefa fechada depois disso.
-  2. `python -m pytest tests/ -q` → verde, **sem número fixo de piso** (`DM-23`): o piso é o
-     total que a árvore tiver **no despacho**, re-medido por quem despacha; esta entrega soma os
-     quatro testes novos e **não reduz** esse total. Referência histórica: `165 passed` em
-     2026-09-19.
-  3. `pwsh -NoProfile -Command "(Select-String -Path .claude/tools/telemetria_hook.py -Pattern 'cache_read_input_tokens' | Measure-Object).Count"`
+  `montar_args_append` passa a normalizar o `modelo` para **minúsculas** (`str(...).strip().lower()`);
+  (c) o docstring do módulo (`:10`) e o de `calcular_consumo` passam a enunciar a fórmula nova e a
+  razão medida, substituindo a nota de dedupe por `message.id`.
+
+  **Por que minúscula, medido no `ESC-10`** (a redação anterior dizia só *"é a convenção da série"*,
+  e isso é impreciso): a série tem **as duas** grafias do mesmo modelo — `Opus` 103 × `opus` 55,
+  `Sonnet` 72 × `sonnet` 50, `Haiku` 10 (contagem da coluna 4 de `docs/telemetria.tsv`) —, que é
+  exatamente o `AE-3`; e a **fonte** emite minúscula: o `meta.json` do subagente traz
+  `"model":"sonnet"`. Normaliza-se para o que a fonte diz, não para o que a maioria do histórico
+  tem. A série histórica **não** se reescreve (é dado, não alvo de tarefa).
+- **Estado da árvore no despacho — medido pelo consultor no `ESC-10`, e é o que torna este card
+  uma tarefa de uma linha:** o executor que devolveu `blocked` **já aplicou** (a), (b) e (c) e
+  **já escreveu os quatro testes novos**, e esse trabalho **fica** — não se refaz e não se
+  descarta (`git diff --stat HEAD`: `telemetria_hook.py` +50/−30 aproximado,
+  `tests/test_telemetria_hook.py` +95). Medido agora:
+  `python -m pytest tests/test_telemetria_hook.py -q` → **`1 failed, 9 passed`** (10 testes no
+  módulo, contra 6 antes), e a **única** falha da árvore inteira é a asserção pré-existente de
+  `tests/test_telemetria_hook.py:274`. `python -m pytest tests/ -q` → **`1 failed, 174 passed`**.
+- **Passos:**
+  0. **Conferir o estado acima antes de editar** (é conferência, não entrega): rodar
+     `python -m pytest tests/test_telemetria_hook.py -q`. Se a saída **não** for
+     `1 failed, 9 passed` com a falha em `test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv`,
+     a premissa deste card caiu → parar e sinalizar `blocked` razão `premissa`, citando a saída
+     obtida. **Nada de (a), (b) ou (c) se reimplementa**: eles já estão na árvore, e reescrevê-los
+     é retrabalho, não entrega.
+  1. Em `tests/test_telemetria_hook.py`, **linha 274**, no teste
+     `test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv`, substituir a asserção
+     ```
+     assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tSonnet\t5\t1.0\t0.0\tusage"
+     ```
+     por
+     ```
+     assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tsonnet\t5\t1.0\t0.0\tusage"
+     ```
+     — **só a grafia do modelo muda**. O `_estado_valido` do teste continua alimentando
+     `"modelo": "Sonnet"` **maiúsculo**: é isso que faz a asserção passar a ser o guarda **ponta a
+     ponta** da normalização (payload → `processar` → `telemetria.py` → linha do TSV), em vez de
+     só repetir a grafia de entrada. O caso do teste **não** muda, o nome **não** muda, nenhuma
+     outra asserção dele muda.
+  2. No docstring desse mesmo teste, acrescentar a frase
+     ```
+     A grafia esperada do modelo é minúscula desde a `LM-T2b` (`AE-3`, `DM-33`): o payload entrega `Sonnet` e o hook normaliza — a asserção mede a normalização ponta a ponta, não a grafia de entrada.
+     ```
+     — se o teste não tiver docstring, criar com essa única frase.
+- **Verificação:** (`DM-12`: toda baseline abaixo foi **rodada** pelo consultor no `ESC-10`, na
+  árvore de hoje, e não deduzida)
+  1. `python -m pytest tests/test_telemetria_hook.py -q` → **`10 passed`**. **Medido antes:
+     `1 failed, 9 passed`**. É a linha que discrimina a entrega: o número de testes **não** muda
+     (os quatro novos já existem), muda a falha virar verde.
+  2. `python -m pytest tests/ -q` → verde, **sem número fixo de piso** (`DM-23`): o piso é o total
+     re-medido **no despacho**, e esta tarefa **não pode reduzi-lo**. Medido agora:
+     **`1 failed, 174 passed`** → esperado depois: **`175 passed`**.
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/tools/telemetria_hook.py -Pattern 'cache_read_input_tokens' | Measure-Object).Count"
+     ```
      → ≥ 2 (o campo continua sendo somado **dentro** da última mensagem; o que muda é o escopo da
-     soma, não os campos). **Baseline re-medida no `ESC-6` com o comando publicado: 2**
-     ocorrências — `telemetria_hook.py:11`, no docstring do módulo, e `:93`, em
-     `calcular_consumo`. A baseline anterior deste item dizia **1**, porque foi tirada de um
-     `grep` diferente do comando publicado, e não do comando publicado (`AE-19`, `DM-24`).
-     Como o docstring é **alvo** da própria tarefa (produto (c)), o item vale como regressão do
-     campo, não como contagem exata.
-- **Restrições desta tarefa:** `tool_uses` e `duracao_s` ficam **como estão** — os dois foram
-  conferidos contra a notificação e estão certos. `fonte=usage` continua sendo a fonte declarada: o
-  número passa a ser o do `<usage>`, que é o que essa palavra sempre afirmou. Nenhuma mudança em
-  `telemetria.py` (o contrato de erro dele é da `LM-T1a`, fechada).
-- **Não fazer:** não tentar cobrir o caso do subagente **retomado por `SendMessage`** — medido no
-  `ESC-3`: o evento `SubagentStop` **não dispara** nessa retomada, e nenhuma linha de código do kit
-  alcança isso; a compensação é a linha do Passo 9 que a `LM-T2` publica (o loop apende à mão). Não
-  tocar `docs/telemetria.tsv` (a série é dado, não alvo de tarefa); não tocar
-  `.claude/skills/scrum-master/SKILL.md` (é a `LM-T2`); não commitar.
+     soma, não os campos). **Medido agora: 4** — a baseline `2` publicada no `ESC-6` envelheceu
+     com a entrega de (a) e (c), que é exatamente o `AE-21`; por isso o aceite é **relação** (≥ 2),
+     não literal.
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path tests/test_telemetria_hook.py -Pattern 'EXA-T55\tsonnet' -SimpleMatch -CaseSensitive | Measure-Object).Count"
+     ```
+     → **1** (a asserção passou a esperar a grafia minúscula). **Medido nos dois mundos no
+     `ESC-11`: 1** na árvore entregue e **0** numa cópia com a grafia pré-entrega — é o
+     `-CaseSensitive` que faz a linha discriminar, e sem ele o mesmo padrão dá **1 nos dois
+     mundos** e não mede nada, que é exatamente o `AE-25`. A forma anterior deste item
+     (`'EXA-T55\tSonnet' -SimpleMatch`, esperando 0) era **inexequível**: sem `-CaseSensitive` ela
+     casa a linha nova e devolve 1.
+
+- **Restrições desta tarefa:** `tool_uses` e `duracao_s` ficam **como estão** — conferidos contra a
+  notificação e certos (9 tool uses na `LM-T2b`, batendo). `fonte=usage` continua sendo a fonte
+  declarada. Nenhuma mudança em `telemetria.py`. **Nenhuma outra asserção de teste pré-existente é
+  tocada**: a autorização do `DM-33` alcança **uma** linha, a 274, e só a grafia do modelo nela.
+- **Não fazer:** não reimplementar (a), (b) ou (c) — já estão na árvore (Passo 0); não tentar cobrir
+  o caso do subagente **retomado por `SendMessage`** (medido no `ESC-3`: o `SubagentStop` não
+  dispara, e a compensação é a linha do Passo 9 que a `LM-T2` publica); não tocar
+  `docs/telemetria.tsv` — nem para reescrever as grafias antigas, nem para corrigir as três linhas
+  infladas desta janela (a série é **dado**; a correção à mão é ato do loop, não desta tarefa); não
+  tocar `.claude/skills/scrum-master/SKILL.md`; não commitar.
 - **Contingências:**
-  1. se a assinatura de `calcular_consumo` ou de `montar_args_append` não for a citada aqui → parar
-     e sinalizar `blocked` razão `premissa`, citando a encontrada;
-  2. se algum teste **pré-existente** de `tests/test_telemetria_hook.py` afirmar a soma por
-     `message.id` como resultado esperado → ajustar **só** a asserção desse teste, mantendo o caso, e
-     devolver `contingência 2 acionada: <teste> ajustado para a fórmula da última mensagem`.
-- **Pronto quando:** `calcular_consumo` devolve o `usage` da última mensagem; o modelo sai
-  minúsculo; os quatro testes existem; os docstrings enunciam a fórmula nova com a razão medida; e
-  as três linhas de `Verificação` saem como escritas.
+  1. se a linha 274 não for a asserção transcrita acima (arquivo mexido desde a medida) → **não**
+     procurar a asserção em outra linha por conta própria: parar e sinalizar `blocked` razão
+     `premissa`, citando a linha encontrada;
+  2. se `python -m pytest tests/ -q` ficar vermelho em teste **fora** de
+     `tests/test_telemetria_hook.py` → seguir com a entrega e devolver
+     `contingência 2 acionada: <arquivo::teste> vermelho fora dos alvos`.
+- **Pronto quando:** `python -m pytest tests/test_telemetria_hook.py -q` sai `10 passed`; a suíte
+  inteira sai `175 passed`; a asserção da linha 274 espera `sonnet` com o payload ainda entregando
+  `Sonnet`; e as quatro linhas de `Verificação` saem como escritas.
 
 ### LM-T2c — `A8a`: a regra do bloco A para `recomendacao=escalar` [Sonnet · classe redacao]
 
@@ -1319,7 +2156,7 @@ executa:
 
 ### LM-T2d — A partição do bloco A por veredito: `A6a` e o domínio de `A8a` [Sonnet · classe redacao]
 
-- **Status:** `ready` — card novo do `ESC-8` (2026-09-19), residência única do `AE-20`. A `LM-T2c`
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `escalar`; pendência substantiva roteada pelo `B1` como `AE-22` (a `A7` ficou incoerente com o instrumento). RDO: `docs/RDO/P-0740-LM-T2d-a-particao-do-bloco-a-por-veredito-a6a-e-o-dominio-de-a8a.md`. Card novo do `ESC-8` (2026-09-19), residência única do `AE-20`. A `LM-T2c`
   está `done` aprovada 100% e **não se refaz**: o que ela entregou continua de pé, e esta tarefa
   fecha as duas lacunas que a regra nova deixou no bloco A.
 - **Esforço:** low
@@ -1427,6 +2264,306 @@ executa:
   fala de **veredito**; a frase de partição está no parágrafo do bloco A; as quatro enumerações
   citam `A6a`; e as cinco linhas de `Verificação` saem como escritas.
 
+### LM-T2e — A ação da `A7`: `reprovado` não fecha RDO [Sonnet · classe redacao]
+
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `seguir`, pendência `nenhuma`, achado de processo `nenhum`. Fecha o `AE-22`: a frase de partição da `LM-T2d` passou a ser verdadeira. RDO: `docs/RDO/P-0740-LM-T2e-a-acao-da-a7-reprovado-nao-fecha-rdo.md`. Card novo do `ESC-9` (2026-09-19), residência única do `AE-22` e do
+  `DM-32`.
+- **Esforço:** low
+- **Objetivo:** um só — a última regra do bloco A que manda fazer o que o instrumento de
+  fechamento recusa passa a materializar o desfecho pela via que a `DP-F` prevê, e a frase de
+  partição que a `LM-T2d` escreveu no mesmo arquivo passa a ser verdadeira.
+- **Depende de:** `LM-T2d` (fechada — é a frase de partição dela que esta tarefa torna verdadeira)
+  e `DM-32`. **Precede a `LM-T4`**, pela mesma razão da `LM-T2c` e da `LM-T2d`: mesmo arquivo em
+  `Arquivos-alvo` (exclusão mútua viva) e doutrina não se publica sobre tabela de roteamento que
+  se contradiz.
+- **Arquivos-alvo:**
+  - `.claude/skills/scrum-master/SKILL.md`
+- **Produto do módulo:** uma célula — a **ação** da linha `A7` da tabela do bloco A. A **condição**
+  da `A7` não muda; nenhuma linha nova entra na tabela; nenhuma enumeração do arquivo muda, porque
+  `A7` já é citada em todas.
+- **O defeito, medido no `ESC-9` (2026-09-19):** a `A7` manda *"fecha o RDO como `reprovado`"* e o
+  instrumento recusa esse desfecho em três pontos, os três re-medidos agora:
+  `python .claude/tools/rdo.py close ... --veredito reprovado` sai **exit 2**
+  (`argument --veredito: invalid choice: 'reprovado' (choose from 'aprovado', 'ressalva')`);
+  `calcular_desdobramento('reprovado')` levanta `RdoValidationError: veredito inesperado:
+  'reprovado'`; e o gatilho do Passo 9 é a entrada em `done`, que `blocked`/`cancelled` não
+  disparam (`DP-F` item 3, fechamento c).
+- **Passos, com o texto literal** (transcrever):
+  1. Na tabela do bloco A, substituir a linha inteira
+     ```
+     | `A7` | `veredito=reprovado` e retentativas gastas = 1 | fecha o RDO como `reprovado`: **PARA** |
+     ```
+     por
+     ```
+     | `A7` | `veredito=reprovado` e retentativas gastas = 1 | `reprovado` **não é desfecho de RDO** e esta regra **não** fecha RDO: o RDO só nasce na transição `review` → `done` (`DP-F` item 3, fechamento c), e `rdo.py close --veredito` aceita só `aprovado` e `ressalva` (medido: exit 2, `invalid choice`; `calcular_desdobramento('reprovado')` levanta `RdoValidationError`). Materializa a tarefa como `blocked` razão `premissa` — reprovada duas vezes, o que caiu foi a premissa de que o card é executável como está —, com o `bloqueante` e a pendência do laudo transcritos na razão, e registra o achado como `AE-<n>` em `## Achados da execução` do plano: **PARA**. A escalada é a do `A3b`: a reprovação depois da última retentativa é nomeada no relatório de encerramento e a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17). Precedência: `A6` e `A6a` vencem esta regra; ela vence `A8a`, `A8` e `A9` |
+     ```
+     — nada mais do arquivo muda.
+- **Testes:** **nenhum `pytest`** — declaração, não omissão, pela mesma razão da `LM-T2c` e da
+  `LM-T2d` (`AE-14`): tabela de roteamento é prosa lida pelo `scrum-master`. E **nenhuma linha de
+  código**: o `--veredito` do `rdo.py close` continua com dois valores (`DM-32` (i)).
+- **Verificação:** (`DM-24`: bloco cercado, `-SimpleMatch`, os **dois** valores rodados; as
+  baselines abaixo foram medidas no `ESC-9` com estes mesmos comandos, extraídos deste card, e
+  **nos dois mundos** — a árvore de hoje e uma cópia com a substituição do Passo 1 já aplicada. Os
+  padrões evitam acento e crase **por recorte de subcadeia do texto real**, nunca reescrevendo
+  palavra do arquivo: reescrever `última` como `ultima` produz padrão que casa **0 antes e 0
+  depois** e não mede nada — é o `AE-23`, achado no ato do despacho desta própria tarefa)
+  1. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'e retentativas gastas = 1 | fecha o RDO como' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0** (a ação velha da `A7` desapareceu). **Medido antes: 1**.
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'desfecho de RDO' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1** (a ação nova entrou). **Medido antes: 0**.
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'materializa a tarefa como' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **2** (`A6a` e `A7`). **Medido antes: 1**. É esta linha que discrimina a troca completa da
+     que só apaga a ação velha.
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'retentativa (' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**, **inalterado** (`DM-32` (ii)): o único casamento é a linha 230, da seção *O que
+     obriga parada* (``… última retentativa (`A7`); plano não-pronto (`B3`) …``), que esta tarefa
+     **não** toca. **Medido antes: 1; medido depois: 1**, na cópia com a substituição do Passo 1
+     já aplicada — e o casamento é a **mesma linha 230** nos dois mundos, conferido. O padrão
+     pega o acento pelo **que vem depois dele**, e por isso não o reescreve; a ação nova da `A7`
+     também diz *"última retentativa"*, mas sem o parêntese — qualquer padrão sobre a expressão
+     inteira iria a **2** e deixaria de ser invariante.
+  5. `python -m pytest tests/ -q` → verde, **sem número fixo de piso** (`DM-23`): o piso é o total
+     que a árvore tiver **no despacho**, re-medido por quem despacha; esta tarefa não acrescenta
+     teste e **não pode reduzir** esse total. Referência histórica, não aceite: `171 passed` em
+     2026-09-19 (`ESC-9`).
+- **Restrições desta tarefa:** `A1`..`A3b`, `A6`, `A6a`, `A8a`, `A8` e `A9` ficam **literais** — só
+  a **ação** da `A7` muda, e a **condição** dela fica como está. O bloco B fica **intocado**. A
+  seção *O que obriga parada e o que segue com registro* fica **intocada**: a `A7` continua
+  encerrando a janela. Nenhum instrumento é tocado — em particular, **não** se alarga o
+  `--veredito` do `rdo.py close` (`DM-32` (i)).
+- **Não fazer:** não tocar `.claude/tools/` (a lacuna se fecha na prosa, `DM-26` (iii) e `DM-32`
+  (i)); não tocar `GOVERNANCA.md` (é a `LM-T4`; a menção a *reprovado* em `GOVERNANCA.md` §3,
+  linha da *Orquestração*, é sobre a **retentativa** do `A6`, não sobre fechamento de RDO —
+  medido, nada a corrigir lá); não tocar `.claude/agents/` (`DM-17`); não refazer a `LM-T2d`; não
+  escrever teste `pytest` para regra de prosa; não commitar.
+- **Contingências:**
+  1. se a linha literal da `A7` a substituir não existir no arquivo exatamente como transcrita →
+     parar e sinalizar `blocked` razão `premissa`, citando a linha encontrada;
+  2. se `python -m pytest tests/ -q` ficar vermelho → seguir com a entrega e devolver
+     `contingência 2 acionada: <arquivo::teste> vermelho fora dos alvos`.
+- **Pronto quando:** a linha `A7` da tabela do bloco A traz o texto literal acima; nenhuma outra
+  linha do arquivo mudou; e as cinco linhas de `Verificação` saem como escritas.
+
+### LM-T2f — O teste órfão da dedupe por `message.id` [Sonnet · classe mecanica]
+
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação
+  `seguir`, pendência `nenhuma`. Fecha o `AE-27` item 1: `deduplica_por_message_id` vai a **0** no
+  arquivo de teste, o módulo sai `9 passed` e a suíte `187 passed` (antes: `10`/`188`). Um achado
+  de processo, **com rota já dada e sem rebaixar dimensão**: a `Verificação` do card fixava
+  `174 passed` como constante absoluta (defeito (xiii) da rubrica) e só não reprovou porque o
+  `scrum-master` re-derivou a baseline no despacho — já indexado em `RUBRICA_DE_REVISAO.md` §8.2 e
+  coberto pelo gate do `card_check.py`. RDO:
+  `docs/RDO/P-0740-LM-T2f-o-teste-orfao-da-dedupe-por-message-id.md`; laudo consumido e apagado.
+- **Esforço:** low
+- **Objetivo:** um só — a suíte deixa de afirmar, por nome e por docstring, um mecanismo que a
+  `LM-T2b` removeu.
+- **Depende de:** `LM-T2b` (fechada — é a entrega dela que tornou o teste órfão). Nenhuma tarefa
+  depende desta.
+- **Arquivos-alvo:**
+  - `tests/test_telemetria_hook.py`
+- **O defeito, medido no `ESC-12`:** `test_tr_calcular_consumo_deduplica_por_message_id_uma_mensagem_duas_entradas`
+  (`:107`) e `test_tr_calcular_consumo_mesma_mensagem_duas_entradas_nao_dobra` (`:181`) têm corpo
+  **byte a byte idêntico** — mesmo `usage` (10/8779/0/74), mesmas duas entradas com
+  `message_id="msg_calibracao"`, mesmas asserções (`tokens_k == 8863/1000`, `tool_uses == 0`). O
+  primeiro nomeia e descreve a **dedupe por `message.id`**, mecanismo que a `LM-T2b` removeu; o
+  segundo descreve o **mesmo caso** sob a fórmula nova, com a prosa correta. O caso **não** se
+  perde: ele fica no segundo.
+- **Passos:**
+  1. Apagar a função `test_tr_calcular_consumo_deduplica_por_message_id_uma_mensagem_duas_entradas`
+     **inteira** — do `def` até a última asserção —, junto com as linhas em branco que a separavam
+     da função seguinte, deixando as duas linhas em branco de separação entre as funções que
+     ficarem vizinhas. Nada mais do arquivo muda: o teste que **fica** é o `:181`, e ele **não** se
+     renomeia.
+- **Testes:** nenhum teste novo — esta tarefa **remove** duplicata. É a única tarefa do plano
+  autorizada a **reduzir** o total da suíte, e a redução é de exatamente **1** (`DM-23` continua
+  valendo para todas as outras).
+- **Verificação:** (`DM-12`/`DM-24`: toda baseline abaixo foi rodada pelo consultor no `ESC-12`,
+  com `-CaseSensitive` onde a caixa discrimina, `AE-25`)
+  1. `python -m pytest tests/test_telemetria_hook.py -q` → **`9 passed`**. **Medido antes:
+     `10 passed`**.
+  2. `python -m pytest tests/ -q` → **`174 passed`**. **Medido antes: `175 passed`**, e o valor
+     depois foi medido **de fato**, com
+     `python -m pytest tests/ -q --deselect "tests/test_telemetria_hook.py::test_tr_calcular_consumo_deduplica_por_message_id_uma_mensagem_duas_entradas"`
+     → `174 passed, 1 deselected`, e não por subtração.
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path tests/test_telemetria_hook.py -Pattern 'deduplica_por_message_id' -SimpleMatch -CaseSensitive | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 1**. O nome não aparece em nenhum outro arquivo do kit (medido: 1
+     ocorrência no repositório, esta).
+- **Restrições desta tarefa:** o teste `:181` fica **literal** — nome, docstring e corpo. Nenhum
+  outro teste é tocado. Nenhum arquivo de `.claude/` é tocado.
+- **Não fazer:** não "fundir" os dois testes; não renomear o que fica; não tocar
+  `.claude/tools/telemetria_hook.py`; não commitar.
+- **Contingências:**
+  1. se o corpo dos dois testes não for idêntico no ato do despacho (arquivo mexido desde a
+     medida) → parar e sinalizar `blocked` razão `premissa`, citando a diferença encontrada.
+- **Pronto quando:** o módulo sai `9 passed`, a suíte sai `174 passed`, e `deduplica_por_message_id`
+  não aparece mais no arquivo.
+
+### LM-T3b — O campo termina no bullet: `_parsear_campos` e a autoridade mecânica do `escopo` [Sonnet · classe implementacao]
+
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `escalar`. Fecha o `AE-27` item 2: a extração da `LM-T2b` cai de **9** para **2** e as outras cinco ficam inalteradas (`1, 2, 8, 1, 2`). Pendência roteada como `AE-39`. RDO: `docs/RDO/P-0740-LM-T3b-o-campo-termina-no-bullet-parsear-campos-e-a-autoridade-mecanica-do-escopo.md` — card novo do `ESC-12` (2026-09-19), residência única do `AE-27` item 2.
+- **Esforço:** low
+- **Objetivo:** um só — o conjunto de `Arquivos-alvo` que o dossiê declara passa a ser o que o card
+  lista, para que a dimensão `escopo` continue **mecânica** em vez de depender de julgamento sobre
+  ruído.
+- **Depende de:** `LM-T3a` (fechada — é o contrato do mesmo instrumento) e `DM-35` (iii).
+  **Precede a `LM-T6`**: o piloto mede o loop de ponta a ponta, e a autoridade mecânica do
+  `escopo` é um dos contratos que ele exercita.
+- **Arquivos-alvo:**
+  - `.claude/tools/rdo.py`
+  - `tests/test_rdo.py`
+- **A causa, medida no `ESC-12` (é de gramática, não de heurística):** `_parsear_campos`
+  (`.claude/tools/rdo.py:186`) encerra o campo corrente **só** quando a linha casa `_CAMPO_RE`
+  (`- **Rótulo:** …`). Um bullet de prosa cujo rótulo não termina em `:**` — como
+  `- **A calibração medida no \`ESC-3\` (2026-09-18) — residência única desta tabela.**` — **não**
+  encerra nada, e todas as linhas indentadas seguintes (a tabela de calibração inteira) continuam
+  sendo anexadas a `arquivos-alvo`. Depois, `_eh_caminho` aceita `251.1` e `message.id` como
+  caminho, porque têm "extensão". Medido na `LM-T2b`: **9** alvos extraídos contra **2**
+  declarados — `message.id`, `251.1`, `505.2`, `2330.8`, `946.9`, `.jsonl` e `telemetria_hook.py`
+  entraram, gerando sete seções de diff vazias.
+- **Produto do módulo:** (a) em `_parsear_campos`, **um bullet de topo encerra o campo corrente**,
+  case ele `_CAMPO_RE` ou não — hoje só campo canônico encerra; linha indentada continua
+  alimentando o campo, como hoje; (b) o docstring da função enuncia a regra e a razão medida
+  (`AE-27` item 2), citando o caso da `LM-T2b`.
+- **Testes** (dois, com a regra concorrente de cada):
+  - `TF-campo-termina-em-bullet-de-prosa` — bloco sintético com `- **Arquivos-alvo:**`, dois
+    sub-bullets de caminho, e **depois** um bullet de prosa (rótulo terminado em `.**`) seguido de
+    linhas indentadas com crases contendo `\`x.y\`` e uma tabela: `extrair_arquivos_alvo` devolve
+    **só** os dois caminhos. *Concorrente:* o código de hoje devolve os dois **mais** o que veio da
+    prosa.
+  - `TR-campo-multilinha-continua-valendo` — campo canônico seguido de sub-bullets indentados em
+    várias linhas continua sendo lido **inteiro**. *Concorrente:* encerrar o campo em qualquer
+    linha nova quebraria a lista de alvos de todos os cards, que é multilinha.
+- **Verificação:** (`DM-12`: as baselines abaixo foram medidas pelo consultor no `ESC-12`,
+  **emulando o reparo** sobre os cards reais deste plano, não sobre fixture)
+  1. Extração sobre o card da `LM-T2b`, pelo instrumento:
+     ```
+     python -c "import sys;sys.path.insert(0,'.claude/tools');import rdo,review_evidence as r;from pathlib import Path;L=Path('docs/plans/P-0740-loop-de-modulos.md').read_text(encoding='utf-8').splitlines();i=next(k for k,x in enumerate(L) if x.startswith('### LM-T2b '));j=next(k for k in range(i+1,len(L)) if L[k].startswith('### '));print(len(r.extrair_arquivos_alvo(rdo._parsear_campos(L[i+1:j])[0])))"
+     ```
+     → **2**. **Medido antes: 9**; e **medido depois: 2**, na emulação do reparo.
+  2. A mesma extração sobre `LM-T2e`, `LM-T3a`, `LM-T4`, `LM-T5` e `LM-T6` → **1, 2, 5, 1, 2**,
+     **inalteradas**. Medidas nos dois mundos no `ESC-12`, iguais nos dois: é a linha que impede o
+     reparo de cortar alvo legítimo.
+  3. `python -m pytest tests/ -q` → verde, com **dois testes a mais** que o total re-medido no
+     despacho (`DM-23`). Referência histórica, não aceite: `175 passed` em 2026-09-19.
+- **Restrições desta tarefa:** `_eh_caminho` e `_classificar_campo_alvos`
+  (`.claude/tools/review_evidence.py`) ficam **intocados** — a causa medida é o **limite do campo**,
+  e alargar a gramática de caminho seria tratar o sintoma; `review_evidence.py` **não** está nos
+  alvos. Nenhum outro campo do dossiê muda de semântica.
+- **Não fazer:** não tocar `.claude/tools/review_evidence.py` nem `tests/test_review_evidence.py`;
+  não mexer nos baldes da `DB-25` (o `registro_orquestracao` está **certo**, medido no `ESC-12`:
+  `docs/telemetria.tsv` já cai nele); não tocar card nenhum do plano para "contornar" o parser; não
+  commitar.
+- **Contingências:**
+  1. se `_parsear_campos` não estiver na forma citada (o `for` com `_CAMPO_RE.match`, o ramo de
+     linha indentada e `em_extra`) → parar e sinalizar `blocked` razão `premissa`, citando a forma
+     encontrada;
+  2. se a `Verificação` 2 mudar para qualquer card → **parar e sinalizar `blocked` razão
+     `premissa`**: o reparo estaria cortando alvo legítimo, e isso é decisão de consultor, não de
+     execução.
+- **Pronto quando:** a extração da `LM-T2b` devolve 2, as cinco extrações da `Verificação` 2 seguem
+  em 1, 2, 5, 1, 2, os dois testes existem e a suíte fica verde sem reduzir o total.
+
+### LM-T4b — O bullet de `Status` que o instrumento lê e escreve [Sonnet · classe implementacao]
+
+- **Status:** `done` (2026-09-19) — **ressalva 91%**, bloqueante `nenhuma`, recomendação `escalar`; pendência e um achado roteados pelo `B1` como `AE-35`. Fecha a metade do `AE-26` que é deste plano: os **25** bullets de `Status` passam a ser lidos (`25 25`). RDO: `docs/RDO/P-0740-LM-T4b-o-bullet-de-status-que-o-instrumento-le-e-escreve.md`. O `blocked` anterior foi `A3b` **antes de qualquer edição** (`AE-28`) e **não consumiu retentativa** — o `blocked` anterior foi `A3b` com o executor parando **antes de editar qualquer arquivo-alvo** (`AE-28`), e **não consumiu retentativa**. Card novo do `ESC-12` (2026-09-19), residência única do `AE-26`.
+- **Esforço:** low
+- **Objetivo:** um só — o loop volta a materializar estado **pelo instrumento**, como o `DM-34`
+  determinou, em vez de à mão.
+- **Depende de:** `DM-35` (i). **Precede a `LM-T4`**, pela mesma razão da `LM-T4a` (`DM-13` (ii),
+  `AE-5`/`AE-6`): a doutrina não publica gramática que o parser ainda não lê. **Sem exclusão mútua
+  com a `LM-T4`** — arquivos diferentes.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+  - `tests/fixtures/backlog/` (a fixture nova do aceite de escrita, `ESC-13`)
+- **O defeito, medido no `ESC-12`:** `python .claude/tools/backlog.py status LM-T2b review` devolve
+  `linha de status ausente`. `STATUS_BULLET_RE` (`:70`) exige
+  ``- **Status:** `<estado>` · AAAA-MM-DD``; o corpus usa a forma em prosa com travessão. Contagem:
+  **0 de 21** bullets de `Status` do `P-0740` casam (eram 18 antes de este mesmo escalonamento
+  acrescentar três cards — o total é **re-medido no despacho**, nunca literal histórico,
+  `AE-21`), e **15 de 34** no repositório inteiro. O
+  `DM-34` mandou materializar estado pelo instrumento e o instrumento não alcança card nenhum deste
+  plano.
+- **Produto do módulo:** (a) a **leitura** passa a aceitar a forma em prosa — o estado entre crases
+  é obrigatório; `· AAAA-MM-DD` e a razão viram **opcionais**; tudo que vier depois de ` — ` é
+  **cauda livre**, lida e preservada, nunca interpretada; (b) a **escrita**
+  (`transacionar_status`) reescreve **só o prefixo de máquina** (estado, data, razão) e **preserva
+  a cauda** a partir de ` — `, para não apagar a prosa que o consultor e o loop escrevem ali; (c)
+  o docstring enuncia as duas regras com a contagem medida.
+- **Casos que o parser novo tem de aceitar** (literais reais, copiados do plano — são o aceite):
+  ```
+  - **Status:** `ready`
+  - **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`
+  - **Status:** `blocked` razão `premissa` (2026-09-19, `A3b`) — o executor parou antes de entregar
+  - **Status:** `ready` · 2026-09-19
+  - **Status:** `ready` · 2026-09-19 · destravada pelo dono
+  ```
+  **E recusar** (continua sendo `linha de status ausente`): linha sem estado entre crases
+  (`- **Status:** pendente`) e estado fora de minúsculas (`- **Status:** `Ready``).
+- **Testes** (três): `TF-status-em-prosa-e-lido` (os cinco literais acima devolvem o estado certo);
+  `TR-status-canonico-continua-lido` (a forma estrita com `· data · razão` não regride);
+  `TF-escrita-preserva-a-cauda` (transição de estado sobre um bullet com ` — prosa` mantém a prosa
+  e troca só o prefixo). *Concorrentes:* hoje os cinco literais devolvem `linha de status ausente`,
+  e a escrita substituiria o bullet inteiro.
+- **Verificação:** (`DM-12`, medido no `ESC-12`)
+  1. ```
+     python -c "import sys;sys.path.insert(0,'.claude/tools');import backlog;from pathlib import Path;L=[l for l in Path('docs/plans/P-0740-loop-de-modulos.md').read_text(encoding='utf-8').splitlines() if l.startswith('- **Status:**')];print(len(L),sum(1 for l in L if backlog.STATUS_BULLET_RE.match(l)))"
+     ```
+     → os **dois números iguais** (`<N> <N>`): todo bullet de `Status` do plano é lido. **Medido
+     no `ESC-12`, com o comando publicado: `21 0`** — o segundo número é o que a entrega muda; o
+     primeiro é o total do plano no despacho, **re-medido** por quem despacha e não fixado aqui
+     (`DM-23`, `AE-21`: o total mudou de 18 para 21 durante o próprio `ESC-12`, quando os três
+     cards novos entraram).
+  2. `python -m pytest tests/test_backlog.py -q` → verde, com **três testes a mais** que o total
+     re-medido no despacho. O aceite do caminho de **escrita** é o teste
+     `TF-escrita-preserva-a-cauda`, que copia a fixture `tests/fixtures/backlog/verde` para o
+     `tmp_path`, troca o bullet de `ALF-T1` pela forma em prosa
+     ``- **Status:** `ready` (2026-01-01) — cauda em prosa que precisa sobreviver``, chama
+     `transacionar_status(... 'ALF-T1', 'in-progress')` e exige **exit 0** com a cauda
+     **preservada** na linha reescrita. **Medido no `ESC-13`, no mundo de hoje, com esse mesmo
+     arranjo:** exit **3**, `linha de status ausente para ALF-T1` — a linha discrimina.
+     **Por que sobre fixture e não sobre o plano real (`AE-28`, `AE-29`):** (a) comando de
+     aceite não altera o estado do plano que o loop está conduzindo; (b) a transição escolhida
+     é `ready → in-progress`, que **está** na tabela de `_TRANSICOES` — a que o card publicava
+     antes (`LM-T2f` para `ready`, sendo ela já `ready`) é um **self-loop fora da tabela**, e
+     exit 1 garantido; (c) medido no `ESC-13`, `backlog.py status` **não alcança tarefa nenhuma
+     deste plano** nem com o parser corrigido, por causa do `AE-29` — que **não** é matéria
+     deste card.
+  3. `python -m pytest tests/ -q` → verde, com **três testes a mais** que o total re-medido no
+     despacho (`DM-23`).
+- **Restrições desta tarefa:** a tabela `_TRANSICOES` fica **intocada** — `('ready','ready')`
+  continuar fora dela é decisão de `DP-F`, não de um card que ensina o instrumento a **ler e
+  escrever um bullet**; inventar self-loop para satisfazer aceite é o inverso do `DM-26` (iii) e
+  do `DM-32`. O vocabulário de estados **não** muda (`ready`, `in-progress`,
+  `review`, `done`, `blocked`, `cancelled` — `DP-F`); `blocked` continua exigindo `--razao`; a
+  forma **canônica** continua sendo a que a escrita produz. Nenhum card do plano é reescrito para
+  caber no parser — é o parser que aprende (`DM-35` (i)).
+- **Não fazer:** não tocar `.claude/tools/rdo.py` (é a `LM-T3b`); não tocar `GOVERNANCA.md` (a
+  publicação é a `LM-T4`, item (d)); não tocar os cards do plano; não commitar.
+- **Contingências:**
+  1. se `STATUS_BULLET_RE` ou `transacionar_status` não estiverem na forma citada → parar e
+     sinalizar `blocked` razão `premissa`, citando a encontrada;
+  2. se a `Verificação` 1 não fechar com os **dois números iguais**, **parar** e sinalizar
+     `blocked` razão `premissa`, citando o par obtido: aceitar um bullet ilegível é deixar o
+     instrumento sem alcançar o plano de novo.
+- **Pronto quando (reparado pelo `ESC-15`, `DM-38` (iii)):** o campo vizinho que a emenda do
+  `ESC-13` deixou para trás. **Todos** os bullets de `Status` do plano são lidos (os dois
+  números da `Verificação` 1 iguais); `backlog.py status` transita a tarefa da **fixture**
+  (`tests/fixtures/backlog/verde`, cópia em `tmp_path`, `ready → in-progress`) preservando a
+  cauda em prosa — **não** um card real, que o `AE-29` torna inalcançável e que aceite nenhum
+  pode mutar
+  preservando a cauda, os três testes existem e a suíte fica verde.
+
 ### LM-T3 — A evidência que basta ao reviewer [Sonnet · classe implementacao]
 
 - **Status:** `done` — fechada em 2026-09-18, **ressalva 91%**, bloqueante `nenhuma`, recomendação `escalar` (RDO `docs/RDO/P-0740-LM-T3-a-evidencia-que-basta-ao-reviewer.md`; laudo consumido e apagado, `DP-H`). O `AE-13` fecha aqui — a atribuição por arquivo já valeu nesta própria revisão. Pendência roteada como `AE-15`.
@@ -1463,7 +2600,7 @@ executa:
 
 ### LM-T3a — O contrato do instrumento de evidência: a falha e o recorte [Sonnet · classe implementacao]
 
-- **Status:** `ready` — card do `ESC-4` (`AE-15`), **ampliado pelo `ESC-5`** com o `AE-17`. As duas
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `seguir`, pendência `nenhuma`; achado de processo do laudo roteado como `AE-21`. RDO: `docs/RDO/P-0740-LM-T3a-o-contrato-do-instrumento-de-evidencia-a-falha-e-o-recorte.md`. Card do `ESC-4` (`AE-15`), **ampliado pelo `ESC-5`** com o `AE-17`. As duas
   matérias são o mesmo assunto sob `DM-22`: o que o instrumento de evidência promete na **borda** —
   entrada inválida e recorte declarado. Nem a `LM-T3` nem a `LM-T2a` se refazem: as duas estão
   `done` e o que faltou não estava nos cards delas.
@@ -1721,14 +2858,18 @@ executa:
 
 ### LM-T4 — A gramática da tarefa-módulo e a aposentadoria das duas skills [Opus · classe redacao]
 
-- **Status:** `ready`
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `escalar`. Publica `DM-2`..`DM-5` e `AUT-T8`, aposenta `proximo-passo` e `handover`, cria `passagem-de-bastao`: skills 11 → **10**, guardrails 18 → **19** (`G-MODULO`). Pendência e dois achados roteados pelo `B1` como `AE-37`. RDO: `docs/RDO/P-0740-LM-T4-a-gramatica-da-tarefa-modulo-e-a-aposentadoria-das-duas-skills.md` — o `blocked` anterior foi `A3b` **sem nenhuma edição** (`AE-36`) e **não consumiu retentativa**.
 - **Esforço:** high
 - **Objetivo:** a doutrina da unidade de trabalho, num ato só. Absorve `AUT-T2` (`DP-I`, o artefato
   `tarefa`), `AUT-T6` (skill única de passagem de bastão), `AUT-T7` (superfícies que apontavam
   para a skill aposentada) e `AUT-T8` (status × veredito).
-- **Arquivos-alvo:** `GOVERNANCA.md` (§3 e §7) · `.claude/skills/scrum-master/SKILL.md` ·
-  `.claude/skills/proximo-passo/SKILL.md` · `.claude/skills/handover/SKILL.md` ·
-  `docs/DOC_MAP.md`
+- **Arquivos-alvo (reescritos pelo `ESC-20`, `DM-43`):** `GOVERNANCA.md` (§3 e §7) ·
+  **`README.md`** (tabela *Os guardrails*, `DM-38` (iv), **e** a tabela de skills da *Anatomia do
+  kit*) · **`.claude/README.md`** (projeção regenerada — `DM-16` (iv): quem toca a superfície
+  fecha a projeção dela) · `.claude/skills/scrum-master/SKILL.md` ·
+  **`.claude/skills/passagem-de-bastao/SKILL.md` (NOVO)** ·
+  **`.claude/skills/proximo-passo/SKILL.md` (REMOVIDO)** ·
+  **`.claude/skills/handover/SKILL.md` (REMOVIDO)** · `docs/DOC_MAP.md`
 - **Retirado dos alvos pelo `ESC-1` (`DM-17` (v)):** `.claude/agents/pantonic-planner.md`. A
   edição de arquivo de agente é negada pela camada de permissão do harness (`AE-11`); a
   publicação da gramática nele é o item (b) da `LM-T8`, **depois** desta tarefa. Nada se perde na
@@ -1737,29 +2878,82 @@ executa:
   cabeçalho de três campos — **copiada do card da `LM-T4a`, que é a residência única do literal
   neste plano** e a única já implementada nos parsers — e o teto de write-clusters reinterpretado
   como limite de **tema**;
-  (b) o gate de delegação do `proximo-passo` (item 5) reescrito para a régua nova; (c) a decisão
-  registrada sobre `proximo-passo`/`handover`: o que permanece, o que migra para o
-  `scrum-master` e o que é aposentado, com as superfícies que as citam atualizadas no mesmo ato.
+  (b) o gate de delegação — hoje no item 5 do
+  `proximo-passo` — **nasce na skill nova** já na régua nova, e existe **uma vez só**; **(c) reescrito pelo `ESC-20` (`DM-43`) — não há decisão a tomar, há forma ratificada a
+  transcrever:** `.claude/skills/proximo-passo/` e `.claude/skills/handover/` são **removidas** e
+  nasce `.claude/skills/passagem-de-bastao/SKILL.md`, por **transposição, não reescrita**, nos
+  termos do `AUT-T6` do `P-0737` — cujo dossiê é a fonte do detalhe e **não se copia para cá**
+  (`DU-6`). A forma (b) foi **ratificada pelo dono em 2026-08-22** (`DU-5`): `proximo-passo`
+  descontinuada, responsabilidade herdada pelo `scrum-master`. A natureza da skill nova foi
+  **fixada pelo dono em 2026-08-13** (`TK-36`): maquinário **agente↔agente**, *"transparente
+  para o gerente do projeto — ele não a invoca, não a lê e não a acompanha"*. As superfícies que
+  citam as duas são atualizadas **no mesmo ato** (`AUT-T7`, absorvida por esta tarefa), e
+  material sem portador vira linha no `TK-38`, nunca invenção na skill nova (`DU-9`);
+  **(d) acrescentado pelo `ESC-12` (`DM-35` (i)):** a gramática do **bullet de `Status`** de um
+  card publicada junto da de cabeçalho — estado entre crases obrigatório, `· AAAA-MM-DD` e razão
+  opcionais, cauda em prosa depois de ` — ` —, **copiada do card da `LM-T4b`**, que é a
+  residência única do literal e a única já implementada no parser (mesma regra do item (a) com a
+  `LM-T4a`).
 - **Coerência do módulo (aceite de `DM-3`):** nenhuma das seis superfícies fica citando a régua
   antiga — a varredura de citação é parte da entrega, não tarefa posterior.
 - **Verificação:** (corrigida pela `RP-2`, `DM-12`; toda saída abaixo é **medida**, nenhuma é
   deduzida)
   1. `pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode check-drift | Out-Null; exit $LASTEXITCODE"`
-     → exit 0. **Correção da `RP-5`:** o exit 0 citado aqui vinha do dossiê da `BKL-T4` e
+     → exit 0, **depois de a entrega rodar `kit_check.ps1 -Mode generate`**, que é passo da
+     tarefa e não da verificação: remover duas skills e criar uma terceira muda a projeção, e
+     quem toca a superfície fecha a projeção dela (`DM-16` (iv), acrescentado pelo `ESC-20`). **Correção da `RP-5`:** o exit 0 citado aqui vinha do dossiê da `BKL-T4` e
      **envelheceu** — re-medido em 2026-09-18 pela `RP-5`, o comando sai **exit 1** com 6
      problemas (`.claude/README.md` diverge do regenerado, por atos do dono fora de ciclo:
      descrições de `DM-8` e criação do `pantonic-consultant`). Quem recoloca o exit 0 é a
      `LM-T7`, que regenera a projeção; por isso esta tarefa passa a depender dela. O aceite
-     **não** é removido: ele é satisfazível assim que a `LM-T7` fecha.
+     **não** é removido: ele é satisfazível assim que a `LM-T7` fecha. **Re-medido pelo `ESC-12` em 2026-09-19, com a `LM-T7` já fechada:**
+     `check-drift` sai **exit 0** (`.claude/README.md == regenerado`, 9 agentes, 11 skills) e
+     `.claude/checks/check-readme.ps1` sai **exit 0** (9 agentes, 11 skills, 18 guardrails, 14
+     seções). O aceite está **satisfazível hoje**; a nota da `RP-5` acima fica como histórico, e
+     a baseline que vale é esta — baseline de corpus real envelhece (`AE-21`).
   2. `python -m pytest tests/ -q` → verde, **sem número fixo de piso** (`DM-23`): o piso é o
      total que a árvore tiver **no despacho**, re-medido por quem despacha; esta tarefa não
      acrescenta teste e **não pode reduzir** esse total — a suíte de conformance é o que tranca
      doutrina. Referência histórica, não aceite: `165 passed` em 2026-09-19 (`ESC-5`).
-  3. Varredura da régua antiga, com o literal exato:
-     `Select-String -Path GOVERNANCA.md,.claude/skills/proximo-passo/SKILL.md,.claude/skills/scrum-master/SKILL.md,.claude/skills/handover/SKILL.md,.claude/agents/pantonic-planner.md,docs/DOC_MAP.md -Pattern '>8 write-clusters' -SimpleMatch`
-     → **nenhuma linha**. Baseline medida hoje, antes da entrega: **uma** ocorrência,
+  3. ```
+     pwsh -NoProfile -Command ".claude/checks/check-readme.ps1 | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0** com **10 skills** (11 − 2 + 1). **Medido antes: exit 0 com 11 skills**
+     (2026-09-19, `ESC-20`: 9 agentes, 11 skills, 18 guardrails, 14 seções; `ls .claude/skills`
+     → 11). A tabela de skills da *Anatomia do kit* em `README.md` fecha **no mesmo ato**, senão
+     esta linha sai vermelha — é o invariante de contagem do `AE-12` outra vez, agora sobre
+     skills em vez de guardrails. Declarado como **guarda de regressão, não discriminante**
+     (mesma natureza do item 3 da `LM-T2b`): esta tarefa publica itens novos em `GOVERNANCA.md`
+     §7, e a **checagem 4** do `check-readme.ps1` confronta essa lista com a tabela *Os
+     guardrails* do `README.md` — é o invariante de contagem do `AE-12` (critério (viii)), que
+     o card não cobria. O executor publica no retorno o número de guardrails **antes e depois**,
+     medido, e o `README.md` entra nos `Arquivos-alvo` porque fechar o item **é** fechar a
+     tabela que o conta.
+  4. Varredura da **aposentadoria**, com os caminhos exatos:
+     ```
+     pwsh -NoProfile -Command "(Test-Path .claude/skills/proximo-passo), (Test-Path .claude/skills/handover), (Test-Path .claude/skills/passagem-de-bastao) -join ' '"
+     ```
+     → **False False True**. **Medido antes: True True False**.
+  5. Varredura das **citações órfãs**, pelo caminho e não pela palavra (a palavra *handover*
+     sobrevive legitimamente em prosa; o **caminho** da skill, não):
+     ```
+     pwsh -NoProfile -Command "(Select-String -Path GOVERNANCA.md,README.md,docs/DOC_MAP.md,.claude/README.md,.claude/skills/scrum-master/SKILL.md -Pattern '.claude/skills/proximo-passo/' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 4**. E o mesmo com `.claude/skills/handover/` → **0**,
+     **Medido antes: 3**. São estas duas linhas que provam a `AUT-T7` feita — sem elas, a remoção
+     deixa ponteiro quebrado em quatro superfícies.
+  6. Varredura da régua antiga, com o literal exato — **caminhos corrigidos pelo `ESC-20`**, porque
+     a lista anterior varria dois arquivos que esta mesma entrega **apaga**, e `Select-String -Path`
+     sobre caminho inexistente **erra** em vez de devolver zero:
+     ```
+     pwsh -NoProfile -Command "(Select-String -Path GOVERNANCA.md,README.md,docs/DOC_MAP.md,.claude/README.md,.claude/skills/scrum-master/SKILL.md,.claude/skills/passagem-de-bastao/SKILL.md,.claude/agents/pantonic-planner.md -Pattern '>8 write-clusters' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 1** — a ocorrência única vive em
      `.claude/skills/proximo-passo/SKILL.md:126` (`**>8 write-clusters → dividir em sub-tarefas
-     ANTES de delegar.**`). A verificação discrimina o mundo com a mudança do mundo sem ela.
+     ANTES de delegar.**`), arquivo que **deixa de existir** nesta entrega; por isso a varredura
+     nova olha a **skill nova**, que é onde a régua poderia renascer por transcrição descuidada.
+     Medido no `ESC-20` com os caminhos novos, **sem** `passagem-de-bastao` (que ainda não existe):
+     **0** — isto é, a linha só discrimina se a skill nova nascer limpa, que é o que ela afere.
 - **Não fazer:** não rodar `python .claude/tools/backlog.py check` e não tratá-lo como aceite — ele
   linta `docs/DIARIO_DE_OBRAS.md` e os planos, que esta tarefa não toca, e sai `1` com qualquer
   violação; hoje são 315 violações pré-existentes, já encaminhadas ao `P-0739` (`AE-1`). Exigir
@@ -1773,10 +2967,11 @@ executa:
   campos nos parsers é a `LM-T4a`, que roda antes desta (`DM-13` (ii)); aqui ela só se publica em
   doutrina.
 - **Pronto quando:** `GOVERNANCA.md` §3 e §7 trazem `DM-2`, `DM-3`, `DM-4` e `DM-5` publicados com
-  a gramática de cabeçalho copiada do card da `LM-T4a`; o item 5 do gate de delegação em
-  `.claude/skills/proximo-passo/SKILL.md` está reescrito na régua nova; a decisão sobre
-  `proximo-passo`/`handover` está registrada e as **cinco** superfícies dos `Arquivos-alvo` não
-  citam mais a régua antiga; e as três verificações acima passam como escritas. (A sexta
+  a gramática de cabeçalho copiada do card da `LM-T4a`; o gate de delegação existe **uma vez
+  só**, na `.claude/skills/passagem-de-bastao/SKILL.md`, na régua nova; as duas skills
+  aposentadas **não existem mais na árvore** e nenhuma superfície cita o caminho delas; as
+  projeções (`.claude/README.md` e a tabela de skills do `README.md`) estão regeneradas com
+  **10** skills; e as **seis** verificações acima passam como escritas — contagem corrigida no `ESC-15` **no mesmo ato** que acrescentou a verificação do `check-readme.ps1`, que é o `DM-18` (i) aplicado ao próprio card (`AE-12`, critério (viii)): quem acrescenta item à lista fecha a frase que a conta. (A sexta
   superfície da redação anterior, o arquivo do planner, saiu dos alvos pelo `DM-17` (v) e segue
   na varredura da `Verificação` 3 só como leitura.)
 - **Depende de:** `LM-T4a` — a gramática que esta tarefa publica tem de já estar nos dois parsers,
@@ -1790,10 +2985,31 @@ executa:
   incompleto é a ordem invertida que a `DM-13` proíbe no eixo dela, e as duas não podem estar
   abertas ao mesmo tempo sobre o arquivo. **Acrescentado pelo `ESC-8`:** e **`LM-T2d`**, pela
   mesma razão — ela fecha a partição do bloco A que a `A8a` deixou aberta (`AE-20`, `DM-26`).
+  **Acrescentado pelo `ESC-12`:** e **`LM-T4b`**, que ensina ao `backlog.py` o bullet de
+  `Status` que esta tarefa vai publicar como doutrina — parser antes de doutrina (`DM-13` (ii),
+  `AE-5`/`AE-6`). Não há exclusão mútua entre as duas: arquivos diferentes.
+- **Restrição acrescentada pelo `ESC-12` (`DM-35` (v)) — o que `AUT-T8` publica:** a doutrina de
+  **status × veredito** que esta tarefa absorve tem de sair **conforme as decisões desta
+  janela**, que o card foi autorado antes de conhecer: `DM-25` (`escalar` não é desfecho de
+  tarefa; é desfecho da pendência), `DM-26` (o bloco A parte **primeiro por veredito**, e regra
+  nenhuma manda fazer o que o instrumento de fechamento recusa) e, em especial, **`DM-32`** —
+  **`reprovado` não é desfecho de RDO**: a `A7` materializa `blocked` razão `premissa` e para,
+  porque o RDO só nasce na transição `review` → `done` (`DP-F` item 3) e `rdo.py close
+  --veredito` aceita só `aprovado` e `ressalva` (medido: exit 2). Publicar `AUT-T8` sem isso
+  escreveria doutrina **contra** a tabela de roteamento que a `LM-T2c`, a `LM-T2d` e a `LM-T2e`
+  acabaram de fechar. Nenhuma linha do bloco A é reescrita aqui — ele está fechado; esta tarefa
+  **publica** o que ele já diz.
 
 ### LM-T5 — Revisão da criação das tarefas [Opus · classe investigacao]
 
-- **Status:** `ready`
+> **Nota de reconciliação (`ESC-15`, `DM-38` (v)):** a rubrica entregue publica **quinze**
+> critérios, `(i)`..`(xv)` — as duas aferições que este card prescrevia sem numeral saíram como
+> `(xiv)` e `(xv)`, decisão do executor dentro do escopo, mantida pelo laudo. Onde o corpo abaixo
+> disser "doze critérios", leia-se a rubrica: **ela** é a referência canônica. O corpo fica
+> **literal** — card fechado é registro histórico, não se reescreve (`DM-33` (iii) aplicado à
+> própria auditoria).
+
+- **Status:** `done` (2026-09-19) — **ressalva 88%**, bloqueante `nenhuma`, recomendação `escalar`. Antecipada na fila pela Diretiva de execução item 4 (decisão do loop). Julgou **20** cards: 4 passam, 16 não passam, **nenhum por conteúdo — todos por linha de aceite**. Pendência e quatro achados roteados pelo `B1` como `AE-31`. RDO: `docs/RDO/P-0740-LM-T5-revisao-da-criacao-das-tarefas.md`.
 - **Esforço:** high
 - **Objetivo:** julgar se os cards que o planejamento produz são **executáveis como módulo**. Tarefa
   pedida nominalmente pelo dono em 2026-09-18.
@@ -1831,6 +3047,13 @@ executa:
   rodados (antes e depois), e padrão que devolve o **mesmo** valor nos dois mundos é inválido por
   construção; comando cujo literal tem crase, asterisco ou barra invertida vai em **bloco
   cercado**, e padrão textual leva `-SimpleMatch`. Caso medido: `AE-19`.
+- **Insumo medido pelo loop, a citar (`ESC-14`, 2026-09-19):** a janela gastou **867k tk em cinco
+  passagens do consultor** (`ESC-9`..`ESC-13`) contra **quatro tarefas fechadas** e quatro
+  executores despachados. O número é **medido pelo loop**, não auto-relatado pelo consultor
+  (`GOVERNANCA.md` §4.2), e entra aqui por dois motivos: é insumo direto do juízo desta tarefa
+  sobre **quanto custa um card mal autorado** — cada parada de executor por aceite custou um
+  despacho inteiro — e é insumo do veredito do dono na `LM-T6`. Não governa rota (`DP-Q`): é
+  medida.
 - **Insumo medido, a citar:** o `AE-1` do `TK-54` (card devolvido `blocked motivo=premissa` por
   coluna de classificação sem critério fechado, 63,2k tk gastos na triagem sem tocar arquivo), o
   `AE-10` do `P-0739` (dependência de ordem que o card não declarou) e o **`AE-2` deste plano**
@@ -1865,12 +3088,64 @@ executa:
   reconferiu a rota contra as `Restrições` novas, e o buraco só apareceu no laudo da tarefa
   seguinte. A rubrica afere: **card reescrito re-declara as rotas de achado que aponta para
   ele**.
+  **Décima segunda classe, do `ESC-13` — e é a que esta janela pagou sete vezes:** o **comando de
+  aceite** é derivado que erra sem sinal, porque nada o confronta com a fonte. Sete casos medidos
+  na mesma janela: `AE-19` (crase dupla, 0 → 0), `AE-21` (baseline de corpus real envelhecida
+  entre autoria e despacho), `AE-23` (padrão que **reescreve** palavra da fonte — `ultima` por
+  `última` —, 0 nos dois mundos), `AE-25` (padrão **sem a opção** que o torna discriminante —
+  `Select-String` ignora caixa por padrão, 1 nos dois mundos), `AE-26` e `AE-27` item 2 (aceite
+  apoiado em **contrato de instrumento que ninguém verificou**) e `AE-28` (aceite cujo **alvo é
+  inalcançável dentro do escopo do card**: exigia do instrumento uma transição que a tabela de
+  `DP-F` não tem). Três autores diferentes os produziram — planejador, consultor e o próprio
+  loop —, o que o classifica como defeito **de método**, não de pessoa. A rubrica ganha por isso
+  os critérios (xii) e (xiii) abaixo, e eles são o **produto central** desta tarefa: sem eles,
+  ela é diagnóstico.
   **Décima primeira classe, do `ESC-8`:** regra de roteamento que **não parte o domínio** —
   a `A8a` cobriu `escalar` para entrega aprovada e deixou dois pares sem regra útil, um deles
   mandando fazer o que o instrumento recusa (`AE-20`). A rubrica afere: **regra nova de tabela
   declara o efeito sobre cada valor do domínio que toca, e confronta a ação com o domínio que o
   instrumento de fechamento aceita**.
-- **Segundo entregável — o reagrupamento do `P-0739` (`DM-9`).** Julgar os 6 cards `ready`
+- **Produto (b), acrescentado pelo `ESC-14` (`DM-37`) — a forma normativa do bloco
+  `Verificação`, para que a régua saia **executável**, não como item de leitura.** A rubrica fixa,
+  além dos critérios, a **forma** que todo item de `Verificação` tem de ter, com três elementos
+  nomeados e legíveis por máquina: (1) o **comando**, em bloco cercado, exatamente como foi rodado;
+  (2) o **valor esperado**, na linha iniciada por `→`; (3) o **valor medido antes**, no literal
+  `**Medido antes: <valor>**`. É a forma que 20 itens deste plano já usam (medido no `ESC-14`), e a
+  norma só a torna obrigatória e parseável. **Por que isto e não um décimo quarto critério:** a
+  classe tem doze critérios e produziu oito defeitos numa janela — o `AE-30` inclusive **sobreviveu
+  ao próprio ato que escreveu o critério contra ele**, três parágrafos acima da linha defeituosa.
+  Checklist lido por autor não fecha defeito de autoria; o que fecha é **comando que falha
+  ruidosamente no ato da autoria**. A rubrica, portanto, **prescreve o passo mecânico** —
+  `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` — e declara que card cujo
+  `card_check` não sai 0 **não se despacha**. O instrumento é a **`LM-T5b`**, que roda logo depois
+  desta tarefa; enquanto ele não existe, o passo é a conferência manual dos três elementos, e a
+  rubrica diz isso com data.
+- **Critérios (xii) e (xiii), acrescentados pelo `ESC-13` (`DM-36` (iv)) — texto a publicar na
+  rubrica, e a régua com que esta tarefa julga todo card:**
+  **(xii) Comando de aceite é medida, não afirmação.** Ele (a) é **recorte do literal da fonte**,
+  copiado do arquivo-alvo, nunca uma palavra reescrita de memória — acento, caixa e pontuação
+  pertencem ao texto medido (`AE-23`); (b) foi **rodado nos dois mundos** pelo autor, e os dois
+  valores aparecem no card — padrão que devolve o mesmo valor antes e depois é inválido por
+  construção (`AE-19`, `DM-24`); (c) carrega **as opções que tornam a medida discriminante** —
+  `-SimpleMatch` para texto, `-CaseSensitive` quando é a caixa que muda (`AE-25`); e (d) tem
+  **alvo alcançável dentro do escopo declarado do card**: não exige estado, transição, permissão
+  ou arquivo que o card não entrega, nem contrato de instrumento que o autor não verificou
+  (`AE-26`, `AE-27` item 2, `AE-28`). O teste da alínea (d) é uma pergunta só: *executando só o
+  que este card manda executar, este comando pode sair como o card diz?*
+  **(xiii) Baseline de corpus real é relação, re-medida no despacho.** Nenhum número tirado do
+  corpus — total de suíte, contagem de cards, número de ocorrências, total de linhas — entra no
+  card como **constante de aceite**: entra como relação (`não reduz`, `sobe em N`, `os dois
+  números iguais`), com o literal citado só como referência **datada**. Caso medido no próprio
+  ato que escreveu este critério: o `ESC-12` publicou `18 18` como aceite da `LM-T4b` e, ao rodar
+  o comando publicado, mediu `21 0` — o total do plano mudara durante a autoria, por causa dos
+  cards que o mesmo ato acrescentava (`AE-21`, `DM-23`).
+- **Segundo entregável — o reagrupamento do `P-0739` (`DM-9`) — RETIRADO desta tarefa pelo
+  `ESC-13` (`DM-36` (iii)) e residente agora na `LM-T5a`.** O texto abaixo fica como registro do
+  que a `LM-T5a` herda; **esta** tarefa não toca `docs/plans/P-0739-backlog-instrumento.md`.
+  Razão: o dono estacionou o `P-0739` em 2026-09-19 (*"`P-0739` **não retorna** enquanto o
+  `P-0740` não encerrar"*), e a auditoria de criação de card é matéria **urgente** desta janela
+  enquanto o reagrupamento de outro plano não é — juntá-los faria a urgente esperar a que o ato
+  do dono adiou. Antigo texto: Julgar os 6 cards `ready`
   restantes (`BKL-T5`..`BKL-T9`, mais o que a rodada do `AE-10` exigir) **não basta**: eles foram
   autorados sob a régua atômica e não se executam um a um sem reproduzir o defeito que este plano
   corrige. Esta tarefa **reescreve os 6 como módulos coesos** sob a gramática de `DM-2`..`DM-5`,
@@ -1879,52 +3154,674 @@ executa:
   `<!-- fila:gerada -->` que a `BKL-T6` item (a) insere): a ordem passa a ser fixada no
   reagrupamento, não numa rodada separada. Saída: o `P-0739` com uma fila nova, de módulos, pronta
   para fechar **numa rodada única**.
-- **Pronto quando:** a seção nova em `docs/RUBRICA_DE_REVISAO.md` ≤ 50 linhas; os **15** cards
+- **Pronto quando (reescrito pelo `ESC-13`, `DM-36` (v) — contagem é relação, não constante):** a
+  seção nova em `docs/RUBRICA_DE_REVISAO.md` ≤ 50 linhas **mais** o que os critérios (xii) e
+  (xiii) exigirem (teto novo: ≤ 70 linhas, medido contra `(Get-Content
+  docs/RUBRICA_DE_REVISAO.md).Count` antes e depois); **todos** os cards deste plano que não são
+  a própria auditoria nem o piloto, **contados no despacho** — eram 13 quando o card foi
+  autorado, são **19** em 2026-09-19 (medido no `ESC-13`, **depois** de a `LM-T5a` entrar: 22 cards no
+  plano, menos `LM-T5`, `LM-T5a` e `LM-T6`; re-contar no despacho, que é o critério (xiii)
+  aplicado a esta própria linha) — julgados numa tabela, um por linha, com o defeito nomeado quando não passa; e os
+  critérios (xii) e (xiii) publicados na rubrica com os sete casos medidos nomeados. O
+  reagrupamento do `P-0739` **não** é aceite desta tarefa (é a `LM-T5a`). Texto anterior do
+  aceite, mantido como histórico do que a `LM-T5a` herda: os **15** cards
   julgados numa tabela — os **9** deste plano que não são a própria auditoria nem o piloto
   (`LM-T1`, `LM-T1a`, `LM-T2`, `LM-T2a`, `LM-T2b`, `LM-T2c`, `LM-T3`, `LM-T3a`, `LM-T4a`,
   `LM-T4`, `LM-T7`, `LM-T7a`, `LM-T8` — **13**) e os 6 do `P-0739`, **19** no total (contagem
   atualizada pelo `ESC-7`, 2026-09-19); todo card reprovado sai com o defeito nomeado e a rota; e os 6 cards
   `ready` do `P-0739` reescritos como módulos, com cabeçalho de três campos, aceite de coerência
   declarado e a dependência de ordem do `AE-10` resolvida na fila — `AE-10` fechado no mesmo ato.
-- **Verificação:** tarefa sem artefato executável — a verificação é por efeito nos arquivos-alvo.
-  (1) Abrir `docs/RUBRICA_DE_REVISAO.md` e contar a seção nova: `(Get-Content
-  docs/RUBRICA_DE_REVISAO.md).Count` antes e depois da edição; a diferença é ≤ 50.
-  (2) `Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'LM-T' -SimpleMatch` → ao menos
-  **19** linhas, uma por ID julgado. **Medido no `ESC-6`: 0** hoje — o arquivo não cita nenhum
-  `LM-T`, então o item discrimina.
-  (3) `Select-String -Path docs/plans/P-0739-backlog-instrumento.md -Pattern '- **Objetivo:**'
-  -SimpleMatch` → o total **sobe em 6** sobre o valor re-medido no despacho (`DM-23`: relação,
-  não constante). **Medido no `ESC-6`: 18** ocorrências **antes** da entrega — o campo já existe
-  nos cards antigos do plano, de modo que "os 6 cards aparecem com o campo" **já era verdade**
-  antes de a tarefa começar (`AE-4`/`DM-24` (iii)); o que discrimina é o **delta**. O
-  `-SimpleMatch` é obrigatório: medido no `ESC-6`, sem ele o comando **nem executa**
-  (`Invalid pattern '- **Objetivo:**' ... Nested quantifier '*'`).
-- **Depende de:** `LM-T4` (a gramática que a rubrica afere e que o reagrupamento aplica nasce lá).
+- **Verificação (reescrita pelo `ESC-14`, `DM-37`):** tarefa sem artefato executável — a
+  verificação é por efeito no **único** arquivo-alvo, `docs/RUBRICA_DE_REVISAO.md`. A linha que
+  media `docs/plans/P-0739-backlog-instrumento.md` **saiu**: ela media arquivo que esta tarefa
+  está proibida de tocar desde o `ESC-13`, e sua residência é a `Verificação` 1 da **`LM-T5a`**,
+  onde ela já está escrita — é o `AE-30`, oitavo caso da décima segunda classe, e o único cuja
+  causa foi **a emenda que retirou o entregável sem reconferir o aceite que dependia dele**.
+  1. ```
+     pwsh -NoProfile -Command "(Get-Content docs/RUBRICA_DE_REVISAO.md).Count"
+     ```
+     → cresce em **≤ 70** sobre o valor do despacho (teto ampliado pelo `DM-36` (iv), que
+     acrescentou dois critérios à seção). **Medido no `ESC-14`: 274** linhas hoje. Relação, não
+     constante (critério (xiii)). `Measure-Object -Line` **não** serve aqui: ignora linha vazia e
+     erra a conta.
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'LM-T' -SimpleMatch -CaseSensitive | Measure-Object).Count"
+     ```
+     → **ao menos uma linha por card julgado**, com o total de cards **re-contado no despacho**
+     (medido no `ESC-13`: 19). **Medido no `ESC-14`: 0** — o arquivo não cita nenhum `LM-T`, então
+     o item discrimina. O `-CaseSensitive` entra pelo critério (xii) (c): sem ele o padrão casaria
+     grafia minúscula e mediria outra coisa (`AE-25`).
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'Medido antes' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **≥ 1**: a rubrica publica a **forma normativa** do bloco `Verificação` (produto (b)
+     abaixo), e o literal `Medido antes` é parte dela. **Medido no `ESC-14`: 0** na rubrica, contra
+     **20** ocorrências no plano — a forma já é a prática dominante dos cards; o que falta é ela
+     ser **norma legível por máquina**, que é o que a `LM-T5b` vai parsear.
+- **Depende de:** **nada** — dependência de `LM-T4` **dissolvida pelo `ESC-13`** (`DM-36` (iii)),
+  por medida: o critério (iii) afere *"a gramática que os **parsers** aceitam na data do card"*, e
+  quem a ensinou aos parsers foi a `LM-T4a`, **fechada**; e `DM-2`..`DM-5` são decisões **deste
+  plano**, que a `LM-T4` publica mas não cria. A rubrica, portanto, tem toda a matéria de que
+  precisa **antes** da `LM-T4` — e, invertida a ordem, a `LM-T4` publica doutrina já conhecendo a
+  regra de autoria que esta tarefa fixa. Nenhuma exclusão mútua: o alvo aqui é
+  `docs/RUBRICA_DE_REVISAO.md`, que nenhuma outra tarefa aberta toca.
+
+### LM-T5a — O reagrupamento do `P-0739` como módulos [Opus · classe redacao]
+
+- **Status:** `ready` — card novo do `ESC-13` (2026-09-19), que **retirou** esta matéria da `LM-T5`
+  (`DM-36` (iii)). Nada se perde: o texto do *Segundo entregável* segue no card da `LM-T5` como
+  registro do que esta tarefa herda.
+- **Esforço:** high
+- **Objetivo:** um só — os 6 cards `ready` do `P-0739` deixam de ser tarefas atômicas e passam a
+  ser **módulos coesos**, de modo que o plano feche numa rodada única.
+- **Depende de:** `LM-T5` (é a rubrica dela que esta tarefa aplica) e `LM-T4` (a gramática que ela
+  escreve nos cards novos é a que a `LM-T4` publica). **Ordem em relação ao dono:** o `P-0739` está
+  **estacionado por ato do dono** de 2026-09-19 (*"`P-0739` não retorna enquanto o `P-0740` não
+  encerrar"*); esta tarefa **prepara** o retorno dele e não o antecipa — ela reescreve card, não
+  executa tarefa do `P-0739`. Se o loop preferir, cabe inteira na janela seguinte, **depois** do
+  marco: não é insumo da `LM-T6`.
+- **Arquivos-alvo:**
+  - `docs/plans/P-0739-backlog-instrumento.md`
+- **Produto do módulo:** (a) os 6 cards `ready` (`BKL-T5`..`BKL-T9`, mais o que a rodada do `AE-10`
+  exigir) reescritos como módulos sob `DM-2`..`DM-5`, com cabeçalho de três campos e aceite de
+  coerência declarado; (b) a **dependência de ordem do `AE-10`** (entre `transacionar_status` e os
+  marcadores `<!-- fila:gerada -->` da `BKL-T6` item (a)) fixada **na fila do reagrupamento**, o que
+  fecha o `AE-10` sem rodada de replanejamento própria; (c) a fila nova do `P-0739`, declarada.
+- **Insumo obrigatório:** a rubrica que a `LM-T5` publica — em especial os critérios **(xii)** e
+  **(xiii)** (autoria de comando de aceite e baseline como relação), que são a razão de esta tarefa
+  vir **depois** dela: reescrever seis cards sob a régua antiga seria comprar o mesmo defeito seis
+  vezes.
+- **Verificação:** (`DM-12`/`DM-24`; baselines medidas no `ESC-13`)
+  1. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0739-backlog-instrumento.md -Pattern '- **Objetivo:**' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **sobe em 6** sobre o total re-medido **no despacho** (`DM-23`, e critério (xiii) da rubrica:
+     relação, nunca constante). **Medido no `ESC-6`: 18**; re-medir no despacho, porque o número
+     envelhece (`AE-21`). O `-SimpleMatch` é **obrigatório**: sem ele o comando nem executa
+     (`Nested quantifier '*'`), medido no `ESC-6`.
+  2. `python .claude/tools/backlog.py check` → **não** é aceite desta tarefa (`AE-1`: 315 violações
+     pré-existentes, encaminhadas ao próprio `P-0739`). Citado aqui para que ninguém o exija.
+- **Restrições desta tarefa:** **nenhuma tarefa do `P-0739` é executada** — o ato do dono estaciona
+  o plano, e esta tarefa só reescreve cards. Nenhum arquivo de `.claude/` é tocado. Nenhum card do
+  `P-0740` é tocado.
+- **Não fazer:** não reabrir as decisões `DB-*` do `P-0739`; não commitar; não tratar `backlog.py
+  check` como aceite.
+- **Contingências:**
+  1. se os 6 cards não estiverem `ready` no despacho (o plano mudou) → parar e sinalizar `blocked`
+     razão `premissa`, citando os estados encontrados.
+- **Pronto quando:** os 6 cards estão reescritos como módulos, a fila nova do `P-0739` está
+  declarada, o `AE-10` está fechado no texto, e a `Verificação` 1 sobe em 6 sobre a baseline
+  re-medida no despacho.
+
+### LM-T5b — `card_check.py`: a régua de autoria que roda [Sonnet · classe implementacao]
+
+- **Status:** `done` (2026-09-19) — **ressalva 91%**, bloqueante `nenhuma`, recomendação `escalar`. O instrumento existe e pega o que foi contratado, mas o laudo **reproduziu um falso verde residual** e dois achados sobre o gate: roteados pelo `B1` como `AE-32`. RDO: `docs/RDO/P-0740-LM-T5b-card-check-py-a-regua-de-autoria-que-roda.md`. Card novo do `ESC-14` (2026-09-19), residência única do passo mecânico que
+  o `DM-37` prescreve. **Sem ele a rubrica da `LM-T5` continua sendo leitura**, e a classe já
+  provou que leitura não a fecha: oito defeitos numa janela, doze critérios em vigor, e o `AE-30`
+  produzido **no mesmo ato** que escreveu o critério contra ele.
+- **Esforço:** low
+- **Objetivo:** um só — o autor de um card roda **um comando** contra o card que acabou de escrever
+  e ele **falha ruidosamente** quando o aceite não mede o que diz medir.
+- **Depende de:** `LM-T5` — é ela que fixa a **forma normativa** do bloco `Verificação` (produto
+  (b)) que este instrumento lê. **Precede** o despacho da `LM-T4b` e da `LM-T4`: a re-varredura que
+  o `DM-36` (vi) me atribuiu passa a ser **mecânica**, rodada pelo loop, em vez de leitura de
+  consultor.
+- **Arquivos-alvo:**
+  - `.claude/tools/card_check.py`
+  - `tests/test_card_check.py`
+  - `tests/fixtures/card_check/` (os três cards sintéticos do aceite, `ESC-15`)
+- **Produto do módulo:** um verbo só — `python .claude/tools/card_check.py --plano <plano>
+  --tarefa <ID>` —, que: (a) recorta o bloco `Verificação` do card pelo mesmo parser de campos que
+  o kit já usa (`rdo._parsear_campos`, **importado, nunca reescrito**); (b) para cada item, exige
+  os **três elementos** da forma normativa — comando em bloco cercado, linha `→` com o esperado, e
+  o literal `**Medido antes: <valor>**`; item incompleto é **falha nomeada**; (c) **roda** cada
+  comando publicado e compara a saída com o `Medido antes` declarado — divergência é falha
+  nomeada, porque significa que o card descreve um mundo que não é o que está na árvore; (d) sai
+  **0** quando todos os itens fecham e **1** com uma linha por item que falhou, dizendo qual dos
+  três elementos falta ou qual valor divergiu.
+- **Contrato de segurança (não é detalhe — é o que torna (c) aceitável):** o instrumento só executa
+  comando cujo primeiro token esteja numa **lista fechada** (`python`, `pwsh`) e recusa, com falha
+  nomeada, qualquer linha com `;`, `&&`, `|` fora do bloco cercado, redirecionamento ou
+  substituição de comando. Comando que ele recusa é reportado, **nunca** executado — e o autor o
+  reescreve ou o declara fora do aceite mecânico.
+- **Testes** (três): `TF-item-sem-medido-antes-falha`; `TF-divergencia-de-valor-falha` (card
+  sintético cujo `Medido antes` não bate com a saída do comando); `TR-card-integro-sai-zero`.
+  *Concorrentes:* sem (b) o instrumento aprovaria item sem baseline — o `AE-21` inteiro; sem (c)
+  aprovaria baseline envelhecida — o `AE-23`, o `AE-25` e o `AE-30`.
+- **Entregável de fixture (acrescentado pelo `ESC-15`, `DM-38` (ii)):** três cards sintéticos em
+  `tests/fixtures/card_check/plano-exemplo.md`, escritos **por esta tarefa**: `EX-T1` conforme à
+  `### 8.1` (os três elementos em todos os itens, com um comando cujo valor bate com a árvore de
+  teste); `EX-T2` com um item **sem** `**Medido antes:**`; `EX-T3` com `**Medido antes:**` cujo
+  valor **não** bate com a saída do comando. São eles o aceite — **nenhum card vivo do plano é
+  aceite deste instrumento** (`DM-38` (ii)).
+- **Verificação:** (forma normativa da `### 8.1` da `docs/RUBRICA_DE_REVISAO.md`; baselines medidas
+  pelo consultor no `ESC-15`)
+  1. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T1
+     ```
+     → **exit 0**. **Medido antes: exit 2** (`card_check.py` não existe; `python` sai 2 em
+     `can't open file`).
+  2. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T2
+     ```
+     → **exit 1**, com a linha do item nomeando o elemento ausente (`Medido antes`).
+     **Medido antes: exit 2** (o instrumento não existe).
+  3. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T3
+     ```
+     → **exit 1**, com a linha do item nomeando a divergência entre o valor declarado e a saída
+     medida. **Medido antes: exit 2** (o instrumento não existe).
+  4. ```
+     python -m pytest tests/ -q
+     ```
+     → verde, com **três testes a mais** que o total re-medido no despacho (`DM-23`).
+     **Medido antes: 175 passed** (2026-09-19 — relação, **re-medir no despacho**, critério (xiii)).
+- **Restrições desta tarefa:** o instrumento **não corrige** card — só afere e reporta; quem
+  reescreve é o autor. Não julga conteúdo do card (objetivo, passos, restrições): só o bloco
+  `Verificação`. Não substitui o `pantonic-reviewer`: roda **antes** do despacho, não depois da
+  entrega. `rdo.py`, `backlog.py` e `review_evidence.py` ficam **intocados** — este é instrumento
+  novo, e a única importação é o parser de campos.
+- **Não fazer:** não estender `backlog.py check` (é instrumento do `P-0739`, estacionado, e já sai
+  vermelho com 315 violações pré-existentes, `AE-1`); não rodar comando fora da lista fechada; não
+  tocar card nenhum do plano; não commitar.
+- **Contingências:**
+  1. se a forma normativa que a `LM-T5` publicou divergir dos três elementos citados aqui → parar e
+     sinalizar `blocked` razão `premissa`, citando a forma publicada: quem manda é a rubrica, e o
+     instrumento se ajusta a ela, nunca o contrário;
+  2. se a `Verificação` 1 sair **1** por baseline envelhecida do próprio `LM-T3b` (o plano mudou
+     entre a autoria e o despacho) → **não** é falha desta tarefa: reportar a divergência ao loop,
+     que a devolve ao consultor — é exatamente o defeito que o instrumento existe para pegar.
+- **Pronto quando:** `card_check.py` existe com o verbo único; sai **0** em `EX-T1` e **1** em
+  `EX-T2` e `EX-T3`, nomeando em cada caso o elemento ausente ou o valor divergente; recusa
+  comando fora da lista fechada; os três testes existem; e a suíte fica verde.
+
+### LM-T5c — O gate ligável: onde começa um item, o silêncio proibido e a recusa por token [Sonnet · classe implementacao]
+
+- **Status:** `done` (2026-09-19) — **ressalva 76%**, bloqueante `nenhuma`, recomendação `escalar`. O falso verde fechou, mas **abriu um falso vermelho** e a matéria 5 regrediu para filho `cp1252`: roteados pelo `B1` como `AE-33`. O gate segue **suspenso**. RDO: `docs/RDO/P-0740-LM-T5c-o-gate-ligavel-onde-comeca-um-item-o-silencio-proibido-e-a-recusa-por-token.md`. Card novo do `ESC-16` (2026-09-19), residência única das **quatro** matérias
+  do `AE-32` — **mais a quinta matéria** que o `ESC-16` mediu ao rodar o instrumento contra este
+  próprio card (codificação da saída capturada). Elas vêm num card só porque são **um assunto
+  só** (`DM-2`): tornar o `card_check`
+  confiável o bastante para virar gate. Partir em dois criaria exclusão mútua sobre os **mesmos
+  dois arquivos** e entregaria, no meio do caminho, um instrumento que ainda não pode ser ligado.
+- **Esforço:** low
+- **Objetivo:** um só — o `card_check` deixa de dar verde a item que ele não leu, e deixa de recusar
+  a forma de comando que o kit usa; com isso o gate da `### 8.1` pode ser ligado.
+- **Depende de:** `LM-T5b` (fechada — é o instrumento dela que esta tarefa corrige) e `LM-T5`
+  (fechada — é a `### 8.1` dela que esta tarefa emenda). **Precede o despacho da `LM-T4b`, da
+  `LM-T4`, da `LM-T3b` e da `LM-T6`**: enquanto ela não fecha, o loop re-deriva baseline à mão, que
+  é o custo que esta tarefa elimina.
+- **Arquivos-alvo:**
+  - `.claude/tools/card_check.py`
+  - `docs/RUBRICA_DE_REVISAO.md`
+  - `tests/test_card_check.py`
+  - `tests/fixtures/card_check/`
+- **As quatro matérias, medidas no `ESC-16` sobre o código entregue:**
+  1. **Falso verde por descarte silencioso.** `_ITEM_HEAD_RE = re.compile(r"\d+\.\s*```")`
+     (`:66`) só enxerga item cujo bloco cercado venha **imediatamente** após `N.`; item com prosa
+     de abertura **não entra** na lista `heads` e portanto não é reportado. Quando **nenhum** item
+     casa, o instrumento diz *"nenhum item reconhecido"* e falha (medido: `--tarefa LM-T3b` →
+     **exit 1**); quando **alguns** casam, os demais somem sem uma linha sequer — que é o caso que
+     o reviewer reproduziu (`Medido antes: 42` contra saída `999` → exit 0).
+  2. **A norma não define onde começa o item.** A `### 8.1` diz *"o comando, em bloco cercado"* e
+     não diz que ele abre o item; prosa antes é legítima pela letra, e é a forma do item 1 da
+     `LM-T3b`, card que a `### 8.2` julga **"passa"**.
+  3. **Recusa por substring, sobre execução sem shell.** `_METACARACTERE_RECUSADO_RE` (`:71`) varre
+     a **string crua**, mas `_rodar_comando` executa `subprocess.run(tokens)` **sem `shell=True`**
+     (`:136`, medido): `;`, `|` e `$` **dentro de um argumento citado** não são operadores, são
+     texto. Efeito medido: os **4** itens da `LM-T2e` saem *"comando recusado"* (exit 1), e o item
+     1 da `LM-T5a` também — a forma canônica do kit, `pwsh -NoProfile -Command "(Select-String …
+     | Measure-Object).Count"`, é recusada por segurança que o modo de execução já garante.
+  4. **O contrato de segurança não tem teste** — só a verificação em execução do reviewer.
+  5. **A saída capturada vem com a codificação trocada, e isso inviabiliza baseline por texto.**
+     Medido no `ESC-16`, rodando o próprio instrumento: `_rodar_comando` chama
+     `subprocess.run(tokens, …, text=True)` **sem `encoding`**, de modo que o Windows decide pela
+     `cp1252` e a saída chega como `tarefa: 'EX-T4' nÃ£o encontrada`. Consequência direta: **nenhum
+     `Medido antes` com acento pode bater**, e o autor é empurrado a reescrever o literal da fonte
+     sem acento — que é exatamente o `AE-23`, agora induzido pelo instrumento. O arquivo já tem
+     `_forcar_utf8` para os próprios fluxos; falta aplicá-lo ao que ele lê do subprocesso.
+- **Produto do módulo:** (a) `### 8.1` emendada: **o item começa em `N.` seguido imediatamente do
+  bloco cercado**; prosa explicativa vai **depois** do `**Medido antes:**`, nunca antes do comando;
+  (b) o instrumento varre `^\s*\d+\.` e **nomeia todo item numerado que não casar a forma** —
+  `item N: fora da forma da 8.1 (bloco cercado não vem logo após "N.")` — e falha; **descarte
+  silencioso é proibido**, e é esta metade que fecha o falso verde; (c) `_validar_comando` passa a
+  decidir **por token**, depois de `shlex.split`: recusa quando um **token isolado** é operador de
+  shell (`;`, `&&`, `||`, `|`, `>`, `>>`, `<`) ou começa por `$(`/crase, e **não** recusa pelo
+  conteúdo de argumento citado — a justificativa é o modo de execução, e o docstring passa a
+  dizê-la; (d) marcador **`**Aferição: manual**`**, na mesma linha do `**Medido antes:**`, aceito
+  **somente** quando o comando é recusado por (c) ou quando o item não tem comando executável: o
+  item é reportado como `manual`, **não** é executado, e continua exigindo os elementos 2 e 3. Se o
+  comando **for** executável, o marcador é **rejeitado** com falha nomeada — senão vira porta dos
+  fundos; (e) teste do contrato de segurança (matéria 4); (f) `_rodar_comando` decodifica a saída do
+  subprocesso como **UTF-8** (`encoding="utf-8", errors="replace"`), de modo que `Medido
+  antes` com acento volte a ser comparável (matéria 5).
+- **Fixtures novas** (`tests/fixtures/card_check/plano-exemplo.md`, ao lado de `EX-T1`..`EX-T3`):
+  `EX-T4` com item de prosa antes do bloco; `EX-T5` com `pwsh -NoProfile -Command "(… |
+  Measure-Object).Count"` cujo valor bate; `EX-T6` com `**Aferição: manual**` sobre comando
+  **executável**.
+- **Testes** (cinco): `TF-item-numerado-fora-da-forma-e-nomeado`; `TF-token-de-shell-isolado-e-recusado`
+  (e o contrato de segurança travado, matéria 4); `TR-pipe-dentro-de-argumento-citado-executa`;
+  `TF-afericao-manual-sobre-comando-executavel-e-rejeitada`; `TF-saida-acentuada-do-subprocesso-e-comparavel`
+  (matéria 5: comando que imprime texto acentuado, `Medido antes` com acento, tem de bater).
+- **Verificação:** (forma da `### 8.1`, já na gramática que esta tarefa fixa; baselines medidas pelo
+  consultor no `ESC-16`)
+  1. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T4
+     ```
+     → **exit 1**, com a linha `item 1: fora da forma da 8.1`.
+     **Medido antes: tarefa: 'EX-T4'** — **recorte** da saída de hoje
+     (`card_check: FALHOU - tarefa: 'EX-T4' não encontrada em …`), não o código de saída: `exit 1`
+     valeria **nos dois mundos** (antes por fixture ausente, depois por item fora da forma) e seria
+     vacuoso (`DM-24`). O `card_check` confere valor não-`exit N` como **substring da saída**, então
+     esta linha deixa de bater no instante em que a fixture nasce — que é o que ela precisa medir. O
+     recorte **para antes do acento** por causa da matéria 5 abaixo, e volta a poder tê-lo quando
+     ela fechar; cortar antes do acento é recorte do literal, não reescrita dele (`AE-23`).
+  2. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T5
+     ```
+     → **exit 0**: `|` dentro de argumento citado deixa de ser recusa.
+     **Medido antes: tarefa: 'EX-T5'** — pela mesma razão do item 1, a baseline é o
+     literal da saída, não o código.
+  3. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T6
+     ```
+     → **exit 1**, nomeando o marcador `Aferição: manual` sobre comando executável.
+     **Medido antes: tarefa: 'EX-T6'** — literal da saída, pela razão do item 1.
+  4. ```
+     python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T1
+     ```
+     → **exit 0**, **inalterado**: a fixture conforme continua passando. **Medido antes: exit 0**.
+  5. ```
+     python -m pytest tests/ -q
+     ```
+     → verde, com **cinco testes a mais** que o total re-medido no despacho (`DM-23`).
+     **Medido antes: 178 passed** (2026-09-19 — relação, **re-medir no despacho**, critério (xiii)).
+- **Restrições desta tarefa:** a lista fechada de executáveis (`python`, `pwsh`) **não** se alarga.
+  O instrumento continua **sem** `shell=True` — é essa propriedade que justifica (c), e perdê-la
+  invalidaria a decisão inteira. A `### 8.2` (o julgamento dos 20 cards) fica **intocada**: o
+  veredito da `LM-T3b` como *"passa"* é registro do que a rubrica dizia **naquele dia**, e
+  re-julgar card é tarefa de auditoria, não desta. Nenhum card do plano é reautorado aqui
+  (`DM-38` (i): normaliza-se no ato do despacho).
+- **Não fazer:** não ligar o gate por conta própria — o `Status` do gate é decisão do loop,
+  registrada no `DM-39` (ii); não tocar `.claude/tools/rdo.py`; não tocar os outros cards do plano;
+  não commitar.
+- **Contingências:**
+  1. se `_rodar_comando` não estiver sem `shell=True` no despacho → parar e sinalizar `blocked`
+     razão `premissa`: a premissa de (c) caiu;
+  2. se a emenda à `### 8.1` tornar **qualquer** das fixtures `EX-T1`..`EX-T3` inválida → parar e
+     sinalizar `blocked` razão `premissa`, citando qual: norma nova que invalida o aceite vigente é
+     decisão de consultor.
+- **Pronto quando:** a `### 8.1` diz onde o item começa; nenhum item numerado é descartado em
+  silêncio; `|` e `;` dentro de argumento citado executam; `**Aferição: manual**` existe e é
+  rejeitado sobre comando executável; saída acentuada de subprocesso é comparável; os **cinco**
+  testes existem; e as cinco linhas de `Verificação` saem como escritas.
+
+### LM-T5d — A rubrica posta em dia: a suspensão do gate e o critério do rótulo [Sonnet · classe redacao]
+
+- **Status:** `ready` — card novo do `ESC-17` (2026-09-19). **Fora do caminho crítico**, e
+  **explicitamente não antes do marco**: existe só para que a superfície publicada não prescreva um
+  gate que hoje reprova card conforme.
+- **Esforço:** low
+- **Objetivo:** um só — a rubrica de autoria fica em dia com o que esta janela mediu: quem a ler
+  sabe que o gate está **suspenso em efeito** e por quê, e encontra o critério do **rótulo de
+  campo** que o `AE-34` custou.
+- **Depende de:** `LM-T5c` (fechada — é o estado dela que a nota descreve). Nada depende desta.
+- **Arquivos-alvo:**
+  - `docs/RUBRICA_DE_REVISAO.md`
+- **Produto do módulo:** um parágrafo datado na `### 8.1`, logo abaixo da frase do gate, com quatro
+  fatos e nenhum juízo novo: (a) o gate está **suspenso em efeito desde 2026-09-19**, por decisão do
+  loop endossada pelo consultor (`DM-39` (ii), `DM-40` (i)); (b) a conferência dos três elementos
+  segue **manual**, como a própria seção já prescreve para o período sem instrumento; (c) **o
+  vermelho do `card_check` não é evidência** enquanto o `AE-33` item 1 estiver aberto — ele produz
+  **item fantasma** sobre card conforme; (d) o ponteiro: `AE-33` no `P-0740`, e a reativação do gate
+  depende dele.
+- **Produto (b), acrescentado pelo `ESC-18` (`DM-41`) — o critério `(xvi)` da rubrica:**
+  **rótulo de campo termina na mesma linha em que começa.** Decoração no rótulo (data, `ESC-n`,
+  `DM-n`, ressalva) é permitida **enquanto o `:**` couber na primeira linha**; o parser de
+  campos do kit lê **linha a linha**, de modo que rótulo quebrado faz o campo **desaparecer**,
+  não apenas ficar feio. Caso medido: `AE-34` — o `Pronto quando` da `LM-T4b` quebrou depois de
+  `(iii) —` e `review_evidence.py` saiu **exit 1**, `campo obrigatório ausente em 'LM-T4b':
+  'pronto-quando'`, com a entrega **pronta e verde**. É o décimo terceiro caso da classe e o
+  **primeiro a derrubar o instrumento de evidência**, não o comando de aceite; e é o mais barato
+  de todos de aferir, porque quem gera o dossiê **já falha ruidosamente** — o critério só nomeia
+  a causa para quem escreve.
+- **Produto (c), acrescentado pelo `ESC-19` (`DM-42` (iii)) — o critério `(xvii)` da rubrica:**
+  **o aceite cobre o mundo que o próprio produto cria.** Quando o módulo **emite** uma forma, a
+  `Verificação` exercita **essa** forma, e não só a que ele consome: produto que escreve num
+  formato e é aferido noutro deixa o ramo que ele mesmo produz sem nenhuma linha que o discrimine.
+  Caso medido: `AE-35` item 2 — a `LM-T4b` aferiu **só** o ramo em prosa; o ramo canônico
+  `· data · razão — cauda`, que é exatamente o que a escrita dela emite ao transitar para
+  `blocked` com `--razao`, não tinha **nenhuma** linha de aceite, e é nele que a cauda se perde
+  (`AE-35` item 1). É a variação nova do critério (xii): não é alvo inalcançável, é **ramo não
+  coberto** — e o décimo quarto caso da série.
+- **Verificação:**
+  1. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'suspenso em efeito' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**.
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'AE-33' -SimpleMatch -CaseSensitive | Measure-Object).Count"
+     ```
+     → **≥ 1** (o ponteiro do achado). **Medido antes: 0**.
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'AE-34' -SimpleMatch -CaseSensitive | Measure-Object).Count"
+     ```
+     → **≥ 1** (o critério `(xvi)` e seu caso medido). **Medido antes: 0**.
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/RUBRICA_DE_REVISAO.md -Pattern 'AE-35' -SimpleMatch -CaseSensitive | Measure-Object).Count"
+     ```
+     → **≥ 1** (o critério `(xvii)` e seu caso medido). **Medido antes: 0**.
+- **Restrições desta tarefa:** a frase do gate **não se apaga** — suspende-se em efeito, com data,
+  e quem a reativa é o card que fechar o `AE-33`. A `### 8.2` fica **intocada**. Nenhum critério
+  **existente** é reescrito: o `(xvi)` **entra ao lado**, como item novo da mesma tabela, e a
+  frase que conta os critérios da seção fecha no mesmo ato (`DM-18` (i)) — de **quinze** para
+  **dezessete**, porque o `ESC-19` acrescentou o `(xvii)` ao mesmo card.
+- **Não fazer:** não tocar `.claude/tools/card_check.py` (o reparo é matéria do `AE-33`, pós-marco);
+  não reautorar card nenhum; não commitar.
+- **Contingências:**
+  1. se a frase do gate não estiver na `### 8.1` no despacho → parar e sinalizar `blocked` razão
+     `premissa`, citando o que encontrou.
+- **Pronto quando:** a `### 8.1` traz a nota datada; os critérios `(xvi)` e `(xvii)` estão na
+  tabela com os casos `AE-34` e `AE-35` nomeados e a contagem da seção fechada em **dezessete**;
+  as **quatro** linhas de `Verificação` saem como escritas; e nada mais do arquivo mudou.
+
+### LM-T4c — A fronteira entre razão e cauda no bullet de `Status` [Sonnet · classe implementacao]
+
+- **Status:** `ready` — card novo do `ESC-19` (2026-09-19), residência única do `AE-35` item 1.
+  **Declarado PÓS-MARCO**: não entra antes da `LM-T6`, por decisão registrada no `DM-42` (ii).
+- **Esforço:** low
+- **Objetivo:** um só — a cauda em prosa sobrevive **também** no ramo canônico, que é o que o
+  próprio módulo emite ao transitar para `blocked` com `--razao`.
+- **Depende de:** `LM-T4b` (fechada — é o módulo dela que esta tarefa completa). Nada depende desta.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+- **A causa, medida no `ESC-19` por introspeção — é de gramática, não de escrita:**
+  `STATUS_BULLET_RE` (`:76`) é
+  `` ^- \*\*Status:\*\* `([a-z-]+)`(?: · \d{4}-\d{2}-\d{2}(?: · (.+))?|.*?)(?: — (.+))?$ ``. O grupo
+  da razão é `(.+)` **guloso** e o da cauda é opcional, de modo que **nada força a divisão no
+  ` — `**. Medido sobre a linha que o próprio módulo escreve
+  (`- **Status:** `blocked` · 2026-09-19 · premissa — cauda viva`): `razao='premissa — cauda viva'`
+  e `cauda=None`; na transição seguinte para `ready`, `razao` vira `None` por não haver `--razao`,
+  `cauda` já era `None`, e a linha sai **`- **Status:** `ready` · <hoje>`** — a prosa **some**. O
+  ramo em prosa (`(2026-01-01) — cauda viva`) está **correto** e não se toca: `razao=None`,
+  `cauda='cauda viva'`.
+- **A fronteira, decidida aqui (era o que faltava no `DM-35` (i), e é decisão de consultor, não de
+  execução):** a **razão não contém ` — `**; a **cauda começa no primeiro ` — `** da linha e vai até
+  o fim. Em consequência, o grupo da razão passa a excluir o travessão (p. ex. `([^—]+?)`, com
+  `strip`), e a cauda continua livre e não interpretada.
+- **Produto do módulo:** (a) `STATUS_BULLET_RE` separa razão e cauda **nos dois ramos**, pela
+  fronteira acima; (b) o docstring do módulo (`:21`) enuncia a fronteira com o caso medido; (c)
+  nada mais muda — escrita, vocabulário, `_TRANSICOES` e forma canônica ficam como estão.
+- **Testes** (dois): `TF-ramo-canonico-separa-razao-de-cauda` (a linha do caso medido devolve
+  `razao='premissa'` e `cauda='cauda viva'`); `TR-round-trip-blocked-ready-preserva-a-cauda` (sobre
+  cópia de fixture em `tmp_path`: `ready → blocked --razao premissa → ready`, com a cauda intacta
+  no fim). *Concorrentes:* hoje o primeiro devolve a razão suja e o segundo perde a prosa.
+- **Verificação:**
+  1. ```
+     python -c "import sys;sys.path.insert(0,'.claude/tools');import backlog;m=backlog.STATUS_BULLET_RE.match('- **Status:** `blocked` · 2026-09-19 · premissa — cauda viva');print('razao-limpa' if m.group(2)=='premissa' and m.group(3)=='cauda viva' else 'razao-suja')"
+     ```
+     → **razao-limpa**. **Medido antes: razao-suja**. Saída deliberadamente **ASCII**, para não
+     depender da codificação do filho (`AE-33` item 2).
+  2. ```
+     python -m pytest tests/test_backlog.py -q
+     ```
+     → verde, com **dois testes a mais** que o total re-medido no despacho (`DM-23`).
+     **Medido antes: 41 passed** (2026-09-19 — relação, **re-medir no despacho**).
+  3. ```
+     python -c "import sys;sys.path.insert(0,'.claude/tools');import backlog;from pathlib import Path;L=[l for l in Path('docs/plans/P-0740-loop-de-modulos.md').read_text(encoding='utf-8').splitlines() if l.startswith('- **Status:**')];print(len(L),sum(1 for l in L if backlog.STATUS_BULLET_RE.match(l)))"
+     ```
+     → os **dois números iguais**, **inalterado**: a leitura dos bullets do plano não regride.
+     **Medido antes: 26 26**.
+- **Restrições desta tarefa:** a **escrita** não muda — `transacionar_status` já preserva a cauda
+  que o leitor lhe entrega, e o defeito é do **leitor**. `_TRANSICOES`, vocabulário de estados e
+  forma canônica ficam intocados. Nenhum card do plano é reescrito.
+- **Não fazer:** não tocar `docs/plans/P-0739-backlog-instrumento.md` (o plano está estacionado por
+  ato do dono, e esta matéria **não** é dele — `DM-42` (i)); não tocar `card_check.py`; não
+  commitar.
+- **Contingências:**
+  1. se `STATUS_BULLET_RE` não estiver na forma citada → parar e sinalizar `blocked` razão
+     `premissa`, citando a encontrada;
+  2. se a `Verificação` 3 deixar de sair com os dois números iguais → **parar**: a fronteira nova
+     estaria cortando bullet legítimo, e isso é decisão de consultor.
+- **Pronto quando:** o ramo canônico separa razão de cauda, o round-trip `blocked → ready` preserva
+  a prosa, os dois testes existem, e as três linhas de `Verificação` saem como escritas.
+
+### LM-T4d — Regularização de superfície da aposentadoria: a citação por **nome** [Sonnet · classe mecanica]
+
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação `escalar`. Fecha o `AE-37`: `proximo-passo` e `handover` com crase vão a **0** nas oito superfícies, e o `bootstrap-pantonic` deixa de mandar copiar skill inexistente. Pendência e dois achados roteados pelo `B1` como `AE-38`. RDO: `docs/RDO/P-0740-LM-T4d-regularizacao-de-superficie-da-aposentadoria-a-citacao-por-nome.md` — card novo do `ESC-21` (2026-09-19), residência única do `AE-37`.
+  **Recomendação de ordem (a ordem é do loop, Diretiva item 4): antes da `LM-T3b`**, por urgência
+  assimétrica medida — enquanto o `bootstrap-pantonic` mandar copiar skill que não existe, **todo
+  projeto novo do framework nasce quebrado**, e o kit se propaga a cinco derivados.
+- **Esforço:** low
+- **Objetivo:** um só — nenhuma superfície viva cita **pelo nome** uma skill que a `LM-T4`
+  aposentou; cada citação passa a apontar para quem herdou a responsabilidade.
+- **Depende de:** `LM-T4` (fechada — é a aposentadoria dela que deixou o resíduo). Nada depende
+  desta.
+- **Arquivos-alvo:**
+  - `.claude/skills/bootstrap-pantonic/SKILL.md`
+  - `.claude/skills/diario-de-obras/SKILL.md`
+  - `.claude/global/docs/GOVERNANCA_MEMORIAS.md`
+  - `GOVERNANCA.md` (**só** o item 17 da §7, e **só** o nome — ver `Restrições`)
+  - `README.md` (**só** a linha 17 da tabela *Os guardrails*, e **só** o nome)
+- **Fora do escopo, por decisão do `ESC-21` (`DM-44` (iii)):** `.claude/settings.json`, que traz
+  `Edit(/.claude/skills/handover/**)` e `Edit(/.claude/skills/proximo-passo/**)` (linhas 5 e 6,
+  medidas). É **superfície de permissão**, e regra de permissão não se altera por card: vai ao
+  relatório de encerramento como **ato do dono**, junto do `DM-27` que a criou. As duas regras são
+  **inócuas** — concedem `Edit` sobre diretório inexistente —, então a espera não custa nada.
+- **O resíduo, medido no `ESC-21`:** citações **por nome** sobreviveram fora dos `Arquivos-alvo` da
+  `LM-T4`, que varreu por **caminho** e estava certa no que media. Contagem com crase (a forma da
+  citação normativa): `` `proximo-passo` `` → **5**, `` `handover` `` → **3**. As duas que importam:
+  `.claude/skills/bootstrap-pantonic/SKILL.md:53` (manda **copiar** as duas para projeto novo) e
+  `.claude/settings.json:5-6` (regra de permissão órfã, fora de escopo). As demais são ponteiros
+  normativos em `diario-de-obras/SKILL.md` e um em `.claude/global/docs/GOVERNANCA_MEMORIAS.md:154`.
+- **O mapa de sucessão — fechado aqui, para que o executor não decida nada (`DU-5`, `TK-36`):**
+  - citação sobre **escolher a próxima tarefa, ler a diretiva, drenar inbox ou apurar a fila** →
+    **`scrum-master`** (a `DU-5` diz, com todas as letras, que a responsabilidade da `proximo-passo`
+    é **herdada pelo `scrum-master`**);
+  - citação sobre **transição entre tarefas, fechamento, passagem de bastão ou herança de contexto**
+    → **`passagem-de-bastao`**;
+  - **a palavra** *handover* em prosa (`handover ao dono`, `handover de execução`) **não é citação
+    de skill e não se toca** — é exatamente o eixo que o `AE-37` nomeia: nome ≠ palavra.
+- **Passos:**
+  1. `bootstrap-pantonic/SKILL.md:53`: na lista de skills a copiar, **remover** `proximo-passo` e
+     `handover` e **acrescentar** `passagem-de-bastao`.
+  2. `diario-de-obras/SKILL.md` e `.claude/global/docs/GOVERNANCA_MEMORIAS.md`: reapontar cada
+     citação com crase pelo **mapa de sucessão** acima. Citação que **não** couber em nenhuma das
+     duas regras do mapa → **parar** e sinalizar `blocked` razão `premissa`, citando a linha: o mapa
+     é fechado, e ampliá-lo é decisão de consultor.
+  3. `GOVERNANCA.md` §7 item 17 e a linha 17 da tabela *Os guardrails* do `README.md`: trocar
+     **apenas o nome da skill** citada, pelo mapa. Nada mais desses dois itens muda.
+- **Verificação:**
+  1. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/bootstrap-pantonic/SKILL.md -Pattern 'proximo-passo' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 1**.
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/bootstrap-pantonic/SKILL.md -Pattern 'passagem-de-bastao' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **≥ 1**. **Medido antes: 0**.
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/bootstrap-pantonic/SKILL.md,.claude/skills/diario-de-obras/SKILL.md,.claude/global/docs/GOVERNANCA_MEMORIAS.md,GOVERNANCA.md,README.md,docs/DOC_MAP.md,.claude/README.md,.claude/skills/scrum-master/SKILL.md -Pattern '`proximo-passo`' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 5**.
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/bootstrap-pantonic/SKILL.md,.claude/skills/diario-de-obras/SKILL.md,.claude/global/docs/GOVERNANCA_MEMORIAS.md,GOVERNANCA.md,README.md,docs/DOC_MAP.md,.claude/README.md,.claude/skills/scrum-master/SKILL.md -Pattern '`handover`' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 3**.
+  5. ```
+     pwsh -NoProfile -Command ".claude/checks/check-readme.ps1 | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0**, **inalterado** — guarda de regressão: trocar o **nome** citado na linha 17 não
+     pode mexer na contagem de guardrails que a `LM-T4` fechou em 19. **Medido antes: exit 0**
+     (o valor vai **sem ponto final** dentro do negrito: `exit 0.` seria lido como texto e não como
+     código de saída — defeito meu, pego pelo `card_check` no `ESC-21`).
+- **Restrições desta tarefa:** o **item 17** (`G-REPLAN`) tem **só o nome da skill** trocado — a
+  substância dele continua fechada (`DM-12`, e é a proibição que a `LM-T4` respeitou corretamente);
+  esta autorização é **estreita e explícita**, e é o `DM-33` (ii) aplicado de novo: o que colide com
+  proibição vira **passo autorizado**, nunca improviso do executor. A palavra *handover* em prosa
+  **não** se toca. `.claude/settings.json` **não** se toca (ato do dono). Nenhuma skill é criada,
+  apagada ou renomeada aqui.
+- **Não fazer:** não editar `.claude/settings.json`; não reabrir a substância do `G-REPLAN`; não
+  tocar `.claude/agents/` (`DM-17`); não regenerar projeção (a contagem de skills não muda); não
+  commitar.
+- **Contingências:**
+  1. citação que não couber no mapa de sucessão → `blocked` razão `premissa`, com a linha citada;
+  2. se a `Verificação` 5 sair diferente de 0 → seguir com a entrega e devolver
+     `contingência 2 acionada: check-readme exit <n>` — a contagem de guardrails é da `LM-T4`, não
+     desta tarefa.
+- **Pronto quando:** o `bootstrap-pantonic` copia `passagem-de-bastao` e não cita as aposentadas;
+  nenhuma das oito superfícies varridas cita `` `proximo-passo` `` ou `` `handover` ``; o item 17
+  cita a skill certa; e as cinco linhas de `Verificação` saem como escritas.
 
 ### LM-T6 — Piloto medido do loop e o veredito do dono [Opus + dono · classe investigacao]
 
-- **Status:** `ready`
+> **Veículo fixado em (B) por ato do dono** (`DM-45` (i), 2026-09-19), **card reescrito pelo
+> consultor** por ordem de fila do `scrum-master` no mesmo dia (`DM-47`). O `ESC-17` havia
+> declarado este card **não despachável** porque o `Entregável` mandava rodar o loop sobre a fila
+> de módulos do `P-0739` e o `Pronto quando` exigia aquele plano em `done` — duas coisas que o ato
+> do dono de 2026-09-19 tornou impossíveis: o `P-0739` **segue estacionado** e não retorna enquanto
+> o `P-0740` não encerrar. O impedimento está **resolvido**: o piloto muda de **veículo**, não de
+> propósito. O corpus passa a ser a execução deste plano sob o loop — já medida, já fechada —, e o
+> produto continua sendo o mesmo de sempre: **a medida do loop e o veredito do dono**. O texto do
+> `ESC-17` fica no `AE-` correspondente como registro; este card não o repete.
+
+- **Status:** `done` (2026-09-19) — **O MARCO FECHOU.** Veredito do dono **APROVADO**, e o gate
+  independente confirmou: **aprovado 100%**, bloqueante `nenhuma`, recomendação `escalar`,
+  pendência roteada pelo `B1` como `AE-46`. RDO:
+  `docs/RDO/P-0740-LM-T6-piloto-medido-do-loop-e-o-veredito-do-dono.md`; laudo consumido e apagado.
+  Fechou em duas etapas e um redespacho de re-derivação (`AE-43`), que provou que a série
+  duplicada **não** havia contaminado o total. Reescrita para o veículo (B) pelo consultor (`DM-47`). **Medida publicada em 2026-09-19; o veredito do dono veio no mesmo dia**
+  (`blocked` razão `dependencia`, Contingência 3 do card): 21 módulos em 4 janelas, total
+  **3.712,8k tk / 1.098 tool uses / 11.147,7 s**, com o confronto contra a baseline da `BKL-T4`
+  em **-37,9% tk, -26,3% tool uses, -57,9% duração**; as 9 linhas de `Verificação` batem
+  (1,1,1,1,1,1,1, exit 0, exit 0) e a divergência com o corpus está registrada pela Contingência
+  2. A linha `**Veredito do dono:**` fica **vazia** — nem o executor nem o loop a escrevem.
+  Despachável **sem** esperar tarefa nenhuma: o corpus está fechado e medido.
 - **Esforço:** high
-- **Objetivo:** a **rodada única** que encerra o `P-0739` com o `scrum-master` já corrigido, e que ao
-  mesmo tempo é a medida do loop. Absorve `AUT-T9` (conformidade) e `AUT-T10` (`README`,
-  `CHANGELOG`, veredito).
-- **Entregável:** um run do loop sobre a fila de **módulos** que a `LM-T5` deixou no `P-0739`,
-  conduzido até o plano fechar ou até uma regra de parada casar. Mais a série de consumo por
-  módulo, a regra que encerrou a janela e o número de módulos fechados **por janela** — a medida
-  que responde se o objetivo de 2026-08-22 foi atingido. Mais `README.md` e `CHANGELOG.md`
-  atualizados e o veredito do dono.
-- **Pronto quando:** o `P-0739` fecha `done` (16/16 + o que o reagrupamento tiver mudado no
-  total), **ou** o registro medido da regra que impediu, com o fato que a disparou — desfecho
-  negativo é desfecho. Em qualquer dos dois casos, a série de consumo por módulo é comparável com
-  a linha medida da `BKL-T4` (284,6k tk / 71 tool uses / 21 min por tarefa atômica), que é a
-  baseline contra a qual o ganho do módulo coeso se afere.
-- **Verificação:** tarefa sem artefato executável — a verificação é por efeito nos arquivos do run.
-  (1) Abrir `docs/plans/P-0739-backlog-instrumento.md` e ler o estado do plano no cabeçalho: `done`,
-  ou a regra de parada registrada em `## Achados da execução` com o fato que a disparou.
-  (2) Abrir `docs/telemetria.tsv` e confirmar uma linha por módulo fechado no run, com o consumo
-  medido — é a série que se compara à baseline de 284,6k tk da `BKL-T4`.
-  (3) `README.md` e `CHANGELOG.md` atualizados, e o veredito do dono registrado no plano.
-- **Depende de:** `LM-T1`, `LM-T2`, `LM-T3`, `LM-T4`, `LM-T5`.
+- **Objetivo:** a **medida** do loop de módulos e o **veredito do dono** sobre ela. Um tema só: o
+  piloto responde, com número medido, se o objetivo que o dono abriu em 2026-08-22 foi atingido —
+  se o loop fecha módulo sozinho e a que custo. Absorve `AUT-T9` (conformidade) e `AUT-T10`
+  (`README`, `CHANGELOG`, veredito).
+- **Corpus (fechado, e é o veículo (B)):** a execução do **próprio `P-0740`** sob o loop, não a de
+  outro plano. Duas janelas, as duas medidas: a de **2026-09-18/19** (11 tarefas fechadas, **7** em
+  `aprovado 100%`, **zero** reprovações, **zero** retentativas consumidas, 39 linhas de
+  `docs/telemetria.tsv`, **6.004,3k tk**, **900** tool uses, **3,06 h**, com o consumo decomposto em
+  execução `1.389,9k` (23%), revisão `812,2k` (14%) e consultor `3.802,2k` (63%) — `DM-45` (i)) e a
+  janela **corrente**, cuja fatia se re-mede no despacho pelo comando do *Método de sondagem*. O
+  `P-0739` **não** entra: segue estacionado por ato do dono, e nada nesta tarefa o desestaciona.
+- **Entregável:** uma seção nova no próprio plano, `docs/plans/P-0740-loop-de-modulos.md` — nível
+  2, numerada **10**, com o título *O piloto medido — a série do loop sobre o próprio plano* —,
+  contendo, nesta ordem: **(a)** a **série por módulo**, uma tabela com as colunas, nesta ordem,
+  `módulo`, `tokens_k`, `tool_uses`, `duracao_s` e `janela`, com **uma linha por módulo fechado** e
+  uma última linha de total, rotulada `total do piloto` em negrito; **(b)** a linha rotulada
+  `Decomposição por papel:` em negrito, com os três valores e os três percentuais — execução,
+  revisão e consultor —, que é o número que a janela anterior produziu e que nenhuma baseline
+  antiga tinha; **(c)** a linha rotulada `Contra a baseline de tarefa atômica:` em negrito,
+  confrontando o custo por módulo desta série com os `284,6k tk / 71 tool uses / 21 min` por tarefa
+  atômica da `BKL-T4` (§3 deste plano), dizendo em quanto o módulo coeso ficou acima ou abaixo;
+  **(d)** o **número de módulos fechados por janela** e a **regra que encerrou cada janela**, com o
+  fato que a disparou; **(e)** a linha rotulada `Veredito do dono:` em negrito, que o dono preenche
+  — é dele, e não de quem executa nem de quem orquestra. Mais uma linha em `CHANGELOG.md` sob
+  `## [Não lançado]`, com o literal fechado abaixo.
+- **Texto literal da linha do `CHANGELOG.md`** (transcrição, não autoria):
+  ```
+  - Piloto do loop de módulos medido sobre a execução do próprio `P-0740` (veículo (B), decisão do
+    dono de 2026-09-19): a série por módulo, a decomposição de consumo por papel e o confronto com
+    a baseline de tarefa atômica da `BKL-T4` ficam publicados na seção 10 do plano, com o veredito
+    do dono.
+  ```
+- **Método de sondagem:** (corpus fechado acima; nenhum dado bruto entra em contexto — só os
+  agregados abaixo)
+  1. **Re-medir a fatia da janela corrente** antes de compor a série, porque ela cresce enquanto o
+     plano roda (`DM-23`): `pwsh -NoProfile -Command "(Select-String -Path docs/telemetria.tsv
+     -Pattern 'PantonicApp\tLM-T' | Measure-Object).Count"` — **50** em 2026-09-19, **referência
+     histórica, não aceite**: o número que vale é o que o comando devolver no despacho.
+  2. **Fonte de cada número:** `docs/telemetria.tsv` para consumo, tool uses e duração; o bullet de
+     `- **Status:**` de cada card para veredito e percentual; `docs/RDO/` para a regra de parada de
+     cada janela. **Nada se estima e nada se lembra** — número sem linha de origem não entra.
+  3. **Teto do agregado:** a seção inteira cabe em **60 linhas**. Se a série não couber, corta-se
+     detalhe por módulo, nunca a decomposição por papel nem o confronto com a baseline — são eles
+     que respondem a pergunta do dono.
+- **Restrições desta tarefa:** a relação *uma linha de tabela por módulo fechado* é **declarada,
+  não prometida como teste** (`DM-21` (ii)(c)): o total de módulos muda a cada despacho e nenhuma
+  constante o aferiria sem envelhecer (`DM-23`). Quem confere a cobertura linha a linha é a
+  revisão, contra a saída do comando do *Método de sondagem* 1. O `README.md` entra como **guarda
+  de regressão, não como edição**: nada nele muda aqui, e as verificações 8 e 9 provam que ele
+  segue coerente com o disco.
+- **Não fazer:** não desestacionar o `P-0739` nem tocar `docs/plans/P-0739-backlog-instrumento.md`
+  — o estacionamento é ato do dono e esta tarefa não o desfaz; não rodar o loop sobre plano nenhum
+  para "gerar corpus" (o corpus já existe e está medido); não escrever o veredito no lugar do dono;
+  não estimar número que a telemetria não tenha; não editar `README.md`; não commitar.
+- **Contingências:**
+  1. se algum módulo fechado **não** tiver linha em `docs/telemetria.tsv` → **seguir com a série**,
+     marcando a célula com `sem linha de telemetria` e registrando o módulo na seção: buraco de
+     instrumento é fato do piloto, não impedimento dele;
+  2. se a soma da série divergir do total declarado no corpus acima → **seguir com o medido agora**
+     e registrar as duas somas lado a lado: quem manda é a medida do despacho, e a divergência é
+     insumo, não erro a esconder;
+  3. se o dono não estiver disponível para o veredito no mesmo despacho → parar e sinalizar
+     `blocked` razão `dependencia`, com a seção **já publicada** e só a linha do veredito vazia: a
+     medida fecha sem ele, o veredito não.
+- **Verificação:** (forma normativa do bloco `Verificação`, publicada em
+  `docs/RUBRICA_DE_REVISAO.md` pela `LM-T5`. Todo valor abaixo foi rodado no ato da reescrita,
+  2026-09-19. As linhas 1 a 6 usam **regex ancorada em `^`** — deliberada e rodada (`DM-24` (ii)):
+  a âncora faz o padrão casar **só** a linha real da seção entregue, e não a própria linha de
+  comando, que vive neste mesmo plano indentada; sem a âncora, todo padrão contaria a si mesmo. As
+  linhas 8 e 9 são **guarda de regressão, não discriminante**, e estão
+  declaradas como tal.)
+  1. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^## 10\. O piloto medido' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A seção existe, no nível e com o título prescritos.)
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^\| módulo \| tokens_k \| tool_uses \| duracao_s \| janela \|' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A tabela da série existe, com as cinco colunas na ordem
+     prescrita.)
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^\| \*\*total do piloto\*\* \|' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A tabela fecha em total — sem ele a série é lista, não medida.)
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^\*\*Decomposição por papel:\*\*' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (O número novo da janela anterior — execução, revisão,
+     consultor — está publicado.)
+  5. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^\*\*Contra a baseline de tarefa atômica:\*\*' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (O confronto com os `284,6k tk / 71 tool uses / 21 min` da
+     `BKL-T4` está publicado — é ele que responde se o módulo coeso ganhou ou perdeu.)
+  6. ```
+     pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^\*\*Veredito do dono:\*\*' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A linha do veredito existe. O **conteúdo** dela é do dono, e a
+     `Contingência` 3 diz o que fazer se ele não estiver na janela.)
+  7. ```
+     pwsh -NoProfile -Command "(Select-String -Path CHANGELOG.md -Pattern 'Piloto do loop de módulos medido sobre a execução do próprio' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A linha do `CHANGELOG.md`, no literal transcrito acima.)
+  8. ```
+     pwsh -NoProfile -Command ".claude/checks/check-readme.ps1 | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0**. **Medido antes: exit 0** (2026-09-19). Regressão, não discriminante: nada de
+     `README.md` muda nesta tarefa, e esta linha existe para provar que continua assim.
+  9. ```
+     pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode check-drift | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0**. **Medido antes: exit 0** (2026-09-19). Regressão, não discriminante: a tarefa
+     não toca definição de agente nem skill, então a projeção não se move.
+- **Depende de:** `LM-T1`, `LM-T2`, `LM-T3`, `LM-T4`, `LM-T5` — **todas fechadas**. Nenhuma tarefa
+  aberta a bloqueia: o corpus do veículo (B) está fechado e medido, e módulo que fechar depois
+  entra na série pela re-medida do *Método de sondagem* 1, no despacho. O `P-0739` **não** é
+  dependência desta tarefa e não volta a ser.
+- **Pronto quando:** (o fato que tem de existir ao final, `classe investigacao`) existe, no plano,
+  a seção **10** com a série por módulo somada em total, a decomposição de consumo por papel, o
+  confronto explícito com a baseline de tarefa atômica da `BKL-T4` e o número de módulos fechados
+  por janela com a regra que encerrou cada uma — **todos com a linha de origem** —, mais a linha do
+  `CHANGELOG.md`; e a linha do **veredito do dono** está preenchida por ele. Desfecho negativo é
+  desfecho: se a medida disser que o loop **não** atingiu o objetivo de 2026-08-22, isso é o
+  resultado do piloto e se publica como tal.
 
 ### LM-T7 — As duas projeções canônicas do kit [Sonnet · classe mecanica]
 
@@ -2105,77 +4002,297 @@ executa:
   passo 2 (exit 1, `declara 8 vs 9`) está registrada na linha de retorno; `README.md:760` declara
   `nove agentes`; e as cinco linhas de `Verificação` saem como escritas.
 
-### LM-T8 — A concessão de `Bash` ao `pantonic-planner` e a publicação na definição dele [Opus + dono · classe mecanica]
+### LM-T8 — A concessão de `Bash` ao `pantonic-planner` e a publicação na definição dele [Sonnet · classe mecanica]
 
-- **Status:** `ready` — **permissão liberada pelo dono em 2026-09-19** (`DM-27`). A razão do
-  `blocked` era **ato do dono**, não premissa de plano, e o ato foi feito: `.claude/agents/` deixa
-  de ser superfície vedada ao loop. O conteúdo já estava fechado e transcrito abaixo, e não se
-  reabre. O item (a) é despachável desde já; o item (b) segue exigindo a `LM-T4` fechada.
+- **Status:** `done` (2026-09-19) — **aprovado 100%**, bloqueante `nenhuma`, recomendação
+  `escalar`, pendência roteada pelo `B1` como `AE-45`. Os dez literais entraram na primeira passada
+  e as **doze** linhas de `Verificação` saíram nos valores declarados (`1,1,0,0,2,0,1,5,1,1,
+  exit 0, exit 0`), com diff de 70 inserções / 11 remoções e line endings intactos. A entrega saiu
+  pela **orquestração**, por ato do dono, depois de três recusas ao executor — circunstância
+  registrada no `AE-44`, exceção nomeada e **não-precedente**; a revisão foi independente. Dois
+  achados de processo do laudo, ambos com rota para a fila pós-marco: a `description` do
+  frontmatter segue falsa sob a concessão (congelada pelo `Não fazer` do card, e movê-la reabre
+  `check-drift` — fecha junto com a `LM-T7`), e a ausência de rota fechada para tarefa que edite
+  `.claude/agents/**`. RDO:
+  `docs/RDO/P-0740-LM-T8-a-concessao-de-bash-ao-pantonic-planner-e-a-publicacao-na-de.md`; laudo
+  consumido e apagado. Reparada antes disso pelo `ESC-23` (`DM-46`), depois do `blocked`
+  `premissa` do `AE-41`. O item (b) ganhou **local** e **literal** nos quatro pontos do arquivo; a
+  `Verificação` passou a discriminar bloco a bloco, com os dois valores rodados; e o item (a)
+  absorveu as **três** frases do mesmo arquivo que a concessão de `Bash` torna falsas (`DM-46`
+  (iii)). Com a `LM-T4` fechada, os três itens são executáveis no **mesmo** despacho — acabou o
+  defeito de *"dois estados de executabilidade"* que a `### 8.2` da rubrica marcou neste card.
+  Modelo rebaixado de `Opus + dono` para `Sonnet` no mesmo ato: o ato do dono foi feito (`DM-27`)
+  e o que sobrou é **transcrição**.
 - **Esforço:** low
 - **Objetivo:** materializar a decisão do dono (`DM-16`) na única superfície onde ela mora — o
-  arquivo de definição do `pantonic-planner` — e, depois da `LM-T4`, publicar ali a gramática que a
-  doutrina tiver fixado. Um tema só: **a definição de agente**.
-- **Depende de:** nada, para o item (a) — a permissão que era a dependência foi concedida em
-  2026-09-19 (`DM-27`). O item (b) depende da `LM-T4` fechada.
+  arquivo de definição do `pantonic-planner` — e publicar ali a doutrina que a `LM-T4` fixou. Um
+  tema só: **a definição de agente**.
+- **Depende de:** nada. A permissão foi concedida pelo dono em 2026-09-19 (`DM-27`) e a `LM-T4`
+  fechou em 2026-09-19.
 - **Arquivos-alvo:**
   - `.claude/agents/pantonic-planner.md`
   - `CHANGELOG.md`
-- **Produto do módulo:** (a) o frontmatter do `pantonic-planner` com `Bash` e o fato estável
-  correspondente no corpo; (b) **depois da `LM-T4`**, a gramática de cabeçalho e a régua de tema
-  publicadas nos dois pontos do mesmo arquivo que as enunciam hoje na forma antiga — o bullet de
-  `## Fatos estáveis (não redescobrir)` que transcreve `### <ID> — <título> [<modelo> · classe
-  <classe>]` e o esqueleto de `## Anatomia do card`, **mais** o critério de autoria da `DM-18`
-  (item enumerado e a frase que o conta fecham no mesmo card; verificação que não discrimina o
-  invariante não é aceite), o da `DM-21` (exigência estrutural vira caso discriminante, inspeção
-  mecânica ou `Restrição` — nunca teste comportamental), o da `DM-22` (guarda de borda com
-  residência única; verbo novo herda a borda do instrumento), o da `DM-23` (piso de regressão é
-  relação re-medida no despacho, nunca constante) e o da `DM-24` (o literal do comando é o que
-  foi colado e rodado; os dois valores publicados; bloco cercado e `-SimpleMatch`), na fase 4 do
-  protocolo; (c) uma linha em `CHANGELOG.md` sob
+- **Produto do módulo:** (a) o frontmatter do planner com `Bash`, o fato estável correspondente no
+  corpo e as **três** frases do mesmo arquivo que a concessão torna falsas, reescritas no mesmo ato
+  (`DM-18` (i), `DM-46` (iii)); (b) a doutrina da `LM-T4` publicada em **quatro** pontos nomeados
+  do mesmo arquivo — gramática de cabeçalho (dois pontos), régua de tema (item 5 da Fase 4) e os
+  cinco critérios de autoria (item 12, novo, da Fase 4); (c) uma linha em `CHANGELOG.md` sob
   `## [Não lançado]`.
-- **Textos literais do item (a)** (transcrição, não autoria — é o que torna o ato do dono barato):
-  1. Linha 5 de `.claude/agents/pantonic-planner.md` (medida na `RP-5` e re-derivada na `ESC-1`:
-     `tools: Read, Glob, Grep, Write, Edit`) passa a ser:
+- **Passos:** aplicar, na ordem, as dez substituições literais abaixo. Cada uma traz o trecho **de**
+  (texto exato que está no arquivo hoje, conferido no `ESC-23`, ocorrência **única**) e o trecho
+  **para**. Nenhuma exige escolher local, redigir frase ou decidir coisa alguma.
+- **Textos literais:** (transcrição, não autoria)
+
+  **1. Frontmatter, linha 5 de `.claude/agents/pantonic-planner.md`.** De:
+  ```
+  tools: Read, Glob, Grep, Write, Edit
+  ```
+  Para:
+  ```
+  tools: Read, Glob, Grep, Write, Edit, Bash
+  ```
+
+  **2. Parágrafo de abertura do corpo** (a concessão torna falsa a frase "não roda comando e não
+  mede"). De:
+  ```
+  Você roda no modelo mais caro e o seu contexto é o ativo mais escasso da sessão. Você **não lê
+  codebase para se situar, não roda comando e não mede**: fatos entram como dossiê do
+  `pantonic-scout` ou como resultado de tarefa de investigação executada por outro papel. Sua
+  única matéria-prima é decisão; seu único produto é plano fechado.
+  ```
+  Para:
+  ```
+  Você roda no modelo mais caro e o seu contexto é o ativo mais escasso da sessão. Você **não lê
+  codebase para se situar e não sonda**: fatos entram como dossiê do
+  `pantonic-scout` ou como resultado de tarefa de investigação executada por outro papel. Sua
+  única matéria-prima é decisão; seu único produto é plano fechado. Você **tem `Bash`**, e ele
+  serve a **um** uso: rodar o comando de aceite que você mesmo vai publicar num card, antes de
+  publicá-lo — não é licença para levantamento próprio.
+  ```
+
+  **3. Último bullet da lista de `## Fatos estáveis (não redescobrir)`** — acrescentar logo depois
+  do bullet `- Plano novo: …`, que hoje encerra a lista. De:
+  ```
+  - Plano novo: `docs/plans/P-NNNN-<slug>.md` + uma linha em `docs/plans/_INBOX.md`; `NNNN` = id
+    declarado no cabeçalho do inbox; data de origem no cabeçalho do plano, nunca no nome.
+  ```
+  Para:
+  ```
+  - Plano novo: `docs/plans/P-NNNN-<slug>.md` + uma linha em `docs/plans/_INBOX.md`; `NNNN` = id
+    declarado no cabeçalho do inbox; data de origem no cabeçalho do plano, nunca no nome.
+  - Ferramenta de execução: você **tem** `Bash` (decisão do dono, 2026-09-18 — planner e
+    executor acessam a mesma ferramenta de validação). Comando de aceite que você escreve num
+    card **se roda antes de publicar**, e o literal esperado é a saída **medida**, nunca a
+    deduzida da ferramenta: `Verificação` publicada sem execução é defeito de autoria.
+  ```
+
+  **4. Bullet da gramática de cabeçalho, em `## Fatos estáveis (não redescobrir)`** — o primeiro
+  dos dois pontos que enunciam a forma aposentada. De:
+  ```
+  - Cabeçalho de tarefa: `### <ID> — <título> [<modelo> · classe <classe>]`, com `<modelo>` ∈
+    `Opus|Sonnet|Haiku` e `<classe>` ∈ `mecanica|implementacao|comportamental|investigacao|redacao`
+    (gramática lida por `.claude/tools/rdo.py` e `review_evidence.py`). Nenhum teto se escreve no
+    card: a régua numérica é a tabela de classes de `GOVERNANCA.md` §3, interna a este papel.
+  ```
+  Para:
+  ```
+  - Cabeçalho de tarefa: `### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe
+    <classe>[ · teto <n>]]`, com `<modelo>` ∈ `Opus|Sonnet|Haiku`, `<esforço>` ∈
+    `low|medium|high|xhigh|max` e `<classe>` ∈
+    `mecanica|implementacao|comportamental|investigacao|redacao`. O campo `esforço` é **opcional**
+    e fica **entre** modelo e classe; ` + dono` marca aceite do dono; ` · teto <n>` é sufixo
+    **legado**, tolerado e ignorado — não se escreve em card novo. Gramática lida por
+    `.claude/tools/rdo.py`, `.claude/tools/review_evidence.py` e `.claude/tools/backlog.py`;
+    residência canônica em `GOVERNANCA.md` §3 (*Gramática do card*). Nenhum teto se escreve no
+    card: a régua numérica é a tabela de classes de `GOVERNANCA.md` §3, interna a este papel.
+  ```
+
+  **5. Linha do esqueleto de `## Anatomia do card`** — o segundo ponto. O trecho `de` inclui a
+  linha seguinte porque é ela que torna a ocorrência única no arquivo. De:
+  ```
+  ### <ID> — <título> [<modelo> · classe <classe>]
+  - **Objetivo:**
+  ```
+  Para:
+  ```
+  ### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe <classe>]
+  - **Objetivo:**
+  ```
+  O `[ · teto <n>]` **não** entra no esqueleto: é forma legada, tolerada na leitura e proibida na
+  escrita — quem autora card novo não escreve teto (`GOVERNANCA.md` §3).
+
+  **6. Item 5 (*Dimensionamento*) da Fase 4** — a régua de tema substitui a régua de volume. De:
+  ```
+     tabela **antes** de registrar. Card que passa de ~80 linhas ou muda mais de um contrato é sinal
+     de tarefa grande — parta por ramo, nunca por volume arbitrário.
+  ```
+  Para:
+  ```
+     tabela **antes** de registrar. Card que passa de ~80 linhas ou muda mais de um contrato é sinal
+     de tarefa grande. **A régua de partição é o tema, nunca o volume** (`GOVERNANCA.md` §3, *A
+     unidade de trabalho é o módulo coeso*): o card cobre uma **disciplina fechada** — um tema, com
+     os seus verbos, os seus testes e a sua verificação ponta a ponta no mesmo despacho —, e nunca
+     um fragmento do tema partido para caber num contexto. Divide-se quando o card cruza **dois
+     assuntos**, nunca quando cruza muitas regiões do mesmo assunto: o teto de regiões editadas do
+     gate de delegação não é limite de volume, é limite de **tema**, e a contagem de regiões é
+     medida informativa de quem dimensiona. O que não é do tema continua fora — transversal,
+     matéria alheia e "aproveitando que estou aqui" seguem proibidos (`G-EXECREADY`, §7 item 12).
+  ```
+
+  **7. Abertura do item 11 da Fase 4** (a concessão torna falsa a frase "Você não roda comando").
+  De:
+  ```
+     Você não roda comando — logo, todo literal que uma linha de `Verificação` afirma ("imprime X",
+  ```
+  Para:
+  ```
+     Você **roda** o comando — logo, todo literal que uma linha de `Verificação` afirma ("imprime X",
+  ```
+
+  **8. Bullet de `## O que você NUNCA faz`** (terceira frase que a concessão torna falsa). De:
+  ```
+  - Ler arquivos inteiros para "se situar", rodar comando, medir ou sondar — delegue à coleta ou
+    autore a investigação como tarefa.
+  ```
+  Para:
+  ```
+  - Ler arquivos inteiros para "se situar", sondar codebase ou medir corpus — delegue à coleta ou
+    autore a investigação como tarefa. Rodar comando é exceção nomeada e única: o comando de
+    aceite que você publica num card.
+  ```
+
+  **9. Item 12 da Fase 4, novo** — os cinco critérios de autoria. Inserir **imediatamente antes**
+  da linha `### Fase 5 — Registro e parada`, deixando uma linha em branco entre o item 12 e esse
+  cabeçalho. Texto a inserir:
+  ```
+  12. **Cinco critérios de autoria, fechados em execução medida** (cada um com o caso que o mediu;
+     a residência acessível é `docs/RUBRICA_DE_REVISAO.md`, critérios (viii)..(xi) — aqui eles valem
+     como dever de autoria, não como régua de revisão):
+     (i) **Item enumerado e a frase que o conta fecham no mesmo card** (`DM-18`) — card que
+     acrescenta, remove ou renomeia item de lista ou de tabela enumerada fecha, no mesmo ato, toda
+     afirmação da **mesma seção** que conta ou qualifica o conjunto; e se o instrumento que julga a
+     seção não discrimina essa afirmação, a tarefa **estende o instrumento**, senão o verde do
+     guarda é falso conforto (2026-09-18, `AE-12`: `check-readme.ps1` anunciou `9 agente(s)`, saiu
+     exit 0, e a prosa duas linhas acima dizia "oito").
+     (ii) **Exigência estrutural não vira teste comportamental** (`DM-21`) — "usa a função X", "não
+     reimplementa", "importada, não copiada" sai por uma de três, nesta ordem: o **caso
+     discriminante** em que a implementação certa e a reimplementação plausível divergem; **inspeção
+     mecânica** na `Verificação` (`Select-String`/contagem com literal e valor esperado, nunca
+     `pytest`); ou `Restrição` declarada, sem prometer teste (2026-09-18, `AE-16`).
+     (iii) **Guarda de borda tem residência única** (`DM-22`) — verbo novo em instrumento existente
+     herda a borda do instrumento: uma função de guarda chamada por **todos** os ramos, nunca
+     duplicada nem embutida no caminho de um só. Card que acrescenta verbo declara na `Verificação`
+     o **mesmo** argumento inválido rodado nos **dois** ramos, e a afirmação de aceite é sobre o
+     **stderr** — o exit code não discrimina (2026-09-19, `AE-17`).
+     (iv) **Piso de regressão é relação, nunca constante** (`DM-23`) — nenhuma linha de
+     `Verificação` carrega total de suíte como número de aceite: o piso é o total **re-medido no
+     despacho**, a entrega soma os `<N>` testes novos e **não reduz** esse total; o número fica no
+     card como **referência histórica datada**, não como aceite. Vale igual para baseline por
+     arquivo de teste (2026-09-19, `AE-18`: o piso escrito nos cards envelheceu cinco vezes em sete
+     despachos da mesma janela).
+     (v) **O literal do comando é o que foi colado e rodado** (`DM-24`) — comando cujo literal
+     contenha **crase**, **asterisco** ou **barra invertida** publica-se em **bloco cercado**, nunca
+     em code span; todo `Select-String` de aceite leva `-SimpleMatch`, salvo regex deliberado e
+     rodado; e toda linha de `Verificação` por efeito em arquivo publica **os dois** valores
+     rodados, antes e depois — padrão que devolve o **mesmo** valor nos dois mundos é inválido por
+     construção (2026-09-19, `AE-19`).
+  ```
+
+  **10. `CHANGELOG.md`, sob `## [Não lançado]`** — primeiro bullet do bloco. Texto a inserir:
+  ```
+  - `pantonic-planner` ganha `Bash` no toolset (decisão do dono, 2026-09-18): planner e executor
+    passam a acessar a mesma ferramenta de validação, e o dever "comando de aceite não se deduz,
+    se roda" deixa de ser inexequível pelo papel a que se dirige.
+  ```
+
+- **Verificação:** (forma normativa do bloco `Verificação`, publicada em
+  `docs/RUBRICA_DE_REVISAO.md` pela `LM-T5`. **Todo** valor abaixo foi rodado no `ESC-23`, nos
+  **dois** mundos — árvore atual e árvore com os dez literais aplicados, restaurada no mesmo ato —
+  `DM-12`, `DM-24` (iii). As linhas 11 e 12 são **guarda de regressão, não discriminante**, e estão
+  declaradas como tal.)
+  1. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'tools: Read, Glob, Grep, Write, Edit, Bash' -SimpleMatch | Measure-Object).Count"
      ```
-     tools: Read, Glob, Grep, Write, Edit, Bash
+     → **1**. **Medido antes: 0**. (Literal 1: o frontmatter. O padrão é a linha **inteira** com
+     `Bash`, e não `^tools:` — o `^tools:` casa nos dois mundos e não discrimina mundo nenhum.)
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern '- Ferramenta de execução: você **tem**' -SimpleMatch | Measure-Object).Count"
      ```
-  2. Último bullet da lista da seção `## Fatos estáveis (não redescobrir)`:
+     → **1**. **Medido antes: 0**. (Literal 3: o fato estável do `Bash` no corpo.)
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'não roda comando e não mede','Você não roda comando —','rodar comando, medir ou sondar' -SimpleMatch | Measure-Object).Count"
      ```
-     - Ferramenta de execução: você **tem** `Bash` (decisão do dono, 2026-09-18 — planner e
-       executor acessam a mesma ferramenta de validação). Comando de aceite que você escreve num
-       card **se roda antes de publicar**, e o literal esperado é a saída **medida**, nunca a
-       deduzida da ferramenta: `Verificação` publicada sem execução é defeito de autoria.
+     → **0**. **Medido antes: 3**. (Literais 2, 7 e 8: as três frases que a concessão torna falsas
+     — um padrão por frase, e o zero só sai com as três fechadas.)
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern '### <ID> — <título> [<modelo> · classe <classe>]' -SimpleMatch | Measure-Object).Count"
      ```
-  3. Em `CHANGELOG.md`, sob `## [Não lançado]`:
+     → **0**. **Medido antes: 2**. (Literais 4 e 5: a gramática aposentada sai dos dois pontos.)
+  5. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern '[<modelo>[ + dono][ · esforço <esforço>] · classe' -SimpleMatch | Measure-Object).Count"
      ```
-     - `pantonic-planner` ganha `Bash` no toolset (decisão do dono, 2026-09-18): planner e executor
-       passam a acessar a mesma ferramenta de validação, e o dever "comando de aceite não se deduz,
-       se roda" deixa de ser inexequível pelo papel a que se dirige.
+     → **2**. **Medido antes: 0**. (Literais 4 e 5: a gramática vigente entra nos dois pontos. Sai
+     **2**, e não 1, porque os dois pontos são independentes — a linha 4 sozinha não distingue
+     "removeu os dois" de "removeu um e não pôs nada".)
+  6. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'parta por ramo, nunca por volume arbitrário' -SimpleMatch | Measure-Object).Count"
      ```
-- **Verificação:** (a linha 1 é a única que muda de valor com esta tarefa; as duas outras já foram
-  medidas e são regressão)
-  1. `pwsh -NoProfile -Command "Select-String -Path .claude/agents/pantonic-planner.md -Pattern '^tools:'"`
-     → uma linha, `tools: Read, Glob, Grep, Write, Edit, Bash`. **Antes (medido na `RP-5` e
-     confirmado no despacho bloqueado da `ESC-1`):**
-     `.claude/agents/pantonic-planner.md:5:tools: Read, Glob, Grep, Write, Edit`.
-  2. `pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode validate | Out-Null; exit $LASTEXITCODE"`
-     → exit 0 (medido antes: exit 0 — a edição de frontmatter não pode derrubá-lo).
-  3. `pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode check-drift | Out-Null; exit $LASTEXITCODE"`
-     → exit 0. Pressupõe a `LM-T7` fechada; a `description` do planner **não** muda aqui, então o
-     drift não reabre.
+     → **0**. **Medido antes: 1**. (Literal 6: a régua de volume sai do item 5 da Fase 4, o
+     *Dimensionamento*.)
+  7. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'não é limite de volume, é limite de' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (Literal 6: a régua de tema entra no lugar dela.)
+  8. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'DM-18','DM-21','DM-22','DM-23','DM-24' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **5**. **Medido antes: 0**. (Literal 9: um padrão por critério; o arquivo não cita decisão
+     de plano hoje, então o 5 só sai com os cinco publicados.)
+  9. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern '12. **Cinco critérios de autoria' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (Literal 9: os cinco critérios entram como **item 12 da Fase 4**
+     — numerados na sequência do item 11, não como seção nova.)
+  10. ```
+     pwsh -NoProfile -Command "(Select-String -Path CHANGELOG.md -Pattern ' no toolset (decisão do dono, 2026-09-18): planner e executor' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (Literal 10, a linha do `CHANGELOG.md`.)
+  11. ```
+     pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode validate | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0**. **Medido antes: exit 0** (2026-09-19, medido no despacho do `ESC-23`).
+     Regressão, não discriminante: conferido no `ESC-23` que `kit_check.ps1:165` aceita `tools:`
+     como lista separada por vírgula, logo o `Bash` novo no frontmatter não pode derrubá-lo.
+  12. ```
+     pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode check-drift | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0**. **Medido antes: exit 0** (2026-09-19, medido no despacho do `ESC-23`).
+     Regressão, não discriminante: a `description` do planner **não** muda nesta tarefa, então a
+     projeção `.claude/README.md` não se move e o drift não reabre.
+- **Restrições desta tarefa:** tudo é **transcrição literal** — cada trecho `para` está escrito
+  acima por inteiro e não se reescreve, não se resume e não se "melhora" na passagem. O card passa
+  de ~80 linhas por **volume de literal**, e volume não parte card: a régua de partição é o
+  **tema**, e o tema é um só — a definição do `pantonic-planner` (`DM-2`, `DM-4`).
 - **Não fazer:** não alterar `description` nem `model` de agente nenhum; não tocar
   `.claude/agents/pantonic-executor.md` nem `.claude/agents/pantonic-reviewer.md` (publicados por
   `DM-8`) nem `.claude/agents/pantonic-consultant.md` (figura provisória do dono); não regenerar
-  `.claude/README.md` aqui (é a `LM-T7`, e a `description` intocada não o afeta).
-- **Pronto quando:** o `tools:` do planner declara `Bash`; o fato estável do texto 2 está no corpo;
-  o `CHANGELOG.md` traz a linha; e — quando o item (b) for executável — a definição do planner não
-  enuncia mais a gramática de cabeçalho na forma que a `LM-T4` aposentou.
-- **Enquanto o item (a) desta tarefa não fechar** vale a regra de intervalo da `DM-17` (iv) — o
-  intervalo encurtou com a `DM-27`, mas não acabou: a concessão é de permissão ao loop, e o
-  `tools:` do planner só declara `Bash` depois que o item (a) rodar. Até lá: o dever da
-  `DM-12` é de quem publica **com** ferramenta — `pantonic-consultant` ou `scrum-master`, que roda
-  o comando no despacho e anexa a saída medida. Card autorado por planner com `Verificação` não
-  medida não se despacha como está.
+  `.claude/README.md` aqui (é a `LM-T7`, e a `description` intocada não o afeta); não mexer em
+  `GOVERNANCA.md` nem em `docs/RUBRICA_DE_REVISAO.md` — eles são as **residências canônicas** do
+  que este card transcreve, e já estão publicados; não tocar `.claude/settings.json`; não commitar.
+- **Contingências:**
+  1. se algum trecho `de:` não for encontrado **literalmente**, ou ocorrer mais de uma vez no
+     arquivo → parar e sinalizar `blocked` razão `premissa`, citando o trecho e a contagem medida:
+     o arquivo mudou entre o `ESC-23` e o despacho, e quem reconcilia o literal é o consultor;
+  2. se a `Verificação` 11 sair ≠ 0 → parar e sinalizar `blocked` razão `premissa`, colando a
+     mensagem do instrumento;
+  3. se a `Verificação` 12 sair ≠ 0 → **seguir com a entrega** e reportar a saída no retorno: a
+     projeção não é produto desta tarefa e o drift tem dono próprio (`LM-T7`).
+- **Pronto quando:** as doze linhas de `Verificação` saem nos valores declarados — isto é: o
+  `tools:` do planner declara `Bash`; o fato estável do `Bash` está no corpo; as três frases que a
+  concessão tornava falsas sumiram do arquivo; a gramática aposentada não está em nenhum dos dois
+  pontos e a vigente está nos dois; a régua de tema substituiu a de volume no item 5 da Fase 4; os
+  cinco critérios estão no item 12 da Fase 4; a linha está no `CHANGELOG.md`; e o `kit_check` segue
+  em exit 0 nos dois modos.
 
 ### LM-T9 — `consultant-spec`: a figura ad-hoc vira especificação [Opus · classe redacao]
 
@@ -2201,8 +4318,25 @@ executa:
   `G-NOASK`); (c) **fronteira com o `pantonic-planner`** — ele autorou cards novos nesta janela, e
   o documento tem de dizer se isso é da figura ou empréstimo; (d) **instrumento** — por que nasce
   com `Bash` (`DM-12`, `DM-24`); (e) **custo e teto** — 68,5% da janela num papel só é o número
-  que a spec precisa endereçar, com a regra de quando **não** acionar; (f) **encerramento** — como
-  a figura termina (decisão de janela × poluição, Regra 2).
+  que a spec precisa endereçar, com a regra de quando **não** acionar. **Segunda medida, da janela
+  de 2026-09-19:** **63%** (`3.802,2k` de `6.004,3k`), em **14** acionamentos — a spec tem **duas**
+  janelas medidas e trata o número como **série**, não como constante (`DM-23`, `AE-21`); (f) **encerramento** — como
+  a figura termina (decisão de janela × poluição, Regra 2);
+  **(g) e (h), acrescentados por ato do dono em 2026-09-19 (`DM-45` (iii) e (iv)):**
+  **(g) fim de vida por limite, e a sucessão** — o consultor **promove handover ao perceber que se
+  aproxima do próprio limite** (estado do cenário, escalonamentos abertos, o que estava em curso),
+  e o `scrum-master` **descomissiona a instância e provisiona outra**, repassando esse handover. A
+  spec fixa **a forma de comunicação**, que nesta janela ficou **ad-hoc** por `DM-28` e por isso
+  **não é fonte normativa** até ser projetada no plano próprio. Lastro medido: o `ESC-22`, em que a
+  queda por *session limit* levou junto o contexto de 14 passagens e deixou o `AE-38` sem alocação
+  e a `LM-T3b` sem varredura — o loop seguiu por medida própria no gate, mas o cenário acumulado
+  **morreu**;
+  **(h) estatística do próprio acionamento** — o consultor registra, a cada acionamento, **o que o
+  motivou, que classe de impedimento era e o que ficou inconclusivo**, produzindo o **panorama dos
+  pontos inconclusivos**. A spec diz **o que se coleta, onde mora e quem lê**. Destino declarado:
+  **insumo da spec de robustez**. Lastro medido: 14 acionamentos e **63%** do consumo desta janela
+  (`3.802,2k` de `6.004,3k`) sem **nenhum** registro estruturado de causa — `docs/telemetria.tsv`
+  mede **custo**, não **motivo**; sem o panorama, a spec de robustez seria autorada sobre impressão.
 - **Restrições desta tarefa (copiadas inline):**
   - **Descrever o medido, não o desejado.** Toda afirmação da spec sai de um `I-<n>` de `## 9` ou
     de um `AE-<n>`/`ESC-<n>` deste plano, citado pelo identificador. Afirmação sem lastro medido
@@ -2218,7 +4352,7 @@ executa:
 - **Não fazer:** não escrever a spec do `pantonic-planner` nem redesenhar o `scrum-master`; não
   absorver `TK-38`, `TK-54b` nem a matéria de confiabilidade (`DM-30`); não antecipar esta tarefa
   para antes da `LM-T6`.
-- **Pronto quando:** `docs/consultant-spec.md` existe, cobre as seis perguntas (a)..(f), cada uma
+- **Pronto quando:** `docs/consultant-spec.md` existe, cobre as **oito** perguntas (a)..(h) — contagem fechada no mesmo ato que acrescentou (g) e (h), `DM-18` (i) —, cada uma
   com pelo menos um identificador de lastro, está indexado no `docs/DOC_MAP.md` e tem linha no
   `CHANGELOG.md`.
 - **Verificação:** (os três comandos foram extraídos deste card e rodados verbatim na autoria,
@@ -2242,6 +4376,298 @@ executa:
   insumos, porque o identificador vem entre crases. Mesma classe do `AE-19`, pega antes do
   despacho por ter sido rodada. A forma acima é ancorada em início de linha, o que exclui a
   publicação, e foi medida em **8**.
+
+### LM-T10 — A escrita mecânica em definição de agente: o instrumento e a prova da rota [Sonnet · classe implementacao]
+
+- **Status:** `ready` · 2026-09-19 — primeira tarefa da fila da próxima janela (`DM-50`).
+- **Esforço:** medium
+- **Objetivo:** um só — tornar a escrita em `.claude/agents/**` uma **aplicação mecânica de
+  literais declarados**, feita por instrumento, e **provar em campo** que essa via funciona a
+  partir de um contexto de executor. Enquanto a prova não existir, a rota da `DM-50` é hipótese.
+- **Depende de:** `DM-50`, que a decide. Nenhuma tarefa aberta.
+- **Arquivos-alvo:**
+  - `.claude/tools/agentdef.py` (novo)
+  - `tests/test_agentdef.py` (novo)
+  - `.claude/agents/pantonic-planner.md`
+  - `.claude/README.md`
+- **Contrato do instrumento** (fechado aqui; o executor implementa, não desenha):
+  `python .claude/tools/agentdef.py apply --arquivo <caminho> --de <texto> --para <texto>`, com
+  `--de`/`--para` **repetíveis** e lidos **em pares, na ordem**. Comportamento, verbo único:
+  1. **Alvo restrito.** `--arquivo` só é aceito se casar `.claude/agents/*.md` — glob **não
+     recursivo**, de modo que `.claude/agents/sub/x.md` é recusado tanto quanto `README.md`. Fora
+     disso: exit **1**, imprimindo `agentdef: alvo fora de '.claude/agents/*.md'` seguido do
+     caminho recebido.
+  2. **Pares completos.** `--de` e `--para` em número igual; senão exit **1**, imprimindo
+     `agentdef: --de e --para vem em pares`.
+  3. **Ocorrência única.** Cada `de` ocorre **exatamente uma vez** no conteúdo atual. Zero: exit
+     **1**, `agentdef: literal nao encontrado`. Mais de uma: exit **1**,
+     `agentdef: literal nao e unico`. As duas mensagens terminam com o trecho recebido.
+  4. **Tudo ou nada.** Os pares são **todos validados antes** de qualquer escrita: se um falha,
+     **nenhum byte** do arquivo muda. Um implementador que aplique par a par enquanto valida passa
+     nos outros testes e falha neste — é o caso que separa a implementação certa da plausível.
+  5. **Preserva o arquivo.** Encoding `utf-8` e o **line ending original** (ler e escrever com
+     `newline=''`): um arquivo `CRLF` continua `CRLF` depois do `apply`.
+  6. **Sucesso.** exit **0**, imprimindo `agentdef: ` seguido do caminho, do número de pares
+     aplicados e do saldo de linhas.
+  7. **Borda de residência única** (`DM-22`): a validação dos itens 1 a 3 mora em **uma** função,
+     chamada por todos os ramos do verbo — nunca duplicada no caminho de um só.
+- **Testes** (`tests/test_agentdef.py`, nomes fixados aqui):
+  `test_apply_aplica_par_unico`; `test_apply_recusa_alvo_fora_de_agents` (dois casos: `README.md` e
+  um caminho **aninhado** sob `.claude/agents/`, que é o que separa o glob não recursivo do
+  recursivo); `test_apply_recusa_literal_ausente`; `test_apply_recusa_literal_nao_unico`;
+  `test_apply_nao_escreve_quando_um_par_falha` (compara os **bytes** do arquivo antes e depois);
+  `test_apply_preserva_crlf` (fixture gravada com `CRLF`; leitura em modo texto padrão a
+  converteria para `LF` e o teste cairia).
+- **O par literal a aplicar — e é ele que prova a rota.** Fecha a matéria (b) do `PM-1`: a
+  `description` do `pantonic-planner` afirma hoje algo que a concessão de `Bash` (`DM-16`,
+  `DM-27`, `LM-T8`) tornou falso. Par único, aplicado **pelo instrumento**:
+  ```
+  de:   não mede nada por conta própria
+  para: não sonda codebase por conta própria
+  ```
+- **Passos:**
+  1. Escrever `.claude/tools/agentdef.py` conforme o contrato acima.
+  2. Escrever `tests/test_agentdef.py` com os seis testes nomeados.
+  3. Aplicar o par literal **rodando o instrumento pelo `Bash`**, com o alvo
+     `.claude/agents/pantonic-planner.md`.
+  4. Regenerar a projeção no **mesmo ato** (`DM-16` (iv)): `kit_check.ps1 -Mode generate` — a
+     `description` alimenta `.claude/README.md`, e sem isso o `check-drift` abre vermelho.
+- **Restrições desta tarefa:** o par literal é aplicado **rodando o instrumento**, nunca por `Edit`
+  ou `Write` sobre o arquivo de agente. É essa execução que constitui a prova da rota: aplicar por
+  edição direta deixa o arquivo igual e a prova **inexistente**, e a tarefa fica sem entregar o que
+  o `DM-50` pediu. O instrumento **não** decide conteúdo: ele aplica literal declarado no card.
+- **Não fazer:** não tocar `.claude/agents/pantonic-executor.md` nem
+  `.claude/skills/scrum-master/SKILL.md` — o motivo `ferramenta` e a guarda `G-TOOLDENY` são a
+  `LM-T11`, e esta tarefa existe justamente para tornar aquela executável; não alterar `model` nem
+  `name` de agente nenhum; não estender `rdo.py`, `backlog.py`, `review_evidence.py` nem
+  `card_check.py`; não criar verbo além de `apply`; não commitar.
+- **Contingências:**
+  1. se o `Bash` que roda o instrumento for **recusado** ao executor → **essa medida é o
+     entregável**, não uma falha: devolver `blocked motivo=premissa` colando a **linha literal da
+     recusa** e o **comando exato** que a produziu, e registrar no corpo da tarefa qual ferramenta
+     foi recusada sobre qual caminho. **Não** contornar por outra ferramenta, **não** pedir ao loop
+     que aplique. É com esse dado que a `DM-50` decide entre as saídas (b) e (d), e é ele que
+     impede a quarta repetição do problema;
+  2. se o par literal já estiver aplicado no arquivo (o `de` não for encontrado) → **seguir** com o
+     restante da tarefa e registrar o fato: o instrumento e os testes são o entregável principal, e
+     a `Verificação` 4 e 5 continuam discriminando;
+  3. se `kit_check.ps1 -Mode generate` alterar mais que a linha da `description` no
+     `.claude/README.md` → parar e sinalizar `blocked` razão `premissa`, colando o diff: projeção
+     que se move além do esperado é achado, não resíduo.
+- **Verificação:** (forma normativa publicada pela `LM-T5`; todo valor abaixo foi rodado na autoria,
+  2026-09-19 — `DM-12`, `DM-24`)
+  1. ```
+     python -m pytest tests/test_agentdef.py -q
+     ```
+     → verde, com os **seis** testes nomeados acima. **Medido antes: exit 4** (o arquivo de teste
+     não existe; `pytest` sai 4 em *file or directory not found*).
+  2. ```
+     python .claude/tools/agentdef.py apply --arquivo README.md --de a --para b
+     ```
+     → **exit 1**, nomeando a recusa de alvo fora do diretório de agentes. **Medido antes: exit 2**
+     (o instrumento não existe; `python` sai 2 em *can't open file*).
+  3. ```
+     python .claude/tools/agentdef.py apply --arquivo .claude/agents/pantonic-planner.md --de Fase --para Etapa
+     ```
+     → **exit 1**, nomeando a ocorrência não-única, **sem alterar o arquivo**.
+     **Medido antes: exit 2** (o instrumento não existe). O literal `Fase` foi escolhido por ser medidamente não-único
+     no alvo: 19 ocorrências em 2026-09-19.
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'não mede nada por conta própria' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 1**. (A afirmação falsa sai da `description`.)
+  5. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-planner.md -Pattern 'não sonda codebase por conta própria' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (E entra a verdadeira, no lugar dela.)
+  6. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/README.md -Pattern 'não sonda codebase por conta própria' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A projeção foi regenerada no mesmo ato — `DM-16` (iv). Sem esta
+     linha, a tarefa fecharia verde deixando o `check-drift` vermelho para a tarefa seguinte.)
+  7. ```
+     pwsh -NoProfile -Command ".claude/checks/kit_check.ps1 -Mode check-drift | Out-Null; exit $LASTEXITCODE"
+     ```
+     → **exit 0**. **Medido antes: exit 0** (2026-09-19). Regressão, não discriminante — e aqui ela
+     só continua verde **porque** o passo 4 rodou; é a guarda que pega o esquecimento.
+  8. ```
+     python -m pytest tests/ -q
+     ```
+     → verde, **somando** os seis testes novos ao total re-medido no despacho e **sem reduzi-lo**
+     (`DM-23`). **Medido antes: 187 passed** (2026-09-19 — relação, **re-medir no despacho**).
+- **Pronto quando:** as oito linhas de `Verificação` saem nos valores declarados; o instrumento
+  existe com o verbo único e a borda de residência única; os seis testes existem com os nomes
+  fixados; a `description` do `pantonic-planner` deixou de afirmar o falso **por aplicação do
+  instrumento**, e a projeção `.claude/README.md` fechou no mesmo ato. Se a contingência 1 casar, o
+  critério de pronto é **a medida da recusa**, registrada com o comando literal — e a tarefa fecha
+  `blocked`, que é desfecho e não fracasso.
+
+### LM-T11 — O contrato de recusa de ferramenta: `G-TOOLDENY`, o motivo `ferramenta` e o fim da exceção do `AE-44` [Opus · classe redacao]
+
+- **Status:** `ready` · 2026-09-19 — segunda tarefa da fila da próxima janela (`DM-50`).
+- **Esforço:** medium
+- **Objetivo:** um só — fechar o **contrato de recusa de ferramenta**: ferramenta negada ao
+  executor deixa de ser improviso ou silêncio e passa a ser um desfecho **nomeado, devolvido e
+  roteado**. Com ele, a exceção do `AE-44` fecha e a `GOVERNANCA.md` §3 volta a valer sem ressalva.
+- **Depende de:** `LM-T10` — **duas** vezes, e as duas são estruturais: (1) esta tarefa edita
+  `.claude/agents/pantonic-executor.md`, que é a superfície recusada, e o único caminho decidido
+  para editá-la é o instrumento que a `LM-T10` entrega; (2) se a `LM-T10` fechar `blocked` pela
+  contingência 1 dela, a rota da `DM-50` caiu e **este card não se despacha como está** — volta ao
+  consultor com o dado da recusa.
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+  - `README.md`
+  - `.claude/skills/scrum-master/SKILL.md`
+  - `.claude/agents/pantonic-executor.md`
+  - `CHANGELOG.md`
+- **Produto do módulo:** (a) `G-TOOLDENY` publicada como item **20** de `GOVERNANCA.md` §7, com a
+  linha correspondente na tabela *Os guardrails* do `README.md` **no mesmo ato** — a lista e a
+  frase que a conta fecham juntas (`DM-18` (i)), e é o `check-readme.ps1` que reprova se
+  divergirem; (b) o motivo **`ferramenta`** no domínio fechado do retorno do executor, nas duas
+  superfícies que o enunciam; (c) a regra de roteamento **`A3c`** na tabela do `scrum-master`; (d)
+  o encerramento explícito da exceção do `AE-44`; (e) a linha em `CHANGELOG.md`.
+- **Textos literais** (transcrição; cada `de` ocorre uma vez, conferido na autoria em 2026-09-19):
+
+  **1. `GOVERNANCA.md` §7, item 20, novo** — inserir depois do item 19 (`G-MODULO`), que hoje
+  encerra a lista:
+  ```
+  20. **G-TOOLDENY — ferramenta recusada ao executor é desfecho nomeado, nunca improviso nem
+      silêncio** — quando o harness nega ao executor a ferramenta de que o card depende, ele
+      **não** contorna por outra ferramenta, **não** pede a terceiro que aplique e **não** segue
+      em silêncio: devolve `blocked motivo=ferramenta`, nomeando a **ferramenta** negada e o
+      **caminho** sobre o qual foi negada, e cola a linha literal da recusa. Quem recebe é o loop,
+      que roteia pela `A3c`: a superfície tem **fallback declarado** — outro instrumento que faça a
+      mesma escrita —, e então a tarefa segue por ele; ou não tem, e então a recusa é **matéria de
+      plano**, não de janela. Superfície de escrita sem fallback declarado é defeito de
+      planejamento. Medida que o originou: três recusas do classificador sobre
+      `.claude/agents/**` dentro de uma tarefa só, em 2026-09-19 (`AE-11`, `AE-42`, `AE-44`).
+  ```
+
+  **2. `README.md`, tabela *Os guardrails*, linha 20, nova** — inserir depois da linha 19:
+  ```
+  | 20 | `G-TOOLDENY`: ferramenta recusada ao executor vira `blocked motivo=ferramenta` com a ferramenta, o caminho e a linha literal da recusa — nunca contorno por outra ferramenta, delegação a terceiro ou silêncio; o loop roteia pela `A3c` ao fallback declarado da superfície, e superfície sem fallback é matéria de plano | **Instrução de agente** + roteamento da skill `scrum-master` |
+  ```
+
+  **3. `.claude/skills/scrum-master/SKILL.md`, passo 4** — a gramática do retorno. De:
+  ```
+  <tarefa> blocked motivo=<dependencia|premissa> <uma linha de razão>
+  ```
+  Para:
+  ```
+  <tarefa> blocked motivo=<dependencia|premissa|ferramenta> <uma linha de razão>
+  ```
+
+  **4. `.claude/skills/scrum-master/SKILL.md`, passo 5** — o vocabulário aceito na recepção. De:
+  ```
+  `motivo=` fora do par
+    `dependencia|premissa`, ou prosa no lugar da linha: **retorno inválido**, regra `A2`.
+  ```
+  Para:
+  ```
+  `motivo=` fora do trio
+    `dependencia|premissa|ferramenta`, ou prosa no lugar da linha: **retorno inválido**, regra `A2`.
+  ```
+
+  **5. `.claude/skills/scrum-master/SKILL.md`, tabela de roteamento** — inserir a linha `A3c`
+  imediatamente depois da linha `A3b`:
+  ```
+  | `A3c` | `status=blocked` com `motivo=ferramenta` | materializa `blocked` com a razão, **sem** reclassificar o motivo; lê o **fallback declarado** da superfície no card e, havendo, **redespacha a mesma tarefa** por ele, **sem** consumir retentativa — a tarefa não falhou, a ferramenta foi negada; não havendo fallback declarado, **PARA** e a recusa sobe como matéria de plano, com a ferramenta, o caminho e a linha literal da recusa. **Não** despacha o `reviewer` e **não** escreve RDO |
+  ```
+
+  **6. `.claude/agents/pantonic-executor.md`** — o desfecho novo. Aplicar **pelo instrumento da
+  `LM-T10`**, nunca por edição direta. De:
+  ```
+  **Como devolver um card defeituoso** — é o sinal `blocked` com `motivo=premissa` (roteamento
+  ```
+  Para:
+  ```
+  **Como devolver uma ferramenta recusada** — quando o harness nega a ferramenta de que o card
+  depende (`G-TOOLDENY`), a linha é `blocked` com `motivo=ferramenta`, nomeando a ferramenta, o
+  caminho e colando a recusa literal:
+
+      <tarefa> blocked motivo=ferramenta ferramenta=<nome> caminho=<caminho>: <linha literal da recusa>
+
+  Você **não** contorna por outra ferramenta, **não** pede a terceiro que aplique e **não** segue
+  em silêncio. O domínio fechado do motivo é `<dependencia|premissa|ferramenta>`.
+
+  **Como devolver um card defeituoso** — é o sinal `blocked` com `motivo=premissa` (roteamento
+  ```
+
+  **7. `CHANGELOG.md`, sob `## [Não lançado]`:**
+  ```
+  - A recusa de ferramenta ao executor deixa de ser improviso e vira desfecho nomeado: guarda
+    `G-TOOLDENY`, motivo `ferramenta` no domínio fechado do retorno e regra de roteamento `A3c` ao
+    fallback declarado da superfície. A exceção aberta em 2026-09-19, em que a orquestração
+    implementou uma tarefa por instrução do dono, fica **fechada** e não é precedente.
+  ```
+- **Coerência do módulo (aceite de `DM-3`):** depois desta tarefa, **nenhuma** das quatro
+  superfícies enuncia o domínio antigo de dois termos. A varredura é parte da entrega, e a
+  `Verificação` 4 a mede.
+- **Restrições desta tarefa:** o literal 6 é aplicado **rodando o instrumento da `LM-T10`**, nunca
+  por `Edit` ou `Write` — é a segunda prova da rota da `DM-50`, agora em produção e não em
+  fixture. A exceção do `AE-44` **não** se reescreve no achado: ela fica onde está, como registro
+  do que foi feito, e o que esta tarefa publica é o seu **encerramento**.
+- **Não fazer:** não mexer em `.claude/tools/agentdef.py` nem nos testes dele (são da `LM-T10`);
+  não estender `rdo.py`, `backlog.py`, `review_evidence.py` nem `card_check.py` — **medido na
+  autoria: nenhum deles lê o domínio de `motivo`**, que vive só em prosa nas duas superfícies, e o
+  `--razao` do `backlog.py` é texto livre; não alterar `description`, `model` ou `name` de agente
+  nenhum; não regenerar `.claude/README.md` (a `description` não muda aqui); não commitar.
+- **Contingências:**
+  1. se o instrumento da `LM-T10` recusar o literal 6 por não-unicidade ou ausência → parar e
+     sinalizar `blocked` razão `premissa`, colando a saída do instrumento: o arquivo mudou entre a
+     autoria e o despacho, e quem reconcilia o literal é o consultor;
+  2. se a `Verificação` 1 sair com número de guardas diferente de **20** → parar e sinalizar
+     `blocked` razão `premissa`: a lista e a tabela divergiram, e é exatamente o invariante que
+     esta linha existe para pegar;
+  3. se o `Bash` que roda o instrumento for recusado ao executor → devolver `blocked
+     motivo=premissa` com a linha literal da recusa — o motivo `ferramenta` ainda **não** existe no
+     domínio quando esta tarefa começa, e é ela que o cria.
+- **Verificação:** (forma normativa publicada pela `LM-T5`; todo valor abaixo foi rodado na autoria,
+  2026-09-19 — `DM-12`, `DM-24`)
+  1. ```
+     pwsh -NoProfile -Command ".claude/checks/check-readme.ps1"
+     ```
+     → **exit 0**, anunciando **20 guardrail(s)**. **Medido antes: 19 guardrail(s)**. É o
+     invariante de contagem do `AE-12`: a checagem 4 confronta a lista de `GOVERNANCA.md` §7 com a
+     tabela do `README.md`, e sai vermelha se só uma das duas receber a guarda nova.
+  2. ```
+     pwsh -NoProfile -Command "(Select-String -Path GOVERNANCA.md -Pattern '^20\. \*\*G-TOOLDENY' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A guarda existe na doutrina, no número que a sucede.)
+  3. ```
+     pwsh -NoProfile -Command "(Select-String -Path README.md -Pattern '^\| 20 \| .G-TOOLDENY.' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (E na tabela que o instrumento conta.)
+  4. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md,.claude/agents/pantonic-executor.md -Pattern '<dependencia|premissa>' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **0**. **Medido antes: 1**. (O domínio de dois termos some das superfícies — aceite de
+     coerência do módulo.)
+  5. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md,.claude/agents/pantonic-executor.md -Pattern '<dependencia|premissa|ferramenta>' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **2**. **Medido antes: 0**. (E o de três entra nas **duas** superfícies. Sai **2**, e não 1,
+     porque cada superfície enuncia o domínio por conta própria e fechar só uma deixaria o executor
+     e o loop falando línguas diferentes.)
+  6. ```
+     pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern '^\| .A3c. \|' | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**. (A regra de roteamento existe: sem ela o motivo novo chega ao
+     loop e cai em *retorno inválido*.)
+  7. ```
+     pwsh -NoProfile -Command "(Select-String -Path CHANGELOG.md -Pattern 'recusa de ferramenta ao executor deixa de ser improviso' -SimpleMatch | Measure-Object).Count"
+     ```
+     → **1**. **Medido antes: 0**.
+  8. ```
+     python -m pytest tests/ -q
+     ```
+     → verde, **sem reduzir** o total re-medido no despacho (`DM-23`): esta tarefa não acrescenta
+     teste, e é a suíte de conformance que tranca doutrina. **Medido antes: 187 passed**
+     (2026-09-19 — relação, **re-medir no despacho**, que virá depois da `LM-T10` somar os dela).
+- **Pronto quando:** as oito linhas de `Verificação` saem nos valores declarados; a guarda existe
+  nas duas superfícies que a contam; o domínio de três termos é o único enunciado; a `A3c` roteia o
+  motivo novo; a linha do `CHANGELOG.md` está lá; e o literal do executor foi aplicado **pelo
+  instrumento**, não por edição direta.
 
 ## 6. Ordem de execução
 
@@ -2344,6 +4770,142 @@ caminho crítico; e a **`LM-T9`** (`DM-29`), **penúltima**, atrás da `LM-T6`. 
 tarefas. Fila recomendada: `LM-T3a` → `LM-T2d` → `LM-T2b` → `LM-T4` → `LM-T5` → `LM-T6` → `LM-T9`,
 com `LM-T8` (a) corrida em qualquer janela. A ordem segue sendo do `scrum-master` (Diretiva item 4);
 o que esta atualização fixa são **dependências**, não sequência.
+
+**Atualizado pelo `ESC-9` (2026-09-19, `pantonic-consultant`, `DM-32`):** entra a **`LM-T2e`** —
+a ação da `A7`, residência única do `AE-22` —, e o plano passa a **18** tarefas. Ela vai **à
+frente da `LM-T2b`**: a `LM-T2d` deixou no
+`.claude/skills/scrum-master/SKILL.md` uma afirmação **falsa sobre a própria tabela** (a frase de
+partição diz que nenhuma regra manda fechar o que o instrumento recusa, e a `A7` ainda manda), e
+superfície publicada do kit não fica com contradição viva enquanto corre tarefa que não depende
+dela — a `LM-T2b` não toca esse arquivo e nada perde no adiamento. Fila recomendada:
+`LM-T2e` → `LM-T2b` → `LM-T4` → `LM-T5` → `LM-T6` → `LM-T9`, com `LM-T8` (a) corrida em qualquer
+janela (`LM-T3a` e `LM-T2d` fecharam em 2026-09-19, as duas aprovadas 100%). **Exclusão mútua
+viva, atualizada:** `.claude/skills/scrum-master/SKILL.md`, agora entre **`LM-T2e`** e `LM-T4` —
+a da `LM-T2d` caducou com o fechamento dela.
+
+**Atualizado pelo `ESC-12` (2026-09-19, `pantonic-consultant`, `DM-35`):** entram **três** cards
+e o plano passa a **21** tarefas. Fila recomendada: **`LM-T4b`** → `LM-T4` → **`LM-T3b`** →
+`LM-T5` → `LM-T6`, com **`LM-T2f`** e `LM-T8` (a) corridos em qualquer janela e a `LM-T9` à
+escolha do loop (não é insumo do veredito do dono). Razões, todas medidas no `ESC-12`: a
+`LM-T4b` vem **antes da `LM-T4`** porque doutrina não publica gramática que o parser recusa
+(medido: **0** bullets de `Status` do plano são lidos pelo instrumento, de 21); a `LM-T3b` vem
+**antes da `LM-T6`** porque o piloto exercita a autoridade mecânica da dimensão `escopo`, hoje
+inflada (9 alvos declarados onde o card lista 2). **Exclusão mútua viva:** continua sendo uma
+só, `.claude/skills/scrum-master/SKILL.md`, agora sem par aberto — `LM-T4b` toca
+`backlog.py`, `LM-T3b` toca `rdo.py`, `LM-T2f` toca `tests/test_telemetria_hook.py`, e nenhuma
+das três colide com a `LM-T4`. **Marco da janela:** a **`LM-T6`** (Diretiva item 2) — é a única
+tarefa cujo produto é o **veredito do dono**.
+
+**Atualizado pelo `ESC-13` (2026-09-19, `pantonic-consultant`, `DM-36`):** o loop **antecipou a
+`LM-T5`** pela Diretiva item 4, e o consultor **endossa**: três cards seguidos parados por linha
+de aceite, sete achados da mesma família na janela, e a `LM-T5` é a auditoria que os fecha. Para
+que a antecipação seja possível, a dependência `LM-T5 → LM-T4` foi **dissolvida** (medida: a
+gramática que a rubrica afere é a dos **parsers**, ensinada pela `LM-T4a`, fechada) e a `LM-T5`
+foi **partida**: a rubrica fica nela; o reagrupamento do `P-0739` vai para a **`LM-T5a`**, nova,
+atrás da `LM-T5` e da `LM-T4`. O plano passa a **22** tarefas. Fila recomendada: **`LM-T5`** →
+`LM-T4b` → `LM-T4` → `LM-T3b` → `LM-T6`, com `LM-T2f`, `LM-T8` (a), `LM-T9` e `LM-T5a` fora do
+caminho crítico do marco — a `LM-T5a` inclusive cabe na janela seguinte, porque o `P-0739` está
+estacionado por ato do dono. **Condição que o consultor acrescenta:** fechada a `LM-T5`, a
+`LM-T4b` e a `LM-T4` são **re-varridas** sob os critérios (xii) e (xiii) da rubrica antes do
+despacho — varredura de consultor, e é o que o `AE-14` ensinou sobre card sobrevivente.
+
+**Atualizado pelo `ESC-14` (2026-09-19, `DM-37`):** entra a **`LM-T5b`** (`card_check.py`), logo
+atrás da `LM-T5`, e o plano passa a **23** tarefas. Fila recomendada: `LM-T5` → **`LM-T5b`** →
+`LM-T4b` → `LM-T4` → `LM-T3b` → `LM-T6`. A re-varredura prometida no `DM-36` (vi) passa a ser
+**mecânica**: o loop roda `card_check.py` sobre a `LM-T4b` e a `LM-T4` antes de despachá-las, e
+o consultor entra só no que o instrumento recusar. `LM-T2f`, `LM-T8` (a), `LM-T9` e `LM-T5a`
+seguem fora do caminho crítico do marco, que continua sendo a **`LM-T6`**.
+
+**Atualizado pelo `ESC-16` (2026-09-19, `DM-39`):** entra a **`LM-T5c`** — o reparo do
+`card_check` e a emenda da `### 8.1` — e o plano passa a **24** tarefas. Fila recomendada:
+**`LM-T5c`** → `LM-T4b` → `LM-T4` → `LM-T3b` → `LM-T6`. Ela vem **primeiro** porque todo
+despacho feito antes dela é pago em re-derivação manual de baseline pelo loop, e porque a
+`### 8.1` publicada prescreve um gate cujo instrumento, hoje, pode dar **verde a item que não
+leu**. **Gate suspenso em efeito** (`DM-39` (ii), decisão do loop endossada pelo consultor):
+até a `LM-T5c` fechar, o `card_check` é **apoio** no gate de delegação e a conferência dos três
+elementos é **manual**, como a própria `### 8.1` prescreve para o período sem instrumento — a
+`LM-T4b` e a `LM-T4` **não** exigem `card_check` verde no despacho.
+
+**Atualizado pelo `ESC-17` (2026-09-19, `DM-40`):** a cadeia do `card_check` **para aqui**
+(rota (b) da pergunta do loop). Entra só a **`LM-T5d`** — a nota de suspensão do gate na
+`### 8.1` —, **fora do caminho crítico e não antes do marco**; o plano passa a **25** tarefas.
+As duas matérias do `AE-33` ficam **abertas**, para o planejamento pós-marco, porque são
+re-especificação e não conserto (`DM-40` (ii)). Fila recomendada até o marco: `LM-T4b` →
+`LM-T4` → `LM-T3b` → `LM-T6`, sem nada de instrumento no meio. **Atenção ao marco:** a
+`LM-T6` carrega um **impedimento estratégico declarado** no topo do card — o `Entregável` dela
+supõe a fila de módulos do `P-0739`, que a `LM-T5` não produz mais (`DM-36` (iii)) e que
+exigiria desestacionar aquele plano contra ato do dono. A escolha entre desestacionar o
+`P-0739` e mudar o **veículo** do piloto é do dono, e sobe no relatório de encerramento; até
+lá o corpo do card fica intocado.
+
+**Atualizado pelo `ESC-19` (2026-09-19, `DM-42`):** a `LM-T4b` fechou e o plano passa a **26**
+tarefas com a **`LM-T4c`** — a fronteira entre razão e cauda no bullet de `Status` —,
+**declarada pós-marco**: o caminho que perde a prosa é **latente**, não vivo, porque o `AE-29`
+faz `backlog.py status` morrer antes de chegar nele para card deste plano (medido). Fila até o
+marco, **inalterada**: `LM-T4` → `LM-T3b` → `LM-T6`. Fora do caminho crítico: `LM-T4c`,
+`LM-T5d`, `LM-T2f`, `LM-T8` (a), `LM-T9` e `LM-T5a`. **Ressalva operacional enquanto a
+`LM-T4c` não fechar:** não se usa `backlog.py status` para tirar card de `blocked` — que é,
+medido, o que já acontece.
+
+**Atualizado pelo `ESC-21` (2026-09-19, `DM-44`):** a `LM-T4` fechou **aprovada 100%** — skills
+**11 → 10**, guardrails **18 → 19**, projeções regeneradas (conferido: `check-readme.ps1` sai
+exit 0 com *9 agentes, 10 skills, 19 guardrails*) — e o plano passa a **27** tarefas com a
+**`LM-T4d`**, a regularização da citação **por nome** que a aposentadoria deixou. Recomendo-a
+**antes da `LM-T3b`**, por urgência assimétrica medida: o `bootstrap-pantonic` manda copiar
+skill que não existe mais, e o kit se propaga a cinco derivados; a `LM-T3b` não tem urgência e
+o marco está travado no dono de qualquer forma. A ordem segue sendo do loop (Diretiva item 4).
+**Ato do dono a nomear no relatório:** `.claude/settings.json` linhas 5-6, com regras de `Edit`
+sobre os dois diretórios apagados — inócuas, mas fora do alcance de card (`DM-44` (iii)).
+
+**Atualizado pelo `ESC-23` (2026-09-19, `DM-46`):** a **`LM-T8`** sai de `blocked` e volta a
+`ready`, **inteira** — some a partição informal *"`LM-T8` (a)"* que as linhas acima carregavam:
+ela existia porque o item (b) esperava a `LM-T4`, que fechou, e porque o card tinha dois estados
+de executabilidade, defeito que o reparo fechou. Um despacho só fecha o card. O cabeçalho passa a
+`Sonnet · classe mecanica` (era `Opus + dono`): o ato do dono foi feito (`DM-27`) e o que resta é
+transcrição literal. A `LM-T8` continua **fora do caminho crítico** de qualquer tarefa e pode
+correr em qualquer janela. Nada mais muda na fila.
+
+**Atualizado em 2026-09-19 (`DM-47`, `DM-48`):** o **marco destravou**. A `LM-T6` foi reescrita
+para o veículo (B) e passa a `ready` **sem dependência aberta** — o corpus é a execução deste
+próprio plano, fechada e medida, e o `P-0739` sai do grafo de vez: não é dependência da `LM-T6` e
+não volta a ser. Cai com isso a `LM-T5a` do caminho do marco (`DM-45` (i)). Fila até o encerramento:
+**`LM-T6` → `LM-T9`**, com `LM-T4c`, `LM-T5d`, `LM-T8` e `LM-T5a` fora do caminho crítico. A
+`LM-T8` segue `blocked` razão `permissao` pelo `AE-42` — **não** por defeito de card: o reparo do
+`ESC-23` está intacto, o gate sai exit 0, e o que falta é ato do dono sobre o classificador do
+harness, já na fila do relatório de encerramento. A ordem continua sendo do loop (Diretiva item 4).
+
+**Atualizado pelo `ESC-26` (2026-09-19, `DM-50`):** o **marco fechou** — `LM-T6` `done`, veredito
+do dono **APROVADO**, gate independente `aprovado 100%`. O plano ganha **duas** tarefas, `LM-T10` e
+`LM-T11`, e a fila da **próxima janela** é: **`LM-T10` → `LM-T11`**, nessa ordem e sem nada entre
+elas — a `LM-T11` edita `.claude/agents/pantonic-executor.md`, que é a superfície recusada, e só o
+instrumento da `LM-T10` a torna editável. **Ponto de parada declarado:** se a `LM-T10` fechar
+`blocked` pela contingência 1 dela (o executor também recusado ao rodar o instrumento), a `LM-T11`
+**não se despacha** — volta ao consultor com a medida da recusa, e é com ela que se escolhe entre
+as saídas (b) e (d) da `DM-49` (v). Depois das duas: `LM-T4c`, `LM-T5d` e `LM-T5a`, fora do
+caminho crítico, e a **`LM-T9` por último** — a ordem do dono (`DM-29`) manda a spec do consultor
+vir depois de a figura ter conduzido o plano, e duas janelas a mais de acionamento são insumo
+dela, não atraso. A ordem continua sendo do loop (Diretiva item 4).
+
+**Fila pós-marco — itens de replanejamento** (`DM-49`)
+
+> **O que este bloco é** (`DM-49`): a residência dos **itens de replanejamento** que este plano
+> roteou ao pós-marco. Item de replanejamento **não é card** e **não se despacha**: ele nomeia
+> matéria que o planejamento seguinte tem de fechar, com o que fecha e o que depende. Card
+> declarado pós-marco (`LM-T4c`, `LM-T5d`, `LM-T9`) **não entra aqui** — é card, vive na §5 e tem
+> `Status` próprio. O bloco é **aberto**: quem rotear matéria nova ao pós-marco acrescenta a linha
+> aqui, em vez de deixá-la só no achado.
+
+- **`PM-1` — a rota da superfície de permissão, e a `description` do `pantonic-planner`.**
+  Origem: `AE-45` (i) e (ii), roteados pelo `ESC-25` (`DM-49`). **FECHADO pelo `ESC-26`**
+  (2026-09-19): as duas matérias saíram da fila pós-marco e viraram card desta janela. A matéria
+  (a) foi **decidida** pelo `scrum-master`, por delegação expressa do dono, e está na `DM-50` —
+  a quinta saída, que a enumeração da `DM-49` (v) não tinha: escrita em `.claude/agents/**` por
+  **instrumento**, mais a guarda `G-TOOLDENY`. A matéria (b), a `description` falsa, é o **par
+  literal** que a `LM-T10` aplica — ela é, ao mesmo tempo, o conserto e a **prova da rota**.
+  Residência: `DM-50`, cards `LM-T10` e `LM-T11`. Nada de `PM-1` fica pendente.
+- **`PM-2` — as duas matérias de re-especificação do `card_check`.** Origem: `AE-33`, roteado pelo
+  `ESC-17` (`DM-40` (ii) e (iii)), com residência no acumulador `TK-55`. Linha de índice: o
+  conteúdo **não** se repete aqui — mora no `AE-33` e no `DM-40`.
 
 ## 7. Fora de escopo (explícito)
 
@@ -2477,6 +5039,92 @@ por ato do dono em 2026-09-18. Insumos da janela de 2026-09-18/19, todos medidos
 - **`I-8` — o encerramento foi por decisão de janela, não por poluição.** As nove passagens
   couberam num contexto **coeso** do começo ao fim — um plano, um cenário (Regra 2). O limite de
   formato que a spec tem de nomear é o da **troca de plano**, não o da duração.
+
+- **`I-9` — a figura morre inteira quando o limite chega, e o cenário morre com ela.** Medido no
+  `ESC-22` (2026-09-19): o consultor terminou por `rate_limit` HTTP 429 (*session limit*) **sem
+  devolver** as duas alocações do `AE-38` nem a varredura final da `LM-T3b`, e a notificação veio
+  **sem bloco `<usage>`** — o consumo daquela passagem é `PARCIAL — trecho pré-queda não medido` e
+  **nenhuma linha de telemetria** foi apensada por ela, porque telemetria é medida e não estimativa
+  (`GOVERNANCA.md` §4.2). O que se perdeu não foi trabalho entregue — o `AE-38` estava registrado e
+  a `LM-T3b` foi gateada por medida do loop —, foi o **contexto acumulado de 14 passagens**, que é
+  justamente o ativo que justifica a figura existir (`DM-28`, item 1 da *Diretiva*: ela não é
+  efêmera). **A ausência de fim de vida é, portanto, defeito estrutural da figura, não incidente.**
+  É o lastro da pergunta (g) da `LM-T9`, e da regra nova do dono (`DM-45` (iii)).
+
+- **`I-10` — mede-se o custo do consultor e não se mede a causa dele.** Medido nesta janela: **14
+  acionamentos**, **`3.802,2k` tk**, **63%** do total — contra 23% de execução e 14% de revisão.
+  `docs/telemetria.tsv` registra **quanto** cada acionamento custou e **nada** sobre *por que ele
+  existiu*, que classe de impedimento o motivou ou o que ficou **inconclusivo** ao fim dele. Com
+  `I-7` (68,5% na janela anterior), são **duas** janelas em que um papel só concentra a maior parte
+  do consumo **sem** que se saiba o que o convoca. É o lastro da pergunta (h) da `LM-T9` e da
+  responsabilidade nova do dono (`DM-45` (iv)), e o destino declarado da coleta é a **spec de
+  robustez**.
+
+## 10. O piloto medido — a série do loop sobre o próprio plano
+
+Corpus: a execução do próprio `P-0740` sob o loop (veículo (B), `DM-45` (i), `DM-47`). Origem: as **50**
+linhas `PantonicApp\tLM-T` de `docs/telemetria.tsv`, re-medidas no despacho (2026-09-19), para consumo,
+`tool_uses` e duração; o bullet `- **Status:**` de cada card para veredito; `## 9` e `## Achados da execução` para a regra de parada. Nada estimado.
+
+| módulo | tokens_k | tool_uses | duracao_s | janela |
+|---|---|---|---|---|
+| LM-T1 | 201,3 | 57 | 599,0 | 1 |
+| LM-T7 | 163,2 | 42 | 316,3 | 2 |
+| LM-T1a | 164,4 | 55 | 453,8 | 2 |
+| LM-T7a | 139,3 | 33 | 515,6 | 2 |
+| LM-T3 | 152,0 | 48 | 565,6 | 2 |
+| LM-T4a | 147,4 | 60 | 434,9 | 2 |
+| LM-T2a | 162,6 | 51 | 524,1 | 2 |
+| LM-T2 | 152,1 | 37 | 512,2 | 2 |
+| LM-T2c | 130,2 | 33 | 292,0 | 2 |
+| LM-T3a | 142,3 | 51 | 352,8 | 3 |
+| LM-T2d | 106,2 | 40 | 243,8 | 3 |
+| LM-T2e | 98,1 | 23 | 158,5 | 3 |
+| LM-T2b | 186,8 | 43 | 517,1 | 3 |
+| LM-T4b | 256,8 | 74 | 904,3 | 3 |
+| LM-T5 | 250,4 | 56 | 784,7 | 3 |
+| LM-T5b | 180,9 | 48 | 683,9 | 3 |
+| LM-T5c | 212,7 | 72 | 915,6 | 3 |
+| LM-T4 | 468,2 | 151 | 1.366,5 | 3 |
+| LM-T4d | 145,6 | 50 | 400,1 | 3 |
+| LM-T3b | 154,1 | 52 | 441,6 | 3 |
+| LM-T2f | 98,2 | 22 | 165,3 | 4 |
+| **total do piloto** | **3.712,8** | **1.098** | **11.147,7** | 21 módulos, 4 janelas |
+
+**Decomposição por papel:** janela 3 — execução `1.389,9k` (**23%**), revisão `812,2k` (**14%**),
+consultor `3.802,2k` (**63%**) de `6.004,3k` (`DM-45` (i)); execução e revisão conferem exatas
+contra as linhas 21–45 da fatia, e o consultor não apensa linha nenhuma. Janela 2: consultor
+`2.639,1k` de `3.850,3k` (**68,5%**, `## 9` `I-1`). Janela 1: planejador frio `423,7k` de `625,0k`.
+
+**Contra a baseline de tarefa atômica:** a `BKL-T4` (§3) custou `284,6k tk / 71 tool uses / 21 min`
+por tarefa, medidos em executor + reviewer. Na mesma base, os 21 módulos desta série custam
+`176,8k / 52,3 / 8,8 min` por módulo — **37,9% abaixo** em tokens, **26,3% abaixo** em tool uses,
+**57,9% abaixo** em duração. Com o papel que a `BKL-T4` não tinha, as janelas 1–3 somam `10.479,6k`
+para 20 módulos = `524,0k`/módulo, **84,1% acima** da baseline.
+
+**Módulos fechados por janela, e a regra que encerrou cada uma:**
+- **Janela 1** (2026-09-18, `RP-1`..`RP-4`): **1** módulo, `aprovado 100%`. Sem regra de parada
+  registrada — o regime mudou com a criação do consultor por ato do dono em 2026-09-18 (`## 9`).
+- **Janela 2** (2026-09-18/19, `RP-5`, `ESC-1`..`ESC-8`): **8** módulos — 5 `aprovado 100%`, 3 ressalva, **0** reprovações.
+  Encerrou por **decisão de janela, não por poluição** (`I-8`); fato: a nona e última passagem do consultor fechou o cenário e o relatório subiu ao dono (`ESC-8`).
+- **Janela 3** (2026-09-19, `ESC-9`..`ESC-22`): **11** módulos — 7 `aprovado 100%`, 4 ressalva, **0** reprovações, **0** retentativas.
+  Encerramento declarado na `LM-T3b` e relatado ao dono (`DM-45`); fato: `ESC-22` — o consultor caiu por `rate_limit`
+  HTTP 429 (*session limit*) sem devolver o `AE-38` nem a varredura da `LM-T3b`, e a janela seguiu "com o que há".
+- **Janela 4** (corrente, 2026-09-19): **1** módulo fechado (`LM-T2f`, `aprovado 100%`) até este despacho; **aberta**, sem
+  regra de parada porque não encerrou. Fora da série, na fatia: `LM-T8` (**2** linhas, `blocked` por `permissao`) e `LM-T6` (**1**).
+
+**Divergência medida × corpus declarado (`Contingência` 2):** o corpus do card declara **duas** janelas e **39 linhas**
+de `docs/telemetria.tsv` para a de 2026-09-18/19. Medido agora: a fatia tem **50** linhas e a série separa **4** janelas;
+a janela de `6.004,3k` é a **3** e ocupa **25** linhas (21–45), com **660** tool uses e **1,88 h** na fatia — os `900` e
+as `3,06 h` do corpus contam o consultor, que não apensa telemetria (`ESC-22`). Manda a medida do despacho.
+
+**Veredito do dono:** **APROVADO** (2026-09-19). Dado sobre `docs/MODO_DE_OPERACAO.md` — a
+descrição comparada do modo de operação antes e depois dos artefatos, autorada nesta janela a
+pedido do dono, porque um piloto em tempo real não era possível. Palavra dele: *"O veredito está
+ok, pode dar continuidade do plano."* O aceite é da **medida e do modo de operação descrito**, e
+não revoga nenhum dos cinco limites declarados na §6 daquele documento — os caminhos de
+recuperação do loop seguem não exercitados, e o corpus segue sendo o próprio repositório do
+framework.
 
 ## Achados da execução
 
@@ -3407,3 +6055,558 @@ por ato do dono em 2026-09-18. Insumos da janela de 2026-09-18/19, todos medidos
    produziram seis cards novos e duas decisões por passagem em média, e nenhuma delas precisou
    reler o plano. O número da janela inteira — **3,67M tk para oito tarefas fechadas** — tem de ser
    lido com isso em conta na `LM-T6`.
+
+- **`AE-21` — baseline de corpus real citada em card envelhece igual a piso de suíte, e o `DM-23`
+  não a cobre.** Achado de processo do laudo da `LM-T3a` (2026-09-19), rota prescrita pelo próprio
+  laudo. A linha 4 de `Verificação` da `LM-T3a` afirmava *"Baseline medida: também nenhuma"* — medida
+  verdadeira quando o card foi autorado, e **falsa no despacho**: o commit do marco 1 (`6eebccd`)
+  pôs commits entre `428246c` e `HEAD`, e a baseline re-medida no ato deu **52** linhas
+  ``(sem entrada em `git status`)``. A linha que era **vacuosa** (0 → 0) virou **discriminante**
+  (52 → 0) — a favor da entrega, desta vez, mas por sorte do calendário, não por desenho. Os
+  literais de piso (`32 passed`, `165 passed`) já estavam protegidos pelo `DM-23` (piso é relação,
+  re-medida no despacho); **baseline de corpus real não estava**. Rota: item de replanejamento do
+  `P-0740` que estende o `DM-23` a **toda** baseline de corpus real citada em card — re-medida no
+  despacho e registrada no dossiê de evidência, nunca literal histórico no card. Residência
+  natural: a `LM-T5` (revisão da criação das tarefas), que já é a tarefa que varre a autoria de
+  card. **Não abre rodada própria.**
+
+- **`AE-22` — a `A7` manda fechar o que o instrumento recusa, e a frase de partição da `LM-T2d`
+  torna isso uma afirmação falsa no arquivo.** Achado do laudo da `LM-T2d` (2026-09-19, veredito
+  `aprovado 100%`, recomendação `escalar`), roteado pelo `B1` ao `pantonic-consultant`. Medido: a
+  regra `A7` do bloco A continua mandando *"fecha o RDO como `reprovado`"*, e o instrumento de
+  fechamento **recusa** esse desfecho em três pontos — `rdo.py close --veredito` aceita só
+  `aprovado` e `ressalva` (exit 2, `invalid choice`), `calcular_desdobramento` levanta
+  `RdoValidationError` para `reprovado`, e o gatilho do Passo 9 só dispara em `done`. A `LM-T2d`
+  **entregou exatamente o que o card contratou** e não podia tocar a `A7`, congelada como literal
+  pelas `Restrições` do card; mas a frase de partição que o mesmo card mandou transcrever afirma
+  que *"nenhuma regra mande fechar o que o instrumento recusa"* — de modo que o arquivo passa a
+  carregar uma afirmação falsa sobre a própria tabela. A partição do bloco A, portanto, **não fecha
+  de fato** enquanto a ação da `A7` não for decidida. Rota, a decidir pelo consultor: reescrever a
+  ação da `A7` (`reprovado` não fecha RDO — materializa o desfecho por outra via) **ou** dar ao
+  instrumento um caminho para `reprovado`. A `LM-T2d` **não se refaz**: está `done` aprovada 100%. **ABSORVIDO no mesmo dia pelo `ESC-9`** → `DM-32` (rota (i): a `A7` não fecha RDO; materializa `blocked` razão `premissa` e **PARA**, como o `A3b`) e card **`LM-T2e`**, à frente da `LM-T2b` e antes da `LM-T4`.
+
+- **`AE-23` — padrão de aceite que reescreve palavra do arquivo mede zero nos dois mundos; terceiro
+  caso do mesmo derivado nesta série.** Achado do `scrum-master` **no ato do despacho** da
+  `LM-T2e`, ao rodar as baselines do card antes de delegar (item 3 do gate), e devolvido ao
+  `pantonic-consultant` — que o autorou. A linha 4 de `Verificação` da `LM-T2e` publicava
+  `-Pattern 'ultima retentativa'` com baseline **1**; medido no despacho: **0**. Causa: o arquivo
+  escreve **`última`**, com acento (`grep -c "última retentativa"` → 1; `grep -c "ultima
+  retentativa"` → 0), e a regra que o consultor aplicou aos padrões — *"sem acento e sem crase,
+  para não dependerem de escape do shell"* — tirou um caractere que **pertence ao texto da
+  fonte**, não um que só atrapalharia o shell. Efeito: 0 antes, 0 depois — a linha vendida como o
+  invariante que prova que a seção *O que obriga parada* ficou intocada **passaria igual se o
+  executor apagasse a seção inteira**. Agravante medido no reparo: a ação nova da `A7` também
+  contém *"última retentativa"*, de modo que o padrão acentuado iria a **2** — o invariante
+  correto é o recorte `'retentativa ('`, 1 → 1, casando só a linha 230. **Reparo:** feito no card
+  pelo `ESC-9` (linha 4 e a regra do cabeçalho da `Verificação`), **antes** do despacho; a rota,
+  a ação da `A7` e a posição na fila não mudam. **Varredura do plano inteiro, medida agora:**
+  extraídos os 24 padrões de `Select-String` de todos os cards e confrontados com os arquivos-alvo
+  reais, **nenhum outro padrão deste plano sofre do defeito** — os padrões acentuados dos demais
+  cards (`escalar não é desfecho de tarefa`, `pendência substantiva`, `esforço`, `O kit são`)
+  casam ≥ 1, e os que casam 0 são todos **pós-estado declarado** (`>8 write-clusters`,
+  `recomendacao=escalar (com bloqueante=nenhuma)`, `desfecho de RDO`, `consultant-spec`,
+  `roteada ao planejador`). A `LM-T2c` e a `LM-T2d` estão limpas: **nada a consertar
+  retroativamente**. **Residência:** o defeito é de **método**, não desta linha — é o terceiro
+  caso do mesmo derivado no plano (`AE-19`, crase dupla, 0 → 0; `AE-21`, baseline de corpus que
+  envelhece) e entra no acumulador **`TK-55`** (confiabilidade de derivado que erra sem sinal
+  porque nada o confronta com a fonte), gated pelo encerramento do `P-0740`; dentro do plano,
+  quem o lê é a **`LM-T5`**, mesma residência do `AE-19` e do `AE-21` — a regra que os três pedem
+  é uma só: *padrão de aceite é recorte do literal da fonte, rodado nos dois mundos, nunca
+  reescrito de memória*. **Não abre rodada própria.** O que o `B1` leva ao relatório de
+  encerramento é a linha do `TK-55`.
+
+- **`AE-24` — o produto (b) da `LM-T2b` colide com um teste pré-existente, e as contingências do
+  card não alcançam a colisão.** Achado do executor da `LM-T2b` (2026-09-19), devolvido como
+  `blocked` razão `premissa` — conduta correta, e é o `A3b` funcionando como desenhado: ele parou
+  antes de entregar em vez de decidir por conta própria. Medido: o teste
+  `test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv` em
+  `tests/test_telemetria_hook.py` afirma a linha do TSV com `modelo="Sonnet"` **literal**; o produto
+  (b) do card manda `montar_args_append` normalizar o modelo para minúsculas, o que faz `sonnet` ≠
+  `Sonnet` e derruba a asserção. A **contingência 2** do card autoriza ajustar teste pré-existente
+  só quando ele *"afirmar a soma por `message.id` como resultado esperado"* — a grafia do modelo
+  não é esse caso, e o executor não podia alargar a autorização sozinho (Regra 8). **Dado novo,
+  medido pelo loop no mesmo ato e que o card não previa:** a linha que o hook gravou para esta
+  própria execução saiu **exata** (72,9k contra 72.887 do `<usage>`), enquanto as três anteriores
+  desta janela saíram infladas ×20,5, ×6,6 e ×4,8 — o defeito do `AE-3` é **real mas não
+  universal**, e a frase do card *"grava sempre para mais"* é forte demais como está. As duas
+  matérias vão juntas ao consultor porque incidem no mesmo card. **ABSORVIDO no mesmo dia pelo `ESC-10`** → `DM-33`: o produto (b) fica, a autorização de ajustar a asserção da linha 274 vira **Passo** do card (não contingência), o trabalho já aplicado na árvore permanece com um Passo 0 de conferência, e a `LM-T2b` volta `ready` na mesma posição da fila. A frase *"grava sempre para mais"* foi corrigida no card: vale para execução fechada **antes** de o reparo entrar na árvore. A quarta linha deixou de ser exceção — é a fórmula funcionando sobre a própria execução que a escreveu, com causa medida (`mtime` do hook 05:40 × fim do transcript 05:42; 371,6k pela fórmula velha contra 72,9k gravados).
+
+- **`AE-25` — a linha 4 da `Verificação` da `LM-T2b` é inexequível: `Select-String` é
+  case-insensitive por padrão.** Achado do executor no re-despacho da `LM-T2b` (2026-09-19),
+  devolvido como `blocked` razão `premissa` — segunda vez que este card para, e de novo por conduta
+  **correta**: ele rodou o comando publicado *literalmente como escrito* e recusou-se a alterá-lo
+  por conta própria (Regra 8). Medido pelo loop nos três modos:
+  `-Pattern 'EXA-T55\tSonnet' -SimpleMatch` → **1** (casa a linha nova, minúscula, porque
+  `Select-String` ignora caixa sem `-CaseSensitive`); o mesmo com `-CaseSensitive` → **0**, que é o
+  número que o card quer dizer; e `'EXA-T55\tsonnet' -SimpleMatch -CaseSensitive` → **1**. **A
+  entrega não está em causa:** `pytest tests/test_telemetria_hook.py -q` → `10 passed` e
+  `pytest tests/ -q` → `175 passed`, os dois exatamente os alvos do card, e a asserção da linha 274
+  espera `sonnet` com o payload ainda entregando `Sonnet`. O que falhou foi o **derivado de
+  aceite**, não o produto. **Confirmação em produção, no mesmo ato:** a linha que o hook gravou
+  para esta execução saiu **52,5k contra 52.480 do `<usage>`** — o reparo do `AE-3` funciona.
+  **Terceiro caso da família nesta janela** (`AE-21`, `AE-23`, `AE-25`), e o segundo em que o
+  padrão publicado não mede o que a prosa do card afirma: a residência do acumulador é o `TK-55`,
+  e quem lê dentro do plano é a `LM-T5`. A regra que os três pedem já está enunciada no `AE-23` —
+  *padrão de aceite é recorte do literal da fonte, rodado nos dois mundos* — e este caso acrescenta
+  a cláusula que faltava: **e com as opções que tornam a medida discriminante** (aqui,
+  `-CaseSensitive`, sem o qual o padrão não distingue o mundo velho do novo). **ABSORVIDO no mesmo dia pelo `ESC-11`** → `DM-34`: linha 4 reparada com `-CaseSensitive` e medida nos dois mundos (1 na árvore entregue, 0 na cópia pré-entrega), e a `LM-T2b` vai **à revisão sem terceiro despacho** — redespachá-la dispararia `blocked` no próprio Passo 0, que já cumpriu a função.
+
+- **`AE-26` — `backlog.py status` não materializa tarefa nenhuma deste plano: a gramática do
+  instrumento e a forma dos cards divergem.** Medido pelo loop em 2026-09-19, ao tentar cumprir o
+  `DM-34` (*"o estado quem materializa é você, pelo instrumento"*): `python .claude/tools/backlog.py
+  status LM-T2b review` devolve **`linha de status ausente para LM-T2b`**. Causa: o
+  `STATUS_BULLET_RE` (`backlog.py:70`) exige ``- **Status:** `<estado>` · AAAA-MM-DD[ · <razão>]``,
+  com separador `·` e data, e os cards deste plano escrevem a forma em prosa, com travessão
+  (``- **Status:** `ready` — card novo do `ESC-3`…``). **Não é o caso de um card:** dos **18**
+  cards `LM-*` do plano, **0** casam a gramática estrita e 10 casam a forma em prosa — o
+  instrumento não alcança nenhum. **Não bloqueou nada:** a materialização de status seguiu à mão,
+  como em toda esta janela e nas anteriores, e o laudo não depende dela. O achado é do mesmo
+  acumulador dos três anteriores (`TK-55`), com a diferença de que este não é um derivado errado e
+  sim um **contrato não honrado entre instrumento e artefato**, e de escopo do plano inteiro — por
+  isso a rota é a `LM-T5` (que já lê `AE-19`, `AE-21`, `AE-23`, `AE-25`) **com precedência sobre
+  elas**: decidir se os cards passam a nascer na gramática estrita, se o parser passa a aceitar a
+  forma em prosa, ou se o `DM-34` deixa de mandar usar o instrumento. **Não abre rodada própria** e
+  não altera a rota de nenhuma tarefa aberta. **ABSORVIDO no mesmo dia pelo `ESC-12`** → `DM-35` (i) e card **`LM-T4b`**, à frente da `LM-T4`: o parser aprende a forma em prosa (0 de 18 casam hoje; 15 de 34 no repositório) e a escrita passa a preservar a cauda. Enquanto a `LM-T4b` não fecha, a materialização à mão pelo loop é o procedimento **declarado**, não improviso.
+
+- **`AE-27` — três matérias de contrato abertas pelo laudo da `LM-T2b`, todas de dossiê e de
+  instrumento, nenhuma de entrega.** Laudo de 2026-09-19 (`aprovado 100%`, bloqueante `nenhuma`,
+  recomendação `escalar`), roteado pelo `B1` ao consultor. As três:
+  1. **Teste órfão que a restrição do card deixou de pé.** `DM-33` alcançava só a linha 274, e com
+     isso `test_tr_calcular_consumo_deduplica_por_message_id_uma_mensagem_duas_entradas`
+     (`tests/test_telemetria_hook.py:107`) sobreviveu com **nome e docstring afirmando um mecanismo
+     que a entrega removeu** (a dedupe por `message.id`), enquanto o teste novo
+     `test_tr_calcular_consumo_mesma_mensagem_duas_entradas_nao_dobra` (`:181`) o **duplica**, com
+     fixture e asserções idênticas. Não é defeito da entrega — ela estava proibida de tocá-lo.
+  2. **O extrator de `Arquivos-alvo` do instrumento de evidência infla o conjunto.** O dossiê
+     declarou **9** alvos onde o card lista **2**: `review_evidence.py` varre os *code spans* do
+     card inteiro e promoveu a alvo `message.id`, `251.1`, `505.2`, `2330.8`, `946.9`, `.jsonl` e
+     `telemetria_hook.py`, gerando sete seções de diff vazias. Consequência que importa: inflar o
+     conjunto de alvos **afrouxa a autoridade mecânica da dimensão `escopo`** — qualquer `.py`
+     citado em prosa vira alvo. Matéria do contrato do instrumento, vizinha da `LM-T3a`.
+  3. **`docs/telemetria.tsv` é proibido pelo card e escrito pelo módulo sob teste em produção.** O
+     estado git não distingue escrita do hook de edição do executor, e a resolução da dimensão
+     `escopo` dependeu da atribuição `alheio` **mais** contexto injetado pelo orquestrador — isto
+     é, a camada mecânica sozinha não resolveu.
+  O quarto achado do laudo — as duas paradas `A3b` como defeito de dossiê e de instrumento, nunca
+  de execução — **já está fechado** por `DM-33` e `DM-34`. As três acima vão ao consultor junto do
+  `AE-26`, com o qual a 2 e a 3 compartilham a matéria (contrato entre instrumento e artefato). **ABSORVIDO no mesmo dia pelo `ESC-12`** → `DM-35`: item 1 → card **`LM-T2f`** (fora do caminho crítico; os dois testes têm corpo byte a byte idêntico, medido); item 2 → card **`LM-T3b`** (a causa é o **limite do campo** em `_parsear_campos`, medida: 9 → 2 alvos na `LM-T2b`, e 1/2/5/1/2 inalterados nos demais cards); item 3 → **não vira card**, porque `_eh_registro_orquestracao('docs/telemetria.tsv')` já devolve **True** (medido) e o balde `registro_orquestracao` da `DB-25` já tira o arquivo do veredito — o resíduo é de **rubrica** e vai à `LM-T5`, cujo alvo é `docs/RUBRICA_DE_REVISAO.md`; item 4 → já fechado por `DM-33` e `DM-34`.
+
+- **`AE-28` — a `Verificação` 2 da `LM-T4b` é insatisfazível dentro do escopo do próprio card.**
+  Achado do executor no despacho da `LM-T4b` (2026-09-19), devolvido como `blocked` razão
+  `premissa` **antes de editar qualquer arquivo-alvo** — triagem na fase de plano interno, que é o
+  momento mais barato possível para o achado aparecer. Conferido pelo loop, ponto a ponto:
+  a `Verificação` 2 manda `backlog.py status LM-T2f ready` sair **0** depois do reparo; a `LM-T2f`
+  **já nasceu `ready`** (linha 1767 deste plano); com o `STATUS_BULLET_RE` corrigido pelo produto
+  (a) do próprio card, esse token passa a ser **lido**, o `atual` da transição vira `ready`, e
+  `('ready','ready')` **não está** em `_TRANSICOES` (`backlog.py:891-904`, conferido por
+  introspeção). O comando passa a cair em *"transição fora da tabela de §2.7"*, **exit 1** — nunca
+  exit 0. Hoje ele sai `linha de status ausente` (exit 3) **só porque o parser não lê o bullet**:
+  a baseline do card está certa, e é o alvo que é inalcançável. As três saídas possíveis —
+  self-loop em `_TRANSICOES`, tratar `atual == estado` como no-op, ou outra — são **decisão de
+  máquina de estados**, fora do *Produto do módulo* e contra as *Restrições*; o executor enumerou
+  as três e **não escolheu**, que é a conduta que o `G-NOASK` e a Regra 8 pedem. **Sétimo achado
+  da família nesta janela** (`AE-19`, `AE-21`, `AE-23`, `AE-25`, `AE-26`, `AE-27` item 2, `AE-28`)
+  e **terceiro card seguido** cuja linha de aceite não sobrevive ao contato com a árvore. O padrão
+  já não é sobre uma linha: é sobre **como o aceite é autorado**, e a residência disso é a
+  `LM-T5`. **ABSORVIDO no mesmo dia pelo `ESC-13`** → `DM-36` (i) e (ii): a `Verificação` 2 passa a medir o caminho de escrita sobre **cópia da fixture** `tests/fixtures/backlog/verde` em `tmp_path`, com transição `ready → in-progress` (que **está** em `_TRANSICOES`) e cauda em prosa que tem de sobreviver — medido no mundo de hoje: exit **3**, `linha de status ausente para ALF-T1`. A tabela de transições **não** entra no escopo do card.
+
+- **`AE-29` — `backlog.py status` não alcança tarefa nenhuma deste plano, e o bullet de `Status` é
+  só metade da causa.** Achado do `pantonic-consultant` no `ESC-13` (2026-09-19), medindo o mundo
+  **depois** do reparo que a `LM-T4b` contrata — e não o mundo de hoje, que é o que o `AE-26` já
+  descreve. Método: cópia do repositório, `STATUS_BULLET_RE` relaxado em memória, `carregar()` e
+  `transacionar_status()` chamados por introspeção. Resultado: com o parser corrigido, **20 de 21**
+  bullets passam a ser lidos e a transição **ainda** morre em **exit 3**,
+  `linha de índice ausente para P-0740`. Causa: o plano é carregado com `id = "P-0740"` (do arquivo)
+  e a linha de índice do diário tem `id = "P-0740-LM"`; `_posicao_indice` casa por **igualdade de
+  id** e não encontra nada. Medido também que a rota óbvia não serve: casar por prefixo é **ambíguo**
+  (`P-0729` tem cinco linhas de índice), e casar por caminho do plano não funciona porque
+  `LinhaIndice.arquivo` não guarda o caminho do plano (zero casamentos para **todos** os planos,
+  medido). **Alcance:** não é defeito de card nem deste plano — é o contrato entre plano e índice
+  no `backlog.py`, cuja residência é o **`P-0739`** (*"O pickup vira instrumento"*), hoje
+  **estacionado por ato do dono** até o `P-0740` encerrar. **Rota:** registrar aqui e levar ao
+  `P-0739` no retorno dele, pela `LM-T5a`, que é quem reabre aquele plano para reescrita — sem
+  abrir card de código neste plano. **Consequência imediata, e é emenda ao `DM-34`:** enquanto o
+  `AE-29` estiver aberto, o loop materializa estado **à mão**, e isso é **procedimento declarado**,
+  não improviso — o `DM-34` (ii) mandava usar o instrumento, e o instrumento não alcança. A
+  `LM-T4b` **não** perde razão de ser: ela fecha a metade que é deste plano, e sem ela o `P-0739`
+  consertaria o índice para um leitor que continuaria sem ler o estado.
+
+- **`AE-30` — a `Verificação` 3 da `LM-T5` mede um arquivo que a própria `LM-T5` está proibida de
+  tocar.** Achado do loop no gate de delegação (2026-09-19), **antes de despachar** — nenhum
+  executor gasto. Medido: a `Verificação` 3 do card exige que
+  `Select-String docs/plans/P-0739-backlog-instrumento.md -Pattern '- **Objetivo:**' -SimpleMatch`
+  **suba em 6** sobre o valor do despacho (re-medido agora: **18**, batendo com o `ESC-6`); mas o
+  `ESC-13` (`DM-36` (iii)) retirou o segundo entregável desta tarefa e escreveu no mesmo card que
+  *"**esta** tarefa não toca `docs/plans/P-0739-backlog-instrumento.md`"*. A linha de aceite ficou
+  órfã do entregável que a justificava: ela pertence agora à `LM-T5a`. As outras duas verificações
+  estão íntegras e foram conferidas por mim no gate — rubrica com **274** linhas e **0**
+  ocorrências de `LM-T`, que discrimina —, e a contagem de cards a julgar bate: **22** cards no
+  plano menos `LM-T5`, `LM-T5a` e `LM-T6` = **19**, exatamente o que o `Pronto quando` prevê como
+  relação. **Oitavo achado da décima segunda classe, e o mais instrutivo de todos:** ele viola a
+  alínea (d) do critério **(xii)** — *"alvo alcançável dentro do escopo declarado do card"* — que é
+  **este mesmo card** que vai publicar na rubrica. O defeito sobreviveu ao ato que escreveu a regra
+  contra ele, o que confirma, melhor que qualquer argumento, que a classe é de **método** e não de
+  atenção: quem acabara de enunciar a regra não a aplicou ao próprio texto três parágrafos abaixo.
+  Reforça o que a `LM-T5` tem de produzir: a régua precisa virar **passo de conferência executável
+  na autoria**, não mais um critério para ler com cuidado. **ABSORVIDO no mesmo dia pelo `ESC-14`** → `DM-37`: a linha sai da `LM-T5` (já reside como `Verificação` 1 da `LM-T5a`), as duas que ficam foram reescritas na forma normativa com baselines re-medidas, e a classe deixa de ser tratada por critério de leitura: nasce o card **`LM-T5b`** (`card_check.py`), que roda os comandos do card e os confronta com o mundo.
+
+- **`AE-31` — a pendência e os quatro achados do laudo da `LM-T5`.** Laudo de 2026-09-19
+  (`ressalva 88%`, bloqueante `nenhuma`, recomendação `escalar`), roteado pelo `B1`. A entrega
+  ficou de pé — 20 cards julgados, a forma normativa publicada em `### 8.1`, a frase de ciclo na
+  rubrica, crescimento 69 ≤ 70 — e a única dimensão fora de `conforme` é `criterio-de-pronto`
+  (`parcial`).
+  1. **Pendência, e é a que bloqueia a `LM-T5b`:** a norma da `8.1` torna a `Verificação` 1 da
+     `LM-T5b` **inalcançável** — ela exige `card_check --tarefa LM-T3b` sair **0**, mas os itens 2
+     e 3 da `LM-T3b` não trazem os três elementos (sem bloco cercado, sem `Medido antes`), e o
+     item 3 da **própria `LM-T5b`** também não. Decisão devida **antes** do despacho da `LM-T5b`:
+     a norma é **prospectiva** (e a baseline do aceite muda de card) ou **retroativa** (e os cards
+     abertos se reautoram)? É de novo a alínea (d) do critério (xii), agora entre dois cards.
+  2. **`LM-T4b`:** o `Pronto quando` exige `backlog.py status` transitar **card real** — alvo que o
+     próprio card declara inalcançável pelo `AE-29`, depois de o `ESC-13` mover a `Verificação` 2
+     para fixture. A emenda corrigiu o aceite e deixou o `Pronto quando` para trás: mesma causa do
+     `AE-30`, agora no campo vizinho.
+  3. **`LM-T4`:** publica `DM-2`..`DM-5` em `GOVERNANCA.md` §7, lista que a **checagem 4** do
+     `.claude/checks/check-readme.ps1` conta contra a tabela *"Os guardrails"* do `README.md`;
+     `.claude/README.md` não está nos `Arquivos-alvo` e o guarda não está na `Verificação`. Mesma
+     classe do `AE-12`, critério (viii).
+  4. **A numeração dos critérios:** o card fala em *"doze critérios"* enumerando **treze**, e
+     prescreve mais duas aferições sem numeral (`ESC-7`, rota de achado órfã; `ESC-8`, partição de
+     domínio). A entrega as publicou como **(xiv)** e **(xv)** — decisão de notação dentro do
+     arquivo-alvo e dentro do escopo, que o laudo não rebaixou. O planejamento reconcilia o
+     numeral no card.
+  **Nono caso da décima segunda classe, achado pelo reviewer e o mais direto de todos:** as três
+  linhas de `Verificação` do **próprio card da `LM-T5`** publicam a baseline como
+  `**Medido no ESC-14: 274**`, fora do literal `**Medido antes: <valor>**` que essa mesma tarefa
+  foi mandada normatizar — **o card não passaria no `card_check` que ele prescreve**. Não é ironia:
+  é a medida de que a norma precisa do instrumento para valer, que é exatamente a tese da
+  `LM-T5b`. **ABSORVIDO no mesmo dia pelo `ESC-15`** → `DM-38`: item 1 → a norma é **exigível no despacho**, card a card, e o aceite da `LM-T5b` migra para **fixture** (`EX-T1`/`EX-T2`/`EX-T3`), com a regra geral nova *aceite de instrumento mede-se sobre fixture, artefato vivo é uso*; item 2 → `Pronto quando` da `LM-T4b` reparado para a fixture; item 3 → `README.md` nos `Arquivos-alvo` da `LM-T4` e `check-readme.ps1` → exit 0 na `Verificação`, como guarda de regressão do invariante de contagem; item 4 → numeral reconciliado por nota, com a rubrica como referência canônica e o card fechado intocado.
+
+- **`AE-32` — o `card_check` tem falso verde residual, e o gate da `### 8.1` não pode ser ligado
+  como está.** Laudo da `LM-T5b` (2026-09-19, `ressalva 91%`, bloqueante `nenhuma`, recomendação
+  `escalar`), roteado pelo `B1`. O instrumento **existe e pega o que foi contratado** — as três
+  fixtures saem como o card manda, o contrato de segurança está implementado e o parser é
+  importado, não reescrito. Três matérias:
+  1. **Falso verde, reproduzido pelo reviewer:** item numerado cujo bloco cercado **não vem logo
+     após `N.`** é descartado **em silêncio**, e o card sai `exit 0` com a baseline envelhecida
+     por conferir. Caso rodado: item com prosa de abertura declarando `Medido antes: 42` contra
+     comando que imprime `999` → **exit 0**. É a classe inteira que o instrumento existe para
+     fechar, sobrevivendo dentro dele.
+  2. **A `### 8.1` não define de forma parseável onde começa um item.** Prosa antes do bloco
+     cercado — que é a forma do item 1 da `LM-T3b`, card que a própria `### 8.2` julga *"passa"* —
+     é legítima pela norma escrita e **invisível** para o `_ITEM_HEAD_RE`. Rota: emenda à `8.1`
+     fixando `N.` seguido **imediatamente** do bloco cercado, mais o dever de o instrumento
+     **nomear** todo item numerado que não casar (em vez de ignorá-lo).
+  3. **"Fora do aceite mecânico" não tem mecanismo.** O card manda o autor *"reescrever o comando
+     recusado ou declará-lo fora do aceite mecânico"*, e a segunda via não existe — sem flag, sem
+     marcador. Medido: os **4** itens da `LM-T2e` e o item 1 da `LM-T5a` usam
+     `pwsh -Command "…; exit $LASTEXITCODE"`, são **recusados** pelo contrato de segurança e
+     portanto **nunca** sairiam 0 — contra a regra da `8.1` de que *card cujo `card_check` não sai
+     0 não se despacha*. Ligar o gate hoje bloquearia card legítimo.
+  4. **O contrato de segurança não tem teste.** O `Pronto quando` exige *"recusa comando fora da
+     lista fechada"*; o reviewer **verificou em execução** que metacaractere e token fora da lista
+     são recusados sem executar o alvo, mas nenhum dos três testes trava esse comportamento.
+  **Consequência operacional imediata, e é minha:** o gate *"card cujo `card_check` não sai 0 não
+  se despacha"* **não entra em vigor** nesta janela. O `card_check` roda como **instrumento de
+  apoio** no gate de delegação — o loop lê o que ele reporta e continua re-derivando as baselines à
+  mão —, e só vira gate quando os itens 1 a 3 fecharem. Décimo caso da décima segunda classe, e o
+  primeiro **dentro do próprio instrumento** que a classe produziu. **ABSORVIDO no mesmo dia pelo `ESC-16`** → `DM-39` e card **`LM-T5c`**, à frente da fila, com as quatro matérias num assunto só — mais uma **quinta**, achada no `ESC-16` ao rodar o instrumento contra o card que o repara: a saída do subprocesso volta em `cp1252` e inviabiliza `Medido antes` com acento (`DM-39` (iv)); a suspensão do gate decidida pelo loop está **endossada** e registrada em `DM-39` (ii) — efeito suspenso, texto não revogado, reativação pela própria `LM-T5c`.
+
+- **`AE-33` — o `card_check` trocou falso verde por falso vermelho, e o gate segue inligável.**
+  Laudo da `LM-T5c` (2026-09-19, `ressalva 76%` — o mais baixo da janela —, bloqueante `nenhuma`,
+  recomendação `escalar`), roteado pelo `B1`. O falso verde do `AE-32` **fechou**: o reviewer
+  reproduziu o caso original (item fora da forma com `Medido antes: 42` contra saída `999`) e hoje
+  ele sai `exit 1` nomeando o item. Mas duas matérias novas:
+  1. **Falso vermelho por marcador de item mal ancorado.** O card prescreveu em (b) varrer
+     `^\s*\d+\.` sobre um texto que o parser que ele próprio manda reusar
+     (`rdo._parsear_campos`) **já achatou numa linha só** — decisão não fechada, que a execução
+     resolveu como *"dígito precedido de espaço em qualquer lugar"*. Efeito medido: card
+     **conforme** à `### 8.1`, com prosa legítima depois do `Medido antes` citando `8.1` ou
+     `Python 3.12`, sai `exit 1` com **itens fantasma** — no próprio card da `LM-T5c`, "item 8"
+     duas vezes. Rota: ancorar o marcador em **quebra de linha do markdown cru**, ou reservar uma
+     linha do dossiê de campos sem achatamento.
+  2. **A matéria 5 fechou só para um tipo de filho, e regrediu outro.** `encoding="utf-8"` fixo
+     fez passar o filho que reconfigura `stdout` para UTF-8 (o próprio `card_check` aninhado:
+     literal com acento fecha `exit 0`), mas filho `python` simples emite `cp1252` (`b'caf\xe9'`)
+     e **era comparável antes** — agora não é; e `pwsh` emite **OEM** (`b'n\xc6o'`), que não é
+     comparável em nenhum dos dois mundos — sendo `pwsh` a **forma canônica de comando do kit**.
+     Rota: decodificar por tentativa (UTF-8, depois locale/OEM), ou impor `PYTHONIOENCODING` /
+     `OutputEncoding` ao filho.
+  **Consequência operacional, e confirma a decisão do `DM-39` (ii):** o gate *"card cujo
+  `card_check` não sai 0 não se despacha"* **continua suspenso**. Ligá-lo hoje reprovaria card
+  conforme — o erro simétrico do que o `AE-32` descrevia, e pior para o loop, porque bloqueia
+  despacho legítimo. O `card_check` segue como **instrumento de apoio**, com a ressalva nova de que
+  o vermelho dele **não** é evidência até a matéria 1 fechar. Décimo primeiro e décimo segundo
+  casos da décima segunda classe. **ROTEADO pelo `ESC-17`** → `DM-40`: as duas matérias são **re-especificação** (ler o bloco bruto em vez do campo achatado por `rdo._parsear_campos`; política de codificação por tipo de filho) e ficam **abertas**, para o planejamento **pós-marco**, com residência no acumulador `TK-55` — nenhum card de código nasce agora. O gate segue **suspenso**, a frase *o vermelho do `card_check` não é evidência* entra na `### 8.1` pelo card **`LM-T5d`** (fora do caminho crítico, não antes do marco), e a cadeia inteira vira **insumo do piloto** (`DM-40` (v)).
+
+- **`AE-34` — rótulo de campo que quebra de linha torna o card ilegível para o instrumento de
+  evidência, e o laudo fica bloqueado.** Achado do loop no Passo 6 da `LM-T4b` (2026-09-19), com a
+  **entrega já pronta e verificada** (`25 25`, `41 passed`, `186 passed`). Medido:
+  `review_evidence.py --tarefa LM-T4b` sai **exit 1**,
+  `campo obrigatório ausente em 'LM-T4b': 'pronto-quando'`. Causa isolada por comparação: o rótulo
+  do campo foi decorado e **quebrou de linha** — `- **Pronto quando (reparado pelo ESC-15, DM-38
+  (iii) — o campo vizinho que a emenda do` na linha 2176, com o `):**` que o fecha caindo na
+  **linha seguinte** —, e o parser lê **linha a linha**. A decoração em si **não** é o defeito: a
+  `LM-T5` tem `- **Pronto quando (reescrito pelo ESC-13, DM-36 (v) — contagem é relação, não
+  constante):**` e é lida sem problema, porque **cabe numa linha**. Varredura do plano inteiro:
+  só a `LM-T4b` está afetada; `LM-T5`, `LM-T4` e `LM-T3b` geram dossiê com `exit 0`.
+  **Décimo terceiro caso da classe, e o primeiro a derrubar o instrumento de evidência** — os
+  anteriores derrubavam comando de aceite. Regra que ele pede, e que é mecânica:
+  **rótulo de campo termina na mesma linha em que começa**; decoração no rótulo é permitida
+  enquanto o `:**` couber na primeira linha. Rota: reparo do card (uma requebra, zero caractere de
+  conteúdo alterado) e critério novo na rubrica de autoria, vizinho do (xii). **ABSORVIDO no mesmo dia pelo `ESC-18`** → `DM-41`: rótulo requebrado (medido depois: `review_evidence.py --tarefa LM-T4b` → **exit 0**, dossiê gerado) e o critério `(xvi)` acrescentado ao card **`LM-T5d`**, que passa a ser *a rubrica posta em dia* e segue fora do caminho crítico.
+
+- **`AE-35` — a fronteira razão/cauda no bullet de `Status`, e o aceite que só exercitou um ramo.**
+  Laudo da `LM-T4b` (2026-09-19, `ressalva 91%`, bloqueante `nenhuma`, recomendação `escalar`),
+  roteado pelo `B1`. A entrega fechou o que era deste plano — os **25** bullets de `Status` passam
+  a ser lidos (`25 25`), a cauda sobrevive à transição sobre fixture, a recusa continua recusando e
+  `_TRANSICOES` ficou intocada. Duas matérias:
+  1. **Pendência:** o módulo entregue reescreve **razão e cauda no mesmo campo**, e com isso o
+     round-trip `blocked → ready` **perde a prosa**. Decisão devida: onde mora o reparo da
+     fronteira — neste plano ou no `P-0739` (gramática do `backlog.py`), que o dono **estacionou**.
+     Não é defeito de execução: o card contratou preservar a cauda, e ela é preservada no caminho
+     que o card mandou exercitar.
+  2. **Achado:** a `Verificação` 2 e os três testes exercitam **só o ramo em prosa** (sem razão de
+     máquina); **nenhuma** linha de aceite discrimina o ramo canônico `· data · razão — cauda` —
+     que é justamente a forma que a escrita do módulo **emite** ao transitar para `blocked` com
+     `--razao`. É a classe do critério (xii): o aceite não cobre o mundo que o produto cria.
+  Décimo quarto caso da série, e o primeiro em que o buraco do aceite está no **ramo que o próprio
+  produto gera**, não no que ele lê. **ABSORVIDO no mesmo dia pelo `ESC-19`** → `DM-42`: item 1 → residência **neste plano** (a gramática é do `DM-35` (i), não herança do `P-0739`), card **`LM-T4c`**, **pós-marco**, porque o `AE-29` torna o caminho defeituoso inalcançável hoje; item 2 → critério **`(xvii)`** na `LM-T5d`.
+
+- **`AE-36` — o produto (c) da `LM-T4` contradiz os `Arquivos-alvo`, o `Pronto quando` e três das
+  quatro `Verificações` do mesmo card.** Achado do executor no despacho da `LM-T4` (2026-09-19),
+  devolvido como `blocked` razão `premissa` **sem nenhuma edição** — quarta vez nesta janela que um
+  executor para diante de matéria que exigiria decisão sua, e a segunda em que o faz antes de tocar
+  arquivo. Medido por ele: o produto (c) manda registrar *"o que permanece, o que migra para o
+  `scrum-master` e o que é aposentado"* sobre `proximo-passo`/`handover`, e a forma **ratificada**
+  que ele absorve (`AUT-T6`, `DU-5`/`DU-9` do `P-0737` — *"transcrever, não deliberar"*) manda
+  **apagar** `.claude/skills/proximo-passo/` e `.claude/skills/handover/` e criar
+  `passagem-de-bastao`. Mas, no mesmo card: os `Arquivos-alvo` listam os **dois** arquivos como
+  alvos de edição; o `Pronto quando` exige *"o item 5 do gate de delegação em
+  `.claude/skills/proximo-passo/SKILL.md` está **reescrito**"*; e três das quatro `Verificações`
+  exigem os dois **vivos** e a contagem de skills **intacta** — a 1 (`check-drift` exit 0, que
+  compara o `.claude/README.md` com o regenerado), a 3 (`check-readme.ps1` exit 0 com **11
+  skills**, re-medido no despacho) e a 4 (`Select-String -Path` sobre esses caminhos). Apagar as
+  duas skills derruba 1, 3 e 4; mantê-las contraria a forma ratificada que o card absorve.
+  **Escolher entre as duas rotas, ou autorar a partição de três vias, seria decisão do executor** —
+  e ele não a tomou, que é a conduta do `G-NOASK` e da Regra 8. Os produtos (a), (b) e (d) estão
+  **intocados** e não são objeto do impedimento: a matéria é só o (c). Décimo quinto caso da série,
+  e o de maior alcance — o primeiro em que a contradição é **entre o produto e o aceite do mesmo
+  card**, e em que a rota escolhida muda a **superfície pública do kit** (duas skills a menos, uma
+  a mais), o que toca contagem de projeção, `DOC_MAP` e qualquer consumidor. **ABSORVIDO no mesmo dia pelo `ESC-20`** → `DM-43`: **técnico** — a rota do (c) já estava ratificada pelo dono (`DU-5`, 2026-08-22; natureza da skill nova fixada por ele em `TK-36`, 2026-08-13, como superfície **agente↔agente** que *ele não invoca, não lê e não acompanha*), e o que estava errado era o **aceite** do card. `Arquivos-alvo`, `Pronto quando` e as `Verificações` 1, 3 e 4 foram reescritos para o mundo pós-remoção, com duas verificações novas (diretórios ausentes; citações por caminho: **4** e **3** medidas hoje) e a regeneração das duas projeções no mesmo ato (11 → **10** skills).
+
+- **`AE-37` — a aposentadoria fechou por caminho e deixou ponteiro quebrado por nome em cinco
+  superfícies vivas.** Laudo da `LM-T4` (2026-09-19, `aprovado 100%`, bloqueante `nenhuma`,
+  recomendação `escalar`), roteado pelo `B1`. A entrega está íntegra — os dois literais copiados
+  das residências únicas, o bloco A intocado, a doutrina de status × veredito conforme `DM-25`,
+  `DM-26` e `DM-32`, as seis verificações verdes, skills 11 → 10, guardrails 18 → 19. Duas
+  matérias, e a primeira é de método:
+  1. **Varredura por caminho não alcança citação por nome.** As `Verificações` 5 e 6 medem
+     `.claude/skills/proximo-passo/` e `.claude/skills/handover/` — **caminhos** —, e a citação por
+     **nome** sobrevive em superfície viva **fora dos `Arquivos-alvo`**: `.claude/settings.json:6`
+     (`Edit(/.claude/skills/proximo-passo/**)`, regra de permissão para diretório que deixou de
+     existir), `.claude/skills/bootstrap-pantonic/SKILL.md:53` (**manda copiar** as duas skills
+     apagadas — um projeto novo nasceria quebrado), `.claude/skills/diario-de-obras/SKILL.md:45` e
+     `.claude/global/docs/GOVERNANCA_MEMORIAS.md:154`. Rota: card único de **regularização de
+     superfície** (`G-SURFACE`, §7 item 16) no replanejamento, com varredura por **nome** além da
+     varredura por caminho.
+  2. **A proibição do card colidiu com a própria aposentadoria.** O *Não fazer* proibia reabrir o
+     **item 17** (`G-REPLAN`) e não previu que o próprio item 17 **cita a skill que a tarefa
+     apaga** — `GOVERNANCA.md:804` e `README.md:748`, os dois **dentro** dos `Arquivos-alvo`. O
+     executor obedeceu e **reportou**, conduta correta por `G-PLANFIDELITY`/`G-NOASK`. Rota: a
+     mesma rodada libera o item 17 para a troca de um nome.
+  **Décimo sexto caso da série**, e o primeiro em que o aceite estava **certo no que media** e
+  incompleto **no eixo**: caminho, não nome. É material direto para o critério (xii) — a régua
+  ganha o eixo que faltava. **ABSORVIDO no mesmo dia pelo `ESC-21`** → `DM-44` e card **`LM-T4d`** (as duas matérias num assunto só, recomendado **antes da `LM-T3b`** por urgência assimétrica medida no `bootstrap-pantonic`), com o mapa de sucessão fechado no card e `.claude/settings.json` **fora do escopo**, como ato do dono no relatório de encerramento.
+
+- **`AE-38` — o colapso de enumeração que a autorização estreita não previu, e um ponteiro
+  pré-existente.** Laudo da `LM-T4d` (2026-09-19, `aprovado 100%`, bloqueante `nenhuma`,
+  recomendação `escalar`), roteado pelo `B1`. A entrega fecha o `AE-37`: `` `proximo-passo` `` e
+  `` `handover` `` vão a **0** nas oito superfícies, o `bootstrap-pantonic` deixa de mandar copiar
+  skill inexistente, a palavra *handover* em prosa ficou intacta e o `.claude/settings.json` não
+  foi tocado. Duas matérias:
+  1. **Pendência:** a linha 17 da tabela *Os guardrails* do `README.md` enumerava **duas** skills
+     (`scrum-master`/`proximo-passo`) que o mapa de sucessão **colapsa numa só**, e o texto
+     publicado ficou *"roteamento das skills `scrum-master`/`scrum-master`"* (`README.md:748`) —
+     redundância visível em documento canônico. O card autorizou trocar *"só o nome"* e **não
+     fechou o caso do colapso**; a execução obedeceu à restrição estreita **corretamente**, e o
+     laudo não a rebaixou por isso. O mesmo padrão, redundante mas **não falso**, aparece no
+     *Enforcement* do item 17 (`GOVERNANCA.md:804`). Rota: autorização estreita **nova** para
+     colapsar as duas enumerações.
+  2. **Achado pré-existente, não introduzido pela entrega:**
+     `.claude/skills/diario-de-obras/SKILL.md:301` cita *"ver skill `passagem-de-bastao` §2"*, e a
+     skill sucessora **não tem seção 2** — usa *Parte 1..4*, e a matéria está na *Parte 3*. Medido
+     em `de28d01`: a `handover` removida **também** não tinha seção 2, logo a imprecisão é
+     **anterior** à `LM-T4d` e fora do mandato dela. Rota: tíquete de correção de ponteiro.
+  **Décimo sétimo caso da série**, e o primeiro em que o defeito nasce da **autorização estreita**
+  fazendo exatamente o que devia: proibir o executor de decidir. Não é argumento contra a
+  autorização estreita — é a demonstração de que ela precisa **prever o caso que cria**, que é o
+  eixo do `DM-18` (i) aplicado a autorização em vez de a contagem.
+
+- **`ESC-22` — queda do consultor por limite de sessão, sem resposta.** 2026-09-19: o
+  `pantonic-consultant` terminou por erro de API (`rate_limit`, HTTP 429, *session limit*, reseta
+  às 09:10 `America/Sao_Paulo`) **sem devolver** as duas alocações do `AE-38` nem a varredura final
+  da `LM-T3b`. Notificação **sem bloco `<usage>`**: o consumo desta passagem é `PARCIAL — trecho
+  pré-queda não medido`, e nenhuma linha de telemetria é apensada por ela (`GOVERNANCA.md` §4.2 —
+  telemetria é medida, nunca estimada). **Nada se perde:** o `AE-38` está registrado com as duas
+  matérias e a rota que o laudo sugeriu, e vai ao relatório de encerramento como matéria de
+  planejamento pós-marco. **Consequência para a `LM-T3b`:** a varredura do consultor era
+  conveniência, **não gate** — o gate de delegação é do loop, que re-deriva toda baseline no
+  despacho (`proximo-passo`, item 3, hoje na `passagem-de-bastao`), e a ordem da fila é do loop
+  pela Diretiva de execução item 4. O loop segue e gateia a `LM-T3b` por medida própria; se a
+  medida recusar, a janela encerra com o que há, que é o `B3`.
+
+- **`AE-39` — o invariante de aceite publicado como literal envelheceu em um dia e quase disparou
+  um `blocked` indevido.** Laudo da `LM-T3b` (2026-09-19, `aprovado 100%`, bloqueante `nenhuma`,
+  recomendação `escalar`). A entrega fecha o `AE-27` item 2: a extração da `LM-T2b` cai de **9**
+  para **2**, e as outras cinco ficam inalteradas — re-medidas pelo reviewer **nos dois mundos**
+  (pré-reparo `1, 2, 8, 1, 2`; pós-reparo `1, 2, 8, 1, 2`). O defeito: a `Verificação` 2 e o
+  `Pronto quando` do card publicam `1, 2, **5**, 1, 2`, e a extração da `LM-T4` é **8** desde a
+  reescrita legítima do `ESC-20` — mudança de **outro card**, não deste. **Lida ao pé da letra, a
+  Contingência 2 mandaria `blocked` razão `premissa`**, e só não o fez porque o gate de delegação
+  re-mediu e publicou `1, 2, 8, 1, 2` no despacho, conferindo os oito caminhos um a um para
+  descartar inflação. Com o consultor indisponível (`ESC-22`), esse `blocked` teria encerrado a
+  janela num **falso bloqueio**. Rota, ao planejamento pós-marco: corrigir o literal do card,
+  revisar a linha `LM-T3b` da `### 8.2` — que o julga *"passa"* — e escrever **contingência de
+  invariante em relação** (*"inalteradas entre os dois mundos"*), **nunca em literal**.
+  **Décimo oitavo e último caso da série nesta janela**, e o que melhor a resume: é o critério
+  (x)/(xiii) da própria rubrica **dentro do card que a `### 8.2` aprova**, e o único em que o
+  defeito foi neutralizado **antes** de custar qualquer coisa — pelo gate, por medida, no despacho.
+
+- **`AE-40` — o card da `LM-T9` não gera dossiê de evidência: tem `Arquivos-alvo` **e**
+  `Entregável`.** Achado do loop em 2026-09-19, ao conferir os instrumentos depois de materializar
+  o `DM-45`. Medido: `review_evidence.py --tarefa LM-T9` sai **exit 1**,
+  `'LM-T9' precisa de exatamente um entre 'Arquivos-alvo' e 'Entregável' (tem os dois)`. **É
+  pré-existente**, não introduzido pela emenda do `DM-45` — a emenda expandiu o **conteúdo** do
+  `Entregável` e não criou campo nenhum; os dois já conviviam desde a autoria do card. Conferido
+  que é isolado: `LM-T6`, `LM-T5a` e `LM-T4c` geram dossiê com `exit 0`. Consequência se não for
+  reparado: a `LM-T9` chega ao Passo 6 e **o laudo não pode ser gerado**, que é exatamente o que o
+  `AE-34` causou na `LM-T4b` — com a diferença de que lá o rótulo estava quebrado e aqui há um
+  campo a mais. Rota: reparo do card pelo consultor — decidir qual dos dois campos é o dele, já que
+  a `LM-T9` tem produto documental (`Entregável`) **e** três arquivos nomeados. **Décimo nono caso
+  da série**, e o terceiro em que o defeito derruba um **instrumento** em vez de um comando de
+  aceite (`AE-26`, `AE-34`, `AE-40`).
+- **`AE-41` — o item (b) da `LM-T8` nomeia o que publicar e não onde: o local ficaria com o
+  executor.** Devolução `blocked` razão `premissa` em 2026-09-19, no primeiro despacho da tarefa
+  depois que a `DM-27` e o fechamento da `LM-T4` a destravaram. O executor conferiu as âncoras e
+  **elas batem** — `pantonic-planner.md:5`, `:27` e `:283` nos literais citados —, e o item (a) é
+  executável como está. O que não fecha é o item (b): ele manda publicar a **régua de tema** e os
+  cinco critérios de autoria (`DM-18`, `DM-21`..`DM-24`) no arquivo do planner, mas os **dois**
+  pontos que o card nomeia (`:27` e `:283`) são ambos da **gramática de cabeçalho**. Para a régua
+  de tema e os critérios não há ponto nomeado, e os candidatos medidos pelo executor são pelo menos
+  três — o bullet de `## Fatos estáveis`, as *Regras de autoria* da Fase 3, e o item 5
+  (*Dimensionamento*) da Fase 4, hoje *"parta por ramo, nunca por volume arbitrário"* (linhas
+  193-196) — mais a hipótese de seção nova. `Pronto quando` e `Verificação` **não discriminam**
+  nenhum deles: a linha 1 mede só o `tools:` e as linhas 2-3 são regressão de `kit_check`. Escolher
+  o local é **decisão**, e decisão não é do executor (`G-NOASK`, `GOVERNANCA.md` §7 item 18;
+  `CLAUDE.md` global, Regra 8). Rota: reparo do card pelo consultor (`ESC-23`) — fixar o local de
+  cada bloco e dar a `Verificação` que o discrimine, ou partir o card, deixando o item (a) seguir
+  sozinho. **Vigésimo caso da série**, e o segundo em que o defeito é de *onde publicar* e não de
+  *o que publicar*. **ABSORVIDO no mesmo dia pelo `ESC-23`** → `DM-46` e card `LM-T8`
+  reescrito: local nomeado nos quatro pontos, literal `de`/`para` dentro do card, `Verificação`
+  de doze linhas discriminando bloco a bloco com os dois valores rodados, e o card de volta a
+  `ready` — **inteiro**, num despacho só. O `ESC-23` mediu ainda um defeito que o achado não
+  trazia: a concessão de `Bash` torna **falsas três frases** do mesmo arquivo, que o item (a)
+  passa a fechar no mesmo ato (`DM-46` (iii)).
+- **`AE-42` — a `LM-T8` não é barrada pelo card, e sim pelo classificador de permissão do
+  harness.** Segunda devolução `blocked` da mesma tarefa em 2026-09-19, **logo depois** do reparo
+  do `ESC-23`/`DM-46` e com o gate verde: `python .claude/tools/card_check.py --tarefa LM-T8` sai
+  **exit 0**, e o executor conferiu os literais antes de tentar editar. A recusa veio do harness:
+  `Edit` em `.claude/agents/pantonic-planner.md` (literal 1, o `tools:` ganhando `Bash`) devolveu
+  **`Blocked by classifier`**. O executor **não contornou por `Bash`**, e agiu certo — mudança de
+  configuração de agente é superfície de permissão, e superfície de permissão só o dono altera
+  (`GOVERNANCA.md` §7 item 13). **Não é reparável por consultor**: o card, os literais, os quatro
+  locais e os doze comandos de aceite estão todos fechados e medidos; nenhuma emenda de plano
+  levanta um classificador. **É a terceira vez que esta tarefa para na mesma classe de causa** —
+  `AE-11` (regra ausente nos dois `settings.json`), `DM-27` (o dono concede em conversa; a regra
+  `Edit`/`Write` sobre `.claude/agents/**` é instalada e a lição fica: *permissão concedida em
+  conversa não é permissão instalada*) e agora `AE-42`, em que a regra **está** instalada e mesmo
+  assim o classificador barra. A lição da `DM-27` ganha um segundo andar: **regra instalada em
+  `settings.json` não é permissão efetiva** — o classificador do harness é uma camada a mais, e a
+  única evidência de permissão é a **edição que passa**. Rota: ato do dono, nomeado no relatório
+  de encerramento desta janela. **Vigésimo primeiro caso da série.**
+- **`AE-43` — o loop dobrou duas linhas da série, e uma delas entrou na medida publicada do
+  marco.** Achado do próprio loop em 2026-09-19, ao somar a janela para o relatório. O hook
+  `SubagentStop` grava sozinho a linha do **executor**, mas **não** grava a do `pantonic-reviewer`
+  nem a do `pantonic-consultant` — medido nesta janela: a linha `LM-T2f-revisao` e as duas de
+  consultor (`ESC-23`, `ESC-24`) faltavam e foram apensadas à mão, corretamente; já as da `LM-T8`
+  redespachada e da `LM-T6` **o hook havia gravado**, e o loop apensou por cima, criando
+  `LM-T8-redespacho` (4 / 66,4k / 57,7 s) e uma segunda `LM-T6` (47 / 122,6k / 533,4 s). A regra
+  existe e é do `scrum-master` (*'o número da linha é o do bloco `<usage>` da notificação,
+  **conferido**'*) — o que faltou foi **conferir antes de apensar**, não a regra. As duas linhas
+  foram removidas no mesmo ato e a série está correta.
+  **A medida publicada do marco NÃO foi afetada, e isso foi medido, não suposto.** O loop suspeitou
+  que a §10 da `LM-T6` tivesse somado a duplicata — ela existia em disco quando o marco mediu — e
+  redespachou o executor do marco para re-derivar. Resultado: o total **não muda** —
+  **3.712,8k tk / 1.098 tool uses / 11.147,7 s** em 21 módulos, idêntico ao publicado —, porque a
+  linha duplicada pertencia à **`LM-T8`**, que está `blocked` por `permissao` e que a §10 **já
+  declarava fora da série**. A decomposição por papel e os três percentuais de confronto com a
+  baseline da `BKL-T4` (-37,9% / -26,3% / -57,9%) seguem válidos, com as âncoras conferindo exatas.
+  A única frase corrigida no card foi a da janela 4, cuja composição mudou sem mudar o total.
+  **Lição, e é do loop:** a suspeita estava certa em existir e errada em concluir — o loop chegou a
+  publicar aqui um delta esperado (`3.646,4k`) **derivado por subtração**, que a medida derrubou;
+  é o mesmo defeito (`DM-23`) que a `LM-T2f` apontou nesta janela, cometido pelo próprio
+  orquestrador. **Vigésimo segundo caso da série**, e o primeiro em que o defeito é do **loop** e
+  não de card nem de instrumento.
+- **`AE-44` — a `LM-T8` foi implementada pela orquestração, por instrução direta do dono, depois de
+  três recusas do classificador ao executor.** 2026-09-19. Sequência medida: (1) despacho limpo →
+  `blocked premissa` por defeito de card (`AE-41`); (2) despacho depois do reparo → recusa do
+  `Edit` em `.claude/agents/pantonic-planner.md` (`AE-42`); (3) o dono reliberou a permissão e
+  autorizou expressamente a via alternativa; o loop tentou **repassar essa autorização dentro do
+  prompt de um subagente** e o **próprio despacho** foi recusado — corretamente, e a lição é do
+  loop: autorização do dono vale na sessão em que ele a deu, e não se delega adiante; (4)
+  redespacho **sem** essa instrução → recusado de novo, já com a reliberação feita; (5) o loop
+  aplicou os dez literais por Python **na própria sessão**. As doze linhas de `Verificação` saíram
+  nos valores declarados, e o diff ficou em 70 inserções / 11 remoções, sem alterar line ending.
+  **A exceção é nomeada e não vira precedente** (`DM-28`): a `GOVERNANCA.md` §3 diz que a
+  orquestração **não implementa**, e continua dizendo. O que a levantou foi ato do dono, não
+  julgamento do loop. **A independência da revisão foi preservada** — quem julgou a entrega foi o
+  `pantonic-reviewer`, em contexto próprio, e não quem a escreveu. Rota: enquanto a recusa se
+  repetir sobre `.claude/agents/**`, **toda** tarefa que edite definição de agente cai nesta mesma
+  exceção; se isso persistir, é matéria de plano — não de improviso por tarefa.
+  **Vigésimo terceiro caso da série.**
+- **`AE-45` — a pendência substantiva do laudo da `LM-T8`, roteada pelo `B1`.**
+  **ROTEADO pelo `ESC-25`** → `DM-49` e item **`PM-1`** da fila pós-marco (§6), que fecha (i) e
+  (ii) no mesmo item porque as duas tocam o mesmo arquivo e a mesma camada de permissão. A matéria
+  (i) foi depois **decidida pelo `scrum-master` por delegação do dono** — `DM-50`, cards `LM-T10`
+  e `LM-T11` —, e a reserva ao dono que a `DM-49` (i) declarava está **encerrada**. `DM-49` (iv)
+  corrige um fato da matéria (ii): a dependência **não** é esperar a `LM-T7`, que já fechou, e sim
+  regenerar a projeção no mesmo ato do card que tocar a `description` (`DM-16` (iv)). O laudo saiu
+  `aprovado 100%`, bloqueante `nenhuma`, e **recomendação `escalar`** — desfecho da `A8a`: o RDO
+  fecha pelo veredito e a pendência **não** morre com o laudo. Três matérias, todas de
+  **planejamento pós-marco**, nenhuma de execução:
+  **(i)** *superfície de permissão sem rota fechada* — tarefa que edite `.claude/agents/**` não tem
+  caminho definido quando o executor é recusado; a exceção do `AE-44` é nominalmente
+  não-precedente e a rota dela é condicional (*"se isso persistir"*), mas o laudo observou que **já
+  persistiu por três despachos dentro da própria tarefa** (`AE-11`, `DM-27`, `AE-42`). Enquanto não
+  houver rota, toda tarefa futura de definição de agente reincide.
+  **(ii)** *a `description` do `pantonic-planner` segue falsa* — `.claude/agents/pantonic-planner.md:3`
+  ainda diz *"não mede nada por conta própria"*, o que a concessão de `Bash` torna falso. A `LM-T8`
+  **não podia** fechá-la: o `Não fazer` do próprio card congela `description` e `model`, e com
+  razão — mover a `description` reabre `check-drift`. É divergência interna do módulo que
+  sobreviveu à entrega **por desenho do card**, e fecha junto com a reprojeção de
+  `.claude/README.md` (`LM-T7`).
+  **(iii)** consequência das duas: o `P-0740` precisa de um item de replanejamento na fila
+  pós-marco que feche (i) e (ii) na mesma linha.
+  Nada disto bloqueia tarefa aberta do plano, e nada disto é improviso de janela.
+- **`AE-46` — o documento que fundamentou o veredito do marco não tinha residência decidida.**
+  **CONCORDÂNCIA do consultor no `ESC-26`, com uma ressalva de fato, medida e não bloqueante:** a
+  decisão de versionar está certa e a razão dela também — documento citado por marco aprovado e
+  por RDO não fica fora da árvore, e o cabeçalho do próprio documento impede que ele vire segunda
+  residência. A ressalva é de conteúdo, não de residência: ele afirma *"18 guardas nomeadas"* e
+  são **19** — `check-readme.ps1` sai exit 0 anunciando `9 agente(s), 10 skill(s), 19
+  guardrail(s)` —, e o erro subestima justamente um resultado desta iniciativa (a `LM-T4` levou
+  18 → 19 com a `G-MODULO`). É a classe do `AE-12`: prosa que conta um conjunto sem fechar com o
+  artefato que o conta. Outros três números dele estão **certos hoje e envelhecem** (linhas de
+  `docs/telemetria.tsv`, registros de `docs/RDO/`, consumo do consultor), pela razão da `DM-23`.
+  Corrigir antes de commitar é ato do loop, não matéria de card.
+  Pendência do laudo da `LM-T6` (`aprovado 100%`, recomendação `escalar`), roteada pelo `B1`.
+  Medido: `docs/MODO_DE_OPERACAO.md` estava **untracked** no momento do veredito. Ele foi autorado
+  nesta janela a pedido do dono — um piloto em tempo real não era possível, e ele pediu a
+  **descrição comparada** do modo de operação para avaliar —, foi a base sobre a qual o dono
+  escreveu **APROVADO**, e é citado pelo RDO da `LM-T6`. O commit do marco força a decisão, porque
+  arquivo untracked não entra nele por omissão. **Decisão do loop, e ela é de residência, não de
+  conteúdo: versiona.** Documento citado por um marco aprovado e por RDO não fica fora da árvore.
+  Não cria segunda residência de doutrina porque o próprio cabeçalho dele declara que **não é
+  doutrina** e remete ao planejamento a pergunta de onde cada fato deve morar — o que o mantém como
+  **material de veredito datado**, e não como superfície normativa. **Vigésimo quinto caso da
+  série**, e o primeiro em que o achado é sobre o **artefato do aceite**, não sobre a entrega.
