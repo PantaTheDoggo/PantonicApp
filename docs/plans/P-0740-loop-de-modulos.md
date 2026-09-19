@@ -619,12 +619,15 @@ executa:
   `LM-T8` sai de `blocked` e vira `ready`, com o item (a) despachável e o item (b) atrás da
   `LM-T4`. Nada mais muda — a `DM-17` (i) e (iii) seguem valendo, e a `LM-T8` continua **fora da
   fila do marco 1**, porque não está no caminho crítico de tarefa nenhuma.
-  **Medida no ato (`DM-24` aplicada a permissão, não a comando):** varridos os dois
-  `settings.json` em 2026-09-19, **nenhuma regra `Edit`/`Write` sobre `.claude/agents/**` existe**
-  — o global tem apenas `Read(.../.claude/agents/**)`. A concessão é do dono e vale; o que **não**
-  está medido é a **superfície** onde ela mora. Antes de despachar a `LM-T8`, confirmar que a
-  regra está em `settings.json`, sob pena de reproduzir o `AE-11` — impedimento de permissão
-  descoberto pelo executor, no meio da tarefa, que nenhum agente da sessão pode suprir.
+  **Medida no ato, e a correção que ela forçou (`DM-24` aplicada a permissão, não a comando):** a
+  primeira varredura dos dois `settings.json` em 2026-09-19 não achou **nenhuma** regra
+  `Edit`/`Write` sobre `.claude/agents/**` — só `Read` no global. A concessão do dono valia como
+  decisão sem ter superfície onde morar, que é o `AE-11` prestes a se repetir no despacho.
+  **Materializada no mesmo dia, por ato do dono**, em `.claude/settings.json`:
+  `Edit(/.claude/agents/**)` e `Write(/.claude/agents/**)` no `permissions.allow` do projeto, ao
+  lado das quatro regras de skill que já viviam lá. A `LM-T8` é despachável de fato, e não só de
+  direito. **Lição, que é do método e não desta tarefa:** permissão concedida em conversa não é
+  permissão instalada — mede-se a superfície antes de declarar a tarefa `ready`.
 
 - **`DM-28` — técnica ainda não projetada se executa *ad-hoc*, e a execução ad-hoc é insumo de
   planejamento, não precedente.** Quando uma tarefa exigir uma técnica que o framework ainda não
