@@ -609,6 +609,48 @@ executa:
   tinha reportado: entrega **reprovada** com recomendação `seguir` cairia hoje em `A9` e seria
   fechada como **aprovada**. Residência: card `LM-T2d`, **antes** da `LM-T4`.
 
+> **`DM-27`..`DM-30` são atos do dono de 2026-09-19**, tomados sobre o relatório de encerramento da
+> janela de 2026-09-18/19. Não vieram de rodada de replanejamento nem de escalonamento: são
+> decisões de quem é dono da rota, e entram aqui pela mesma porta que a *Diretiva de execução* de
+> 2026-09-18.
+
+- **`DM-27` — `.claude/agents/` deixa de ser superfície vedada ao loop.** A permissão que a
+  `DM-17` (ii) declarava indisponível foi **concedida pelo dono**. Consequência única e imediata: a
+  `LM-T8` sai de `blocked` e vira `ready`, com o item (a) despachável e o item (b) atrás da
+  `LM-T4`. Nada mais muda — a `DM-17` (i) e (iii) seguem valendo, e a `LM-T8` continua **fora da
+  fila do marco 1**, porque não está no caminho crítico de tarefa nenhuma.
+  **Medida no ato (`DM-24` aplicada a permissão, não a comando):** varridos os dois
+  `settings.json` em 2026-09-19, **nenhuma regra `Edit`/`Write` sobre `.claude/agents/**` existe**
+  — o global tem apenas `Read(.../.claude/agents/**)`. A concessão é do dono e vale; o que **não**
+  está medido é a **superfície** onde ela mora. Antes de despachar a `LM-T8`, confirmar que a
+  regra está em `settings.json`, sob pena de reproduzir o `AE-11` — impedimento de permissão
+  descoberto pelo executor, no meio da tarefa, que nenhum agente da sessão pode suprir.
+
+- **`DM-28` — técnica ainda não projetada se executa *ad-hoc*, e a execução ad-hoc é insumo de
+  planejamento, não precedente.** Quando uma tarefa exigir uma técnica que o framework ainda não
+  tem desenhada, o loop **não para para desenhá-la**: faz ad-hoc, entrega, e a lição do ad-hoc vai
+  para o registro de insumo do plano que vai materializar a técnica. O que **não** se admite é o
+  contrário — tratar o ad-hoc como doutrina por ter funcionado uma vez: enquanto a técnica não for
+  planejada e publicada, ela não é fonte normativa e não se cita como tal. A figura do
+  `pantonic-consultant` é o caso-mãe desta decisão, e é por ela que a `DM-30` da *Diretiva* de
+  2026-09-18 chamava o agente de provisório.
+
+- **`DM-29` — a lição do consultor tem residência desde já, e um card que a materializa.** Os
+  insumos entram em `## 9. Insumos do ad-hoc para planejamento futuro` deste plano, numerados
+  `I-<n>`, **conforme forem medidos** — não no fim. O card `LM-T9` os converte em
+  `docs/consultant-spec.md`, e é **uma das últimas tarefas do plano**, por ordem do dono: a spec
+  se escreve depois que a figura tiver rodado o plano inteiro, não no meio.
+
+- **`DM-30` — o critério de admissão de matéria nova neste plano é coesão, não custo.** Declaração
+  do dono em 2026-09-19: *"com os limites expandidos, nossa preocupação agora é a coesão e
+  coerência do contexto ao invés de uso"*. Consequências medidas, aplicadas neste ato: (i) a
+  `TK-54b` (fonte da bimodalidade de 8.611 tk) **não entra** — é matéria de custo, e o custo
+  deixou de ser o critério; segue viva como tíquete despriorizado. (ii) A `TK-38` (comunicação
+  agente↔humano) **não entra** — é matéria de coerência, portanto pertinente ao *critério*, mas
+  cruza o tema deste plano, e `DM-4` proíbe o "aproveitando que estou aqui"; vai para a fila
+  pós-plano com a evidência nova de 2026-09-19 apensada. (iii) O `_CARD-mapa-de-custo-da-janela`
+  foi **eliminado** — a matéria dele morreu com a ratificação da `TK-54a` e com esta decisão.
+
 ## 5. Tarefas
 
 ### LM-T1 — O pacote de fechamento: estado, telemetria e contratos [Sonnet · classe implementacao]
@@ -2062,16 +2104,16 @@ executa:
 
 ### LM-T8 — A concessão de `Bash` ao `pantonic-planner` e a publicação na definição dele [Opus + dono · classe mecanica]
 
-- **Status:** `blocked` — razão **ato do dono**, não premissa de plano. O conteúdo está fechado e
-  transcrito abaixo; o que falta é **permissão**, e nenhum agente desta sessão pode supri-la
-  (`AE-11`, `DM-17` (ii)). Não despachar a executor enquanto o dono não liberar a regra.
+- **Status:** `ready` — **permissão liberada pelo dono em 2026-09-19** (`DM-27`). A razão do
+  `blocked` era **ato do dono**, não premissa de plano, e o ato foi feito: `.claude/agents/` deixa
+  de ser superfície vedada ao loop. O conteúdo já estava fechado e transcrito abaixo, e não se
+  reabre. O item (a) é despachável desde já; o item (b) segue exigindo a `LM-T4` fechada.
 - **Esforço:** low
 - **Objetivo:** materializar a decisão do dono (`DM-16`) na única superfície onde ela mora — o
   arquivo de definição do `pantonic-planner` — e, depois da `LM-T4`, publicar ali a gramática que a
   doutrina tiver fixado. Um tema só: **a definição de agente**.
-- **Depende de:** ato do dono (liberar a regra de permissão para `.claude/agents/`, pela skill
-  `update-config`/`settings.json`, ou editar ele mesmo). O item (b) depende também da `LM-T4`
-  fechada. O item (a) **não** depende de tarefa nenhuma.
+- **Depende de:** nada, para o item (a) — a permissão que era a dependência foi concedida em
+  2026-09-19 (`DM-27`). O item (b) depende da `LM-T4` fechada.
 - **Arquivos-alvo:**
   - `.claude/agents/pantonic-planner.md`
   - `CHANGELOG.md`
@@ -2125,10 +2167,78 @@ executa:
 - **Pronto quando:** o `tools:` do planner declara `Bash`; o fato estável do texto 2 está no corpo;
   o `CHANGELOG.md` traz a linha; e — quando o item (b) for executável — a definição do planner não
   enuncia mais a gramática de cabeçalho na forma que a `LM-T4` aposentou.
-- **Enquanto esta tarefa estiver `blocked`** vale a regra de intervalo da `DM-17` (iv): o dever da
+- **Enquanto o item (a) desta tarefa não fechar** vale a regra de intervalo da `DM-17` (iv) — o
+  intervalo encurtou com a `DM-27`, mas não acabou: a concessão é de permissão ao loop, e o
+  `tools:` do planner só declara `Bash` depois que o item (a) rodar. Até lá: o dever da
   `DM-12` é de quem publica **com** ferramenta — `pantonic-consultant` ou `scrum-master`, que roda
   o comando no despacho e anexa a saída medida. Card autorado por planner com `Verificação` não
   medida não se despacha como está.
+
+### LM-T9 — `consultant-spec`: a figura ad-hoc vira especificação [Opus · classe redacao]
+
+- **Status:** `ready`
+- **Esforço:** high
+- **Objetivo:** converter os insumos de `## 9` — medidos durante a execução deste plano, não
+  lembrados depois — em **um** documento, `docs/consultant-spec.md`, que descreva a figura do
+  consultor de plano como ela **se comportou**: quando é acionada, o que decide sozinha, o que
+  escala, qual é a fronteira com o `pantonic-planner` e qual é o custo dela. Um tema só: **a
+  especificação da figura**. A `DM-28` é a régua: até este documento existir e ser aceito, o
+  `pantonic-consultant` é ad-hoc e não se cita como fonte normativa.
+- **Depende de:** `LM-T6`. É penúltima por ordem do dono (2026-09-19, `DM-29`) — a spec se escreve
+  depois que a figura tiver conduzido o plano inteiro, porque insumo de uma janela só não sustenta
+  uma especificação. Na prática: despachar depois que a `LM-T6` fechar, com `## 9` já contendo os
+  `I-<n>` das janelas posteriores a esta.
+- **Arquivos-alvo:**
+  - `docs/consultant-spec.md` — o documento (novo).
+  - `docs/DOC_MAP.md` — a entrada de navegação do documento novo.
+  - `CHANGELOG.md` — a linha do bloco não lançado.
+- **Entregável:** `docs/consultant-spec.md` respondendo, com o insumo medido ao lado de cada
+  resposta: (a) **gatilho** — o que aciona o consultor e o que não aciona; (b) **domínio de
+  decisão** — o que ele fecha sozinho (técnico/tático) e o que sobe ao dono (estratégico,
+  `G-NOASK`); (c) **fronteira com o `pantonic-planner`** — ele autorou cards novos nesta janela, e
+  o documento tem de dizer se isso é da figura ou empréstimo; (d) **instrumento** — por que nasce
+  com `Bash` (`DM-12`, `DM-24`); (e) **custo e teto** — 68,5% da janela num papel só é o número
+  que a spec precisa endereçar, com a regra de quando **não** acionar; (f) **encerramento** — como
+  a figura termina (decisão de janela × poluição, Regra 2).
+- **Restrições desta tarefa (copiadas inline):**
+  - **Descrever o medido, não o desejado.** Toda afirmação da spec sai de um `I-<n>` de `## 9` ou
+    de um `AE-<n>`/`ESC-<n>` deste plano, citado pelo identificador. Afirmação sem lastro medido
+    não entra — nem como recomendação.
+  - **Não é doutrina ainda.** O documento é especificação de figura provisória: não altera
+    `GOVERNANCA.md`, não cria guardrail `G-*`, não se declara fonte normativa. Promover a doutrina
+    é ato posterior do dono (`DM-28`).
+  - `redacao-doc`: sem narrativa de proveniência, sem citação de interlocutor, sem ID de processo
+    no corpo — os identificadores entram como **lastro citado**, em nota ou tabela, não como
+    historinha.
+  - Não editar `.claude/agents/pantonic-consultant.md`. A definição do agente é outra superfície e
+    outro tema; se a spec concluir que a definição diverge, o achado sai como `AE-<n>` com rota.
+- **Não fazer:** não escrever a spec do `pantonic-planner` nem redesenhar o `scrum-master`; não
+  absorver `TK-38`, `TK-54b` nem a matéria de confiabilidade (`DM-30`); não antecipar esta tarefa
+  para antes da `LM-T6`.
+- **Pronto quando:** `docs/consultant-spec.md` existe, cobre as seis perguntas (a)..(f), cada uma
+  com pelo menos um identificador de lastro, está indexado no `docs/DOC_MAP.md` e tem linha no
+  `CHANGELOG.md`.
+- **Verificação:** (os três comandos foram extraídos deste card e rodados verbatim na autoria,
+  2026-09-19 — `DM-24`; os valores `antes` estão ao lado e o card não fixa piso numérico, `DM-23`)
+  ```
+  pwsh -NoProfile -Command "[int](Test-Path docs/consultant-spec.md)"
+  ```
+  → `0` antes; **`1`** depois.
+  ```
+  pwsh -NoProfile -Command "(Select-String -Path docs/DOC_MAP.md -Pattern 'consultant-spec' -SimpleMatch | Measure-Object).Count"
+  ```
+  → `0` antes; **≥1** depois.
+  ```
+  pwsh -NoProfile -Command "(Select-String -Path docs/plans/P-0740-loop-de-modulos.md -Pattern '^- \*\*.I-\d' | Measure-Object).Count"
+  ```
+  → mede quantos insumos `I-<n>` existem em `## 9` no momento do despacho (valor na autoria,
+  2026-09-19: **8**). A relação de aceite, re-medida no despacho (`DM-23`): a contagem de
+  identificadores `I-` citados em `docs/consultant-spec.md` é **≥** a contagem medida aqui.
+  *Nota de autoria, `DM-24`:* a primeira forma deste comando usava `-SimpleMatch` com o padrão
+  `- **I-` e devolveu **1** — casou a própria linha em que estava publicada e **nenhum** dos oito
+  insumos, porque o identificador vem entre crases. Mesma classe do `AE-19`, pega antes do
+  despacho por ter sido rodada. A forma acima é ancorada em início de linha, o que exclui a
+  publicação, e foi medida em **8**.
 
 ## 6. Ordem de execução
 
@@ -2221,11 +2331,31 @@ fila do loop**, quando o dono liberar a permissão.
 **Exclusões mútuas vivas:** só uma — `.claude/skills/scrum-master/SKILL.md`, entre `LM-T2d` e
 `LM-T4`. A de `.claude/tools/review_evidence.py` **caducou** com o fechamento da `LM-T2a`.
 
+**Atualizado pelo ato do dono (2026-09-19), sobre o relatório de encerramento da janela:** o marco 1
+foi **commitado** em `6eebccd` (oito entregas + `BKL-T4`, suíte 165 verde), e o recorte de evidência
+passa a ser `--desde 6eebccd`. Consequência do `AE-15`, agora ativa: há commit entre `<ref>` e
+`HEAD`, e o próximo dossiê gerado sofre o defeito até a `LM-T3a` fechar — **a `LM-T3a` sobe ao topo
+da fila**, à frente da `LM-T2d` e da `LM-T2b`, que não têm urgência de ordem. Duas tarefas entram no
+grafo: a **`LM-T8`**, liberada por `DM-27`, com o item (a) despachável a qualquer momento e fora do
+caminho crítico; e a **`LM-T9`** (`DM-29`), **penúltima**, atrás da `LM-T6`. O plano passa a **17**
+tarefas. Fila recomendada: `LM-T3a` → `LM-T2d` → `LM-T2b` → `LM-T4` → `LM-T5` → `LM-T6` → `LM-T9`,
+com `LM-T8` (a) corrida em qualquer janela. A ordem segue sendo do `scrum-master` (Diretiva item 4);
+o que esta atualização fixa são **dependências**, não sequência.
+
 ## 7. Fora de escopo (explícito)
 
 - **Rodada de corte em fonte nossa** (`CLAUDE.md`, skills, agentes, memória): a §2 mediu que o
   ganho máximo é 0,7 ponto percentual. Não se abre.
-- **`TK-54b`** (fonte da bimodalidade de 8.611 tk): segue viva como tíquete, fora deste plano.
+- **`TK-54b`** (fonte da bimodalidade de 8.611 tk): segue viva como tíquete, fora deste plano —
+  e **despriorizada** por `DM-30`, que tira o custo do posto de critério.
+- **`TK-38`** (comunicação agente↔humano): pertinente ao critério novo — é matéria de coerência —,
+  mas fora do tema deste plano por `DM-4`/`DM-30`. Evidência nova de 2026-09-19 apensada ao
+  tíquete: o dono pediu, em prompt próprio, um glossário de `A10`, `B6` e congêneres para ler o
+  próprio relatório de encerramento — **segunda ocorrência medida** da mesma classe, depois da
+  `EXA-T25`.
+- **Confiabilidade de agente e de instrumento** (a classe que reúne `AE-1`, `AE-3`, `AE-18`,
+  `AE-19` e a projeção de índice desatualizada medida em 2026-09-19): fila pós-plano, por ato do
+  dono. Insumos acumulam no tíquete, não aqui.
 - *(retirado de fora de escopo em 2026-09-18, no mesmo ato de autoria)* — o `AE-10` do `P-0739`
   **não** é mais rodada separada: foi absorvido pela `LM-T5`, que resolve a dependência de ordem
   dentro do reagrupamento. O `P-0739` não recebe rodada de replanejamento própria; ele espera a
@@ -2300,6 +2430,50 @@ fila do loop**, quando o dono liberar a permissão.
   declara o que acontece com **cada** valor do domínio que ela toca, e confronta a ação com o
   que o instrumento de fechamento aceita* — é o critério (vii) da rubrica da `LM-T5` aplicado a
   tabela de roteamento, e o caso medido (`AE-20`) entra como insumo dela.
+
+## 9. Insumos do ad-hoc para planejamento futuro
+
+> **O que esta seção é** (`DM-28`, `DM-29`): o registro do que a execução **ad-hoc** mediu sobre uma
+> técnica que o framework ainda não tem desenhada. Cada item é um fato da execução, numerado
+> `I-<n>`, gravado **quando medido** — não reconstruído no fim. A `LM-T9` os consome e produz
+> `docs/consultant-spec.md`. Enquanto a spec não existir, nada daqui é doutrina e nada daqui se
+> cita como fonte normativa.
+
+**Técnica em observação:** o **consultor de plano** (`pantonic-consultant`), figura ad-hoc criada
+por ato do dono em 2026-09-18. Insumos da janela de 2026-09-18/19, todos medidos:
+
+- **`I-1` — a figura se pagou, e o número diz quanto.** Nove passagens (`RP-5`, `ESC-1`..`ESC-8`)
+  num **contexto só**: 2.639,1k tk, 68,5% dos 3.850,3k da janela. Contra o regime anterior — quatro
+  rodadas **frias** de planejador (`RP-1`..`RP-4`) que custaram **423,7k tk para fechar UMA**
+  tarefa, redescobrindo o mesmo cenário a cada vez. A janela fechou **oito** tarefas a 481,3k/tarefa
+  contra 625k/tarefa da anterior.
+- **`I-2` — nenhuma das nove passagens releu o plano.** O cenário ficou no contexto; cada passagem
+  entrou só com o delta (o laudo e o retorno do executor). É **este** o mecanismo que produziu o
+  `I-1`, e não o modelo nem o prompt: o que barateia é a permanência, não a instrução.
+- **`I-3` — o que ela absorveu foi autoria de card, não execução.** Onze achados (`AE-8`, `AE-9`,
+  `AE-11`, `AE-12`, `AE-14`..`AE-20`) e **nenhum** de execução; oito tarefas despachadas com **zero
+  reprovações e zero refações**. As quatro ressalvas vieram de coisa que o card não mandou fazer,
+  ou mandou de um jeito que o instrumento não aceita.
+- **`I-4` — o domínio de decisão se sustentou sem round-trip com o dono.** Nas nove passagens a
+  classificação saiu **técnica ou tática** em todas, e **nada** subiu ao dono como decisão
+  (`G-NOASK`). O que subiu foi relatório e um **ato** (a permissão da `LM-T8`) — que é outra coisa.
+- **`I-5` — a fronteira com o `pantonic-planner` não está onde a definição diz.** Na prática a
+  figura **autorou cards novos** (`LM-T7a`, `LM-T3a`, `LM-T2c`, `LM-T2d`, mais as partições de
+  `LM-T7` e de `LM-T2` em três), que é ato de planejamento. O que ela **não** fez em nenhuma
+  passagem: reabrir o objetivo do plano. A spec tem de dizer se autorar card é da figura ou
+  empréstimo do planner — hoje é fato medido sem regra.
+- **`I-6` — ela não funciona sem instrumento de execução.** Nasceu com `Bash` por causa do `AE-7`
+  e da `DM-12` (*comando de aceite não se deduz, se roda*), e **três** fechamentos seguidos
+  (`ESC-6`, `ESC-7`, `ESC-8`) dependeram disso: em cada um, comandos extraídos do card e rodados
+  verbatim antes do despacho pegaram literal corrompido ou piso vencido. Papel de reparo de plano
+  sem ferramenta de medida reproduz o `AE-19`.
+- **`I-7` — o custo se concentra num papel só, e isso é o risco da figura.** 68,5% da janela.
+  Nenhum critério mediu **quando não acionar** — toda pendência substantiva virou passagem, por
+  `B1`. A spec precisa da regra de não-acionamento e de um teto, ou a figura vira o gargalo que
+  ela removeu.
+- **`I-8` — o encerramento foi por decisão de janela, não por poluição.** As nove passagens
+  couberam num contexto **coeso** do começo ao fim — um plano, um cenário (Regra 2). O limite de
+  formato que a spec tem de nomear é o da **troca de plano**, não o da duração.
 
 ## Achados da execução
 
