@@ -25,6 +25,16 @@
                 }
               ]
             }
+          ],
+          "UserPromptSubmit": [
+            {
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/backlog_hook.py"
+                }
+              ]
+            }
           ]
         },
         "permissions.deny": [

@@ -128,6 +128,12 @@ medido em vez de remedir; e para o valor de referência contra o qual uma corre�
   e projeto antes × depois, veredito por eixo e a janela temporal do degrau
 - `## 13 Extrato do custo de abertura de uma janela principal (2026-09-18)` — uma linha por
   fonte carregada, com chars medidos, estrato E1/E2/E3, regime e a classificacao que o dono ratifica
+- `## 14 Pickup por instrumento: aferição (2026-09-20)` — o pickup injetado por hook medido em
+  chars contra o número da `## 3` e o alvo da `## 6`, com a metade `usage_1` medida na `## 15`
+- `## 15 Abertura de janela com pickup: o método DC-4 em chars e em usage_1 (2026-09-20)` — a
+  metade em chars (26.760) e a metade `usage_1` (39.650 tk) medidas, o par do `DC-4` **aberto** à
+  espera de controle pareado, com proveniência de sessão, a linha de base do dia e a correção do
+  que a `## 14` afirmava sobre a observabilidade do número
 **Acesso:** `Grep pattern:"^## 5 " path:docs/CUSTO_DO_PICKUP.md -n` (trocar `5` pela seção
 desejada).
 

@@ -9,12 +9,25 @@ Versionamento: [Semantic Versioning](https://semver.org/lang/pt-BR/), com signif
 compatível, PATCH corrige redação.
 
 A versão está congelada em `0.0.0` (`DE-7`) até decisão de publicar. Enquanto durar o
-congelamento, toda mudança canônica é registrada sob `## [Não lançado]`, a única seção viva. As
+congelamento, toda mudança canônica é registrada sob `## [Não lançado]
+
+- Skill `entrega-de-encerramento`: todo plano passa a gerar, antes do veredito do dono, o
+  modelo **as-is** das operações que deixou — uma seção por tarefa (contexto que a motivou,
+  artefato concreto, exemplo real de funcionamento, do que protege), ganhos medidos e o estado
+  de cada pendência em três níveis (fechado com guarda / caso fechado sem guarda de classe /
+  regra escrita com aplicação pendente). Acionada pelo `scrum-master` no fechamento de plano.
+  Primeiro documento: `docs/OPERACOES_AS_IS.md`, do `P-0739`.`, a única seção viva. As
 seções numeradas abaixo (`1.0.0`..`2.0.0`) são o histórico de desenvolvimento pré-lançamento,
 correspondem às tags `kit-v1.0.0`..`kit-v2.0.0` já publicadas e permanecem como registro — não são
 reescritas nem revogadas.
 
 ## [Não lançado]
+
+- `.claude/tools/backlog_hook.py`: hook `UserPromptSubmit` novo — injeta a saída de
+  `backlog.py next` no prompt do dono quando ele pede o próximo passo, registrado em
+  `.claude/projecoes.json` (alvo `projeto`); as skills `passagem-de-bastao` e `scrum-master`
+  passam a mandar rodar `backlog.py next`/`drain`/`status` em vez de ler diário e inbox à mão
+  (`P-0739` `BKL-T11`).
 
 - `docs/consultant-spec.md`: a figura ad-hoc do consultor de plano ganha especificação escrita a
   partir do medido — gatilho e os dois tetos de não-acionamento, domínio de decisão e critério de

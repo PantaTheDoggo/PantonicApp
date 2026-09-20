@@ -1,6 +1,6 @@
 # P-0735 — Residência e ponto de carga: o pacote materializa o que a doutrina invoca
 
-**Data:** 2026-08-15 · **Origem:** `TK-45` (owner-gated, decidido no mesmo dia) · **Status:** `ready`
+**Data:** 2026-08-15 · **Origem:** `TK-45` (owner-gated, decidido no mesmo dia) · **Status:** `done`
 · **Prefixo das tarefas no diário:** `RPC-T<n>` · **Checagem de versão do kit:** modo hub —
 **congelada em `0.0.0`** (`DE-7`), comparação local × remoto suspensa, nada a comparar.
 

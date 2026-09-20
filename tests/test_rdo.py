@@ -747,6 +747,40 @@ def test_tr_extrair_dossie_id_casa_por_igualdade_exata(tmp_path):
         )
 
 
+def test_id_header_re_aceita_tk_subtarefa_e_recusa_nivel_dois():
+    """TK-62a (`DB-17`): `_ID_HEADER_RE` passa a reconhecer a forma `TK-<n><letra>` de subtarefa
+    de tíquete, além da gramática `(?:[A-Z0-9]+-)?T[0-9]+[a-z]?` já aceita — e continua recusando
+    o cabeçalho de nível 2 do tíquete-pai (`##`, sem bracket), que não é ID de tarefa."""
+    rdo = _load_rdo()
+
+    assert rdo._ID_HEADER_RE.match("### TK-57a — Título").group(1) == "TK-57a"
+    assert rdo._ID_HEADER_RE.match("### TK-62a — Título").group(1) == "TK-62a"
+    assert rdo._ID_HEADER_RE.match("### TK-54b — Título").group(1) == "TK-54b"
+    assert rdo._ID_HEADER_RE.match("### TK-57 — Título").group(1) == "TK-57"
+    assert rdo._ID_HEADER_RE.match("## TK-62 — Título") is None
+
+
+def test_header_bracket_re_aceita_tk_e_recusa_id_fora_da_gramatica():
+    """TK-62a (`DB-17`): `_HEADER_BRACKET_RE` reconhece `TK-<n><letra>` no grupo `id` e continua
+    recusando cabeçalho cujo texto não é ID de tarefa (`2.5`, `Achados`)."""
+    rdo = _load_rdo()
+
+    aceito = rdo._HEADER_BRACKET_RE.match(
+        "### TK-62a — Título [Sonnet · classe implementacao]"
+    )
+    recusado_numeral = rdo._HEADER_BRACKET_RE.match(
+        "### 2.5 — Título [Sonnet · classe implementacao]"
+    )
+    recusado_achados = rdo._HEADER_BRACKET_RE.match(
+        "### Achados — Título [Sonnet · classe implementacao]"
+    )
+
+    assert aceito is not None
+    assert aceito.group("id") == "TK-62a"
+    assert recusado_numeral is None
+    assert recusado_achados is None
+
+
 # --- laudo · achado de processo (BKL-T2d, RUBRICA_DE_REVISAO.md §6) ------------------------------
 
 

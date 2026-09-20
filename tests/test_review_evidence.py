@@ -191,6 +191,43 @@ def test_cli_main_ok_e_falhou(tmp_path, capsys):
     assert "review_evidence: FALHOU" in saida_falha.err
 
 
+def test_cli_main_reconhece_tk_subtarefa_de_ticket_e_recusa_id_fora_da_gramatica(tmp_path, capsys):
+    """TK-62a (`DB-17`/`DB-22`): a gramática de ID mora em `rdo.py` só, e `review_evidence` reusa
+    `extrair_dossie` de lá — `--tarefa TK-62a` (subtarefa, cabeçalho `### … [modelo · classe …]`)
+    localiza e sai OK; `--tarefa TK-62` (cabeçalho de nível 2 do tíquete-pai, sem bracket) não é
+    ID de tarefa e continua recusado."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    plano.write_text(
+        "# Plano de teste\n\n"
+        "## TK-62 — Tíquete pai de teste\n\n"
+        "### TK-62a — Subtarefa sintética de teste [Sonnet · classe implementacao]\n"
+        "- **Objetivo:** validar review_evidence.py.\n"
+        "- **Arquivos-alvo:** cria `src/a.py`.\n"
+        "- **Verificação:** bateria do §3.\n"
+        "- **Pronto quando:** o teste passa.\n",
+        encoding="utf-8",
+    )
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    review_evidence.BATERIA_GUARDAS = _BATERIA_FAKE_VERDE
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "TK-62a", "--root", str(repo)]
+    )
+    saida = capsys.readouterr()
+    assert codigo == 0
+    assert "review_evidence: OK" in saida.out
+
+    codigo_falho = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "TK-62", "--root", str(repo)]
+    )
+    saida_falha = capsys.readouterr()
+    assert codigo_falho == 1
+    assert "review_evidence: FALHOU" in saida_falha.err
+
+
 def test_tf_veredito_guardas_e_testes_travam_conforme_quando_bateria_toda_verde():
     """TF da EXA-T9b: veredito mecânico das dimensões `guardas` (`RUBRICA_DE_REVISAO.md:94-106`)
     e `testes` (`RUBRICA_DE_REVISAO.md:79-92`) resolve para `conforme` quando todos os comandos

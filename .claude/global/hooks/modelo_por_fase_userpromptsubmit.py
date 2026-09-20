@@ -98,7 +98,10 @@ _NUDGE = {
 
 def main() -> None:
     try:
-        raw = sys.stdin.read()
+        try:
+            raw = sys.stdin.buffer.read().decode("utf-8", errors="replace")
+        except AttributeError:
+            raw = sys.stdin.read()
         data = json.loads(raw) if raw.strip() else {}
     except (ValueError, OSError):
         print("{}")

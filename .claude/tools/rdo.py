@@ -81,10 +81,12 @@ _CLASSE_ALIASES: dict[str, str] = {
     "redacao/planejamento": "redacao",
 }
 
-_ID_HEADER_RE = re.compile(r"^### ((?:[A-Z0-9]+-)?T[0-9]+[a-z]?)(?=[\s—])")
+_ID_HEADER_RE = re.compile(
+    r"^### ((?:[A-Z0-9]+-)?T[0-9]+[a-z]?|TK-[0-9]+[a-z]?)(?=[\s—])"
+)
 _ID_LAUDO_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")  # identificador, nunca caminho
 _HEADER_BRACKET_RE = re.compile(
-    r"^### (?P<id>(?:[A-Z0-9]+-)?T[0-9]+[a-z]?) — (?P<titulo>.+?) "
+    r"^### (?P<id>(?:[A-Z0-9]+-)?T[0-9]+[a-z]?|TK-[0-9]+[a-z]?) — (?P<titulo>.+?) "
     r"\[(?P<modelo>Opus|Sonnet|Haiku)(?: \+ dono)?"
     r"(?: · esforço (?:low|medium|high|xhigh|max))?"
     r" · classe (?P<classe>.+?)"

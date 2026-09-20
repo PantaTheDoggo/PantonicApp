@@ -431,3 +431,88 @@ Uma linha por fonte carregada. `chars` = `len(texto)` medido em disco por sonda 
 **Notas de honestidade.** A linha de E3 fecha os três regimes por construção, porque é a diferença; o que este extrato afirma com medida é a participação de E1. · E1 é medido em 2026-09-18; os regimes 34.600 e 46.100 são de 2026-08-24, quando o `CLAUDE.md` global tinha 10.751 ch — a reconciliação nesses dois regimes é aproximada, e é por isso que ela sai como faixa. · As linhas 8, 9 e 10 são medidas por proxy em disco ou por comando, não por leitura do preâmbulo de uma janela principal.
 
 **Resultado.** O extrato fecha nos três regimes. E1 carregado sempre custa entre **4.467 e 7.445 tk** — de **12,9% a 21,5%** do regime de 34.600 e de **7,4% a 12,3%** do regime de 60.472 (2,2% a 3,7% de uma janela de 200k). O residual não atribuído fica entre **87,7% e 92,6%** do `usage_1` de 60.472, e é onde mora qualquer corte com efeito sobre a meta declarada. Distribuição das classificações fixadas: `economizável` 4 · `necessário` 3 · `dispensável` 1 · `—` 2 · `válido` 0. **Duas contingências acionadas na medição:** (4) a chave `additionalDirectories` não existe em `C:\Users\panta\.claude\settings.json` nem em `D:\workspaces\PantonicApp\.claude\settings.local.json` — a linha 9 sai `não medido`; e, fora da lista de contingências, a enumeração bruta encontrou **23 `SKILL.md` e 10 `agents/*.md`** porque `D:\workspaces\PantonicApp\.claude\global\{skills,agents}\` **espelha** `C:\Users\panta\.claude\{skills,agents}\` — 6 skills e 1 agente duplicados. Deduplicado dá 17 e 9, que é o inventário da rodada; sem deduplicar, a listagem de skills mediria 8.033 ch em vez de 5.984 e a de agentes 3.104 em vez de 2.740. Esta seção **não** decide o que fazer com o espelho: é fato de medição, entregue à ratificação.
+
+## 14 Pickup por instrumento: aferição (2026-09-20)
+
+Método `DC-4` aplicado ao pickup novo, em que o dossiê da próxima tarefa chega injetado por hook no
+ponto de carga em vez de ser montado por um roteiro de leituras. `chars` = `len(texto)` medido nesta
+data; a metade `usage_1` do método está medida e publicada na `## 15`.
+
+| # | fonte | chars | situação no pickup novo |
+|---|---|---|---|
+| 0a | `.claude/global/CLAUDE.md` | 10.376 | mantida (era 9.546 na `## 3`) |
+| 0b | `.claude/skills/proximo-passo/SKILL.md` | 0 | fonte inexistente (era 15.081) |
+| 0c | `memory/MEMORY.md` | 817 | mantida |
+| 0d | `memory/*.md` indexadas (n=5) | 8.488 | mantida |
+| H | saída do hook de pickup | 7.079 | substitui P1a-P3b (43.525 na `## 3`) |
+
+**Composição: `a apurar`.** Nesta data, `CLAUDE.md` mede **12.313** (esta tabela publica 10.376) e
+as **8.488** chars de memórias indexadas (linha `0d`) **não aparecem** entre os anexos da primeira
+requisição da sessão `8760907f`.
+
+**Pickup por instrumento = 26.760 chars (~6.690 tokens)** — soma das cinco linhas. A saída do hook
+são 7.079 chars (7.080 bytes em UTF-8), dos quais 6.122 são o `additionalContext` que entra na
+janela e o restante é o envelope JSON. Prompt sem o gatilho devolve 0 chars com exit 0: o custo só é
+pago quando o pickup é pedido.
+
+**Contra os dois valores de referência:** −65,5% sobre os **77.457 chars** da `## 3` (50.697 chars a
+menos) e **66,9%** do alvo de **40.000 chars** da `## 6`, cumprido com 13.240 chars de folga. A
+redução tem duas origens: os seis passos de roteiro da `## 3` somavam 43.525 chars — 21.505 do inbox
+de planos e 19.872 do dossiê do plano lido inteiro — e viram uma injeção de 7.079; e a skill de
+roteiro que custava 15.081 chars deixou de existir.
+
+**Metade em `usage_1`: medida.** O `usage_1` correspondente foi medido em **2026-09-20** e está
+publicado na `## 15`, que corrige o que esta seção afirmava sobre a observabilidade do número; o
+`usage_1` medido não isola o pickup, e o par do `DC-4` segue **aberto**, pelo motivo que a `## 15`
+declara.
+
+## 15 Abertura de janela com pickup: o método DC-4 em chars e em usage_1 (2026-09-20)
+
+Continua a aferição da `## 14`. O `DC-4` soma uma metade em **chars** e uma metade em
+**`usage_1`** de sessão nova; a metade em chars está medida e de pé, e a metade `usage_1` mede a
+**abertura da janela que fez pickup** — não isola o pickup — e fica **aberta** à espera de
+**controle pareado**.
+
+**Metade em chars — 26.760**, repetida da `## 14` sem recálculo: **−65,5%** sobre os **77.457
+chars** da `## 3`, e **66,9%** do alvo de **40.000 chars** da `## 6`.
+
+**Metade em `usage_1` — 39.650 tk**, medida em 2026-09-20. Proveniência: sessão principal
+`8760907f`, aberta em **2026-09-20 15:24:02** no projeto `d--workspaces-PantonicApp`, cujo pickup
+projetou o dossiê da tarefa **`MC-T1`** (plano `P-0741`). A primeira mensagem trazia o gatilho: o
+registro do hook entra na **linha 14** do transcript e o primeiro bloco `usage` na **linha 26** — o
+pickup foi pago dentro da primeira requisição. Fórmula da `## 11`, sem alteração.
+
+**Correção de rótulo (2026-09-20).** A redação anterior desta seção dizia *"o `additionalContext` do
+hook (16.459 bytes)"*. O número está certo e o **objeto está errado**: 16.458 é o comprimento da
+**linha JSONL** do registro, com envelope e escapes. O texto efetivamente injetado é
+**7.867 chars** (`rendered[0].content`), contra 7.079 na `## 14` — os dois pickups diferem **~11%**,
+não em ordem de grandeza.
+
+**Fronteira do que esta medida sustenta, declarada.** Os 39.650 tk **não isolam o pickup**. Medido
+no mesmo transcript: o registro do pickup é ~16% dos ~48,5 mil chars renderizados que precedem o
+primeiro `usage` — o resto é listagem de agentes (6.141), listagem de skills (11.948), arquivos
+anexados (13.605), `session_context` (3.377), MCP (2.053) e ambiente (1.718). E 39.650 cai **dentro**
+da linha de base sem pickup do mesmo dia (36.023 · 36.262 · 48.171 · 49.533): o efeito buscado é
+menor que a dispersão do controle. Esta seção publica, portanto, **o custo de abertura de uma janela
+que fez pickup**, comparável aos regimes da `## 12` e da `## 13` — e **não** o custo do pickup.
+Isolar o pickup exige **controle pareado** (sessão gêmea, mesmo dia e mesma árvore, sem o gatilho);
+enquanto não houver, o par do `DC-4` fica **aberto por declaração**, não fechado por medida.
+
+**As duas metades são de pickups distintos, e isso é propriedade do método, não erro.** A metade em
+chars (26.760, `## 14`) foi medida sobre outro dossiê. Recomposta para a sessão `8760907f` pelo
+mesmo método, dá **20.996** (`CLAUDE.md` 12.313 + `MEMORY.md` 816 + hook 7.867) — e a divergência
+contra os 26.760 não é só de dossiê: a `## 14` publica `CLAUDE.md` em 10.376 (era 12.313 nesta data)
+e soma 8.488 chars de memórias indexadas que **não aparecem** entre os anexos da primeira
+requisição desta sessão. Esse item fica **a apurar** antes de qualquer republicação da `## 14`.
+
+**Emenda ao `DC-4` (2026-09-20).** Três cláusulas, todas por fato medido na sessão `8760907f`:
+1. **O pickup é função da tarefa, não constante.** Ele projeta o dossiê da tarefa que a fila
+   entrega; seu tamanho varia com ela. Toda medida de pickup **nomeia o dossiê que projetou** —
+   número de pickup sem a tarefa declarada não é interpretável, e duas medidas de tarefas
+   diferentes não formam par.
+2. **A metade `usage_1` só vale se isolar o pickup.** Um `usage_1` de sessão com pickup mede a
+   **abertura da janela**, da qual o pickup é uma parcela (~16%, medido). Sem controle pareado cuja
+   diferença seja atribuível ao gatilho, a metade não fecha o par — declara-se aberta.
+3. **Todo número publicado nomeia o objeto medido.** "16.459 bytes de `additionalContext`" era o
+   comprimento da linha do JSONL. Comprimento de registro, de texto renderizado e de texto-fonte
+   são três objetos; o rótulo diz qual.

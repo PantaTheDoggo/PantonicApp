@@ -485,7 +485,7 @@ também como um kanban adaptado:
   registro canônico — é maquinário interno dela, na skill `passagem-de-bastao`, **transparente para
   o gerente**: ele não a invoca, não a lê e não a acompanha. O relatório de encerramento da janela
   reporta as tarefas feitas, a iniciativa/plano de origem e o **índice de conclusão do plano**
-  (`<done>/<total>` no diário).
+  (`<done>/<total>` no diário). O caminho da retomada é `python .claude/tools/backlog.py next`.
 - **Checkpoint intermediário** — é da **orquestração**: quando a janela de orquestração se
   encerra (coesão ou ocupação) com tarefas do plano ainda abertas, quem orquestra grava até 5
   linhas de ponteiro de estado no plano em curso (skill `passagem-de-bastao`, seção "Checkpoint da

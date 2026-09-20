@@ -1,8 +1,10 @@
 """BKL-T2 (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T2`) — núcleo somente-leitura do
 instrumento de backlog: carrega o índice do diário, os planos vivos e o próprio diário; monta o
-grafo item → tarefas; `check` acusa cada violação de gramática (`C-1..C-9`, vocabulário fechado
-definido no card) com `arquivo:linha`; `show` emite o dossiê verbatim de um item, truncado ao teto
-`DB-7` (8.000 chars / 120 linhas, com ponteiro `arquivo:l1-l2` quando corta).
+grafo item → tarefas; `check` acusa cada violação de gramática (`C-1..C-11`, vocabulário fechado
+definido no card) com `arquivo:linha`; `resolver_citacao_secao` (`TK-60a`) resolve uma citação
+`` `<arquivo>.md` §<N>[.<N>]* `` contra o arquivo citado, acusando `C-11` quando a seção não
+existe — vocabulário do instrumento fechado em `C-1..C-11`; `show` emite o dossiê verbatim de um item,
+truncado ao teto `DB-7` (8.000 chars / 120 linhas, com ponteiro `arquivo:l1-l2` quando corta).
 
 Gramática implementada (residência canônica: skill `diario-de-obras`, seção "Gramática legível
 por máquina" — replicada aqui igual, `DB-17`/`DB-18`):
@@ -87,6 +89,7 @@ DIRETIVA_RE = re.compile(r"^\*\*Diretiva de priorização:\*\* (.*)$")
 NIVEL_1_OU_2_RE = re.compile(r"^#{1,2} ")
 
 INDICE_LINHA_RE = re.compile(r"^\|\s*([^|]+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|$")
+INDICE_HEADING_RE = re.compile(r"^## Índice\s*$")
 
 _TETO_CHARS = 8000
 _TETO_LINHAS = 120
@@ -143,6 +146,7 @@ class Plano:
     prefixo: str | None = None
     ordem_execucao: list[str] = field(default_factory=list)
     tarefas: list[Item] = field(default_factory=list)
+    fora_do_corpus: bool = False
 
 
 @dataclass
@@ -289,8 +293,22 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
 
 
 def _parse_indice(linhas: list[str], arquivo_rel: str) -> list[LinhaIndice]:
+    """Âncora do índice (§2.2, DB-43): a tabela que segue o cabeçalho `## Índice`, e só ela —
+    começa na primeira linha iniciada por `|` depois desse cabeçalho e termina na primeira linha
+    em branco. Nenhuma outra tabela markdown do diário produz linha de índice."""
     resultado: list[LinhaIndice] = []
-    for i, linha in enumerate(linhas, start=1):
+    inicio_secao = next((i for i, l in enumerate(linhas) if INDICE_HEADING_RE.match(l)), None)
+    if inicio_secao is None:
+        return resultado
+    inicio_tabela = next(
+        (i for i in range(inicio_secao + 1, len(linhas)) if linhas[i].startswith("|")), None
+    )
+    if inicio_tabela is None:
+        return resultado
+    for i in range(inicio_tabela, len(linhas)):
+        linha = linhas[i]
+        if linha.strip() == "":
+            break
         m = INDICE_LINHA_RE.match(linha)
         if not m:
             continue
@@ -301,7 +319,7 @@ def _parse_indice(linhas: list[str], arquivo_rel: str) -> list[LinhaIndice]:
             continue
         resultado.append(
             LinhaIndice(
-                id=id_, titulo=titulo, status_bruto=status_bruto, arquivo=arquivo_rel, linha=i, ancora=ancora
+                id=id_, titulo=titulo, status_bruto=status_bruto, arquivo=arquivo_rel, linha=i + 1, ancora=ancora
             )
         )
     return resultado
@@ -399,7 +417,7 @@ def carregar(repo: Path) -> Modelo:
     indice, tiquetes, diario_linhas = _parse_diario(diario_path, repo)
     diretiva_ids = _parse_diretiva(diario_linhas)
 
-    return Modelo(
+    modelo = Modelo(
         planos=planos,
         tiquetes=tiquetes,
         indice=indice,
@@ -408,9 +426,21 @@ def carregar(repo: Path) -> Modelo:
         diretiva_ids=diretiva_ids,
     )
 
+    # §2.0 (DB-43) — a autoridade sobre a vida de um plano é a célula de estado da linha dele no
+    # índice do diário, casada pela regra de sufixo de `_posicao_indice` (residência única do
+    # casamento). Núcleo em done/superseded/cancelled → plano fora do corpus.
+    for plano in planos:
+        pos = _posicao_indice(modelo, plano.id)
+        if pos is not None:
+            nucleo, _, _ = _celula_indice(modelo.indice[pos].status_bruto)
+            plano.fora_do_corpus = nucleo in {"done", "superseded", "cancelled"}
+
+    return modelo
+
 
 # --------------------------------------------------------------------------- #
-# check — violações C-1..C-9
+# check — violações C-1..C-11 (C-11 via resolver_citacao_secao, definido abaixo — TK-60a:
+# check é o chamador de produção, nenhum subcomando novo)
 # --------------------------------------------------------------------------- #
 
 
@@ -462,10 +492,15 @@ def _item_checks(item: Item, violacoes: list[Violacao]) -> None:
         )
 
 
-def check(modelo: Modelo) -> list[Violacao]:
+def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = None) -> list[Violacao]:
     violacoes: list[Violacao] = []
 
     for plano in modelo.planos:
+        if plano.fora_do_corpus:
+            # §2.0 (DB-43) — plano fora do corpus: check não o linta, nem o cabeçalho (C-7,
+            # C-8) nem as tarefas dele (C-1, C-2). C-5, index-line-based, não é lint do plano
+            # e continua avaliado no laço sobre `modelo.indice` abaixo.
+            continue
         terminal = plano.status in {"done", "superseded", "cancelled"}
         if not terminal:
             if plano.prefixo is None:
@@ -520,20 +555,30 @@ def check(modelo: Modelo) -> list[Violacao]:
                 )
             )
 
-    ids_planos = {p.id for p in modelo.planos}
     ids_tiquetes = {t.id for t in modelo.tiquetes}
-    for linha in modelo.indice:
+    for pos, linha in enumerate(modelo.indice):
         nucleo, tem_narrativa, _done_total = _celula_indice(linha.status_bruto)
+        # DB-46: núcleo terminal (done/superseded/cancelled) é projeção final — C-4 não vale
+        # para ele. C-3 (vocabulário do núcleo) vale para toda linha, terminal ou não.
+        terminal = nucleo in {"done", "superseded", "cancelled"}
+        # DB-43/DB-15: casamento de id de plano pela mesma regra de sufixo de `_posicao_indice`
+        # (residência única) — nenhuma outra reimplementação desse casamento.
+        plano_da_linha = None
+        for plano in modelo.planos:
+            if _posicao_indice(modelo, plano.id) == pos:
+                plano_da_linha = plano
+                break
+
         if nucleo not in _VOCAB_PLANO:
             violacoes.append(
                 Violacao(
                     "C-3", linha.arquivo, linha.linha, f"{linha.id}: status de índice '{nucleo}' fora do vocabulário"
                 )
             )
-        elif tem_narrativa:
+        elif tem_narrativa and not terminal:
             violacoes.append(Violacao("C-4", linha.arquivo, linha.linha, f"{linha.id}: célula do índice com prosa"))
         else:
-            item_status = _status_do_id(modelo, linha.id)
+            item_status = plano_da_linha.status if plano_da_linha is not None else _status_do_id(modelo, linha.id)
             if item_status is not None and item_status != nucleo:
                 violacoes.append(
                     Violacao(
@@ -544,12 +589,158 @@ def check(modelo: Modelo) -> list[Violacao]:
                     )
                 )
 
-        if nucleo not in {"done", "superseded"} and linha.id not in ids_planos and linha.id not in ids_tiquetes:
+        if not terminal and plano_da_linha is None and linha.id not in ids_tiquetes:
             violacoes.append(
                 Violacao("C-9", linha.arquivo, linha.linha, f"{linha.id}: sem residência em plano vivo nem diário")
             )
 
+    if inbox_planos is not None and inbox_planos.exists():
+        # C-10 — o contador `**Próximo id de plano: P-NNNN.**` de `docs/plans/_INBOX.md`
+        # confrontado com o maior id realmente presente em `docs/plans/P-*.md` (`modelo.planos`,
+        # todo arquivo do glob, vivo ou não — DB-38). Nunca contra os ids mencionados no
+        # próprio texto do inbox: plano criado sem linha de inbox não aparece lá, e é
+        # exatamente esse o caso medido que motivou a violação.
+        for i, linha_inbox in enumerate(inbox_planos.read_text(encoding="utf-8").splitlines(), start=1):
+            m = _CONTADOR_INBOX_ID_RE.search(linha_inbox)
+            if m is None:
+                continue
+            contador = int(m.group(1))
+            ids_planos: list[int] = []
+            for p in modelo.planos:
+                mid = _ID_PLANO_RE.match(p.id)
+                if mid:
+                    ids_planos.append(int(mid.group(1)))
+            maior = max(ids_planos) if ids_planos else 0
+            if contador <= maior:
+                violacoes.append(
+                    Violacao(
+                        "C-10",
+                        "docs/plans/_INBOX.md",
+                        i,
+                        f"contador aponta para P-{contador:04d}, já presente em docs/plans/",
+                    )
+                )
+            break
+
+    if repo is not None:
+        # C-11 — citações de seção do corpus (item 6, TK-60a: chamador de produção é
+        # `check`, nenhum subcomando novo). Corpus = `docs/DIARIO_DE_OBRAS.md` +
+        # `docs/plans/P-*.md` (via modelo, DB-38: todo arquivo do glob, vivo ou não) +
+        # `docs/DIARIO_HISTORICO.md` (carregar() nunca abre esse arquivo — leitura direta,
+        # só para este lint).
+        fontes: list[tuple[str, str]] = [(modelo.diario_arquivo, "\n".join(modelo.diario_linhas))]
+        for plano in modelo.planos:
+            fontes.append((plano.arquivo, plano.texto))
+        historico = repo / "docs" / "DIARIO_HISTORICO.md"
+        if historico.exists():
+            fontes.append((historico.relative_to(repo).as_posix(), historico.read_text(encoding="utf-8")))
+
+        for arquivo_fonte, texto_fonte in fontes:
+            for linha_num, referencia in _citacoes_do_texto(texto_fonte):
+                violacao = resolver_citacao_secao(referencia, repo)
+                if violacao is None:
+                    continue
+                m = _REF_SECAO_RE.match(referencia.strip())
+                chave = (m.group("arquivo"), m.group("secao")) if m is not None else None
+                if chave in _PISO_C11:
+                    continue
+                violacoes.append(
+                    Violacao("C-11", arquivo_fonte, linha_num, f"referência não resolvida: {referencia}")
+                )
+
     return violacoes
+
+
+# --------------------------------------------------------------------------- #
+# resolver_citacao_secao — terceiro resolvedor de referência do kit (TK-60): caminho de
+# arquivo já tem Test-Path, identificador de tarefa tem review_evidence, citação de seção
+# tem este. C-11. Chamador de produção é `check`, acima (item 6, TK-60a) — nenhum
+# subcomando novo.
+# --------------------------------------------------------------------------- #
+
+# Gramática observada, não a inventada (item 1, TK-60a): `` `<arquivo>.md` §<N>[.<N>]* ``
+# — 1.017 ocorrências medidas no corpus contra 1 só da forma antiga `§X.Y publicada em
+# <arquivo>` (o próprio texto do tíquete anterior).
+_REF_SECAO_RE = re.compile(r"^`(?P<arquivo>[^`]+\.md)`\s+§(?P<secao>\d+(?:\.\d+)*)$")
+_CITACAO_SECAO_HARVEST_RE = re.compile(r"`(?P<arquivo>[^`]+\.md)`\s+§(?P<secao>\d+(?:\.\d+)*)")
+_HEADING_NUMERADO_RE = re.compile(r"^#{1,6}\s+(?P<num>\d+(?:\.\d+)*)\b")
+
+# Piso de C-11 (item 7, TK-60a) — dívida já presente no corpus vivo, contabilizada para o
+# lint não nascer vermelho; mesma trava do `.claude/checks/ratchet_piso.py` (falha só no
+# PRÓXIMO ponteiro quebrado, não nos já conhecidos). Quitar o piso é tíquete próprio, não
+# deste card.
+_PISO_C11: set[tuple[str, str]] = {
+    # Origem: medido em 2026-09-20 (TK-60a, card), 15 ocorrências (`docs/plans/P-0741-modelo-conceitual.md`
+    # 6, `docs/DIARIO_HISTORICO.md` 6, `docs/DIARIO_DE_OBRAS.md` 1, `docs/plans/P-0730-v2-identidade.md` 1,
+    # `docs/plans/P-0731-v2-extracao-modalidade.md` 1).
+    ("GOVERNANCA.md", "1.1"),
+    ("GOVERNANCA.md", "3.2"),
+}
+
+
+def _resolver_arquivo_citado(arquivo: str, repo: Path) -> Path | None:
+    """Raiz do repo primeiro; queda para basename único no corpus (item 4, TK-60a) — 56
+    ocorrências/20 distintas citam só o nome-base (`` `RUBRICA_DE_REVISAO.md` §8 ``, 9
+    delas) com o arquivo em `docs/`. Ambíguo (mais de um arquivo com o mesmo nome no repo)
+    ou ausente devolve `None` — quem acusa arquivo inexistente é `Test-Path` (`DB-2`, uma
+    residência por regra), não este resolvedor (item 5)."""
+    direto = repo / arquivo
+    if direto.exists():
+        return direto
+    basename = Path(arquivo).name
+    achados: list[Path] = []
+    for dirpath, dirnames, filenames in os.walk(repo):
+        dirnames[:] = [d for d in dirnames if d != ".git"]
+        if basename in filenames:
+            achados.append(Path(dirpath) / basename)
+    if len(achados) == 1:
+        return achados[0]
+    return None
+
+
+def resolver_citacao_secao(referencia: str, repo: Path) -> Violacao | None:
+    """Resolve uma citação `` `<arquivo>.md` §<N>[.<N>]* `` contra o arquivo citado.
+    Casamento por **heading** numerado (`^#{1,6} X.Y`), nunca substring — o caso que
+    motivou o `TK-60`, `` `.claude/skills/diario-de-obras/SKILL.md` §2.5 ``, tem o literal
+    `2.5` só em prosa (nenhum heading `2.5`) e por isso tem de sair `C-11` apesar do literal
+    existir no arquivo.
+
+    Domínio (item 2): um nível (`§3`) e dois níveis (`§3.2`) são seção; três ou mais
+    componentes numéricos (`§3.0.0`) são versão, não seção — devolve `None` em silêncio
+    (item 5), sem checar arquivo algum. Caminho: raiz do repo primeiro, com queda para
+    basename único no corpus (item 4, `_resolver_arquivo_citado`); arquivo que não existe
+    nem por basename também devolve `None` em silêncio — resolver caminho é do `Test-Path`
+    (`DB-2`), não deste resolvedor (item 5).
+
+    Devolve `None` quando a seção existe no arquivo citado, ou nos dois silêncios acima;
+    `Violacao("C-11", ...)`, com o literal da referência recebida na mensagem, quando a
+    seção não existe no arquivo citado, ou quando `referencia` não casa a gramática."""
+    m = _REF_SECAO_RE.match(referencia.strip())
+    if m is None:
+        return Violacao("C-11", referencia, 1, f"referência não resolvida: {referencia}")
+    arquivo = m.group("arquivo")
+    secao = m.group("secao")
+    if secao.count(".") >= 2:
+        return None  # três ou mais componentes numéricos = versão, não seção (item 5)
+    caminho = _resolver_arquivo_citado(arquivo, repo)
+    if caminho is None:
+        return None
+    for linha in caminho.read_text(encoding="utf-8").splitlines():
+        hm = _HEADING_NUMERADO_RE.match(linha)
+        if hm is not None and hm.group("num") == secao:
+            return None
+    return Violacao("C-11", arquivo, 1, f"referência não resolvida: {referencia}")
+
+
+def _citacoes_do_texto(texto: str) -> list[tuple[int, str]]:
+    """Todas as citações `` `<arquivo>.md` §<N>[.<N>]* `` de um texto, pareadas com a linha
+    (1-based) onde cada uma começa — usado por `check` para varrer o corpus (item 6,
+    TK-60a)."""
+    resultado: list[tuple[int, str]] = []
+    for m in _CITACAO_SECAO_HARVEST_RE.finditer(texto):
+        linha = texto.count("\n", 0, m.start()) + 1
+        resultado.append((linha, m.group(0)))
+    return resultado
 
 
 # --------------------------------------------------------------------------- #
@@ -616,6 +807,10 @@ class SelecaoNext:
 def _candidatos(modelo: Modelo) -> list[Candidato]:
     resultado: list[Candidato] = []
     for plano in modelo.planos:
+        if plano.fora_do_corpus:
+            # §2.0/§2.5 item 3 (DB-43) — a exclusão por corpus precede a elegibilidade e,
+            # por tabela, precede também a avaliação de E-2 (que corre sobre `_candidatos`).
+            continue
         for tarefa in plano.tarefas:
             resultado.append(Candidato(item=tarefa, pai=plano, tipo_pai="plano"))
     for tiquete in modelo.tiquetes:
@@ -825,7 +1020,46 @@ def _listar_blocked(modelo: Modelo) -> str:
     return ", ".join(partes)
 
 
+def _listar_candidatos_a_fechamento(modelo: Modelo) -> str:
+    """TK-61a, `DB-4` — candidato a fechamento: pai (plano ou tíquete) que (a) está no corpus
+    da §2.0 (`DB-43` — plano `fora_do_corpus` já exclui o terminal; para tíquete, corpus não
+    exclui por status, então (d) faz esse papel), (b) tem >= 1 filho direto, (c) tem todos os
+    filhos diretos terminais (`done`/`cancelled` — `superseded` não entra: só plano o tem e
+    plano não é filho) e (d) não é ele próprio terminal (`done`/`cancelled`/`superseded`). IDs
+    em ordem alfabética crescente (`DB-37` E-1); `<done>/<total>` pela fórmula da `DB-36`
+    (`_done_total`)."""
+    candidatos: list[tuple[str, int, int]] = []
+    for plano in modelo.planos:
+        if plano.fora_do_corpus:
+            continue
+        filhos = plano.tarefas
+        if not filhos:
+            continue
+        if not all(f.status in ("done", "cancelled") for f in filhos):
+            continue
+        done, total = _done_total(filhos)
+        candidatos.append((plano.id, done, total))
+    for tiquete in modelo.tiquetes:
+        if tiquete.status in ("done", "cancelled", "superseded"):
+            continue
+        filhos = tiquete.filhos
+        if not filhos:
+            continue
+        if not all(f.status in ("done", "cancelled") for f in filhos):
+            continue
+        done, total = _done_total(filhos)
+        candidatos.append((tiquete.id, done, total))
+    if not candidatos:
+        return "nenhum"
+    candidatos.sort(key=lambda c: c[0])
+    return ", ".join(f"{id_} ({done}/{total})" for id_, done, total in candidatos)
+
+
 _CAMINHO_PLANO_INBOX_RE = re.compile(r"docs/plans/P-\d{4}-[^)\s`]+\.md")
+_ID_PLANO_INBOX_RE = re.compile(r"docs/plans/P-(\d{4})-")
+_CONTADOR_INBOX_RE = re.compile(r"\*\*Próximo id de plano: P-\d{4}\.\*\*")
+_CONTADOR_INBOX_ID_RE = re.compile(r"\*\*Próximo id de plano: P-(\d{4})\.\*\*")
+_ID_PLANO_RE = re.compile(r"^P-(\d{4})$")
 
 
 def _contar_inbox_planos(caminho: Path) -> int:
@@ -918,6 +1152,7 @@ def renderizar_next(
         f"inbox de planos: {n_inbox_planos} por drenar · fila de memória: {n_memoria} candidato(s) · "
         f"blocked: {blocked}"
     )
+    linhas_saida.append(f"candidato a fechamento: {_listar_candidatos_a_fechamento(modelo)}")
 
     return "\n".join(linhas_saida)
 
@@ -980,14 +1215,47 @@ def _proxima_do_pai(modelo: Modelo, pai: "Plano | Item", tipo_pai: str) -> str |
     return ordenados[0].item.id
 
 
+def _fila_corrente_linha_topo(modelo: Modelo) -> str:
+    """Metade 1 (`BKL-T10b`, DB-33) — primeira linha do bloco: `` `<ID>` `` — <título>
+    (`` `<arquivo>:<l1>-<l2>` ``) do **pai** do vencedor de `selecionar_next`, residência dele
+    por `_residencia_plano`/`_residencia_tiquete`, e as contagens ready/blocked/in-progress do
+    corpus (`_candidatos`, já filtrado por `fora_do_corpus`, DB-43 — mesma exclusão da metade
+    3). Sem vencedor, a linha declara o motivo (`selecao.mensagem`) em vez de sumir. `fila: —`
+    — nenhuma função existente devolve a fila de candidatos além do vencedor; contingência do
+    card: usar o que existe e declarar o campo omitido, sem inventar função nova de coleta."""
+    selecao = selecionar_next(modelo)
+    if selecao.vencedor is None:
+        return f"**Fila corrente:** {selecao.mensagem}"
+
+    pai = selecao.vencedor.pai
+    tipo_pai = selecao.vencedor.tipo_pai
+    residencia = _residencia_plano(pai) if tipo_pai == "plano" else _residencia_tiquete(modelo, pai)
+
+    candidatos_corpus = _candidatos(modelo)
+    n_ready = sum(1 for c in candidatos_corpus if c.item.status == "ready")
+    n_blocked = sum(1 for c in candidatos_corpus if c.item.status == "blocked")
+    n_in_progress = sum(1 for c in candidatos_corpus if c.item.status == "in-progress")
+
+    return (
+        f"**Fila corrente:** `{pai.id}` — {pai.titulo} (`{residencia}`) · fila: — · "
+        f"ready {n_ready} · blocked {n_blocked} · in-progress {n_in_progress}"
+    )
+
+
 def _bloco_fila_corrente(modelo: Modelo) -> list[str]:
-    """§2.3 (DB-33) — um bullet por pai vivo, na ordem das linhas do índice."""
-    linhas: list[str] = []
-    for linha_idx in modelo.indice:
+    """§2.3 (DB-33) — bloco inteiro: a linha `**Fila corrente:**` (metade 1) como primeiro
+    elemento, mais um bullet por pai **em corpus** (§2.0, DB-43) com filho não terminal, na
+    ordem das linhas do índice. Casamento de plano pela residência única de `_posicao_indice`
+    (metade 2) — id exato vence, e na falta dele o sufixo mnemônico; nenhum outro ponto
+    reimplementa esse casamento (DB-2)."""
+    linhas: list[str] = [_fila_corrente_linha_topo(modelo)]
+    for pos, linha_idx in enumerate(modelo.indice):
         alvo: "Plano | Item | None" = None
         tipo = "plano"
         for plano in modelo.planos:
-            if plano.id == linha_idx.id:
+            if plano.fora_do_corpus:
+                continue
+            if _posicao_indice(modelo, plano.id) == pos:
                 alvo, tipo = plano, "plano"
                 break
         if alvo is None:
@@ -1029,6 +1297,27 @@ def _inserir_nota(linhas: list[str], alvo: Item, linha_nota: str) -> None:
     while pos_insercao > alvo.linha_header and linhas[pos_insercao - 1].strip() == "":
         pos_insercao -= 1
     linhas[pos_insercao:pos_insercao] = ["- **Notas de execução:**", linha_nota]
+
+
+def _regenerar_bloco_fila(modelo: Modelo, diario_linhas: list[str]) -> str | None:
+    """Residência única (`BKL-T10b`, DB-2) da regeneração de `<!-- fila:gerada -->`..
+    `<!-- /fila:gerada -->` — chamada por `transacionar_status` e por `transacionar_diretiva`
+    (metade 4). Marcador ausente ou fechamento ausente não é erro do chamador: devolve o aviso
+    em vez de recusar a transação (`AE-10`/`ESC-27` do `P-0740`); o comportamento não muda."""
+    if "<!-- fila:gerada -->" not in diario_linhas:
+        return (
+            f"bloco `Fila corrente` nao projetado: marcadores `<!-- fila:gerada -->` ausentes em "
+            f"{modelo.diario_arquivo} (`AE-10`; chegam com a `BKL-T6` do `P-0739`)"
+        )
+    ini = diario_linhas.index("<!-- fila:gerada -->")
+    fim = next(
+        (i for i in range(ini + 1, len(diario_linhas)) if diario_linhas[i] == "<!-- /fila:gerada -->"),
+        None,
+    )
+    if fim is None:
+        return f"bloco `Fila corrente` nao projetado: marcador de fechamento ausente em {modelo.diario_arquivo}"
+    diario_linhas[ini + 1 : fim] = _bloco_fila_corrente(modelo)
+    return None
 
 
 def transacionar_status(
@@ -1113,23 +1402,9 @@ def transacionar_status(
     # no diario com a `BKL-T6` item (a), e o `P-0739` esta parado (`DM-9`). Projetar o que
     # ainda nao existe nao e erro do chamador — sem os dois marcadores a transacao segue e
     # projeta card + linha de indice, declarando a omissao em `mensagem` (skip silencioso
-    # e a classe de defeito que o `TK-55` acumula). Com eles, o bloco e regenerado.
-    aviso: str | None = None
-    if "<!-- fila:gerada -->" in diario_linhas:
-        ini = diario_linhas.index("<!-- fila:gerada -->")
-        fim = next(
-            (i for i in range(ini + 1, len(diario_linhas)) if diario_linhas[i] == "<!-- /fila:gerada -->"),
-            None,
-        )
-        if fim is None:
-            aviso = f"bloco `Fila corrente` nao projetado: marcador de fechamento ausente em {modelo.diario_arquivo}"
-        else:
-            diario_linhas[ini + 1 : fim] = _bloco_fila_corrente(modelo)
-    else:
-        aviso = (
-            f"bloco `Fila corrente` nao projetado: marcadores `<!-- fila:gerada -->` ausentes em "
-            f"{modelo.diario_arquivo} (`AE-10`; chegam com a `BKL-T6` do `P-0739`)"
-        )
+    # e a classe de defeito que o `TK-55` acumula). Com eles, o bloco e regenerado — residência
+    # única em `_regenerar_bloco_fila` (`BKL-T10b`, DB-2).
+    aviso = _regenerar_bloco_fila(modelo, diario_linhas)
 
     arquivos_tocados = [modelo.diario_arquivo]
     _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
@@ -1141,7 +1416,11 @@ def transacionar_status(
 
 
 def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoStatus:
-    """§3 — `diretiva`: reescreve a linha `**Diretiva de priorização:**`."""
+    """§3 — `diretiva`: reescreve a linha `**Diretiva de priorização:**` e regenera o bloco
+    `Fila corrente` na mesma escrita atômica, pela residência única `_regenerar_bloco_fila`
+    (`BKL-T10b`, metade 4, DB-2) — a mesma que `transacionar_status` chama. `modelo.diretiva_ids`
+    é reconstruído a partir da linha recém-escrita antes da regeneração, para que o vencedor de
+    `selecionar_next` usado na linha `Fila corrente` reflita a diretiva nova, não a antiga."""
     diario_linhas = list(modelo.diario_linhas)
     nova_linha = f"**Diretiva de priorização:** {texto}"
     for i, linha in enumerate(diario_linhas):
@@ -1150,8 +1429,122 @@ def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoSt
             break
     else:
         diario_linhas.insert(1, nova_linha)
+
+    modelo.diretiva_ids = _parse_diretiva(diario_linhas)
+    aviso = _regenerar_bloco_fila(modelo, diario_linhas)
+
     _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
-    return ResultadoStatus(0, None, [modelo.diario_arquivo])
+    return ResultadoStatus(0, aviso, [modelo.diario_arquivo])
+
+
+def transacionar_drain(
+    repo: Path,
+    modelo: Modelo,
+    inbox_planos: Path,
+    historico: Path,
+    data: str | None = None,
+) -> ResultadoStatus:
+    """BKL-T10a, §2.4 — cada linha viva do inbox de planos vira linha de índice do diário e é
+    movida verbatim (prefixada `- [drenado AAAA-MM-DD] `) para o histórico, que só recebe
+    apenso e nunca é lido (`DB-9`). Contador do inbox recalculado como `max(id visto) + 1` sobre
+    os ids `P-NNNN` referenciados no próprio inbox — o histórico nunca é lido, então não entra
+    na conta. Checagem antes de qualquer escrita (`DB-1`/`DB-37`): inbox sem linha viva é no-op
+    exit 0; plano referido sem `Status` ou sem `Prefixo` é exit 3, nomeando o arquivo, e nada é
+    tocado — nem a linha boa que vinha antes dele no mesmo inbox. A regeneração do bloco `Fila
+    corrente` reusa `_regenerar_bloco_fila`, a mesma residência única que `transacionar_status`
+    e `transacionar_diretiva` chamam (`DB-2`) — `drain` é mais um chamador dela, não uma segunda
+    implementação da escrita do bloco."""
+    if not inbox_planos.exists():
+        return ResultadoStatus(0, None, [])
+
+    texto_inbox = inbox_planos.read_text(encoding="utf-8")
+    linhas_inbox = texto_inbox.splitlines()
+
+    vivas: list[tuple[int, str, str]] = []
+    for i, linha in enumerate(linhas_inbox):
+        s = linha.strip()
+        if not s.startswith("- ") or s.startswith("- [drenado "):
+            continue
+        m = _CAMINHO_PLANO_INBOX_RE.search(s)
+        if m:
+            vivas.append((i, s, m.group(0)))
+
+    if not vivas:
+        return ResultadoStatus(0, None, [])
+
+    # Checagem antes de qualquer escrita (DB-37/DB-1): todo plano referido tem de trazer
+    # Status e Prefixo antes que a primeira linha seja movida.
+    drenos: list[tuple[int, str, Plano]] = []
+    for i, linha, caminho in vivas:
+        plano = next((p for p in modelo.planos if p.arquivo == caminho), None)
+        if plano is None or plano.status is None or plano.prefixo is None:
+            return ResultadoStatus(3, f"plano sem Prefixo ou sem Status para linha de índice: {caminho}")
+        drenos.append((i, linha, plano))
+
+    hoje = data if data else datetime.date.today().isoformat()
+    ids_vistos = [int(m.group(1)) for m in _ID_PLANO_INBOX_RE.finditer(texto_inbox)]
+    novo_id = max(ids_vistos) + 1
+
+    # Diário: uma linha de índice nova por plano drenado, na ordem do inbox. O modelo em
+    # memória (`modelo.indice`, `plano.fora_do_corpus`) é atualizado junto, para que
+    # `_bloco_fila_corrente` (chamado por `_regenerar_bloco_fila` abaixo) já enxergue os
+    # planos recém-drenados — mesmo casamento por sufixo de `_posicao_indice` (DB-2).
+    diario_linhas = list(modelo.diario_linhas)
+    inicio_secao = next(k for k, l in enumerate(diario_linhas) if INDICE_HEADING_RE.match(l))
+    inicio_tabela = next(k for k in range(inicio_secao + 1, len(diario_linhas)) if diario_linhas[k].startswith("|"))
+    fim_tabela = next(
+        (k for k in range(inicio_tabela, len(diario_linhas)) if diario_linhas[k].strip() == ""),
+        len(diario_linhas),
+    )
+
+    novas_linhas_indice = []
+    for _, _, plano in drenos:
+        id_indice = f"{plano.id}-{plano.prefixo}"
+        novas_linhas_indice.append(f"| {id_indice} | {plano.titulo} | {plano.status} | {plano.arquivo} |")
+        nucleo, _, _ = _celula_indice(plano.status)
+        plano.fora_do_corpus = nucleo in {"done", "superseded", "cancelled"}
+        modelo.indice.append(
+            LinhaIndice(
+                id=id_indice,
+                titulo=plano.titulo,
+                status_bruto=plano.status,
+                arquivo=modelo.diario_arquivo,
+                linha=fim_tabela + 1,
+                ancora=plano.arquivo,
+            )
+        )
+    diario_linhas[fim_tabela:fim_tabela] = novas_linhas_indice
+
+    aviso = _regenerar_bloco_fila(modelo, diario_linhas)
+
+    # Inbox: remove as linhas drenadas e recalcula o contador.
+    indices_remover = {i for i, _, _ in drenos}
+    linhas_novo_inbox = [l for k, l in enumerate(linhas_inbox) if k not in indices_remover]
+    linhas_novo_inbox = [
+        _CONTADOR_INBOX_RE.sub(f"**Próximo id de plano: P-{novo_id:04d}.**", l)
+        if _CONTADOR_INBOX_RE.search(l)
+        else l
+        for l in linhas_novo_inbox
+    ]
+
+    # Histórico: apenso verbatim (só o prefixo `- ` vira `- [drenado AAAA-MM-DD] `), na ordem
+    # do inbox; o arquivo nunca é lido pelo instrumento (DB-9), só apensado.
+    linhas_historico = historico.read_text(encoding="utf-8").splitlines() if historico.exists() else []
+    for _, linha, _ in drenos:
+        linhas_historico.append(f"- [drenado {hoje}] " + linha[2:])
+
+    _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
+    _escrever_atomico(inbox_planos, linhas_novo_inbox)
+    _escrever_atomico(historico, linhas_historico)
+
+    arquivos = sorted(
+        {
+            modelo.diario_arquivo,
+            inbox_planos.relative_to(repo).as_posix(),
+            historico.relative_to(repo).as_posix(),
+        }
+    )
+    return ResultadoStatus(0, aviso, arquivos)
 
 
 # --------------------------------------------------------------------------- #
@@ -1198,6 +1591,10 @@ def main(argv: list[str] | None = None) -> int:
     diretiva_parser.add_argument("texto")
     diretiva_parser.add_argument("--repo", default=None)
 
+    drain_parser = subparsers.add_parser("drain", help="Inbox de planos → índice do diário + histórico.")
+    drain_parser.add_argument("--data", default=None)
+    drain_parser.add_argument("--repo", default=None)
+
     args = parser.parse_args(argv)
 
     for fluxo in (sys.stdout, sys.stderr):
@@ -1208,7 +1605,8 @@ def main(argv: list[str] | None = None) -> int:
     modelo = carregar(repo)
 
     if args.comando == "check":
-        violacoes = check(modelo)
+        inbox_planos = repo / "docs" / "plans" / "_INBOX.md"
+        violacoes = check(modelo, inbox_planos=inbox_planos, repo=repo)
         for violacao in violacoes:
             print(str(violacao))
         if violacoes:
@@ -1249,7 +1647,24 @@ def main(argv: list[str] | None = None) -> int:
     if args.comando == "diretiva":
         resultado = transacionar_diretiva(repo, modelo, args.texto)
         print(f"diretiva atualizada. arquivos tocados: {', '.join(resultado.arquivos)}")
+        if resultado.mensagem:
+            print(resultado.mensagem)
         return 0
+
+    if args.comando == "drain":
+        inbox_planos = repo / "docs" / "plans" / "_INBOX.md"
+        historico = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+        resultado = transacionar_drain(repo, modelo, inbox_planos, historico, data=args.data)
+        if resultado.exit_code == 0:
+            if resultado.arquivos:
+                print(f"drain: arquivos tocados: {', '.join(resultado.arquivos)}")
+            else:
+                print("drain: nada por drenar (no-op).")
+            if resultado.mensagem:
+                print(resultado.mensagem)
+            return 0
+        print(resultado.mensagem, file=sys.stderr if resultado.exit_code == 3 else sys.stdout)
+        return resultado.exit_code
 
     parser.error(f"comando desconhecido: {args.comando}")
     return 2

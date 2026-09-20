@@ -648,7 +648,8 @@ sai do escopo.
 **O que é.** Toda tarefa termina com um fechamento fixo, e a próxima começa em contexto limpo. Quem
 fecha uma e abre a outra é o **loop de execução**, entre tarefas — nunca o agente que executou, e
 nunca o gerente: a passagem de bastão é maquinário agente↔agente, e o gerente não a invoca nem a
-acompanha. O fluxo tem quatro passos.
+acompanha. O fechamento tem quatro passos, e a abertura da tarefa seguinte é o **pickup por
+instrumento**.
 
 **Gate.** Se a tarefa está sendo dada como concluída, a verificação de guardrails já passou — no
 mínimo os diretórios tocados mais a suíte de conformance verde. Sem gate verde, o destino é `blocked`
@@ -697,6 +698,21 @@ porque não há retomada: o retorno é a declaração de poluição mais a deman
 limpo. E contexto acabando **dentro** de uma tarefa não é evento a mitigar — é sintoma de que o
 recorte errou o dimensionamento, matéria que volta ao planejamento; retomar a tarefa pela metade em
 contexto novo é o custo dobrado que a doutrina proíbe.
+
+**O pickup por instrumento.** O contexto novo não reabre o backlog lendo o diário, os inboxes e o
+plano inteiro à procura do que fazer: o dossiê chega **injetado**. No ponto de carga, um hook
+reconhece o gatilho de retomada no prompt e escreve, como contexto adicional da sessão, o que
+`.claude/tools/backlog.py` apurou — a tarefa selecionada, o plano de origem com o índice de
+conclusão, a antecessora e o card verbatim, sob o teto de dossiê. Sem o gatilho o hook não escreve
+nada e o custo não é pago. O mesmo instrumento é quem materializa o status no diário: a linha de
+status de uma tarefa não se edita à mão, e o lint da gramática do diário é um verbo dele.
+
+**Por que o pickup é instrumento e não roteiro.** Enquanto a retomada era um roteiro de leituras
+transversais, ela custava um orçamento medido de dezenas de milhares de chars antes do primeiro
+turno útil — e crescia sozinha, porque cada inbox e cada plano que engordava entrava inteiro. Como
+injeção, o pickup tem tamanho conhecido, pago só quando pedido, e a apuração da fila deixa de ser
+trabalho de leitura do agente. O antes × depois está medido em `docs/CUSTO_DO_PICKUP.md`, que é a
+referência contra a qual qualquer mudança no fluxo de pickup se afere.
 
 Fecham o procedimento uma trava e três proibições. A trava vale para **qualquer** agente: depois do
 fechamento, se o usuário pedir a próxima tarefa no mesmo contexto, o agente não inicia — responde com
@@ -770,7 +786,7 @@ registrado, com motivo — nunca erosão silenciosa.
 
 > Fonte da verdade: `.claude/README.md`
 
-O kit são nove agentes, dez skills, quatro verificadores executáveis e a declaração de projeções,
+O kit são nove agentes, onze skills, quatro verificadores executáveis e a declaração de projeções,
 que viajam juntos para todo projeto consumidor. O índice abaixo é derivado do conteúdo real do diretório e verificado por script
 nos dois sentidos — item listado aqui sem arquivo no disco, e arquivo no disco sem item aqui, são as
 duas falhas.
@@ -803,6 +819,7 @@ duas falhas.
 | `checar-versao-kit` | Criação de um plano novo: compara a versão local do kit com a publicada no hub — e nunca atualiza sozinha. |
 | `audit-sweep` | Antes de invocar qualquer auditor: roda a fase mecânica de greps no modelo barato e grava o dossiê. |
 | `redacao-doc` | Autoria, reescrita ou revisão de documento publicado: proíbe narrativa de proveniência, citação de interlocutor e ID de processo no corpo. |
+| `entrega-de-encerramento` | Fechamento de plano: produz o modelo **as-is** das operações que o plano deixou — uma seção por tarefa (contexto, artefato concreto, exemplo real de funcionamento, do que protege), ganhos medidos e o estado de cada pendência. É o artefato pelo qual o dono valida o plano. |
 
 Os verificadores executáveis vivem em `.claude/checks/` e são invocados pelo gate de fechamento de
 tarefa:
@@ -816,6 +833,18 @@ tarefa:
   suíte e falha nomeando o comportamento perdido.
 - `check-readme.ps1` — o guarda de drift deste espelho: agentes, skills, versão, contagem de
   guardrails e a fonte da verdade declarada de cada seção.
+
+Os instrumentos do backlog vivem em `.claude/tools/` e são o que torna o diário operável por comando
+em vez de por leitura:
+
+- `.claude/tools/backlog.py` — o instrumento do diário de obras, em sete verbos: `next` seleciona a
+  próxima tarefa de forma determinística, `show` devolve o dossiê verbatim de um item, `check` faz o
+  lint da gramática do diário e dos planos, `status` e `start` transicionam uma tarefa e projetam a
+  mudança nos registros derivados, `drain` leva o inbox de planos ao índice, e `diretiva` reescreve
+  a linha de priorização.
+- `.claude/tools/backlog_hook.py` — o hook do ponto de carga: quando o prompt traz o gatilho de
+  retomada, injeta o dossiê da próxima tarefa como contexto adicional da sessão; sem o gatilho, não
+  escreve nada e sai com zero.
 
 A declaração canônica das projeções vive em `.claude/projecoes.json`: ela nomeia o conteúdo canônico
 do kit e o ponto de carga que recebe cada cópia. `.claude/tools/materializar.py` é o comando que

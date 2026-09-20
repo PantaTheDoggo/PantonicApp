@@ -43,8 +43,8 @@ silenciada e o script sempre sai 0, nunca bloqueando nem atrasando a chamada que
 
 Superfície testável, separada do I/O do hook: `calcular_ocupacao(linhas) -> (tokens, fonte)` e
 `avaliar(tokens, janela) -> (fracao, cruzou)`. `tests/test_ocupacao.py` exercita as duas; o hook
-(`main`, leitura de stdin/arquivo) não é exercitado por teste — é a superfície de I/O que a
-separação existe para isolar.
+(`main`, leitura de stdin) lê stdin em UTF-8 explícito (`TK-56a`, `DB-53`) e ganhou cobertura por
+subprocesso no mesmo teste.
 """
 from __future__ import annotations
 
@@ -138,7 +138,11 @@ def main(argv: list[str] | None = None) -> int:  # noqa: ARG001 — hook não re
     """Ponto de entrada do hook `PreToolUse`. Falha aberta: qualquer exceção ⇒ exit 0
     silencioso, sem imprimir nada e sem atrasar a chamada de ferramenta que disparou o hook."""
     try:
-        payload = json.loads(sys.stdin.read())
+        try:
+            raw = sys.stdin.buffer.read().decode("utf-8", errors="replace")
+        except AttributeError:
+            raw = sys.stdin.read()
+        payload = json.loads(raw)
 
         if payload.get("agent_type"):
             return 0

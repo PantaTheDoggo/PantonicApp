@@ -370,5 +370,71 @@ Registrado para que o plano próprio não comece frio, e **sem rota decidida aqu
   saída; nenhum critério de entrada foi exercido.
 - **O caminho de poluição de contexto** (seção 7) — previsto, vinculante, zero ocorrências, não
   exercitado.
+- **A forma da figura — standby ou efêmera com cenário persistido** (seção 11) — a medida de custo
+  por acionamento reabre a premissa de que o standby entrega continuidade barata; o plano próprio
+  decide a forma **por piloto medido**, não por argumento.
+- **A disciplina de saída** (seção 11, item iii) — `Edit` mínimo em vez de `Write` de seção;
+  hoje é recomendação, não regra.
 
 > **Lastro:** `I-5`, `I-7`, `I-9`, `I-10`; `DM-28` (o ad-hoc é insumo, não precedente).
+
+---
+
+## 11. (i) Custo por acionamento — a medida que reabre a forma da figura
+
+**O fato.** Medido em 2026-09-19 sobre os transcripts de cinco instâncias (deduplicados por
+`message.id`; preços da skill `claude-api`: Opus $5/M entrada, $25/M saída, cache read 10%, cache
+write 125%):
+
+| instância | turnos | ctx final | duração | custo | reescrita de cache | releitura de cache | saída | acionamentos | $/acionamento |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 171 | 405k | 151 min | $39,5 | **$15,4 (39%)** | $17,9 | $6,2 (247k tk) | 9 | $4,4 |
+| 2 | 188 | 452k | 252 min | $52,2 | **$25,3 (48%)** | $19,2 | $7,7 (307k) | 14 | $3,7 |
+| 3 | 124 | 320k | 114 min | $22,6 | $7,3 (32%) | $10,7 | $4,6 | 5 | $4,5 |
+| 4 | 114 | 280k | 115 min | $17,3 | $4,4 (25%) | $8,6 | $4,3 | 4 | $4,3 |
+| 5 (morta por limite, seção 8) | 233 | — | 209 min | sem `usage` | 3,5M tk reescritos (~$22) | — | 268k tk | 15 | — |
+
+**A causa da coluna "reescrita de cache".** O cache de prompt de um **subagente** expira em **5
+minutos**; o da sessão principal, em **1 hora**. Todo pico de `cache_creation` acima de 30k tokens
+nas cinco instâncias ocorre após pausa ≥ 5 min (gaps medidos: 5, 6, 7, 7, 8, 8, 8, 10, 11, 12, 13,
+15, 16, 17, 18, 20, 21, 23, 35, 55 min); o maior gap **sem** pico é 4,3 min. Entre dois
+acionamentos correm executor e reviewer (10–20 min). Logo **cada acionamento reescreve o contexto
+inteiro a preço cheio** — a continuidade "no contexto", que é a razão de ser do standby (seção 1),
+é paga integralmente a cada chamada, e cresce com a curva 258k → 451k.
+
+**As três outras fatias.** Releitura de cache: `turnos × contexto × $0,50/M` — 36–45% do custo,
+com 13–28 turnos por acionamento e 1,0–1,2 chamadas de ferramenta por turno (sem batching). Saída:
+12–16%, e 16–65k tokens dela são payload de `Write` de seção inteira do plano. Leitura: 8%, e 57%
+dela é o próprio plano (`P-0740`: 8.465 linhas, ~178k tokens) — a "absorção do cenário" da seção 1
+é lida por faixas, várias vezes.
+
+**O que a medida decide e o que deixa ao plano próprio.**
+
+- **(i) Forma da figura.** A alternativa medida contra o standby é a **figura efêmera com cenário
+  persistido**: a cada acionamento nasce uma instância que lê `docs/plans/<plano>-CENARIO.md` (≤ 15k
+  tokens: decisões vivas, fila, achados abertos, matéria inconclusiva da seção 9), lê o card em
+  causa, decide, **reescreve o cenário** e encerra. Custo estimado por acionamento: prefixo 17k +
+  cenário 15k + leituras dirigidas 20k reescritos ($0,3) + ~15 turnos a ~70k ($0,5) + saída ($0,4)
+  ≈ **$1,2–1,5**, contra $3,7–4,5 medidos — e sem fim de vida por limite (seção 8) nem curva de
+  crescimento. O que se perde é o que a instância anterior não escreveu no cenário; o handover da
+  seção 8 vira o modo normal, não o de fim de vida. **Decisão: por piloto de uma janela**, medindo
+  `$/acionamento`, reprovações e retentativas contra as instâncias 1–4 (que fecharam com zero
+  reprovações). Uma instância efêmera **não lê o plano**: lê o cenário e o card; o cenário é
+  autoridade sobre o plano para o que ele cobre.
+- **(ii) Manter o standby aquecido** (ping a cada ≤ 4 min via `SendMessage` enquanto executor e
+  reviewer rodam; ping = releitura de 300k = $0,15, contra $1,9 de reescrita) é remendo: exige o
+  loop acordado durante o despacho, põe turno e conteúdo no contexto da figura e não resolve a
+  curva nem a morte por limite. **Só se (i) for recusada pelo piloto.**
+- **(iii) Disciplina de saída.** `Edit` mínimo em vez de `Write` de seção; resposta curta como a
+  definição já manda. Ganho ~12–16% do custo da instância, sem drawback. Vale para qualquer forma.
+- **(iv) Critério de entrada do acionamento** (seções 2, 6, 10): continua aberto e **não se decide
+  por custo** — decide-se pela estatística estruturada da seção 9, que ainda não existe. A medida
+  só acrescenta o preço de cada acionamento (~$4) ao lado da causa.
+
+**Onde a figura fica no custo do plano.** Consultor ≈ 35% de um plano de ~$500; sessões
+principais ≈ 40%; executor + reviewer ≈ 18%. As alavancas fora da figura (loop em Sonnet, janela
+curta, loop fora do LLM) estão em `docs/plans/_VIABILIDADE-agente-leitor.md` §7 e em tíquetes
+próprios; **nada delas altera esta especificação** — o que altera é (i)–(iv).
+
+> **Lastro:** `docs/plans/_VIABILIDADE-agente-leitor.md` §7.1–7.4 (medida e posição);
+> sonda descartável `%TEMP%\claude\sonda_leituras.py`; seções 6, 8 e 9 desta especificação.

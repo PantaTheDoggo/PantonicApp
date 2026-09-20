@@ -24,9 +24,8 @@ plano/iniciativa, tíquete) têm residência única — skill `diario-de-obras`,
 ## Parte 1 — Apurar a fila
 
 1. **Drenar os dois inboxes** — antes de escolher qualquer tarefa:
-   1. **Inbox de planos** — skill `diario-de-obras`, operação "drenar inbox de planos": promove
-      linhas novas de `docs/plans/_INBOX.md` — única fonte da drenagem — para o índice do diário;
-      as linhas já drenadas vivem em `docs/plans/_INBOX_HISTORICO.md`.
+   1. **Inbox de planos** — `python .claude/tools/backlog.py drain` promove cada linha viva de
+      `docs/plans/_INBOX.md` ao índice do diário e a move para `docs/plans/_INBOX_HISTORICO.md`.
    2. **Fila de candidatos a memória** — se `<memory-dir>/_INBOX.md` tiver linha ainda não marcada
       (`<memory-dir>` = `~/.claude/projects/<slug>/memory/`), apresentá-la ao dono **na abertura da
       janela** — `AskUserQuestion` com promover/descartar por candidato — e marcar a linha conforme
@@ -35,22 +34,11 @@ plano/iniciativa, tíquete) têm residência única — skill `diario-de-obras`,
       (`.claude/global/docs/GOVERNANCA_MEMORIAS.md` §8). Fila vazia ou toda marcada: seguir sem
       ruído.
 
-2. **Ler a diretiva de priorização** — primeira linha do diário (`docs/DIARIO_DE_OBRAS.md`), logo
-   abaixo do título. Se vazia, aplicar a heurística padrão, nesta ordem:
-   1. Itens `blocked` cuja razão registrada já não se aplica (destravar). Tarefa `blocked` com razão
-      `premissa` **sem** rodada `RP-<n>` registrada no plano não se destrava nem se pula: a rodada de
-      replanejamento é a próxima tarefa (`G-REPLAN`, `GOVERNANCA.md` §7 item 17).
-   2. Itens `in-progress` (WIP de 1 iniciativa por vez — nunca abrir uma segunda enquanto uma
-      primeira está em andamento).
-   3. Tíquetes avulsos de bug (`TK-*` descritos como bug).
-   4. Demais itens `ready`, por ordem de entrada no índice (FIFO).
-
-   Diretiva que nomeia uma iniciativa/bug tem precedência total sobre a heurística — ela pula direto
-   para a próxima tarefa `ready`/`in-progress` daquela âncora, mesmo que outra iniciativa esteja mais
-   antiga no índice. Com 2+ iniciativas `in-progress` e diretiva vazia, não desempatar por FIFO nem
-   por "momentum": empate de WIP é prioridade não persistida, e o desempate é do dono. Instrução de
-   prioridade do dono que dispara execução escreve a linha de Diretiva no mesmo ato, não só nota de
-   seção.
+2. **Apurar a fila é rodar o instrumento**: `python .claude/tools/backlog.py next` devolve a
+   próxima tarefa e o dossiê dela; a ordem de seleção não se reproduz aqui e não se lê antes de
+   rodar, porque é comportamento do instrumento. Quando `next` recusa, ele **nomeia a condição** —
+   `E-1` dois ou mais `in-progress`, `E-2` linha de status ausente, `E-3` linha de índice ausente —
+   e o que se faz é corrigir o dado que ele nomeou, nunca escolher à mão.
 
 3. **Tomar UMA tarefa** — Grep pelo ID no diário, ler só a seção correspondente (nunca o diário
    inteiro). Para retomar sprint `in-progress`: `Read docs/DIARIO_DE_OBRAS.md offset:1 limit:15` — o
@@ -145,10 +133,11 @@ Recusa de qualquer item do gate: **não delega**, e o que falta fechar volta ao 
    dirs tocados + `tests/conformance/` verde; Tier 3 completo só quando a própria tarefa/sprint
    exigir). Sem gate verde, o destino é `blocked` ou permanece `in-progress`, nunca `done`.
 
-2. **Materializar o status e registrar** (skill `diario-de-obras`): quem materializa o `status`, em
-   qualquer estado, é a **orquestração** — o executor é **autor** de `review` e `blocked`, e de mais
-   nada. O registro canônico da tarefa é o **RDO**; o diário guarda a linha de status que aponta para
-   lá (`GOVERNANCA.md` §4.2, "Fronteira de registro").
+2. **Materializar o status e registrar**: `python .claude/tools/backlog.py status <ID> <estado>`
+   materializa o `status`, em qualquer estado — ato exclusivo da **orquestração**: o executor é
+   **autor** de `review` e `blocked`, e de mais nada. O registro canônico da tarefa é o **RDO**; o
+   diário guarda a linha de status que aponta para lá (`GOVERNANCA.md` §4.2, "Fronteira de
+   registro").
    - **Nunca na célula do índice:** se a tarefa pertence a um `### <ID>` do diário, o destino é a
      "Notas de execução" daquela seção; se a sprint vive inteiramente em `docs/plans/P-*.md`, o
      destino é uma seção do próprio plano — a célula do índice fica travada em status + ≤ ~1-2 frases

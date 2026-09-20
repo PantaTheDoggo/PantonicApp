@@ -1,7 +1,8 @@
 """EXA-T13 (`docs/plans/P-0734-execucao-autonoma.md` `### T13`) — TF/TR de
 `.claude/tools/ocupacao.py`: `calcular_ocupacao` (numerador, com ramo de fallback estimado) e
-`avaliar` (fração e cruzamento do limiar de 50%, `GOVERNANCA.md` §4.3). Por desenho da tarefa, o
-hook (`main`, I/O de stdin/transcript) não é exercitado aqui — só as duas funções puras.
+`avaliar` (fração e cruzamento do limiar de 50%, `GOVERNANCA.md` §4.3). O hook (`main`, I/O de
+stdin/transcript) ganhou cobertura por subprocesso na `TK-56a` (`DB-53`,
+`docs/plans/P-0739-backlog-instrumento.md:122`) — leitura de stdin em UTF-8 explícito.
 
 `.claude/tools/` não é pacote importável (diretório com ponto no nome) — o módulo é carregado por
 caminho via `importlib.util.spec_from_file_location`, mesmo padrão de `tests/test_rdo.py` e
@@ -11,6 +12,9 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -169,3 +173,72 @@ def test_tr_janela_tokens_aceita_sufixo_e_ignora_lixo(monkeypatch):
     for lixo in ("lixo", "", "-5", "0"):
         monkeypatch.setenv("PANTONIC_CONTEXT_TOKENS_MAX", lixo)
         assert _load_ocupacao().JANELA_TOKENS == 1_000_000
+
+
+def test_tf_hook_executavel_stdin_utf8_cruza_o_limiar_e_devolve_aviso(tmp_path):
+    """TK-56a (`DB-53`) reescrito pela TK-63a: `main` lê stdin em UTF-8 explícito, não na
+    codificação do host. `ocupacao.py` não tem acoplamento por `__file__` — a raiz falsa é uma
+    cópia simples em `tmp_path`, sem a estrutura de `.claude/tools/`. O mundo hostil deixa de ser
+    "host sem PYTHONUTF8" (mede o host) e passa a ser construído: `env` mínimo +
+    `PYTHONIOENCODING=cp1252` (hostil) e `env` mínimo + `PYTHONUTF8=1` (seguro) — mesma técnica do
+    `backlog_hook` (TK-63a) e do `telemetria_hook` (TK-56b). O par negativo é o produto revertido
+    (bloco de decode UTF-8 explícito trocado por `sys.stdin.read()` cru), não mais um stub. Três
+    asserções de relação, nenhuma de magnitude: (i) invariância do reparado entre os mundos; (ii)
+    divergência do revertido entre os mundos; (iii) não-vazio do reparado no mundo hostil. O
+    `hook_event_name` acentuado viaja intacto do payload até a saída (medido no reparado).
+    Reproduzido em 2026-09-20: reparado → 325 B idênticos em hostil e seguro; revertido → 337 B
+    no hostil (decodifica errado mas ainda cruza o limiar), 325 B no seguro."""
+    transcript = tmp_path / "transcript.jsonl"
+    transcript.write_text("linha de teste ação " * 50, encoding="utf-8")
+    payload = json.dumps(
+        {"hook_event_name": "PreToolUse-ação", "transcript_path": str(transcript)},
+        ensure_ascii=False,
+    ).encode("utf-8")
+
+    fonte = _OCUPACAO_PATH.read_text(encoding="utf-8")
+    bloco_reparo = (
+        "        try:\n"
+        "            raw = sys.stdin.buffer.read().decode(\"utf-8\", errors=\"replace\")\n"
+        "        except AttributeError:\n"
+        "            raw = sys.stdin.read()\n"
+    )
+    assert bloco_reparo in fonte
+    fonte_revertida = fonte.replace(bloco_reparo, "        raw = sys.stdin.read()\n")
+
+    env_hostil = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PANTONIC_CONTEXT_TOKENS_MAX": "1",
+        "PYTHONIOENCODING": "cp1252",
+    }
+    env_seguro = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PANTONIC_CONTEXT_TOKENS_MAX": "1",
+        "PYTHONUTF8": "1",
+    }
+
+    def _rodar(nome: str, fonte_ocupacao: str, env: dict):
+        caminho = tmp_path / f"{nome}.py"
+        caminho.write_text(fonte_ocupacao, encoding="utf-8")
+        return subprocess.run(
+            [sys.executable, str(caminho)], input=payload, capture_output=True, env=env,
+        )
+
+    reparado_hostil = _rodar("reparado_hostil", fonte, env_hostil)
+    reparado_seguro = _rodar("reparado_seguro", fonte, env_seguro)
+    revertido_hostil = _rodar("revertido_hostil", fonte_revertida, env_hostil)
+    revertido_seguro = _rodar("revertido_seguro", fonte_revertida, env_seguro)
+
+    for resultado in (reparado_hostil, reparado_seguro, revertido_hostil, revertido_seguro):
+        assert resultado.returncode == 0
+
+    saida_reparado_hostil = json.loads(reparado_hostil.stdout.decode("utf-8"))
+    assert saida_reparado_hostil["hookSpecificOutput"]["hookEventName"] == "PreToolUse-ação"
+
+    # (i) invariância — o reparado dá a mesma saída nos dois mundos
+    assert reparado_hostil.stdout == reparado_seguro.stdout
+    # (iii) não-vazio — a saída do reparado no mundo hostil não fica em branco
+    assert reparado_hostil.stdout != b""
+    # (ii) divergência — o revertido dá saídas diferentes entre os dois mundos
+    assert revertido_hostil.stdout != revertido_seguro.stdout

@@ -42,8 +42,9 @@ Dez passos, nesta ordem.
 
 - **Gatilho:** passo 1 conferido, ou tarefa anterior fechada com "segue" no passo 10.
 - **Entrada:** fila corrente do plano; `status` das tarefas no índice de `docs/DIARIO_DE_OBRAS.md`.
-- **Ação:** tomar a **primeira** tarefa ainda não fechada na fila corrente. Sem tarefa aberta:
-  encerrar pelo relatório de janela.
+- **Ação:** `python .claude/tools/backlog.py next` devolve a próxima tarefa e o dossiê dela — a
+  primeira ainda não fechada na fila corrente. Sem tarefa aberta: encerrar pelo relatório de
+  janela.
 - **Saída:** identificador da tarefa corrente e o cabeçalho dela, na gramática de
   `GOVERNANCA.md` §3 (*A unidade de trabalho*):
   `### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe <classe>[ · teto <n>]]`.
@@ -144,7 +145,8 @@ Dez passos, nesta ordem.
 - **Entrada:** o **pacote** extraído do laudo — os cinco campos obrigatórios (`DP-H` item 4):
   veredito, percentual, dimensão bloqueante, recomendação e pendência — mais o consumo medido, o
   plano e o identificador da tarefa.
-- **Ação:** escrever o RDO por **uma** chamada de `rdo.py close`, com o pacote como argumento:
+- **Ação:** materializar o status com `python .claude/tools/backlog.py status <ID> <estado>`.
+  Em seguida, escrever o RDO por **uma** chamada de `rdo.py close`, com o pacote como argumento:
 
   ```
   python .claude/tools/rdo.py close --plano <plano> --tarefa <ID> \
@@ -258,7 +260,20 @@ Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:
   que fica bloqueado sem resposta e a recomendação com o motivo.
 - Próxima tarefa do plano, **sem iniciá-la**, e a recomendação de contexto novo antes da próxima
   janela. No mesmo ato, reescreve a linha `**Fila corrente:**` do cabeçalho de
-  `docs/DIARIO_DE_OBRAS.md` (primeiras 15 linhas).
+  `docs/DIARIO_DE_OBRAS.md` (primeiras 15 linhas) — ou, quando o instrumento já mantém o bloco
+  gerado, deixa que `status`/`start` a regenerem e **não** a escreve à mão.
+
+### Quando a janela fecha o PLANO, e não só a janela
+
+Fechada a última tarefa, o relatório **não** é o artefato de validação: o dono não dá veredito
+sobre um plano lendo o plano. Antes de pedir o veredito, roda-se a
+`.claude/skills/entrega-de-encerramento/SKILL.md`, que produz o **modelo as-is** das operações que
+o plano deixou — uma seção por tarefa, com o contexto que a motivou, o artefato concreto, um
+exemplo real de funcionamento e o que ela protege; mais os ganhos medidos e o estado de cada
+pendência.
+
+Esse documento é o insumo do veredito, não a consequência dele. O relatório de encerramento da
+janela **aponta** para ele e não repete o conteúdo.
 
 ## Proibições
 

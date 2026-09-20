@@ -1,7 +1,7 @@
 # P-0737 — O loop autônomo: a entrega do plano sem round-trip humano por tarefa
 
 **Data:** 2026-08-22 · **Origem:** rodada de consolidação da iniciativa `EXECUCAO-AUTONOMA` (diretiva
-do dono, 2026-08-22) · **Status:** `ready` · **Prefixo das tarefas no diário:** `AUT-T<n>` ·
+do dono, 2026-08-22) · **Status:** `superseded` · **Prefixo das tarefas no diário:** `AUT-T<n>` ·
 **Prefixo das decisões:** `DU-<n>` · **Checagem de versão do kit:** modo hub — **congelada em
 `0.0.0`** (`DE-7`), comparação local × remoto suspensa, **nada a comparar**.
 

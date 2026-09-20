@@ -1,7 +1,7 @@
 # P-0738 — Contexto esgotado na partida: o custo fixo que se repaga a cada janela
 
 **Data:** 2026-08-22 · **Origem:** diretiva do dono, **prioridade zero** (2026-08-22), linha
-`P-0738-contexto-esgotado` de `docs/plans/_INBOX.md` · **Status:** `ready` · **Prefixo das tarefas:**
+`P-0738-contexto-esgotado` de `docs/plans/_INBOX.md` · **Status:** `done` · **Prefixo das tarefas:**
 `CTX-T<n>` · **Prefixo das decisões:** `DX-<n>` · **Paralisa:** `P-0737-loop-autonomo` (`blocked` em
 3/12; nenhuma tarefa sai dele até este fechar) · **Checagem de versão do kit:** modo hub —
 **congelada em `0.0.0`** (`DE-7`), comparação local × remoto suspensa, **nada a comparar** · **Sem

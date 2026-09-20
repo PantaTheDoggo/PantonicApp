@@ -16,10 +16,15 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[1]
 _MATERIALIZAR_PATH = _ROOT / ".claude" / "tools" / "materializar.py"
+_MODELO_POR_FASE_HOOK_PATH = (
+    _ROOT / ".claude" / "global" / "hooks" / "modelo_por_fase_userpromptsubmit.py"
+)
 
 
 def _load_materializar():
@@ -550,3 +555,69 @@ def test_tr_drift_projeto_ok_no_repositorio_real_depois_do_apply():
 
     assert exit_apply == 0
     assert exit_drift == 0
+
+
+def test_tf_hook_modelo_por_fase_executavel_stdin_utf8_classifica_a_fase(tmp_path):
+    """TK-56b: repara a ressalva da `TK-56a` — o par negativo deixa de ser um stub (que só
+    discriminava a si mesmo) e passa a ser o produto revertido, extraído do arquivo real do
+    hook global `modelo_por_fase_userpromptsubmit.py`. O prompt tem um único gatilho de
+    classificação, e ele é acentuado — `{"prompt": "me dê sua análise disso"}`; o payload usado
+    até aqui (`"faça uma análise arquitetural do módulo"`) casava por `arquitet` (sem acento) em
+    qualquer combinação e não discriminava nada. Mundo hostil: `env` mínimo +
+    `PYTHONIOENCODING=cp1252`. Mundo seguro: `env` mínimo + `PYTHONUTF8=1`. Medido em
+    2026-09-20: reparado dá 470 B nos dois mundos; revertido dá 2 B (`{}`) no hostil e 470 B no
+    seguro — comparação por bytes, válida porque a saída é `json.dumps` com `ensure_ascii`
+    default (`stdout` ASCII puro)."""
+    fonte = _MODELO_POR_FASE_HOOK_PATH.read_text(encoding="utf-8")
+    bloco_reparo = (
+        "        try:\n"
+        "            raw = sys.stdin.buffer.read().decode(\"utf-8\", errors=\"replace\")\n"
+        "        except AttributeError:\n"
+        "            raw = sys.stdin.read()\n"
+    )
+    assert bloco_reparo in fonte
+    fonte_revertida = fonte.replace(bloco_reparo, "        raw = sys.stdin.read()\n")
+
+    payload = json.dumps(
+        {"prompt": "me dê sua análise disso"},
+        ensure_ascii=False,
+    ).encode("utf-8")
+
+    env_hostil = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PYTHONIOENCODING": "cp1252",
+    }
+    env_seguro = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PYTHONUTF8": "1",
+    }
+
+    def _rodar(nome: str, fonte_hook: str, env: dict) -> subprocess.CompletedProcess:
+        script = tmp_path / nome
+        script.write_text(fonte_hook, encoding="utf-8")
+        return subprocess.run(
+            [sys.executable, str(script)], input=payload, capture_output=True, env=env,
+        )
+
+    reparado_hostil = _rodar("reparado_hostil.py", fonte, env_hostil)
+    reparado_seguro = _rodar("reparado_seguro.py", fonte, env_seguro)
+    revertido_hostil = _rodar("revertido_hostil.py", fonte_revertida, env_hostil)
+    revertido_seguro = _rodar("revertido_seguro.py", fonte_revertida, env_seguro)
+
+    for resultado in (reparado_hostil, reparado_seguro, revertido_hostil, revertido_seguro):
+        assert resultado.returncode == 0
+
+    # (i) produto reparado dá a mesma saída nos dois mundos
+    assert reparado_hostil.stdout == reparado_seguro.stdout
+    assert len(reparado_hostil.stdout.strip()) == 470
+    saida = json.loads(reparado_hostil.stdout.decode("utf-8"))
+    assert saida["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
+    # (iii) o valor acentuado chega íntegro ao observável no mundo hostil — a asserção acima
+    # já prova: a saída do mundo hostil é igual à do mundo seguro, byte a byte.
+
+    # (ii) produto revertido dá saídas diferentes entre os dois mundos
+    assert revertido_hostil.stdout != revertido_seguro.stdout
+    assert revertido_hostil.stdout.strip() == b"{}"
+    assert revertido_seguro.stdout == reparado_seguro.stdout

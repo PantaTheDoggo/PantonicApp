@@ -34,8 +34,8 @@ sempre sai 0, sem nunca bloquear ou atrasar a chamada que disparou o hook.
 Superfície testável, separada do I/O de stdin do hook: `calcular_consumo` (pura) e `processar`
 (núcleo do hook, recebe payload e caminhos já resolvidos em vez de ler stdin/`sys.argv` — mesmo
 desenho de `apply`/`check`/`drift` em `materializar.py`). `tests/test_telemetria_hook.py`
-exercita as duas; `main` (leitura de stdin, subprocess real) não é exercitado por teste — é a
-superfície de I/O que a separação existe para isolar.
+exercita as duas; `main` lê stdin em UTF-8 explícito (`TK-56a`, `DB-53`) e ganhou cobertura por
+subprocesso no mesmo teste, restrita ao ramo `agent_type` fora do filtro do kit.
 """
 from __future__ import annotations
 
@@ -210,7 +210,11 @@ def main(argv: list[str] | None = None) -> int:  # noqa: ARG001 — hook não re
     """Ponto de entrada do hook `SubagentStop`. Falha aberta: qualquer exceção ⇒ exit 0
     silencioso, sem imprimir nada e sem atrasar/bloquear o encerramento do subagente."""
     try:
-        payload = json.loads(sys.stdin.read())
+        try:
+            raw = sys.stdin.buffer.read().decode("utf-8", errors="replace")
+        except AttributeError:
+            raw = sys.stdin.read()
+        payload = json.loads(raw)
         repo_root = _repo_root()
         processar(payload, _estado_path_default(repo_root), _telemetria_cli_default(repo_root))
         return 0

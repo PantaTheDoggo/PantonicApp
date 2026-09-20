@@ -13,18 +13,28 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import io
+import json
+import os
+import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[1]
 _BACKLOG_PATH = _ROOT / ".claude" / "tools" / "backlog.py"
+_HOOK_PATH = _ROOT / ".claude" / "tools" / "backlog_hook.py"
 _FIXTURES = Path(__file__).resolve().parent / "fixtures" / "backlog"
 _FIXTURE_VERDE = _FIXTURES / "verde"
 _FIXTURE_VERMELHO = _FIXTURES / "vermelho"
 _FIXTURE_NEXT_TK90 = _FIXTURES / "next_tk90"
 _FIXTURE_NEXT_TK90_SEM_INDICE = _FIXTURES / "next_tk90_sem_indice"
 _FIXTURE_INBOX_PLANOS = _FIXTURES / "inbox_planos" / "_INBOX.md"
+_FIXTURE_CORPUS = _FIXTURES / "corpus"
+_FIXTURE_CONTADOR_INBOX = _FIXTURES / "contador_inbox"
+_FIXTURE_CITACAO_SECAO = _FIXTURES / "citacao_secao"
+_FIXTURE_CANDIDATO_A_FECHAMENTO = _FIXTURES / "candidato_a_fechamento"
 
 
 def _load_backlog():
@@ -42,12 +52,55 @@ def _copiar_fixture(origem: Path, destino: Path) -> Path:
     return destino
 
 
+def _load_hook():
+    spec = importlib.util.spec_from_file_location("backlog_hook", _HOOK_PATH)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _montar_raiz_hook(base: Path, nome: str, fonte_hook: str) -> Path:
+    """Raiz falsa em `base/nome` para relocar o acoplamento por `__file__` de `backlog_hook.py`
+    (TK-63a — substitui o shim de `__file__` preservado, que a devolução anterior apontou como
+    acoplamento ao diário e aos planos reais). Copiada de `_FIXTURE_NEXT_TK90` — fornece
+    `docs/DIARIO_DE_OBRAS.md` e `docs/plans/_INBOX.md` para o `next` real ter o que ler — com
+    `.claude/tools/backlog_hook.py` (fonte injetada, para poder trocar pelo produto revertido) e
+    `.claude/tools/backlog.py` (cópia do arquivo real via `shutil.copy2`). Basta: `_carregar_backlog`
+    resolve `backlog.py` como irmão de `__file__`, e `resolve_repo(None)` (em `backlog.py`) resolve
+    a raiz a partir de onde o próprio `backlog.py` está — o acoplamento se fecha dentro da raiz
+    falsa. Mesma técnica do `telemetria_hook` na `TK-56b` (aprovada 100%)."""
+    raiz = _copiar_fixture(_FIXTURE_NEXT_TK90, base / nome)
+    tools_dir = raiz / ".claude" / "tools"
+    tools_dir.mkdir(parents=True)
+    (tools_dir / "backlog_hook.py").write_text(fonte_hook, encoding="utf-8")
+    shutil.copy2(_BACKLOG_PATH, tools_dir / "backlog.py")
+    return raiz
+
+
 def _hashes(repo: Path) -> dict[str, str]:
     return {
         str(caminho.relative_to(repo)): hashlib.sha256(caminho.read_bytes()).hexdigest()
         for caminho in repo.rglob("*")
         if caminho.is_file()
     }
+
+
+def _mudar_linha_unica(repo: Path, relpath: str, velha: str, nova: str) -> None:
+    """Troca uma linha por outra numa cópia de fixture em `tmp_path` — nunca na fixture do
+    repositório. `velha` tem de ser única no arquivo (mesmo padrão de `_indice_com_sufixo`)."""
+    caminho = repo / relpath
+    texto = caminho.read_text(encoding="utf-8")
+    assert texto.count(velha) == 1, f"linha não é única (ou ausente) em {relpath}: {velha!r}"
+    caminho.write_text(texto.replace(velha, nova, 1), encoding="utf-8")
+
+
+def _inserir_linhas_indice(repo: Path, linhas_novas: list[str]) -> None:
+    """Acrescenta linhas à tabela do índice da fixture `corpus`, logo depois da linha do
+    `TK-1` — sempre sobre a cópia em `tmp_path`, nunca na fixture do repositório."""
+    ancora = "| TK-1 | Tiquete base | ready | docs/DIARIO_DE_OBRAS.md#tk-1 |\n"
+    _mudar_linha_unica(
+        repo, "docs/DIARIO_DE_OBRAS.md", ancora.rstrip("\n"), ancora.rstrip("\n") + "\n" + "\n".join(linhas_novas)
+    )
 
 
 def _inserir_bloco_gerado(repo: Path) -> None:
@@ -143,6 +196,251 @@ def test_tf_check_verde_sem_violacoes(tmp_path):
     violacoes = backlog.check(modelo)
 
     assert violacoes == []
+
+
+# --------------------------------------------------------------------------- #
+# TF/TR C-10 — contador do inbox (`docs/plans/_INBOX.md`) confrontado com o maior id
+# presente em `docs/plans/P-*.md`. Caso medido: contador em `P-0742` com
+# `docs/plans/P-0742-loop-fora-do-llm.md` já na árvore, sem nenhuma linha viva no inbox
+# apontando para `P-0742` — a fixture `contador_inbox` reproduz exatamente essa forma
+# (nenhum caminho `P-0742` mencionado no texto do inbox), para que a guarda C-10 só passe
+# se ler `docs/plans/P-*.md`, nunca os ids do próprio texto do inbox.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_c10_contador_do_inbox_aponta_para_id_ja_usado(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CONTADOR_INBOX, tmp_path / "repo")
+
+    modelo = backlog.carregar(repo)
+    violacoes = backlog.check(modelo, inbox_planos=repo / "docs" / "plans" / "_INBOX.md")
+
+    c10 = [v for v in violacoes if v.codigo == "C-10"]
+    assert len(c10) == 1
+    assert c10[0].arquivo == "docs/plans/_INBOX.md" and c10[0].linha > 0 and "P-0742" in c10[0].texto
+
+
+def test_tr_c10_contador_do_inbox_aponta_para_id_livre_nao_dispara(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CONTADOR_INBOX, tmp_path / "repo")
+    _mudar_linha_unica(
+        repo,
+        "docs/plans/_INBOX.md",
+        "**Próximo id de plano: P-0742.**",
+        "**Próximo id de plano: P-0743.**",
+    )
+
+    modelo = backlog.carregar(repo)
+    violacoes = backlog.check(modelo, inbox_planos=repo / "docs" / "plans" / "_INBOX.md")
+
+    assert not any(v.codigo == "C-10" for v in violacoes)
+
+
+# --------------------------------------------------------------------------- #
+# TK-60a — TF/TR de `resolver_citacao_secao`: terceiro resolvedor de referência do kit
+# (caminho já tem Test-Path, identificador de tarefa tem review_evidence). Gramática real
+# do kit: `` `<arquivo>.md` §<N>[.<N>]* `` (item 1). Fixture `citacao_secao` reproduz o
+# caso real medido no `TK-60`: `.claude/skills/diario-de-obras/SKILL.fixture.md` (renomeada
+# do nome real da skill, item 8 — o harness a listava como skill invocável) não tem heading
+# numerado nenhum, mas carrega o literal `2.5` em prosa — a armadilha que um casamento por
+# substring deixaria passar; `docs/plans/P-0900-exemplo.md` tem o heading real `### 2.5 ...`,
+# caso positivo do par presença-ausência.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_resolver_citacao_secao_par_presenca_ausencia(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CITACAO_SECAO, tmp_path / "repo")
+
+    ausente = backlog.resolver_citacao_secao(
+        "`.claude/skills/diario-de-obras/SKILL.fixture.md` §2.5", repo
+    )
+    presente = backlog.resolver_citacao_secao("`docs/plans/P-0900-exemplo.md` §2.5", repo)
+
+    assert presente is None
+    assert ausente is not None
+    assert ausente.codigo == "C-11"
+    assert "`.claude/skills/diario-de-obras/SKILL.fixture.md` §2.5" in ausente.texto
+
+
+def test_tr_resolver_citacao_secao_nao_casa_por_substring(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CITACAO_SECAO, tmp_path / "repo")
+    caminho = repo / ".claude" / "skills" / "diario-de-obras" / "SKILL.fixture.md"
+    texto = caminho.read_text(encoding="utf-8")
+
+    # a armadilha: o literal existe no arquivo, fora de qualquer heading.
+    assert "2.5" in texto
+    assert not any(re.match(r"^#{1,6}\s+2\.5\b", linha) for linha in texto.splitlines())
+
+    violacao = backlog.resolver_citacao_secao(
+        "`.claude/skills/diario-de-obras/SKILL.fixture.md` §2.5", repo
+    )
+
+    assert violacao is not None
+    assert violacao.codigo == "C-11"
+
+
+def test_tr_resolver_citacao_secao_item5_arquivo_ausente_ou_ambiguo_devolve_none(tmp_path):
+    """Item 5 (TK-60b): `_resolver_arquivo_citado` devolvendo `None` (arquivo que não existe
+    nem por basename, ou basename ambíguo — mais de um arquivo com o mesmo nome no repo) faz
+    `resolver_citacao_secao` devolver `None` em silêncio, não `C-11` — resolver caminho é do
+    `Test-Path` (`DB-2`), não deste resolvedor. Citação a arquivo existente com seção ausente
+    segue saindo `C-11` (terceiro braço do par presença-ausência)."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CITACAO_SECAO, tmp_path / "repo")
+
+    ausente = backlog.resolver_citacao_secao(
+        "`docs/nao-existe-em-lugar-nenhum.md` §2", repo
+    )
+    assert ausente is None
+
+    # basename ambíguo: duplica o arquivo citado em outro diretório da cópia (nunca na
+    # fixture do repositório) para que a caminhada encontre dois achados.
+    (repo / "docs" / "outra-pasta").mkdir(parents=True)
+    (repo / "docs" / "outra-pasta" / "P-0900-exemplo.md").write_text(
+        (repo / "docs" / "plans" / "P-0900-exemplo.md").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    ambiguo = backlog.resolver_citacao_secao("`P-0900-exemplo.md` §2.5", repo)
+    assert ambiguo is None
+
+    existente_secao_ausente = backlog.resolver_citacao_secao(
+        "`.claude/skills/diario-de-obras/SKILL.fixture.md` §2.5", repo
+    )
+    assert existente_secao_ausente is not None
+    assert existente_secao_ausente.codigo == "C-11"
+
+
+def test_tr_resolver_citacao_secao_dominio_um_nivel():
+    """Defeito medido nesta rodada (item 2, TK-60a): a gramática anterior exigia
+    `\\d+(?:\\.\\d+)+` (dois níveis ou mais) e reprovava as 772 citações de um nível do
+    corpus real. `§3` contra `GOVERNANCA.md`, `§8` contra `docs/RUBRICA_DE_REVISAO.md` e
+    `§9` contra `docs/consultant-spec.md` resolvem (`None`); antes da correção os três
+    saíam `C-11`."""
+    backlog = _load_backlog()
+
+    assert backlog.resolver_citacao_secao("`GOVERNANCA.md` §3", _ROOT) is None
+    assert backlog.resolver_citacao_secao("`docs/RUBRICA_DE_REVISAO.md` §8", _ROOT) is None
+    assert backlog.resolver_citacao_secao("`docs/consultant-spec.md` §9", _ROOT) is None
+
+
+# --------------------------------------------------------------------------- #
+# BKL-T10 (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T10`) — TF do corpus
+# (`DB-43`) e da célula de item terminal (`DB-46`). Fixture `corpus`: `P-0900` (índice
+# `ready`, cabeçalho sem `Status`/`Prefixo`), `P-0777-XYZ` (índice `done`, sufixo
+# mnemônico, cabeçalho `ready` — diverge de propósito), `TK-1` (limpo) e uma tabela
+# markdown ilustrativa fora de `## Índice`, dentro da prosa do `TK-1`.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_plano_terminal_no_indice_sai_do_corpus_do_check(tmp_path):
+    backlog = _load_backlog()
+
+    repo_vivo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo_vivo")
+    violacoes_vivo = backlog.check(backlog.carregar(repo_vivo))
+    assert any(v.arquivo == "docs/plans/P-0900-legado.md" for v in violacoes_vivo)
+
+    repo_terminal = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo_terminal")
+    _mudar_linha_unica(
+        repo_terminal,
+        "docs/DIARIO_DE_OBRAS.md",
+        "| P-0900 | Plano legado | ready | docs/plans/P-0900-legado.md |",
+        "| P-0900 | Plano legado | done | docs/plans/P-0900-legado.md |",
+    )
+    violacoes_terminal = backlog.check(backlog.carregar(repo_terminal))
+    assert not any(v.arquivo == "docs/plans/P-0900-legado.md" for v in violacoes_terminal)
+
+
+def test_tf_plano_terminal_no_indice_nao_produz_candidato(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    _mudar_linha_unica(
+        repo,
+        "docs/DIARIO_DE_OBRAS.md",
+        "| P-0900 | Plano legado | ready | docs/plans/P-0900-legado.md |",
+        "| P-0900 | Plano legado | superseded | docs/plans/P-0900-legado.md |",
+    )
+    modelo = backlog.carregar(repo)
+
+    candidatos = backlog._candidatos(modelo)
+    assert all(c.item.id != "LEG-T1" for c in candidatos)
+
+    selecao = backlog.selecionar_next(modelo)
+    assert selecao.exit_code != 3
+
+
+def test_tf_show_le_plano_fora_do_corpus(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    modelo = backlog.carregar(repo)
+
+    dossie = backlog.show(modelo, "GAM-T1")
+
+    assert "não encontrado" not in dossie
+    assert "GAM-T1" in dossie
+
+
+def test_tf_tabela_alheia_nao_vira_linha_de_indice(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    modelo = backlog.carregar(repo)
+
+    ids_indice = {l.id for l in modelo.indice}
+    assert "X-1" not in ids_indice
+    assert {"P-0900", "P-0777-XYZ", "TK-1"} <= ids_indice
+
+    violacoes = backlog.check(modelo)
+    assert not any("X-1" in v.texto for v in violacoes)
+
+
+def test_tf_c5_casa_plano_por_sufixo_do_indice(tmp_path):
+    backlog = _load_backlog()
+
+    repo_diverge = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo_diverge")
+    violacoes = backlog.check(backlog.carregar(repo_diverge))
+    assert len([v for v in violacoes if v.codigo == "C-5" and "P-0777-XYZ" in v.texto]) == 1
+
+    repo_igual = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo_igual")
+    _mudar_linha_unica(
+        repo_igual,
+        "docs/plans/P-0777-gama.md",
+        "**Status:** `ready` · **Prefixo das tarefas no diário:** `GAM-T<n>`",
+        "**Status:** `done` · **Prefixo das tarefas no diário:** `GAM-T<n>`",
+    )
+    violacoes2 = backlog.check(backlog.carregar(repo_igual))
+    assert not any(v.codigo == "C-5" and "P-0777-XYZ" in v.texto for v in violacoes2)
+
+
+def test_tf_c4_nao_vale_para_celula_de_item_terminal(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    _inserir_linhas_indice(
+        repo,
+        [
+            "| X-2 | Nota terminal | done *(nota idêntica em ambas)* | docs/DIARIO_DE_OBRAS.md#x-2 |",
+            "| X-3 | Nota viva | ready *(nota idêntica em ambas)* | docs/DIARIO_DE_OBRAS.md#x-3 |",
+        ],
+    )
+    violacoes = backlog.check(backlog.carregar(repo))
+    ids_com_c4 = {v.texto.split(":", 1)[0] for v in violacoes if v.codigo == "C-4"}
+
+    assert "X-3" in ids_com_c4
+    assert "X-2" not in ids_com_c4
+
+
+def test_tf_c9_aceita_cancelled_como_terminal(tmp_path):
+    backlog = _load_backlog()
+
+    repo_cancelled = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo_cancelled")
+    _inserir_linhas_indice(repo_cancelled, ["| X-9 | Fantasma cancelado | cancelled | docs/DIARIO_DE_OBRAS.md#x-9 |"])
+    violacoes_cancelled = backlog.check(backlog.carregar(repo_cancelled))
+    assert not any(v.codigo == "C-9" and v.texto.startswith("X-9") for v in violacoes_cancelled)
+
+    repo_ready = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo_ready")
+    _inserir_linhas_indice(repo_ready, ["| X-9 | Fantasma vivo | ready | docs/DIARIO_DE_OBRAS.md#x-9 |"])
+    violacoes_ready = backlog.check(backlog.carregar(repo_ready))
+    assert any(v.codigo == "C-9" and v.texto.startswith("X-9") for v in violacoes_ready)
 
 
 # --------------------------------------------------------------------------- #
@@ -658,6 +956,50 @@ def test_tf_contador_de_memoria_ignora_regua_e_marcadas(tmp_path):
 
 
 # --------------------------------------------------------------------------- #
+# TK-61a (`docs/DIARIO_DE_OBRAS.md` `### TK-61a`) — `DB-4`: rodapé de `next` projeta
+# "candidato a fechamento", linha própria sob `--- pendências mecânicas ---`, sem tocar a
+# linha dos três contadores (`DB-38`). Fixture `candidato_a_fechamento` traz os quatro casos
+# num corpus só: TK-1 (todos terminais, aparece), TK-2 (filho vivo, não aparece), TK-3 (pai já
+# terminal, não aparece), TK-4 (zero filhos, não aparece).
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_rodape_lista_candidato_a_fechamento_quatro_casos(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CANDIDATO_A_FECHAMENTO, tmp_path / "repo")
+    modelo = backlog.carregar(repo)
+
+    selecao = backlog.selecionar_next(modelo)
+    assert selecao.exit_code == 0
+    assert selecao.vencedor.item.id == "TK-2b"
+
+    saida = backlog.renderizar_next(modelo, selecao)
+    linhas = saida.splitlines()
+
+    # (i) TK-1 — pai vivo, filhos TK-1a (done) e TK-1b (cancelled), todos terminais: aparece.
+    #     DB-36: total = filhos não cancelled (só TK-1a) = 1; done = 1.
+    # (ii) TK-2 — filho TK-2b ready: não aparece.
+    # (iii) TK-3 — pai já `done`, filho TK-3a `done`: não aparece.
+    # (iv) TK-4 — zero filhos: não aparece.
+    assert linhas[-1] == "candidato a fechamento: TK-1 (1/1)"
+
+
+def test_tr_linha_dos_tres_contadores_segue_identica(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CANDIDATO_A_FECHAMENTO, tmp_path / "repo")
+    modelo = backlog.carregar(repo)
+
+    selecao = backlog.selecionar_next(modelo)
+    assert selecao.exit_code == 0
+
+    saida = backlog.renderizar_next(modelo, selecao)
+    linhas = saida.splitlines()
+
+    assert linhas[-2] == "inbox de planos: 0 por drenar · fila de memória: 0 candidato(s) · blocked: nenhum"
+    assert linhas[-1] == "candidato a fechamento: TK-1 (1/1)"
+
+
+# --------------------------------------------------------------------------- #
 # BKL-T4 (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T4`) — `status`, `start`,
 # `diretiva`: transição (§2.7) e escrita atômica das projeções (§3), reusando E-2/E-3
 # de §2.5 item 6 (`DB-37`, `DB-40`) já entregues por `next`.
@@ -720,10 +1062,143 @@ def test_tf_bloco_gerado_tem_bullet_por_pai(tmp_path):
 
     assert "- `P-0090` (`ready`, 1/2): próxima `FFO-T2`" in bloco
     assert "- `TK-90` (`ready`, 1/2): próxima `TK-90b`" in bloco
-    assert bloco.index("`P-0090`") < bloco.index("`TK-90`")  # DB-33: ordem das linhas do índice
+    # DB-33: ordem das linhas do índice — âncoras com o prefixo "- " porque a linha
+    # `**Fila corrente:**` (BKL-T10b, metade 1) também carrega um token `` `TK-90` `` bare.
+    assert bloco.index("- `P-0090`") < bloco.index("- `TK-90`")
 
     linha_indice = next(l for l in diario_texto.splitlines() if l.startswith("| TK-90 "))
     assert "ready 1/2" in linha_indice  # DB-36: TK-90a done, TK-90b ready — 1/2
+
+
+# --------------------------------------------------------------------------- #
+# BKL-T10b (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T10b`) — as três metades do
+# bloco gerado: a linha `**Fila corrente:**` sobrevive à escrita (metade 1), o casamento de
+# plano por sufixo também vale para o bloco (metade 2), e o bloco enxerga o corpus (metade 3).
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_bloco_fila_preserva_linha_fila_corrente(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    diario = repo / "docs" / "DIARIO_DE_OBRAS.md"
+    linhas = diario.read_text(encoding="utf-8").splitlines()
+    linhas[1:1] = [
+        "<!-- fila:gerada -->",
+        "**Fila corrente:** `stale` — stale (`stale:0-0`) · fila: — · ready 0 · blocked 0 · in-progress 0",
+        "- `stale` (`stale`, 0/0): próxima —",
+        "<!-- /fila:gerada -->",
+    ]
+    diario.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+    modelo = backlog.carregar(repo)
+
+    resultado = backlog.transacionar_status(repo, modelo, "TK-90a", "in-progress")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+    diario_depois = diario.read_text(encoding="utf-8")
+    ini = diario_depois.index("<!-- fila:gerada -->")
+    fim = diario_depois.index("<!-- /fila:gerada -->")
+    bloco = diario_depois[ini:fim]
+
+    # Hoje a linha `**Fila corrente:**` desaparece (AE-27): o escritor substitui tudo entre
+    # os marcadores só pelos bullets. Regenerada, ela continua presente e o `<ID>` nela
+    # acompanha a transição (TK-90a in-progress → o pai TK-90 é o vencedor de `selecionar_next`).
+    assert "**Fila corrente:**" in bloco
+    assert "stale" not in bloco
+    assert "`TK-90`" in bloco
+
+
+def test_tf_bloco_fila_casa_plano_por_sufixo(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    # Índice publica `P-0777-XYZ` (sufixo mnemônico) e vivo; cabeçalho do plano declara só
+    # `P-0777`. Filho `GAM-T1` vira não terminal para que o pai tenha bullet.
+    _mudar_linha_unica(
+        repo,
+        "docs/DIARIO_DE_OBRAS.md",
+        "| P-0777-XYZ | Plano gama | done | docs/plans/P-0777-gama.md |",
+        "| P-0777-XYZ | Plano gama | ready | docs/plans/P-0777-gama.md |",
+    )
+    _mudar_linha_unica(
+        repo,
+        "docs/plans/P-0777-gama.md",
+        "- **Status:** `done` · 2026-01-03",
+        "- **Status:** `ready` · 2026-01-03",
+    )
+    modelo = backlog.carregar(repo)
+
+    bloco = backlog._bloco_fila_corrente(modelo)
+    texto = "\n".join(bloco)
+
+    # A regra concorrente (igualdade exata `plano.id == linha_idx.id`) não emitiria bullet
+    # nenhum para `P-0777`, porque `P-0777-XYZ` != `P-0777`.
+    assert "- `P-0777`" in texto
+
+
+def test_tf_bloco_fila_respeita_corpus(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    # `P-0900` (índice `ready`) já tem filho `LEG-T1` não terminal. `P-0777-XYZ` passa a
+    # `superseded` no índice mas ganha filho não terminal também — só o corpus decide.
+    _mudar_linha_unica(
+        repo,
+        "docs/DIARIO_DE_OBRAS.md",
+        "| P-0777-XYZ | Plano gama | done | docs/plans/P-0777-gama.md |",
+        "| P-0777-XYZ | Plano gama | superseded | docs/plans/P-0777-gama.md |",
+    )
+    _mudar_linha_unica(
+        repo,
+        "docs/plans/P-0777-gama.md",
+        "- **Status:** `done` · 2026-01-03",
+        "- **Status:** `ready` · 2026-01-03",
+    )
+    # `P-0900-legado.md` é fixture de plano fechado antigo, sem `Status`/`Prefixo` de propósito
+    # (outros TF exercitam C-7/C-8 com isso). Aqui o campo é necessário para que `selecionar_next`
+    # não recuse por E-2 e a linha da metade 1 chegue ao ramo com vencedor e contagens.
+    p0900 = repo / "docs" / "plans" / "P-0900-legado.md"
+    p0900.write_text(
+        p0900.read_text(encoding="utf-8").replace(
+            "# P-0900 — Plano legado\n",
+            "# P-0900 — Plano legado\n\n**Status:** `ready` · **Prefixo das tarefas no diário:** `LEG-T<n>`\n",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    modelo = backlog.carregar(repo)
+
+    bloco = backlog._bloco_fila_corrente(modelo)
+    texto = "\n".join(bloco)
+
+    # A regra concorrente (todo plano do diretório) emitiria os dois bullets.
+    assert "- `P-0900`" in texto
+    assert "- `P-0777`" not in texto
+    # Só os filhos de `P-0900` (LEG-T1, ready) entram nas contagens da linha da metade 1 —
+    # `GAM-T1`, fora do corpus, não conta.
+    assert "ready 1 · blocked 0 · in-progress 0" in bloco[0]
+
+
+def test_tr_bloco_fila_nao_cresce_com_plano_terminal(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_CORPUS, tmp_path / "repo")
+    bloco_antes = backlog._bloco_fila_corrente(backlog.carregar(repo))
+
+    _inserir_linhas_indice(repo, ["| P-0950 | Plano extra terminal | done | docs/plans/P-0950-extra.md |"])
+    (repo / "docs" / "plans" / "P-0950-extra.md").write_text(
+        "\n".join(
+            [
+                "# P-0950 — Plano extra terminal",
+                "",
+                "**Status:** `done` · **Prefixo das tarefas no diário:** `EXT-T<n>`",
+                "",
+                "### EXT-T1 — Única [Sonnet · classe implementacao]",
+                "- **Status:** `done` · 2026-01-01",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    bloco_depois = backlog._bloco_fila_corrente(backlog.carregar(repo))
+
+    assert bloco_depois == bloco_antes
 
 
 def test_tf_status_blocked_sem_razao_recusa(tmp_path):
@@ -1135,3 +1610,364 @@ def test_tf_escrita_do_instrumento_preserva_lf(tmp_path):
     assert resultado.exit_code == 0, resultado.mensagem
     for alvo in (plano_path, repo / "docs" / "DIARIO_DE_OBRAS.md"):
         assert b"\r" not in alvo.read_bytes(), alvo
+
+
+# --------------------------------------------------------------------------- #
+# BKL-T10a (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T10a`) — `drain`: cada linha
+# viva de `docs/plans/_INBOX.md` vira linha de índice do diário e sai, verbatim, para
+# `docs/plans/_INBOX_HISTORICO.md`. Nenhuma fixture de inbox com linha viva existe em
+# `tests/fixtures/backlog/` — contingência do card: a fixture nasce na cópia em `tmp_path`,
+# dentro do próprio teste, e não é entregável novo.
+# --------------------------------------------------------------------------- #
+
+
+def _escrever_plano(
+    repo: Path, nome_arquivo: str, plano_id: str, titulo: str, prefixo: str | None, status: str | None
+) -> Path:
+    caminho = repo / "docs" / "plans" / nome_arquivo
+    campos = []
+    if status is not None:
+        campos.append(f"**Status:** `{status}`")
+    if prefixo is not None:
+        campos.append(f"**Prefixo das tarefas no diário:** `{prefixo}-T<n>`")
+    linhas = [f"# {plano_id} — {titulo}", ""]
+    if campos:
+        linhas.append(" · ".join(campos))
+        linhas.append("")
+    caminho.write_text("\n".join(linhas), encoding="utf-8")
+    return caminho
+
+
+def _inbox_com_linhas(repo: Path, linhas_extra: list[str]) -> Path:
+    caminho = repo / "docs" / "plans" / "_INBOX.md"
+    texto = caminho.read_text(encoding="utf-8")
+    caminho.write_text(texto.rstrip("\n") + "\n" + "\n".join(linhas_extra) + "\n", encoding="utf-8")
+    return caminho
+
+
+def test_tf_drain_move_linha_viva(tmp_path):
+    """Objetivo do card: a linha viva vira linha de índice (estado do `Status` do cabeçalho,
+    título da linha 1, âncora = caminho) e sai, verbatim menos o prefixo, para o histórico.
+    Exercita também a ressalva da revisão da `BKL-T10b`: o bloco `Fila corrente` é regenerado
+    pela mesma `_regenerar_bloco_fila` que `status`/`diretiva` chamam — se `drain`
+    reimplementasse a escrita do bloco em vez de chamá-la, o marcador continuaria vazio (como
+    `_inserir_bloco_gerado` o deixa) em vez de ganhar a linha `**Fila corrente:**`."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _escrever_plano(repo, "P-0800-alfa.md", "P-0800", "Plano alfa de teste", "ALF", "ready")
+    _inbox_com_linhas(repo, ["- docs/plans/P-0800-alfa.md — plano alfa de teste, drenado pelo TF"])
+    _inserir_bloco_gerado(repo)
+
+    modelo = backlog.carregar(repo)
+    inbox_path = repo / "docs" / "plans" / "_INBOX.md"
+    historico_path = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+
+    resultado = backlog.transacionar_drain(repo, modelo, inbox_path, historico_path, data="2026-09-20")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+
+    inbox_depois = inbox_path.read_text(encoding="utf-8")
+    assert "P-0800-alfa" not in inbox_depois
+
+    historico_depois = historico_path.read_text(encoding="utf-8")
+    assert (
+        "- [drenado 2026-09-20] docs/plans/P-0800-alfa.md — plano alfa de teste, drenado pelo TF"
+        in historico_depois
+    )
+
+    diario_depois = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8")
+    assert "| P-0800-ALF | Plano alfa de teste | ready | docs/plans/P-0800-alfa.md |" in diario_depois
+
+    ini = diario_depois.index("<!-- fila:gerada -->")
+    fim = diario_depois.index("<!-- /fila:gerada -->")
+    bloco = diario_depois[ini:fim]
+    assert "**Fila corrente:**" in bloco
+
+
+def test_tf_drain_ignora_linha_ja_drenada(tmp_path):
+    """Inbox com uma linha viva, uma já prefixada `- [drenado AAAA-MM-DD] ` e uma sem caminho
+    de plano: `drain` move só a viva. A gramática concorrente (a do inbox de memória, que só
+    olha `[promovido]`/`[descartado`) moveria as duas outras também — nenhuma delas traz essas
+    marcas — e é isso que esta fixture separa."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _escrever_plano(repo, "P-0800-alfa.md", "P-0800", "Plano alfa de teste", "ALF", "ready")
+    _inbox_com_linhas(
+        repo,
+        [
+            "- docs/plans/P-0800-alfa.md — plano alfa de teste",
+            "- [drenado 2026-09-01] docs/plans/P-0700-velho.md — já drenado antes, não é viva",
+            "- nota qualquer sem caminho de plano nenhum",
+        ],
+    )
+
+    modelo = backlog.carregar(repo)
+    inbox_path = repo / "docs" / "plans" / "_INBOX.md"
+    historico_path = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+
+    resultado = backlog.transacionar_drain(repo, modelo, inbox_path, historico_path, data="2026-09-20")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+
+    historico_depois = historico_path.read_text(encoding="utf-8").splitlines()
+    assert len(historico_depois) == 1
+    assert "P-0800-alfa" in historico_depois[0]
+
+    inbox_depois = inbox_path.read_text(encoding="utf-8")
+    assert "[drenado 2026-09-01] docs/plans/P-0700-velho.md" in inbox_depois
+    assert "nota qualquer sem caminho de plano nenhum" in inbox_depois
+    assert "P-0800-alfa" not in inbox_depois
+
+
+def test_tf_drain_inbox_vazio_e_no_op(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    modelo = backlog.carregar(repo)
+    inbox_path = repo / "docs" / "plans" / "_INBOX.md"
+    historico_path = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+    antes = _hashes(repo)
+
+    resultado = backlog.transacionar_drain(repo, modelo, inbox_path, historico_path, data="2026-09-20")
+
+    assert resultado.exit_code == 0
+    assert resultado.arquivos == []
+    assert _hashes(repo) == antes
+    assert not historico_path.exists()
+
+
+def test_tf_drain_plano_malformado_sai_exit_3(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _escrever_plano(repo, "P-0800-alfa.md", "P-0800", "Plano alfa de teste", "ALF", "ready")
+    _escrever_plano(repo, "P-0900-ruim.md", "P-0900", "Plano ruim", None, None)
+    _inbox_com_linhas(
+        repo,
+        [
+            "- docs/plans/P-0800-alfa.md — linha boa, vem antes",
+            "- docs/plans/P-0900-ruim.md — linha malformada, sem Status nem Prefixo",
+        ],
+    )
+
+    modelo = backlog.carregar(repo)
+    inbox_path = repo / "docs" / "plans" / "_INBOX.md"
+    historico_path = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+    antes = _hashes(repo)
+
+    resultado = backlog.transacionar_drain(repo, modelo, inbox_path, historico_path, data="2026-09-20")
+
+    assert resultado.exit_code == 3
+    assert "P-0900-ruim.md" in resultado.mensagem
+    assert _hashes(repo) == antes
+    assert not historico_path.exists()
+
+
+def test_tf_drain_recalcula_contador(tmp_path):
+    """Corpus com um id maior que o do último drenado, para que a regra "último + 1" e a regra
+    "max + 1" divirjam: a linha de id maior (`P-0743`) vem primeiro no inbox e a de id menor
+    (`P-0741`) é a última processada. "último + 1" daria `P-0742`; "max + 1" dá `P-0744`."""
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _escrever_plano(repo, "P-0743-alta.md", "P-0743", "Plano de id alto", "ALT", "ready")
+    _escrever_plano(repo, "P-0741-baixa.md", "P-0741", "Plano de id baixo", "BAI", "ready")
+    _inbox_com_linhas(
+        repo,
+        [
+            "- docs/plans/P-0743-alta.md — processada primeiro",
+            "- docs/plans/P-0741-baixa.md — processada por último",
+        ],
+    )
+
+    modelo = backlog.carregar(repo)
+    inbox_path = repo / "docs" / "plans" / "_INBOX.md"
+    historico_path = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+
+    resultado = backlog.transacionar_drain(repo, modelo, inbox_path, historico_path, data="2026-09-20")
+
+    assert resultado.exit_code == 0, resultado.mensagem
+    inbox_depois = inbox_path.read_text(encoding="utf-8")
+    assert "**Próximo id de plano: P-0744.**" in inbox_depois
+
+
+def test_tr_historico_do_inbox_so_cresce(tmp_path):
+    backlog = _load_backlog()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    historico_path = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
+    historico_path.write_text(
+        "- [drenado 2026-01-01] docs/plans/P-0500-antigo.md — entrada histórica preexistente\n",
+        encoding="utf-8",
+    )
+    _escrever_plano(repo, "P-0800-alfa.md", "P-0800", "Plano alfa de teste", "ALF", "ready")
+    _inbox_com_linhas(repo, ["- docs/plans/P-0800-alfa.md — nova linha viva"])
+
+    modelo = backlog.carregar(repo)
+    inbox_path = repo / "docs" / "plans" / "_INBOX.md"
+
+    linhas_antes = set(historico_path.read_text(encoding="utf-8").splitlines())
+    resultado = backlog.transacionar_drain(repo, modelo, inbox_path, historico_path, data="2026-09-20")
+    assert resultado.exit_code == 0, resultado.mensagem
+    linhas_depois = set(historico_path.read_text(encoding="utf-8").splitlines())
+
+    assert linhas_antes <= linhas_depois
+    assert len(linhas_depois) == len(linhas_antes) + 1
+
+
+# --------------------------------------------------------------------------- #
+# TF hook — BKL-T11: `.claude/tools/backlog_hook.py`, gatilho e injeção via `next`
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_hook_com_gatilho_devolve_additional_context(tmp_path, monkeypatch, capsys):
+    hook = _load_hook()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps({"prompt": "execute o próximo passo"})))
+
+    exit_code = hook.main(repo=repo)
+
+    assert exit_code == 0
+    saida = json.loads(capsys.readouterr().out)
+    assert saida["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
+    assert saida["hookSpecificOutput"]["additionalContext"].strip() != ""
+
+
+def test_tf_hook_sem_gatilho_e_silencio(tmp_path, monkeypatch, capsys):
+    hook = _load_hook()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps({"prompt": "bom dia"})))
+
+    exit_code = hook.main(repo=repo)
+
+    assert exit_code == 0
+    assert capsys.readouterr().out == ""
+
+
+def test_tf_hook_exit_3_de_next_vira_contexto(tmp_path, monkeypatch, capsys):
+    hook = _load_hook()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _mudar_linha_unica(
+        repo,
+        "docs/DIARIO_DE_OBRAS.md",
+        "### TK-90a — Corrigir o parser de data do relatório [Sonnet · classe mecanica]\n"
+        "- **Status:** `ready` · 2026-01-01",
+        "### TK-90a — Corrigir o parser de data do relatório [Sonnet · classe mecanica]\n"
+        "- **Status:** `in-progress` · 2026-01-01",
+    )
+    _mudar_linha_unica(
+        repo,
+        "docs/DIARIO_DE_OBRAS.md",
+        "### TK-90b — Cobrir o parser com teste de regressão [Sonnet · classe mecanica]\n"
+        "- **Status:** `ready` · 2026-01-01",
+        "### TK-90b — Cobrir o parser com teste de regressão [Sonnet · classe mecanica]\n"
+        "- **Status:** `in-progress` · 2026-01-01",
+    )
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps({"prompt": "próximo passo"})))
+
+    exit_code = hook.main(repo=repo)
+
+    assert exit_code == 0
+    saida = json.loads(capsys.readouterr().out)
+    contexto = saida["hookSpecificOutput"]["additionalContext"]
+    assert "TK-90a" in contexto and "TK-90b" in contexto
+
+
+def test_tf_hook_gatilho_ignora_caixa(tmp_path, monkeypatch, capsys):
+    hook = _load_hook()
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps({"prompt": "Execute o PRÓXIMO PASSO"})))
+
+    exit_code = hook.main(repo=repo)
+
+    assert exit_code == 0
+    saida = json.loads(capsys.readouterr().out)
+    assert saida["hookSpecificOutput"]["additionalContext"].strip() != ""
+
+
+# --------------------------------------------------------------------------- #
+# TF hook executável — BKL-T11a: `subprocess.run` do próprio
+# `.claude/tools/backlog_hook.py`, bytes UTF-8 pela entrada padrão. Os TF acima entram por
+# importação, com a string já decodificada em memória, e nunca tocam o `sys.stdin` de um
+# processo — é exatamente esse ponto de carga que o `AE-35` mediu quebrado (0 bytes num host
+# sem `PYTHONUTF8`, `sys.stdin.read()` decodificando em cp1252).
+#
+# TK-63a: o mundo hostil deixa de ser "host sem PYTHONUTF8" (mede o host — em host que já
+# exporte a variável, para de discriminar) e passa a ser construído: `env` mínimo +
+# `PYTHONIOENCODING=cp1252` (hostil; `PYTHONIOENCODING` prevalece sobre `PYTHONUTF8`, medido) e
+# `env` mínimo + `PYTHONUTF8=1` (seguro). O par negativo deixa de ser um stub que só discriminava
+# a si mesmo — passa a ser o produto revertido, extraído do arquivo real por substituição textual
+# do bloco de reparo, montado na mesma raiz falsa que o produto correto. Mesma técnica do
+# `telemetria_hook` na `TK-56b` (`tests/test_telemetria_hook.py`), aprovada 100%.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_hook_executavel_stdin_utf8_devolve_contexto(tmp_path):
+    """TK-63a: raiz relocada em `tmp_path` (via `_montar_raiz_hook`, fixture `next_tk90`) —
+    zero leitura do diário ou dos planos reais. Três asserções de relação, nenhuma de magnitude:
+    (i) invariância — o hook reparado dá a mesma saída nos mundos hostil e seguro; (ii)
+    divergência — o hook revertido (bloco de decode UTF-8 explícito trocado por `sys.stdin.read()`
+    cru) dá saídas diferentes entre os dois mundos; (iii) não-vazio — a saída do reparado no
+    mundo hostil não fica em branco. Reproduzido em 2026-09-20, em raiz relocada sobre
+    `next_tk90`: reparado → 739 B idênticos em hostil e seguro; revertido → 0 B no hostil, 739 B
+    no seguro."""
+    fonte = _HOOK_PATH.read_text(encoding="utf-8")
+    bloco_reparo = (
+        "        try:\n"
+        "            raw = sys.stdin.buffer.read().decode(\"utf-8\", errors=\"replace\")\n"
+        "        except AttributeError:\n"
+        "            raw = sys.stdin.read()\n"
+    )
+    assert bloco_reparo in fonte
+    fonte_revertida = fonte.replace(bloco_reparo, "        raw = sys.stdin.read()\n")
+
+    env_hostil = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PYTHONIOENCODING": "cp1252",
+    }
+    env_seguro = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PYTHONUTF8": "1",
+    }
+    payload = json.dumps(
+        {"hookEventName": "UserPromptSubmit", "prompt": "execute o próximo passo"},
+        ensure_ascii=False,
+    ).encode("utf-8")
+
+    def _rodar(nome: str, fonte_hook: str, env: dict):
+        raiz = _montar_raiz_hook(tmp_path, nome, fonte_hook)
+        hook_path = raiz / ".claude" / "tools" / "backlog_hook.py"
+        return subprocess.run(
+            [sys.executable, str(hook_path)], input=payload, capture_output=True, env=env,
+        )
+
+    reparado_hostil = _rodar("reparado_hostil", fonte, env_hostil)
+    reparado_seguro = _rodar("reparado_seguro", fonte, env_seguro)
+    revertido_hostil = _rodar("revertido_hostil", fonte_revertida, env_hostil)
+    revertido_seguro = _rodar("revertido_seguro", fonte_revertida, env_seguro)
+
+    for resultado in (reparado_hostil, reparado_seguro, revertido_hostil, revertido_seguro):
+        assert resultado.returncode == 0
+
+    # (i) invariância — o reparado dá a mesma saída nos dois mundos
+    assert reparado_hostil.stdout == reparado_seguro.stdout
+    # (iii) não-vazio — a saída do reparado no mundo hostil não fica em branco
+    assert reparado_hostil.stdout != b""
+    # (ii) divergência — o revertido dá saídas diferentes entre os dois mundos
+    assert revertido_hostil.stdout != revertido_seguro.stdout
+
+
+def test_tf_hook_executavel_sem_gatilho_e_silencio():
+    payload = json.dumps(
+        {"hookEventName": "UserPromptSubmit", "prompt": "bom dia"},
+        ensure_ascii=False,
+    ).encode("utf-8")
+    env = {"SYSTEMROOT": os.environ["SYSTEMROOT"], "PATH": os.environ["PATH"]}
+
+    resultado = subprocess.run(
+        [sys.executable, str(_HOOK_PATH)],
+        input=payload,
+        capture_output=True,
+        env=env,
+    )
+
+    assert resultado.returncode == 0
+    assert resultado.stdout == b""

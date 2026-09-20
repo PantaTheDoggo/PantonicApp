@@ -1,6 +1,12 @@
 # Diário de Obras — PantonicApp (hub de governança Pantonic*)
 
-**Diretiva de priorização (EMERGÊNCIA — dono, 2026-09-18):** **`TK-54a` vem antes de tudo**, inclusive da `BKL-T4` e de qualquer tarefa do `P-0739`. Motivo medido nesta data: o `usage_1` de uma janela principal deste projeto saiu **60.472 tk — 30,2% de uma janela de 200k ocupados antes do primeiro turno**, e a janela encerrou por teto de ocupação tendo produzido só orquestração. Meta declarada pelo dono: **derrubar esse preâmbulo abaixo de 10%**, sob pena de inviabilidade do framework. A `TK-54a` é o instrumento dessa meta (extrato por fonte, classificado) e **já estava escopada e `ready` desde 2026-08-31** — esta diretiva a restaura ao topo, não cria card novo. Depois dela, a ratificação da classificação pelo dono; só então a rodada de corte. Diretiva anterior, retomada após o corte: Priorize `P-0739` — a rodada `RP-7` já fechou; a próxima do plano é a `BKL-T4`; depois retoma `TK-54`. (dono, 2026-09-15/16; a sequência do dono segue **inalterada** — o que mudou foram passos inseridos no meio dela, todos já cumpridos: a `BKL-T2e` inserida pela `RP-4`, e a `RP-5` aberta pelo `G-REPLAN` quando a `BKL-T3` voltou `blocked` razão `premissa`. A **`BKL-T3` fechou `done` com ressalva em 2026-09-17** — 94%, bloqueante nenhuma, única dimensão fora de `conforme`: `rota` `parcial`. Os três achados de processo do laudo, registrados como `AE-7`, inserem a rodada **`RP-6`** entre a `BKL-T3` e a `BKL-T4`, porque o achado 1 incide sobre a prosa de `Restrições` que a `BKL-T4` herda: de novo um passo no meio, sem mudar a sequência do dono. Todas essas rodadas foram decisão técnica/tática, **nada escalado ao dono** A **`RP-6` fechou em 2026-09-18** sobre o `AE-7` e inseriu **mais um passo no meio da mesma sequência**, sem alterá-la: a tarefa nova `BKL-T3a` — correção de `_contar_pendentes_inbox` e o TF discriminante do rodapé de §2.6 (`DB-39`) — vem **antes** da `BKL-T4`. O plano passa a 15 tarefas. Também esta rodada foi decisão técnica/tática, **nada escalado ao dono**. A **`BKL-T3a` fechou `done` com ressalva em 2026-09-18** — 94%, bloqueante nenhuma, única dimensão fora de `conforme`: `rota` `parcial` (RDO `docs/RDO/P-0739-BKL-T3a-as-tres-condicoes-de-exit-3-de-next-e-o-contador-do-rodape.md`). Os dois achados de processo do laudo — E-2 cobre só a metade "item candidato" (a metade "pai de candidato" segue sem TF, com desvio medido: `next` elege por heurística quando falta) e o contador de fila de memória aceita `---` — registrados como `AE-8`, inserem a rodada **`RP-7`** antes da `BKL-T4`. Decisão técnica/tática, **nada escalado ao dono**. A **`RP-7` fechou em 2026-09-18** sobre o `AE-8` e inseriu **mais um passo no meio da mesma sequência**, sem alterá-la: a tarefa nova `BKL-T3b` — a metade "pai de candidato" da condição E-2 de `next` (`DB-40`) e o prefixo `- ` do contador de fila de memória (`DB-41`), alocados num card só (`DB-42`) — vem **antes** da `BKL-T4`. O plano passa a 16 tarefas. Também esta rodada foi decisão técnica/tática, **nada escalado ao dono**.)
+**Diretiva de priorização:** Priorize `P-0741`, `TK-57`, `TK-56`, `TK-58`, `TK-59`, `TK-60`, `TK-61` — o `P-0741` (modelo conceitual do plano, a interface entre o dono e o loop) vem primeiro e é para conduzir inteiro nesta execução (dono, 2026-09-20); atrás dele seguem os seis tíquetes de pendência abertos no encerramento do `P-0739`, com o `TK-57` antes do `TK-56` por dependência declarada.
+<!-- fila:gerada -->
+**Fila corrente:** `P-0741` — O modelo conceitual do plano: a interface entre o dono e o loop (`docs/plans/P-0741-modelo-conceitual.md:1-1148`) · fila: — · ready 17 · blocked 0 · in-progress 0
+- `TK-54` (`ready`, 1/2): próxima `TK-54b`
+- `P-0741` (`ready`, 0/5): próxima `MC-T1`
+- `TK-65` (`ready`, 0/3): próxima `TK-65a`
+<!-- /fila:gerada -->
 
 **Diretiva de execução do `P-0740` (dono, 2026-09-18, ao fim da janela que fechou a `LM-T1`):** quatro decisões, todas vinculantes para a próxima janela e para as seguintes, até o dono as revogar.
 
@@ -34,82 +40,6 @@
 
 5. **O consultor coleta estatística para as DUAS specs.** São duas, e não se confundem: a **spec do consultor** (`docs/consultant-spec.md`, que existe) e a **spec de robustez** (que ainda não tem arquivo; o `TK-55` é o acumulador dela). A cada acionamento o consultor registra o que o motivou, que classe de impedimento era e o que ficou inconclusivo — alimentando a primeira; e todo caso de **derivado que erra sem sinal** alimenta a segunda. **Ato do dono neste ponto:** as imprecisões de contagem medidas na janela de 2026-09-19 (`AE-49`, `AE-51`, `AE-52`, `AE-57`, `AE-59`, `AE-61`, `AE-70`, `AE-71`, `AE-73`, `AE-75`) entram como **estatística na spec de robustez** — não como correção da spec do consultor.
 
-**Fila corrente:** **`P-0740` FECHADO em 35/35, marco 3 commitado em `13ce6a3` (2026-09-19).** Janela de 2026-09-19 (a terceira do dia): **quinze tarefas fechadas, zero reprovações, zero retentativas consumidas**, três devoluções `blocked` razão `premissa` todas por conduta correta de `G-EXECREADY` (nenhum arquivo tocado em nenhuma). Consumo da janela: **6.729,2k tk / 819 tool uses / 3,54 h** em 41 linhas de `docs/telemetria.tsv` — execução 19%, revisão 15%, **consultor 67%**. Suíte **187 → 201**; `tests/test_backlog.py` 41 → 49. Achados `AE-47`..`AE-75`; escalonamentos `ESC-27`..`ESC-40`, **catorze, todos ao consultor instanciado uma vez, nenhum ao dono**. **PRÓXIMA JANELA: retomada do `P-0739`**, sob a *Diretiva de execução do `P-0739`* acima (dono, 2026-09-19). **Primeira tarefa: transcrever os três módulos `BKL-T10`..`BKL-T12`** em `docs/plans/P-0739-backlog-instrumento.md` — a partição, o mapa de herança das superfícies mortas e a regra de re-derivação do número **já estão decididos e registrados** pela `LM-T5a` (`AE-63`, `AE-65`, `AE-67`): `BKL-T10` absorve `BKL-T5` (`drain`) + `BKL-T6` (migração), `BKL-T11` absorve `BKL-T7` (hook) + `BKL-T8` (skills), `BKL-T12` absorve `BKL-T9` sozinha; ordem `BKL-T10` → `BKL-T11` → `BKL-T12`. Os cinco cards antigos ficam no arquivo como `cancelled` **por absorção** (`DM-33` (iii)), nada se apaga. **Herança já decidida:** `passagem-de-bastao` herda a matéria de skill da `BKL-T8` (as skills `proximo-passo` e `handover` foram removidas pela `LM-T4` em `f1afbd3`); o `scrum-master` fica com a condução do loop; o número `≥ 3` do aceite herdado **não se transcreve** — escreve-se a regra (*toda skill que invoca o instrumento o cita*) e re-deriva-se no despacho (mede **1** em 2026-09-19). **`AE-10` encerrado** pelo reparo `AE-47`: a dependência de ordem que ele nomeava deixou de existir quando `transacionar_status` ganhou a guarda que declara a ausência dos marcadores em vez de estourar. **Estado medido do `P-0739` em 2026-09-19:** `11/16` — `ready 5` (`BKL-T5`..`BKL-T9`), `done 11`, e a nota `AE-13` **da série local do `P-0739`** (as séries `AE-<n>` são **por plano**; citação de achado de outro plano leva sempre o qualificador `AE-<n>` **do** `<plano>` — `AE-67`). **Números de aceite a re-derivar no despacho:** suíte **201 passed**, `tests/test_backlog.py` **49**, `- **Objetivo:**` no `P-0739` **18**. **Recorte de evidência da próxima rodada: `--desde 13ce6a3`** (as quinze entregas do marco 3 foram commitadas ali; o recorte volta a tamanho proporcional à entrega). **Matéria pós-plano, sem card e sem rodada:** o `TK-55` acumulou seis evidências novas nesta janela e é o acumulador da **spec de robustez**; o teto de saturação do `AE-60`/`AE-63` cobre `.claude/checks/check-readme.ps1`, `docs/RUBRICA_DE_REVISAO.md` e `.claude/tools/review_evidence.py`; o teto prospectivo do `AE-74` fecha `docs/consultant-spec.md` — **achado novo sobre esses arquivos não abre card**, registra-se e vai à spec correspondente. **Fila corrente anterior (texto do marco 2, 2026-09-19):** migra para `## P-0740` na condensação.
-- `P-0739` (`in-progress`, 11/16): `RP-2` fechou em 2026-09-16 (`pantonic-planner`, sobre o `AE-2`) — decisão técnica/tática, não escalada: `DB-21..DB-24` em `docs/plans/P-0739-backlog-instrumento.md` §1, rota = corrigir a gramática de ID em `rdo.py` (`_ID_HEADER_RE`/`_HEADER_BRACKET_RE`, ponto único) mais regressão em `tests/test_rdo.py`, sem retroação e sem tocar `P-0737`. Card novo `BKL-T2a` (`ready`, próxima tarefa). `BKL-T2` passou de `blocked` para `review` (entrega verde; `review` porque a rodada de revisão do `pantonic-reviewer` só roda depois que `BKL-T2a` destravar o dossiê de evidência — quem leva a `done` é o `scrum-master`). Pendência de doutrina **resolvida em 2026-09-16, por ordem do dono**: a lição da `RP-2` foi aplicada em `.claude/agents/pantonic-planner.md` fase 1 (último bullet: plano que introduz convenção de ID/caminho/nome de artefato verifica na fase 1 que os instrumentos do gate de aceite a aceitam; se não aceitam, corrigir o instrumento é tarefa do plano), com linha em `CHANGELOG.md` sob `## [Não lançado]`. Registro da pendência original (texto no parágrafo "Lição para o planejador" de `docs/plans/P-0739-backlog-instrumento.md`, seção `### RP-2`) — só o dono altera arquivo de definição de agente. Consumo: ver `docs/telemetria.tsv` (`BKL-RP2`). Revisão crítica do procedimento desta janela (7 achados, insumo §7.1): `docs/plans/_CARD-revisao-critica-pickup-opus.md`. **`BKL-T2a` entregue em 2026-09-16** (`pantonic-executor`, `review`): `_ID_HEADER_RE`/`_HEADER_BRACKET_RE` de `.claude/tools/rdo.py` passam a aceitar ID prefixado (`(?:[A-Z0-9]+-)?T[0-9]+[a-z]?`) e bracket com ` + dono`; 4 testes novos em `tests/test_rdo.py`, suíte `98 passed`, `review_evidence.py --tarefa BKL-T2` sai `OK` — o `AE-2` está fechado e a rodada de revisão da `BKL-T2`+`BKL-T2a` é a próxima tarefa. Entrega não commitada: `.claude/tools/rdo.py`, `tests/test_rdo.py`, `CHANGELOG.md`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2a`). **Rodada de revisão fechada em 2026-09-16** (`pantonic-reviewer`, um laudo por tarefa): `BKL-T2` → `done` com **ressalva** (94%, bloqueante nenhuma, única dimensão fora de `conforme`: `registro` `parcial`; laudo `docs/RDO/laudos/P-0739-BKL-T2.md`) e `BKL-T2a` → `done` **aprovado** (100%, bloqueante nenhuma; laudo `docs/RDO/laudos/P-0739-BKL-T2a.md`). Evidência mecânica verde nas duas (`guardas` e `testes` `conforme`), recorte por base distinta — `--desde 1a9645a` para a `BKL-T2` (entrega já em `6d7433c`) e `--desde 6d7433c` para a `BKL-T2a` (árvore de trabalho); dossiês em `docs/RDO/evidencia/`. Os dois laudos escalaram o **mesmo achado de processo**, registrado como `AE-3` (`docs/plans/P-0739-backlog-instrumento.md:729-767`), sem retroação sobre as entregas: a rodada `RP-3` é a próxima tarefa. Consumo: ver `docs/telemetria.tsv` (`BKL-T2-revisao`, `BKL-T2a-revisao`). **Rodada `RP-3` fechada em 2026-09-16** (`pantonic-planner`, sobre o `AE-3`) — decisão técnica/tática, **nada escalado ao dono**: `DB-25`..`DB-29` em `docs/plans/P-0739-backlog-instrumento.md` §1 (linhas 52-84), rodada em `docs/plans/P-0739-backlog-instrumento.md:1394-1466`, `AE-3` absorvido. Rotas: (1) atribuição de arquivo a tarefa é **do instrumento**, não doutrina — `review_evidence.py` classifica cada arquivo tocado em 4 baldes (alvo do card · alvo de outra tarefa do mesmo plano · registro da orquestração, lista fechada · fora sem atribuição) e só o último pesa no veredito (`DB-25`); commit isolado por tarefa descartado porque o registro da orquestração é escrito depois da entrega e antes da revisão; (2) forma canônica de `Arquivos-alvo` fixada — um caminho por bullet, nenhum outro caminho entre crases (`DB-26`), com leitura mecânica **por literal, não por linha** (`DB-27`, fato que manda: `rdo.py:151-183` junta as linhas do campo com espaço); a migração dos cards vivos foi feita na própria autoria (`BKL-T8` reescrito, `BKL-T9` com `Arquivos-alvo` reposto — estava ausente e `extrair_dossie` recusaria a tarefa); (3) `rdo.py laudo` ganha `--achado-processo <alvo> "<linha>"` (alvos `dossie`|`doutrina`|`rubrica`) fora de `calcular_laudo`, devolvendo `--escalar` a só pendência de arquitetura/requisito (`DB-28`); (4) a observação de card do laudo da `BKL-T2` virou regra de autoria (`DB-29`): `Pronto quando`/`Verificação` só citam efeito nos arquivos-alvo do card e comandos do executor; (5) o `UnicodeEncodeError` de `stdout` cp1252 entrou como `_forcar_utf8` no card `BKL-T2b` (o `→` que a `BKL-T2c` imprime depende dele — daí a ordem). Três cards novos `ready`: `BKL-T2b` (`docs/plans/P-0739-backlog-instrumento.md:407-584`), `BKL-T2c` (`:585-834`), `BKL-T2d` (`:835-994`); ordem `BKL-T2b` → `BKL-T2c` → `BKL-T2d` → `BKL-T3`; §6 riscos com 4 linhas novas. **Pendência que é ato do dono, não decisão** (mesmo precedente da `RP-1`/`RP-2`): publicar em `.claude/agents/pantonic-planner.md` as três lições da `RP-3` — fase 1, instrumento de gate cuja saída nunca foi inspecionada contra corpus real; fase 4, campo de card lido por máquina autorado como prosa; fase 4, critério de pronto sem poder discriminante. O `P-0739` **não** depende dessa edição: os três cards estão despacháveis desde já. Consumo: ver `docs/telemetria.tsv` (`BKL-RP3`). **`BKL-T2b` entregue em 2026-09-16** (`pantonic-executor`, `review`): `extrair_arquivos_alvo` de `.claude/tools/review_evidence.py` passa a ler o campo por **gramática de caminho** (`DB-27`) — `_eh_caminho` + `_classificar_campo_alvos`, com `extrair_literais_nao_caminho` alimentando a linha "Literais não reconhecidos como caminho" da seção `## Escopo`, e `_forcar_utf8` em `stdout`/`stderr` no `main`. Arquivo de raiz (`CHANGELOG.md`) volta a ser alvo e literal de regex deixa de ser; 4 testes novos em `tests/test_review_evidence.py` (`13 passed` → `17 passed`), suíte `102 passed` (piso 98), nenhuma contingência acionada. Entrega não commitada: `.claude/tools/review_evidence.py`, `tests/test_review_evidence.py`, `CHANGELOG.md`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2b`). **Correção de registro no mesmo ato:** os campos `**Status:**` de `BKL-T2` e `BKL-T2a` no plano ainda diziam `review` depois da rodada de revisão ter fechado as duas como `done` — divergência entre a residência do item e a projeção do índice (`DB-2`), corrigida com o veredito e o ponteiro do laudo de cada uma. **`BKL-T2c` entregue em 2026-09-16** (`pantonic-executor`, `review`): `confrontar_escopo` de `.claude/tools/review_evidence.py` passa a classificar o arquivo tocado nos quatro baldes da `DB-25` (coberto pelos alvos do card · alvo de outra tarefa do mesmo plano · registro da orquestração · fora sem atribuição), com `_REGISTRO_ORQUESTRACAO` + `_eh_registro_orquestracao` e `mapear_alvos_de_outras_tarefas` lendo a gramática de ID por `rdo._ID_HEADER_RE` (residência única, `DB-22`); só o quarto balde resolve o veredito, e a seção `## Escopo` nomeia os outros dois baldes em linha própria. 4 testes novos em `tests/test_review_evidence.py` (`17 passed` → `21 passed`), suíte `106 passed` (piso 102 preservado). **Contingência 2 do card acionada** (prevista no dossiê, não é desvio): `test_escopo_violado_gera_fato_sem_inventar_parcial` quebrou porque a frase do fato virou "fora dos alvos e sem atribuição" — só essa asserção foi ajustada. Entrega não commitada: `.claude/tools/review_evidence.py`, `tests/test_review_evidence.py`, `CHANGELOG.md`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2c`). **Âncoras do card re-derivadas no despacho** (fato de orquestração a reaproveitar na `BKL-T2d`, não achado de execução): os números de linha que a `RP-3` escreveu nos cards de instrumento envelheceram dentro da própria sprint — o card da `BKL-T2c` apontava `review_evidence.py:172-197`/`:360-368`/`:420` e os blocos reais estavam em `:214-239`/`:409-417`/`:470`, deslocados pela entrega não commitada da `BKL-T2b`; o item 3 do gate de delegação pegou antes do despacho e o dossiê seguiu com âncora fresca, sem acionar contingência `premissa`. **Rodada de revisão de `BKL-T2b`+`BKL-T2c` fechada em 2026-09-16** (`pantonic-reviewer`, um laudo por tarefa, mesmo protocolo da rodada anterior): as duas **aprovadas 100%**, bloqueante nenhuma, as sete dimensões `conforme` em ambas — `BKL-T2b` → `done` (laudo `docs/RDO/laudos/P-0739-BKL-T2b.md`) e `BKL-T2c` → `done` (laudo `docs/RDO/laudos/P-0739-BKL-T2c.md`). Evidência mecânica verde nas duas (`guardas` e `testes` `conforme`, bateria de 6 guardas toda exit 0), recorte `--desde 6d7433c` para ambas — as entregas estão todas não commitadas sobre `HEAD`, e quem as separou foi a atribuição por tarefa que a própria `BKL-T2c` instalou (`DB-25`): dossiês em `docs/RDO/evidencia/P-0739-BKL-T2b.md` e `...-BKL-T2c.md`. A contingência 2 acionada na `BKL-T2c` estava prevista no card, logo `rota` `conforme`. **Nada escalado ao dono** (sem `--escalar`: nenhuma pendência de arquitetura ou requisito). Os dois laudos escalaram achados de processo convergentes, registrados como `AE-4` (`docs/plans/P-0739-backlog-instrumento.md:1483-1513`), sem retroação sobre as entregas: residência do registro de contingência acionada, e a falta de balde para ato do dono no confronto de escopo (reincidente — já observado no laudo da `BKL-T2a`). A rodada `RP-4` é o próximo passo recomendado; ela não bloqueia a `BKL-T2d`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2bc-revisao` — uma linha, porque a rodada foi um único despacho cobrindo as duas tarefas). **Rodada `RP-4` fechada em 2026-09-16** (`pantonic-planner`, sobre o `AE-4`) — decisão técnica/tática, **nada escalado ao dono**: `DB-30`..`DB-32` em `docs/plans/P-0739-backlog-instrumento.md` §1 (linhas 85-87), rodada em `docs/plans/P-0739-backlog-instrumento.md:1717`-fim, `AE-4` absorvido (`:1711-1712`). Veredito por defeito: (1) **residência do registro de contingência acionada — não gera tarefa** (`DB-30`/`DB-31`): contingência acionada volta na linha de retorno da entrega (`contingência <n> acionada: <o que mudou>`) e é a **orquestração** que a materializa na linha `- **Status:**` do card; os três canais já existiam (`DB-15`, `DB-16`, `--nota` da `BKL-T4`), então nenhum artefato novo — rotas descartadas: artefato "nota de execução" próprio, executor escrevendo a linha `Status`, diff como registro; (2) **balde do ato do dono — gera tarefa** (`DB-32`): card novo `BKL-T2e` (`ready`, `docs/plans/P-0739-backlog-instrumento.md:1020-1205`), quinto balde em `review_evidence.py` para arquivo tocado por ato do dono fora do ciclo da tarefa — rotas descartadas: manter a atribuição externa como insumo do despacho, jogar `.claude/agents/` dentro de `_REGISTRO_ORQUESTRACAO`, branch/stash do dono, filtro por autoria do `git`; nada da entrega da `BKL-T2c` é desfeito. Card `BKL-T2d` ajustado (`Depende de` em `:859-861`; duas contingências na forma da `DB-30` em `:1000-1006`) e **segue despachável, sem depender da `BKL-T2e`**; cabeçalho do plano em 14 tarefas com a ordem `BKL-T2d` → `BKL-T2e` → `BKL-T3` (`:4-19`); §6 riscos com três linhas novas (`:1338-1340`). **Pendência que é ato do dono, não decisão** (mesmo precedente da `RP-1`/`RP-2`/`RP-3`): publicar em `.claude/agents/pantonic-planner.md` as duas lições da `RP-4` (`docs/plans/P-0739-backlog-instrumento.md:1776`) — classe nova *ação de contingência sem residência nomeada* (fase 4, item 3) e reforço de *classificação de vocabulário fechado sem destino para toda forma do inventário* (fase 4, item 7); somam-se às três da `RP-3` (`:1655`) na mesma superfície, numa única edição. O `P-0739` **não** depende dela. Consumo: ver `docs/telemetria.tsv` (`BKL-RP4`). **`BKL-T2d` entregue em 2026-09-16** (`pantonic-executor`, `review`): `rdo.py laudo` ganha `--achado-processo <alvo> "<linha>"` (repetível; alvos `dossie`|`doutrina`|`rubrica`) gravando a seção `## Achado de processo` fora de `calcular_laudo` — percentual, veredito, bloqueante e recomendação intactos (invariante 1 da `RUBRICA_DE_REVISAO.md` §6), com `_ALVOS_ACHADO`/`_formatar_achados_processo`, validação de alvo/linha vazia/`|` em `cmd_laudo` e a seção existindo sempre (`nenhum` sem a flag); `--escalar` volta a ser só pendência de arquitetura ou de requisito (`DB-28`). 4 testes novos em `tests/test_rdo.py` (`38 passed`), suíte `110 passed` (piso 106), **nenhuma das quatro contingências acionada** e nenhuma asserção pré-existente ajustada. Entrega não commitada: `.claude/tools/rdo.py`, `tests/test_rdo.py`, `CHANGELOG.md`. Âncoras do card re-derivadas no despacho e **sem deriva desta vez** (`rdo.py:24`, `:450-488`, `:698-705` idênticas ao literal transcrito pela `RP-3`) — a `BKL-T2d` não tocava os arquivos que a entrega não commitada da `BKL-T2b`/`BKL-T2c` deslocou. Achado da execução registrado como `AE-5` (`docs/plans/P-0739-backlog-instrumento.md:1802-1825`), sem retroação: a Verificação 3 do card afirma estado da **árvore inteira** (`git status --short` → exatamente três caminhos) e a própria sprint torna isso insatisfazível — contraria a `DB-29` do mesmo plano, e a forma correta (recorte por pathspec) já está no card da `BKL-T2e`, autorado pela `RP-4`; cards vivos ainda com a forma velha: `BKL-T3` e `BKL-T4`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2d`). **Rodada de revisão de `BKL-T2d` fechada em 2026-09-17** (`pantonic-reviewer`, mesmo protocolo): **aprovada 100%**, bloqueante nenhuma, as sete dimensões `conforme` — `BKL-T2d` → `done` (RDO `docs/RDO/P-0739-BKL-T2d-rdo-py-laudo-o-campo-de-achado-de-processo-com-os-tres-alvos.md`; laudo consumido e apagado, `DP-H`). Evidência mecânica verde (`docs/RDO/evidencia/P-0739-BKL-T2d.md`, `--desde 6d7433c`). **Nada escalado ao dono:** o achado de processo do laudo repete o mesmo fato já registrado como `AE-5` (Verificação 3 do card não discrimina estado alheio na árvore compartilhada), com rota já aberta ali (emenda de `BKL-T3`/`BKL-T4`) — sem ação nova, sem retroação (`DB-23`). Consumo: ver `docs/telemetria.tsv` (`BKL-T2d-revisao`). **`BKL-T2e` entregue e revisada em 2026-09-17** (`pantonic-executor` → `pantonic-reviewer`, mesmo protocolo): os seis textos literais do quinto balde (`ato do dono`, `.claude/agents/`) aplicados em `.claude/tools/review_evidence.py` ao pé da letra, 4 testes novos em `tests/test_review_evidence.py` (`21 passed` → `25 passed`), suíte inteira `114 passed` (piso 110), nenhuma contingência acionada. Dossiê de evidência (`docs/RDO/evidencia/P-0739-BKL-T2e.md`, `--desde 6d7433c`) com `guardas`/`testes`/`escopo` `conforme` — `.claude/agents/pantonic-planner.md` sai nomeado no balde novo `ato do dono`, sem peso no veredito mecânico, fechando o caso real que motivou a `DB-32`. Laudo **aprovado 100%**, bloqueante nenhuma, sete dimensões `conforme` → `BKL-T2e` → `done` (RDO `docs/RDO/P-0739-BKL-T2e-review-evidence-py-o-balde-do-ato-do-dono-no-confronto-de-es.md`; laudo consumido e apagado, `DP-H`). **Nada escalado ao dono:** único achado é um nit de precisão sem rota e sem efeito em dimensão (docstring do módulo credita os cinco baldes à `DB-25`; o quinto é da `DB-32`), registrado no laudo. Consumo: ver `docs/telemetria.tsv` (`BKL-T2e`, `BKL-T2e-revisao`). **Janela encerrada por ocupação de contexto (`B2`, `GOVERNANCA.md` §4.3)** logo após o fechamento — `BKL-T3` segue `ready` e delegável, não despachada nesta janela. **`BKL-T3` despachada e devolvida defeituosa em 2026-09-17** (`pantonic-executor`, `blocked` razão `premissa`): a triagem parou no primeiro sinal e **nenhuma linha** de `.claude/tools/backlog.py` ou `tests/test_backlog.py` foi tocada — §2.6 fixa uma única linha de contexto do pai, com rótulo literal `plano:` e campos `P-NNNN`/`<done>/<total>`, mas §2.5 regra 4 faixa (b) faz vencer subtarefa de **tíquete**, e o TF obrigatório "bug antes de FIFO" do card só é satisfazível instanciando esse caso; quatro formas candidatas levantadas sem preferência, a escolha é do planejador. Registrado como `AE-6` (`docs/plans/P-0739-backlog-instrumento.md:1833-1865`), **nada escalado ao dono** (forma de saída de instrumento interno, não é arquitetura nem requisito). Âncoras do card re-derivadas no despacho e **sem deriva** (`backlog.py` intocado pelas entregas da `BKL-T2b`..`BKL-T2e`), números de aceite re-medidos na janela (`tests/test_backlog.py` `8 passed`, suíte `114 passed`). A rodada `RP-5` (`pantonic-planner`) é a próxima tarefa e absorve, sem custo de decisão, a emenda mecânica pendente do `AE-5` — que incide nos mesmos dois cards vivos (`BKL-T3`, `BKL-T4`). Consumo: ver `docs/telemetria.tsv` (`BKL-T3-devolvida`). **Rodada `RP-5` fechada em 2026-09-17** (`pantonic-planner`, sobre o `AE-6`) — decisão técnica/tática, **nada escalado ao dono**: `DB-33`..`DB-36` em `docs/plans/P-0739-backlog-instrumento.md:93-96`, rodada em `:2060-2135`, `AE-6` absorvido (`:2053-2058`). Rota escolhida para §2.6: a alternativa (1) do `AE-6` — mesmo conjunto de campos, **rótulo escolhido pelo tipo de pai** (`plano:` / `tíquete:`), porque §2.1/§2.2 já garantem título, residência, âncora de índice e par `<done>/<total>` também para tíquete e nenhum campo precisa de substituto; as outras três alternativas e mais duas variantes foram despachadas com motivo na `DB-33`. §2.6 reescrita (`:177-249`) com esqueleto, duas formas da linha 2, tabela campo a campo (sem remissão, `DB-18`) e dois worked examples (pai-plano com antecessora; pai-tíquete sem ela). **Vãos vizinhos fechados no mesmo ato**, sem os quais a `BKL-T3` pararia de novo: §2.3 (`:133-152`, um bullet por pai, token `P-NNNN` ou `TK-<n>`), §2.5 regra 4 (`:169-176`, três faixas sobre **itens elegíveis**; a faixa de bug casa `Tipo: bug` do próprio card ou do tíquete-pai; FIFO pela linha do pai no índice) e §3 (`:266-270`, fórmula única do par). `BKL-T3` reaberta `ready` (`:1296-1369`) com `Restrições desta tarefa`, `Não fazer`, quatro contingências fechadas e cinco testes novos; `BKL-T4` **também** precisava de emenda (`:1371-1407`) — o bullet do bloco `Fila corrente` carregava o mesmo vício, e o `Pronto quando` perdeu o "`check` verde", que depende da migração da `BKL-T6` (`DB-29`). **Nenhum card novo:** o plano segue com 14 tarefas e nada fechado foi reaberto (`DB-23`). **Correção de registro no mesmo ato:** a premissa do `AE-5` sobre *quais* cards vivos carregavam a `Verificação` por árvore inteira estava **errada** — `BKL-T3` e `BKL-T4` nunca a tiveram (as duas verificavam só `pytest verde`); os cards vivos afetados eram a `BKL-T6` e a `BKL-T9`, agora ambas por pathspec (`:1424-1430`, `:1489-1494`), com a correção apensada ao próprio `AE-5` (`:2004-2016`). O fato foi medido pela **orquestração** no gate de delegação (grep das 11 ocorrências de `git status --short`, conferidas uma a uma) e descarregado no dossiê antes do despacho, pelo item 2 do gate — a rodada não gastou contexto redescobrindo, e o achado de execução se confirmou como **indício**, não como fato apurado. **Pendência que é ato do dono, não decisão** (precedente `RP-1`/`RP-2`/`RP-3`/`RP-4`): publicar as três lições da `RP-5` em `.claude/agents/pantonic-planner.md`, com linha em `CHANGELOG.md`; o `P-0739` **não** depende dela. Consumo: ver `docs/telemetria.tsv` (`BKL-RP5`). **`BKL-T3` entregue e revisada em 2026-09-17** (`pantonic-executor` → `pantonic-reviewer`, mesmo protocolo): o verbo somente-leitura `next` implementado em `.claude/tools/backlog.py` — `selecionar_next` (§2.5, regras 1-5), `renderizar_next` (§2.6: formas pai-plano e pai-tíquete da `DB-33`, linha `antecessora` da `DB-34`, par `<done>/<total>` da `DB-36`), dataclasses `Candidato`/`SelecaoNext`, subcomando CLI `next`, mais os campos de suporte `Item.campo_tipo`, `LinhaIndice.ancora`, `Modelo.diario_linhas`/`diretiva_ids`. 13 testes novos em `tests/test_backlog.py` (`8 passed` → `21 passed`), suíte inteira `127 passed` (piso 114) e duas fixtures novas em disco (`tests/fixtures/backlog/next_tk90/` e `...next_tk90_sem_indice/`), **nenhuma contingência acionada**. Dossiê de evidência (`docs/RDO/evidencia/P-0739-BKL-T3.md`, `--desde 6d7433c`) com `guardas`/`testes`/`escopo` `conforme` — o balde `ato do dono` da `BKL-T2e` absorveu `.claude/agents/pantonic-planner.md` e os baldes de outra tarefa absorveram as entregas não commitadas das `BKL-T2a`..`BKL-T2e`, deixando o quarto balde vazio. Laudo **ressalva 94%**, bloqueante nenhuma, seis dimensões `conforme` e `rota` `parcial` → `BKL-T3` → `done` (RDO `docs/RDO/P-0739-BKL-T3-next-a-selecao-deterministica.md`; laudo consumido e apagado, `DP-H`). **Nada escalado ao dono:** os três achados de processo são alvo `dossiê`, registrados como `AE-7` (`docs/plans/P-0739-backlog-instrumento.md:2172-2215`), sem retroação sobre a entrega (`DB-23`) — e quem moveu `rota` foi o achado 3 (rodapé de §2.6 sem TF discriminante, com desvio medido no contador do inbox de planos), não o achado 1 que o executor relatou. A rodada `RP-6` é a próxima tarefa e vem **antes** da `BKL-T4`. Consumo: ver `docs/telemetria.tsv` (`BKL-T3`, `BKL-T3-revisao`). **Pendência de doutrina das `RP-3`/`RP-4`/`RP-5` encerrada em 2026-09-17, por ordem do dono** ("publicar é consequência do plano, não pergunta — o plano foi iniciado exatamente para modificar"): as lições da `RP-3` e da `RP-4` já estavam em `.claude/agents/pantonic-planner.md` (fase 1 saída real do instrumento de gate; fase 4 itens 2, 3, 7 e 9), e as três da `RP-5` foram publicadas no mesmo ato — fase 4 item 7 (worked example por caso que as regras do próprio plano admitem), fase 4 item 4 (coerência entre decisões do mesmo plano) e passo 1 da rodada de replanejamento (fato de achado é indício, re-derivar por busca antes de emendar) —, com a linha correspondente em `CHANGELOG.md` sob `## [Não lançado]`. `kit_check -Mode validate` e `check-readme.ps1` exit 0 depois da edição. **Rodada `RP-6` fechada em 2026-09-18** (`pantonic-planner`, sobre o `AE-7`) — decisão técnica/tática, **nada escalado ao dono**: `DB-37`..`DB-39` em `docs/plans/P-0739-backlog-instrumento.md:101-103`, rodada em `:2477-2564`, `AE-7` absorvido (`:2416-2476`). Rotas, por achado: (1) a lista de condições de exit 3 de `next` passa a ter **três** condições (`E-1`/`E-2`/`E-3`), cada uma com substring obrigatória de mensagem e fronteira explícita contra o lint — `linha de índice fora da gramática` deixa de ser condição de `next` (cai em `E-3` quando é linha de pai elegível; lint é `C-4`/`C-9`) e `plano vivo sem prefixo` é `C-7` + exit 3 do `drain` (`DB-37`); (2) **residência única em §2.5 item 6** (`:173-210`), com a `DB-6` mantendo o princípio e **deixando de enumerar** (emendada na própria célula, `:70`) e a cópia inline do card `done` rebaixada a registro — fecha a divergência que a `DB-2` proíbe; (3) uma gramática de linha viva **por arquivo de inbox** (`DB-38`, §2.4 em `:161-172`) mais TF que afirma o valor impresso sobre corpus onde as regras concorrentes discordam (1 vs. 3), com a correção de `_contar_pendentes_inbox` partida em dois contadores. **Card novo `BKL-T3a`** (`ready`, `:1429-1549`, `DB-39`) — residência da correção, **antes** da `BKL-T4`; plano passa a **15** tarefas. **Cards emendados no mesmo ato:** `BKL-T4` (`:1550-1623`) ganhou `Restrições desta tarefa`, `Não fazer`, `Contingências` e um TF — **não tinha nenhum desses campos**, ao contrário do que o `AE-7` supunha; e `BKL-T5` (`:1624-1653`) ganhou gramática inline, TF novo, `Arquivos-alvo` por bullet e `Pronto quando` discriminante (o anterior era satisfeito por inbox vazio). `BKL-T3` **intocada** (`DB-23`, sem retroação); §6 com três linhas de risco novas (`:1752-1771`). **Lição da rodada publicada no mesmo ato, como ato da orquestração** (precedente do dono, 2026-09-17 — publicar é consequência do plano, não pergunta): fase 4 item 4 de `.claude/agents/pantonic-planner.md` passa a exigir **residência única declarada para lista normativa copiada inline** (seção normativa do plano, nunca célula da tabela de decisões), e o item 7 passa a exigir, por **condição de erro** enumerada, a substring literal da mensagem + o TF que a afirma + a fronteira contra o instrumento vizinho, mais o valor que a **regra concorrente** daria sobre a mesma fixture; linha correspondente em `CHANGELOG.md` sob `## [Não lançado]`. Consumo: ver `docs/telemetria.tsv` (`BKL-RP6`). **`BKL-T3a` entregue em 2026-09-18** (`pantonic-executor`, `review`): as três condições de exit 3 de `next` em `.claude/tools/backlog.py` passam a imprimir as substrings obrigatórias de §2.5 item 6 — E-1 virou `dois ou mais itens in-progress: ` com os IDs **ordenados alfabeticamente** (antes `dois in-progress: `, sem ordem), E-2 virou `linha de status ausente para <ID>` (antes `item sem linha de Status: <ids>`) e E-3 ficou **intocada** por já estar conforme; `_contar_pendentes_inbox` partida em `_contar_inbox_planos` (regex nova `_CAMINHO_PLANO_INBOX_RE`, gramática de §2.4) e `_contar_inbox_memoria` (gramática preservada), com `renderizar_next` ligando cada campo do rodapé ao seu contador — até aqui o campo `inbox de planos:` contava pela gramática do inbox de memória (`DB-38`). Fixture nova `tests/fixtures/backlog/inbox_planos/_INBOX.md` com o texto literal do card (1 linha viva pela gramática de §2.4 contra 3 pela do inbox de memória — é essa diferença que dá poder discriminante ao TF), 3 testes novos em `tests/test_backlog.py` (`21 passed` → `24 passed`), suíte inteira `130 passed` (piso 127), **nenhuma das cinco contingências acionada** e nenhuma asserção pré-existente ajustada. Âncoras do card re-derivadas no despacho e **sem deriva** (`selecionar_next:655-696`, `_contar_pendentes_inbox:767-781`, `renderizar_next:784-839`) — o card não cita linha de código, e o gate de delegação ainda descartou as contingências 1 e 2 por verificação barata antes do despacho (função existe com o nome exato; `renderizar_next` já recebia os dois caminhos por parâmetro), o que o executor confirmou. Entrega não commitada: `.claude/tools/backlog.py`, `tests/test_backlog.py`, `tests/fixtures/backlog/inbox_planos/_INBOX.md`. **Nenhum achado de execução** — o executor não reportou nada fora do escopo do card. **Janela encerrada por ocupação de contexto (`B2`, `GOVERNANCA.md` §4.3)** logo após a entrega: a rodada de revisão da `BKL-T3a` **não** foi despachada nesta janela e é a próxima tarefa. Consumo: ver `docs/telemetria.tsv` (`BKL-T3a`). **Rodada `RP-7` fechada em 2026-09-18** (`pantonic-planner`, sobre o `AE-8`) — decisão técnica/tática, **nada escalado ao dono**: `DB-40`..`DB-42` em `docs/plans/P-0739-backlog-instrumento.md:107-109`, rodada em `:2807`-fim, `AE-8` absorvido (`:2773-2805`). Rotas, por achado: (1) **E-2 corre sobre a união item ∪ pai** — a norma de §2.5 item 6 sempre teve o sujeito composto ("item candidato **ou pai de candidato**") e o que faltava era o código cobrir a segunda metade mais a norma fechar os dois casos que só a segunda metade cria: pai compartilhado por dois candidatos (uma ocorrência por **ID distinto**) e item + pai os dois sem a linha (ordem **alfabética crescente**, separador `, `), com a ordem de avaliação entregue (E-2 antes de E-1 e E-3) ratificada e a fronteira contra o lint escrita na própria tabela (ausência de `Status` é `C-2`/`C-8` no `check`; em `next` é E-2, que recusa e não classifica) — `DB-40`; (2) **prefixo `- ` do contador de fila de memória** (`DB-41`): não há norma nova — §2.6 e `GOVERNANCA_MEMORIAS.md` §8 já escreviam o espaço —, o código é que testava `s.startswith("-")` e contava a régua `---` como candidato; a célula de §2.6 passa a dizer que o espaço faz parte do prefixo e que **nenhuma outra exclusão** entra no contador, e o TF obrigatório roda sobre corpus em que as duas leituras discordam (2 contra 3); filtro de indentação foi descartado por falta de forma real apurada (gramática autorada de memória é o defeito da `RP-1`). **Card novo `BKL-T3b`** (`ready`, `:1569-1704`, `DB-42`) — um card só para os dois defeitos (mesmo verbo, mesmo módulo, mesmo arquivo de teste, mesma família de fixture, pelo raciocínio da `DB-39`) e **antes** da `BKL-T4`, porque a `BKL-T4` aplica E-2 ao item alvo **e ao pai dele** antes de escrever e reusa a função que a `BKL-T3b` normaliza — despachada primeiro, ela criaria segunda residência para a mesma regra. Plano passa a **16** tarefas. **Cards emendados no mesmo ato:** `BKL-T4` (`:1705-1786`) ganhou `BKL-T3b` no `Depende de`, a forma da mensagem de E-2 nas `Restrições` com a instrução de **reusar** a função em vez de reescrever a regra, e o `Não fazer` atualizado. `BKL-T3a` **intocada** (`DB-23`, sem retroação); §6 com duas linhas de risco novas. **Fato re-derivado no passo 1** (achado é indício, não apuração): com os dois pais da fixture sem a linha, a seleção de hoje sai exit 2 (`nada delegável`), não exit 0 — o exit 0 elegendo `FFO-T2` que o `AE-8` relata ocorre quando **só** o tíquete perde a linha; as duas leituras entraram no card, e o TF afirma exit 3 nos dois casos. **Lição da rodada publicada no mesmo ato, como ato da orquestração** (precedente do dono, 2026-09-17): fase 4 item 7 de `.claude/agents/pantonic-planner.md` passa a exigir **um TF por termo de sujeito composto** de regra normativa, mais o fechamento na norma dos casos que o sujeito composto cria (referente repetido, dois termos falhando juntos), e o confronto do **instrumento irmão** com a mesma gramática quando um card corrige um de um par; linha correspondente em `CHANGELOG.md` sob `## [Não lançado]`. Consumo: ver `docs/telemetria.tsv` (`BKL-RP7`). **`BKL-T3b` entregue em 2026-09-18** (`pantonic-executor`, `review`): em `.claude/tools/backlog.py`, a condição **E-2** de `next` passa a correr sobre a **união item ∪ pai** (`DB-40`) — a lista `sem_status` virou `ids_sem_status`, união ordenada por `sorted` do `item.id` de cada candidato com `item.status is None` com o `pai.id` de cada candidato com `pai.status is None`, uma ocorrência de `linha de status ausente para <ID>` por **ID distinto**, mesma posição no fluxo (antes da contagem de `in-progress`); e `_contar_inbox_memoria` passa a testar o prefixo `- ` (hífen **e** espaço) em vez de `-` (`DB-41`), deixando de contar a régua markdown `---` como candidato, **sem** nenhum outro filtro novo. 2 testes novos em `tests/test_backlog.py` (`24 passed` → `26 passed`), suíte inteira `132 passed` (piso 130), **nenhuma das quatro contingências acionada**, nenhuma asserção pré-existente ajustada e **nenhum achado de execução** — as duas linhas literais da fixture transcritas pela `RP-7` bateram exatamente (contingência 1 descartada por verificação do próprio executor) e nenhum nome de teste colidiu (contingência 2 descartada). Âncoras e números de aceite re-derivados no despacho pelo item 3 do gate de delegação e **sem deriva** (`tests/test_backlog.py` `24`, suíte `130`, idênticos ao piso que a `BKL-T3a` mediu). Entrega não commitada: `.claude/tools/backlog.py`, `tests/test_backlog.py`. **Janela encerrada por ocupação de contexto (`B2`, `GOVERNANCA.md` §4.3)** logo após a entrega: a rodada de revisão da `BKL-T3b` **não** foi despachada nesta janela e é a próxima tarefa. Consumo: ver `docs/telemetria.tsv` (`BKL-T3b`). **`BKL-T3b` revisada e fechada em 2026-09-18** (`pantonic-reviewer`, mesmo protocolo): **aprovada 100%**, bloqueante nenhuma, as sete dimensões `conforme` → `BKL-T3b` → `done` (RDO `docs/RDO/P-0739-BKL-T3b-e-2-sobre-o-pai-do-candidato-e-o-prefixo-do-contador-de-memo.md`; laudo consumido e apagado, `DP-H`). O reviewer re-rodou a `Verificação` do card por conta própria (`tests/test_backlog.py` `26 passed`, os dois nomes de TF no `--collect-only`, coleta global `132`, `tests/ -q` `132 passed`) e conferiu o diff: E-2 virou conjunto de **IDs distintos** ordenado (união do `item.id` com o `pai.id` de cada candidato sem a linha de `Status`), na posição em que já estava, e `_contar_inbox_memoria` passou a testar `startswith("- ")`, com `_contar_inbox_planos` **intocado**, como o card exige. Evidência mecânica (`docs/RDO/evidencia/P-0739-BKL-T3b.md`, `--desde 6d7433c`) com `guardas`/`testes` `conforme`; o veredito de `escopo` saiu **aberto** na mecânica e o reviewer o fechou como `conforme` por datação de `mtime` — os 5 arquivos de `tests/fixtures/backlog/next_tk90*/` são de 2026-09-17 19:52 (`BKL-T3`) contra 2026-09-18 04:16 dos dois alvos. **Nada escalado ao dono pelo laudo** (recomendação `seguir`, pendência `nenhuma`, sem `--escalar`): o único achado de processo é alvo `dossiê` e está registrado como `AE-9` (`docs/plans/P-0739-backlog-instrumento.md:2920`-fim) — a atribuição cruzada de `review_evidence.py` casa só por caminho exato, com rota de card próprio e **sem** bloquear a `BKL-T4`. As duas decisões do dono pendentes (abrir `RP-8` antes da `BKL-T4` ou não; commitar as 7 entregas acumuladas ou não) estão no bloco `Fila corrente`, nenhuma despachada. Consumo: ver `docs/telemetria.tsv` (`BKL-T3b-revisao`).
-
-**Fila corrente anterior (texto de 2026-09-18, janela da `BKL-T4`; migra para `## P-0739` na condensação):** nada em execução. **A `BKL-T3b` fechou `done` em 2026-09-18** — **aprovada 100%**, bloqueante nenhuma, as sete dimensões `conforme`, recomendação `seguir`, sem `--escalar` (RDO `docs/RDO/P-0739-BKL-T3b-e-2-sobre-o-pai-do-candidato-e-o-prefixo-do-contador-de-memo.md`; laudo consumido e apagado, `DP-H`). Plano em **10/16**. O único achado do laudo (alvo `dossiê`) está registrado como `AE-9` (`docs/plans/P-0739-backlog-instrumento.md:2920`-fim), **sem retroação** (`DB-23`) e **sem bloquear a `BKL-T4`**: `review_evidence.py:295-320` atribui arquivo tocado a outra tarefa do mesmo plano só por **caminho exato**, então alvo-diretório declarado por outra tarefa (o `tests/fixtures/backlog/` da `BKL-T3`) nunca casa — nesta rodada isso deixou o veredito mecânico de `escopo` **aberto** e obrigou o reviewer a datar `mtime` para provar que a `BKL-T3b` não tocou os 5 arquivos de `tests/fixtures/backlog/next_tk90*/`. **Decisão do dono sobre o `AE-9` (2026-09-18, contexto novo):** seguir para a `BKL-T4` e deixar o `AE-9` registrado **sem agir** — não abrir `RP-8` (seria o terceiro adiamento seguido da `BKL-T4`; `AE-9` é achado de dossiê e não bloqueia). **Decisão de commit já satisfeita antes desta pergunta ser feita:** o dono commitou as 7 entregas em `428246c` (2026-09-18 17:57:52, "fecha BKL-T2a..T3b do P-0739") entre o encerramento da janela anterior e a abertura desta — o texto abaixo que descrevia a árvore como "não commitada" estava desatualizado, não a árvore; `git status` confirma limpo. Ordem do plano a partir daqui: `BKL-T4` → `BKL-T5` → `BKL-T6` → `BKL-T7` → `BKL-T8` → `BKL-T9` · ready 6 · blocked 0 · in-progress 0 · review 0 · done 10 · total 16. **Âncoras** (re-derivadas em 2026-09-18, re-derivar de novo no despacho): card `BKL-T4` em `docs/plans/P-0739-backlog-instrumento.md:1710-1791`, `BKL-T5` em `:1792-1821`, `AE-9` em `:2920`-fim. **Números de aceite (medidos em 2026-09-18, na revisão da `BKL-T3b`):** `tests/test_backlog.py` `26`, suíte inteira `132` (piso 130). Base de recorte da evidência para a próxima rodada: `--desde 428246c` (as entregas das `BKL-T2a`..`BKL-T3b` foram commitadas em `428246c`; recorte volta a tamanho proporcional à entrega). Consumo: ver `docs/telemetria.tsv` (`BKL-T3b-revisao`). **Achado de orquestração sem ação nova** (o mesmo das cinco janelas anteriores): `python .claude/tools/backlog.py check` segue vermelho no repo por desenho até a migração da `BKL-T6`. **Próxima tarefa delegável: `TK-54a`** (diretiva de emergência de 2026-09-18, acima — vem antes da `BKL-T4` e de tudo no `P-0739`). Ela voltou `blocked` razão `premissa` na triagem de 2026-09-18 (`AE-1`: a coluna de classificação não tinha critério) e a rodada `RP-TK54-1` a fechou e devolveu a `ready` no mesmo dia, rota A — rubrica das quatro categorias e coluna já preenchidas no card, executor transcreve e não avalia; rodada técnica/tática, nada escalado ao dono. Card fechado em `docs/DIARIO_DE_OBRAS.md` › `### TK-54a — O extrato [Sonnet · classe investigacao]`; registro da rodada em `## TK-54` › `### Achados da execução (TK-54)`. **RUN DE AFERIÇÃO DO `scrum-master` (2026-09-18):** a `BKL-T4` foi conduzida pelo loop de ponta a ponta como caso-teste — `done`, `ressalva` 85%, bloqueante `nenhuma`, RDO `docs/RDO/P-0739-BKL-T4-status-start-diretiva-transicao-e-projecoes.md`; suíte 132→142 verdes. Loop encerrado pela regra `B1` (pendência + ressalva com rota). Ressalva roteada como `AE-10` (dependência de ordem: `transacionar_status` chama `.index('<!-- fila:gerada -->')` sem guarda e os marcadores só entram na `BKL-T6` item (a)) — **o `P-0739` fica PARADO** (`DM-9` do `P-0740`): nem a `BKL-T5`, nem rodada de replanejamento sobre o `AE-10`. O plano espera a baseline do `scrum-master` fechar (`LM-T1`..`LM-T4` do `P-0740`), é reagrupado em módulos coesos pela `LM-T5` — que absorve o `AE-10` — e fecha em **rodada única** na `LM-T6`. Cinco defeitos do próprio loop em `AE-11` e no relatório de janela. `P-0739` passa a 11/16. **`LM-T1` do `P-0740` despachada e devolvida `blocked` razão `premissa` em 2026-09-18** (10 tool uses / 61,8k tk, nenhum arquivo tocado — conduta correta de `G-EXECREADY`): o entregável (a) mandava versionar `.claude/estado/` e o `.gitignore` excluía o diretório inteiro (`AE-2`). **Rodada `RP-1` fechada em 2026-09-18** (`pantonic-planner`, `G-REPLAN`) — decisão **técnica**, **nada escalado ao dono**: `DM-10` (o diretório é canônico do framework e viaja com `.gitkeep`; o conteúdo de sessão continua ignorado — `.gitignore` passa a `.claude/estado/*` + `!.claude/estado/.gitkeep`) e `DM-11` (`rdo.py close --tokens-k` vira `float` com uma casa decimal, a mesma forma que o hook já emite), em `docs/plans/P-0740-loop-de-modulos.md` §4; rodada registrada em `### RP-1` sob `## Achados da execução` do mesmo plano, `AE-2` absorvido. `LM-T1` reescrita (com `.gitignore` nominalmente nos `Arquivos-alvo`, três textos literais, quatro contingências e verificação por `git check-ignore`, que discrimina — o TF velho passava versionado ou não) e de volta a `ready`; `LM-T2` ganhou só o fato de contorno, `LM-T3` intocada, `LM-T5` ganhou o critério (vi) da rubrica com o `AE-2` como caso medido. Plano de volta a `in-progress`. **Lição publicada no mesmo ato** em `.claude/agents/pantonic-planner.md` (fase 4, item 10 — classe nova: entregável que versiona, cria ou apaga arquivo confrontado com a regra de versionamento vigente antes de publicar), com linha em `CHANGELOG.md`. **`LM-T1` despachada de novo em 2026-09-18 e devolvida `blocked` razão `premissa` pela SEGUNDA vez — mas com a entrega INTEIRA produzida e verde** (145 testes; `.gitignore:11-12` na ordem prescrita; `.gitkeep` criado; `rdo.py`, `scrum-master/SKILL.md` e os dois arquivos de teste editados): a contingência 1 do card disparou porque as **verificações 3 e 5 eram insatisfazíveis por desenho do git** — `git check-ignore -v` reporta o padrão decisivo mesmo quando é a negação (imprime `.gitignore:12:!.claude/estado/.gitkeep`, exit 0) e `git status --porcelain` sem `-uall` colapsa o diretório não rastreado. Registrado como `AE-4`. **Rodada `RP-2` fechada em 2026-09-18** (`pantonic-planner`, `G-REPLAN`) — decisão **técnica**, **nada escalado ao dono**: `DM-12` em `docs/plans/P-0740-loop-de-modulos.md` §4, rodada em `### RP-2` sob `## Achados da execução`, `AE-4` absorvido. **Veredito sobre a cláusula do segundo bloqueio: NÃO se aplica** — a premissa não caiu, a rota de `DM-10`/`DM-11` saiu **confirmada** pelo fato medido; o plano **não** vira `superseded`. A cláusula, que contava bloqueios em vez de olhar o objeto do bloqueio, foi **emendada** em `GOVERNANCA.md` §7 item 17: o teste passa a ser "existe entrega que satisfaz o entregável do card sob as decisões vigentes?" (não existe → bloqueio de rota → `superseded`; existe → bloqueio **de aceite** → a rodada corrige a redação), com dois tetos anti-abuso (terceiro bloqueio `premissa` na mesma tarefa; segundo bloqueio de aceite sobre a mesma verificação já reescrita). A saída (c) do `G-REPLAN` ganhou o ramo **`review`**, e a transição `blocked` → `review` (autoria do planejador, **gatilho 1**) foi publicada na tabela de transições de `.claude/skills/diario-de-obras/SKILL.md` — o loop não improvisa status. Cards reescritos: `LM-T1` (verificações 2/3/4/5 e contingência 1, com saída **medida**; `Status` → `review` com nota de atribuição para quem revisa), `LM-T2` e `LM-T3` (piso de suíte 142 → 145), `LM-T4` (aceite `backlog.py check` verde **removido** — insatisfazível pelos 315 achados pré-existentes do `AE-1` em arquivos que a tarefa não toca; no lugar, `kit_check -Mode check-drift` exit 0, piso 145 e varredura da régua antiga pelo literal `>8 write-clusters`, hoje com uma ocorrência em `.claude/skills/proximo-passo/SKILL.md:126`), `LM-T5` (critério (vii) da rubrica e o `AE-4` como quarto insumo medido). **Lição publicada no mesmo ato** em `.claude/agents/pantonic-planner.md` (fase 4, item 11 — classe nova: saída esperada de comando é fato **observado**, nunca deduzida da ferramenta; pergunta binária usa flag binária + exit code; nenhum card exige "verde" de instrumento que a tarefa não pode deixar verde — mais o gatilho correspondente na fase 1), com linha em `CHANGELOG.md`. Plano de volta a `in-progress`. **Próximo passo do `P-0740`: a rodada de REVISÃO da `LM-T1`** (`pantonic-reviewer` sobre a entrega que já está na árvore, não commitada, contra o dossiê corrigido) — **não** é despacho de executor e a `LM-T1` **não** se refaz. Depois dela, `LM-T2`. **O Passo 6 dessa revisão falhou em 2026-09-18 e a rodada `RP-3` o destravou** (`pantonic-planner`, `G-REPLAN`, decisão **tática**, **nada escalado ao dono**): `review_evidence.py` saía exit 1 em `LM-T1` porque o cabeçalho de três campos da `DM-5` (`[<modelo> · esforço <e> · classe <c>]`) não casa a gramática de **nenhum** dos dois parsers do kit — `rdo.py:85-89` (`_HEADER_BRACKET_RE`, compartilhada com o `review_evidence.py`, que fixa `esquema_legado=False` e não tem escotilha) nem `backlog.py:51` (`_BRACKET`, que faz o card sair `header_valido=False`) —, e `esforço` não existia em nenhum lugar da árvore `.claude/` (`F-7`). `DM-13` (`docs/plans/P-0740-loop-de-modulos.md` §4; rodada em `### RP-3`, `AE-5` absorvido) recua os **seis** cabeçalhos para a forma de dois campos com `- **Esforço:** <valor>` como campo do corpo — nenhuma linha de código tocada, nenhum executor despachado — e aloca a gramática de três campos, com o campo **opcional** e grupo **não capturante**, à tarefa nova **`LM-T4a`** (`Sonnet · classe implementacao`, esforço `low`), ordenada **antes** da `LM-T4`: a ordem é parser → doutrina → cards. Fila do plano: `LM-T1` → `LM-T2` → `LM-T3` → `LM-T4a` → `LM-T4` → `LM-T5` → `LM-T6`, 7 tarefas. `LM-T1` **segue em `review`**, intocada. **Lição: classe já conhecida** (dependência de ordem, mesma do `AE-10`, já coberta pelo bullet da fase 1 do `pantonic-planner` publicado em 2026-09-16) — `.claude/agents/pantonic-planner.md` **não** foi editado. Ao regerar o dossiê, use o comando já medido: `python .claude/tools/review_evidence.py --plano docs/plans/P-0740-loop-de-modulos.md --tarefa LM-T1 --desde 428246c --out docs/RDO/evidencia/P-0740-LM-T1.md`.
-
-**Fila corrente anterior (texto de 2026-08-31; migra para `## TK-54`/`## TK-53` na `BKL-T6`):** nada em execução. **`TK-54a` é a próxima tarefa delegável** (escopada em
-2026-08-31, sem pré-condição). **`TK-53` fechada em 2026-08-31 por decisão do dono, com desfecho
-negativo:** a `TK-53a` mediu o eixo tempo como `sem degrau (oscilação pré-existente)`,
-contradizendo a premissa que abriu o tíquete — não há causa a achar no corte da `95db6421…`
-porque não houve mudança no corte. **`TK-53b` cancelada por absorção:** seu insumo único era o
-bracket temporal, que perdeu o objeto junto com a premissa. **Decisão do dono no mesmo ato:** o
-número agregado não sustenta decisão nenhuma — o que falta é o **extrato** do custo por fonte,
-classificado em *válido / necessário / dispensável / economizável*; aberto como `TK-54`. **Decisão do dono sobre a
-ressalva do `TK-51`
-(2026-08-24): causa é deslocamento real, não ruído** — a Tabela A do laudo
-(`docs/RDO/laudos/DIARIO-TK-51.md`, Achado 3) mostra as 6 janelas pós-corte agrupadas com mediana
-46.070 (grupo `depois`) contra 34.347 (grupo `antes`, n=233), e o teste "dentro do intervalo
-[mín,máx]" não discrimina isso. **Consequência:** `P-0737` segue `blocked` — a premissa de custo
-fixo de abrir janela que o loop constrói está contradita, não confirmada como estável (nova razão
-na seção `## P-0737`); investigação do que mudou no corte aberta como `TK-53`, **já desenhada**
-(2026-08-24) em duas tarefas de medição na própria seção — **`TK-53a` é a próxima tarefa
-delegável**, sem pré-condição; `TK-53b` só é despachada com a linha `Janela temporal do degrau:`
-que a `TK-53a` publica. Não abre plano formal: `P-0739` segue livre. Os 2 achados de processo do
-mesmo laudo (itens 1 e 2 —
-`review_evidence.py` não aceita tarefa residente no diário; desenho de sonda fixou fato de corpus
-não verificado) seguem sem tíquete, para rodada futura.
-A regra escalonada de 2026-08-21 e o `G-PLANREADY` continuam valendo.
-- `TK-52` **done** (2026-08-24, aceito pelo dono): resíduo do checkpoint corrigido nas duas superfícies vivas.
-  `GOVERNANCA.md` §4.3 — o bullet *"Contexto acabando sem plano de parada"* (que atribuía ao
-  **executor** gravar o checkpoint e dizia que *"o mesmo checkpoint responde ao sinal de poluição"*)
-  virou dois bullets: *Checkpoint intermediário* como ato da **orquestração**, e *Dois casos que não
-  são checkpoint* (contexto acabando dentro da tarefa = dimensionamento errado, volta ao planejamento;
-  sinal de poluição = sem ponteiro de retomada). `.claude/global/CLAUDE.md` Regra 2 **carregava o mesmo
-  resíduo** e teve o "Como aplicar" reescrito para enunciar a poluição como **único** critério de
-  parada de execução, com parada não graciosa e sem ponteiro de retomada. **Regressão detectada e
-  revertida no mesmo dia, pelo dono:** o dossiê da tarefa mandou o executor escrever um segundo ramo
-  ("capacidade cruzada → orquestração grava checkpoint"), que é exatamente a cláusula que a `CTX-T1a`
-  removeu por decisão do `P-0738` (`DX-13`/`DX-14`, dossiê `## CTX-T1a`: *"O parágrafo Como aplicar
-  perde 'ao cruzar a capacidade, grave um checkpoint' como caminho de interrupção de tarefa"*),
-  ratificada no guardrail 7 (`GOVERNANCA.md:586-592`: ocupação não é matéria de parada, é diretriz de
-  dimensionamento de §3). O erro foi de **autoria de dossiê**, não do executor, que cumpriu o
-  prescrito. Autoridade seguida: `.claude/skills/handover/SKILL.md:88-121`, espelhada em
-  `README.md:674-688` (já correto pela `CTX-T11`, não tocado). Verificação: 3 greps negativos +
-  `check-readme.ps1` exit 0 (8 agentes, 11 skills, 16 guardrails, 14 seções) + `git status --short` sem
-  arquivo novo. **Achado fora de escopo (1) — resolvido em 2026-08-24:** `.claude/tools/uow.py:23`
-  (arquivo ainda untracked) citava *"o checkpoint de interrupção da Regra 2"*, referente que a
-  correção eliminou — a parada por poluição não gera ponteiro. Rota do dono: **dispensar a cláusula**,
-  já que o checkpoint da orquestração não nasce dentro da UoW de uma tarefa e a exclusão de escopo
-  perdeu o objeto; a menção saiu do docstring. **Achado fora de escopo (2) — resolvido em
-  2026-08-24:** a cópia **implantada** em `C:\Users\panta\.claude\CLAUDE.md` estava **defasada do
-  kit** e carregava o resíduo em forma pior — *"ao detectar sinal de poluição, **ou ao cruzar a
-  capacidade**, grave um checkpoint… **faça handover**"*, na voz do executor. `Compare-Object` provou
-  que o bloco da Regra 2 era a **única** divergência entre kit e cópia; com autorização do dono o
-  arquivo foi copiado inteiro (165 linhas, diff vazio depois). **Achado colateral, sem tíquete por
-  decisão do dono:** o `CLAUDE.md` global **não tem ponto de carga** — o `materializar.py` projeta só
-  `.claude/settings.json` —, então correção de kit nesse arquivo fica sem efeito até ser copiada à
-  mão. Consumo: ver `docs/telemetria.tsv`.
-- `CTX-T11` **done** (2026-08-24): espelho do `README.md` revisado e **aprovado pelo dono** —
-  `check-readme.ps1` exit 0 antes e depois (o guarda não vê nada do que mudou). Sete correções de
-  sentido: verbete "Contexto" e guardrail 7 (capacidade deixa de encerrar contexto e de morar no
-  guardrail), duas células da tabela de classes (teto sai do dossiê), linha própria da *Rodada de
-  replanejamento*, "quem executa registra o consumo" (contradizia o §12 do próprio README), §9 do
-  checkpoint (era do executor, é da orquestração) e ponteiro novo para `docs/CUSTO_DO_PICKUP.md`.
-  `docs/DOC_MAP.md`: entrada do relatório de ~202→~306 linhas, seções 8-10. Achado registrado em
-  `P-0738` `## 9`: `GOVERNANCA.md` §4.3:416-420 ainda atribui o checkpoint ao executor, contra os
-  dois bullets acima dele e contra a skill `handover` — resíduo não varrido pela `CTX-T1`, fora dos
-  arquivos-alvo, **a corrigir em tíquete próprio**. Estouro de orçamento: 52 tool uses contra ≤30 da
-  classe `redacao` — a varredura achou 4 âncoras além das 3 pré-localizadas no dossiê; insumo de
-  dimensionamento, não bloqueio. Consumo: ver `docs/telemetria.tsv`.
-- `CTX-T10` **done** (2026-08-24): aferição publicada em `docs/CUSTO_DO_PICKUP.md` `## 10`. 1º
-  `usage` da 1ª janela pós-`CTX-T9` = **46.071 tok**, contra 34.260/34.292/45.872 antes — **subiu**
-  34,4%–34,5%. Critério (a) da iniciativa **reprovado**; (b) aprovado (abre/delega/fecha/telemetria
-  numa janela). Achado registrado em `P-0738` `## 9. Achados da execução` + `TK-51` aberto — decisão
-  do dono é pré-requisito antes de qualquer nova rodada. `git status --short` acusa só os dois
-  arquivos do plano/relatório. Consumo: ver `docs/telemetria.tsv`.
-
 > Este diário é o kanban do backlog de **governança comum** dos projetos Pantonic*. Os planos
 > completos vivem em `docs/plans/P-*.md`; aqui ficam o índice, o status e o ponteiro. Entrada de
 > planos novos: `docs/plans/_INBOX.md` (append-only), drenado por quem abrir a skill
@@ -134,7 +64,7 @@ A regra escalonada de 2026-08-21 e o `G-PLANREADY` continuam valendo.
 | P-0736-CPK | Custo do pickup — mede por fonte o que uma retomada ingere, ranqueia e lista rotas candidatas; termina antes da decisão da rota (nível 2). 5 tarefas `CPK-T1..T5`, 3 executadas; `T4`/`T5`… | done | docs/DIARIO_HISTORICO.md#p-0736--custo-do-pickup |
 | P-0737-AUT | Loop autônomo — o plano que consolida a `EXECUCAO-AUTONOMA`: 10 tarefas (`AUT-T1..T10`), decisões `DU-1..DU-13`, absorve as 8 tarefas abertas do `P-0734` e 11 tíquetes, poda 10 e encaminha 2;… | superseded *(sucedido pelo `P-0740-loop-de-modulos` em 2026-09-18, `DM-1` — a condição do bloqueio (`P-0738` fechar) foi satisfeita e a razão de fundo (custo fixo de contexto) caiu com a correção do denominador de janela para 1M; as 7 tarefas abertas foram absorvidas e reagrupadas em módulos)* | docs/DIARIO_DE_OBRAS.md#p-0737--loop-autônomo |
 | P-0738-CTX | Contexto esgotado na partida — medir por que uma janela nasce cara e parar de repagar o custo fixo; Estágio C autorado pela charneira em 7 cards; `CTX-T10` mediu **regressão** (DX-5 subiu 34%, não caiu); 17/17 | done | `docs/plans/P-0738-contexto-esgotado.md` |
-| P-0739-BKL | O pickup vira instrumento — `backlog.py` (`next`/`status`/`drain`/`check`), gramática legível por máquina e hook `UserPromptSubmit`; 16 tarefas (`BKL-T1`..`T9` + `T2a`..`T2e` + `T3a` + `T3b`). **11 fechadas:** `T1`, `T2`, `T2a`..`T2e`, `T3`, `T3a`, `T3b` e `T4` — a `BKL-T4` fechou `done` em 2026-09-18 com ressalva 85%, bloqueante `nenhuma`, ressalva roteada como `AE-10`. Rodadas `RP-1`..`RP-7` fechadas. **DESESTACIONADO em 2026-09-19**: a condição do dono (*não volta à fila enquanto o `P-0740` não encerrar*) foi **satisfeita** — o `P-0740` fechou em `35/35`, marco 3 commitado em `13ce6a3` —, e o plano é a **próxima janela**, sob a *Diretiva de execução do `P-0739`* (dono, 2026-09-19). O `DM-9` caduca com o encerramento do `P-0740`. **Primeiro ato da retomada: transcrever `BKL-T10`..`BKL-T12`**, cuja partição e mapa de herança já estão decididos pela `LM-T5a` do `P-0740` (`AE-63`, `AE-65`, `AE-67`) — o executor transcreve, não re-decide. As 5 tarefas restantes (`T5`..`T9`) **não** voltam uma a uma — a `LM-T5` as reagrupa em módulos coesos e o plano fecha em rodada única na `LM-T6`. O `AE-10` não abre rodada própria (absorvido pela `LM-T5`); o `AE-9` foi resolvido pelo dono em 2026-09-18 (seguir sem `RP-8`). | in-progress 11/16 | docs/plans/P-0739-backlog-instrumento.md |
+| P-0739-BKL | O pickup vira instrumento — `backlog.py` (`next`/`status`/`drain`/`check`), gramática legível por máquina e hook `UserPromptSubmit`; 16 tarefas (`BKL-T1`..`T9` + `T2a`..`T2e` + `T3a` + `T3b`). **11 fechadas:** `T1`, `T2`, `T2a`..`T2e`, `T3`, `T3a`, `T3b` e `T4` — a `BKL-T4` fechou `done` em 2026-09-18 com ressalva 85%, bloqueante `nenhuma`, ressalva roteada como `AE-10`. Rodadas `RP-1`..`RP-7` fechadas. **DESESTACIONADO em 2026-09-19**: a condição do dono (*não volta à fila enquanto o `P-0740` não encerrar*) foi **satisfeita** — o `P-0740` fechou em `35/35`, marco 3 commitado em `13ce6a3` —, e o plano é a **próxima janela**, sob a *Diretiva de execução do `P-0739`* (dono, 2026-09-19). O `DM-9` caduca com o encerramento do `P-0740`. **Primeiro ato da retomada: transcrever `BKL-T10`..`BKL-T12`**, cuja partição e mapa de herança já estão decididos pela `LM-T5a` do `P-0740` (`AE-63`, `AE-65`, `AE-67`) — o executor transcreve, não re-decide. As 5 tarefas restantes (`T5`..`T9`) **não** voltam uma a uma — a `LM-T5` as reagrupa em módulos coesos e o plano fecha em rodada única na `LM-T6`. O `AE-10` não abre rodada própria (absorvido pela `LM-T5`); o `AE-9` foi resolvido pelo dono em 2026-09-18 (seguir sem `RP-8`). | done 18/18 | docs/plans/P-0739-backlog-instrumento.md |
 | P-0740-LM | O loop de módulos — a convergência da `EXECUCAO-AUTONOMA` sob a janela real de 1M: sucede o `P-0737` (`DM-1`), troca a tarefa atômica pelo **módulo coeso** (`DM-2`..`DM-5`) e corrige os seis defeitos medidos no run de aferição do `scrum-master` sobre a `BKL-T4`. **35 tarefas, 35 fechadas** (a `LM-T2e` nasceu no `ESC-9` desta janela; `LM-T4b`, `LM-T2f` e `LM-T3b` no `ESC-12`), decisões `DM-1`..`DM-50`. Marco 1 **commitado em `6eebccd`** (2026-09-19, oito entregas + `BKL-T4`, suíte 165 verde); recorte de evidência passa a `--desde 6eebccd`. Rodadas `RP-1`..`RP-5` e escalonamentos `ESC-1`..`ESC-26` fechados — os oito últimos pelo `pantonic-consultant`, figura ad-hoc instanciada uma vez e acionada em 9 passagens sem reler o plano. Atos do dono de 2026-09-19 (`DM-27`..`DM-30`): permissão de `.claude/agents/` concedida (`LM-T8` sai de `blocked`), técnica não projetada se executa ad-hoc com a lição registrada em `## 9` (`I-1`..`I-8`), card novo `LM-T9` (`consultant-spec`) como penúltima, e o critério de admissão de matéria nova passa a ser **coesão, não custo**. Fila: `LM-T6` (medida publicada, aguarda veredito do dono) → `LM-T9`, com `LM-T4c`, `LM-T5d`, `LM-T5a` fora do caminho crítico e `LM-T8` `blocked` por permissão (`AE-42`). | done 35/35 | docs/plans/P-0740-loop-de-modulos.md |
 | TK-51 | `CTX-T10` mediu que a rodada Estágio C (`CTX-T6a..T9`) **não** reduziu o custo fixo de abrir uma janela de orquestração — 1º `usage` subiu de ~34-46k para 46.071 tok, +34% vs. mediana anterior. Nenhum card do Estágio C tocou o que compõe esse número (candidato apontado pela própria `CTX-T4`: superfície de ferramentas registrada). Decisão do dono sobre causa/próxima rota é pré-requisito antes de nova rodada. | done *(medido em 2026-08-24 — `docs/CUSTO_DO_PICKUP.md` `## 11`: o Δ de +11.779 tok é carregado pelo componente **opaco** (Δ+11.781 tok), o **visível** (chars do preâmbulo) ficou estável (Δ≈0); dispersão do grupo `antes` (n=233) já continha janela mais cara (46.429) — 46.071 no percentil 94,8, dentro do intervalo. Não corta, não propõe rota)* | docs/DIARIO_DE_OBRAS.md#tk-51--composição-do-1º-usage-de-uma-janela-de-orquestração |
 | TK-52 | `GOVERNANCA.md` §4.3 (bullet *"Contexto acabando sem plano de parada"*, linhas 416-420) ainda atribui ao **executor** gravar o checkpoint intermediário e afirma que *"o mesmo checkpoint responde ao sinal de poluição"*. As duas afirmações são contraditas pelos **dois bullets acima, na mesma seção** (Capacidade: *"nunca interrompe tarefa em curso"*; encerramento: *"ato da orquestração, entre tarefas — nunca dentro de uma tarefa, nunca do executor"*) e pelo bloco *"Dois casos que NÃO são checkpoint"* de `.claude/skills/handover/SKILL.md`, que nomeia esses dois casos como **não**-checkpoint. Resíduo não varrido pela `CTX-T1`. Corrigir o bullet e conferir se `.claude/global/CLAUDE.md` Regra 2 carrega o mesmo resíduo. | done *(aceito pelo dono em 2026-08-24 — §4.3 partida em dois bullets e Regra 2 em dois ramos; a Regra 2 **carregava** o resíduo. No mesmo ato, por decisão do dono: correção **propagada** para a cópia implantada em `~/.claude/CLAUDE.md` e cláusula pendurada de `uow.py:23` **dispensada**)* | docs/plans/P-0738-contexto-esgotado.md#9-achados-da-execução |
@@ -142,13 +72,24 @@ A regra escalonada de 2026-08-21 e o `G-PLANREADY` continuam valendo.
 | P-0721 | Governança single-source: PantonicApp como referência | done | `docs/plans/P-0721-governanca-single-source.md` |
 | P-0725-3C | Governança em três camadas condicionais | superseded | substituído por `P-0725-governanca-hub-unico.md` |
 | P-0725-HU | Hub único: PantonicApp canônico, PantonicVideo como prova | done | `docs/plans/P-0725-governanca-hub-unico.md` |
-| TK-23 | A variante (b) do proxy de ocupação de contexto — contador de tarefas por janela calibrado pela série de `docs/telemetria.tsv` — não foi medida pela `EXA-T1` (orçamento esgotado). A variante (a),… | backlog *(achado da `EXA-T1`)* *(encaminhado ao plano de contexto recomendado pelo P-0737 §8; **absorvido pelo P-0738 em 2026-08-22**, §4 — mede na CTX-T3, rota na CTX-T4)* | docs/DIARIO_DE_OBRAS.md#tk-23--a-variante-b-do-proxy-de-ocupação-de-contexto |
-| TK-32 | **Uso e teto: medida agregada ou porteiro de tarefa.** O teto por tarefa vem sendo cruzado com regularidade sem produzir a consequência que a doutrina prescreve — `EXA-T31` consumiu os 15 do teto… | **decidido em parte** — a parte interina foi **absorvida pela `DP-Q` em 2026-08-13** e deixou de ser interina: teto numérico não governa fluxo em lugar nenhum do framework, e custo/consumo são informação de agregado, com residência do qualitativo no card "Lições aprendidas na tarefa" do laudo (materializado pelo bloco `EXA-T49`..`T52`). O restante da matéria segue para plano próprio (`T17` item 4), com a `EXA-T34` cancelada por absorção *(achado do fechamento da `EXA-T31`)* *(encaminhado ao plano de contexto recomendado pelo P-0737 §8; **absorvido pelo P-0738 em 2026-08-22**, §4 — mede na CTX-T3, rota na CTX-T4)* | docs/DIARIO_DE_OBRAS.md#tk-32--uso-e-teto-medida-agregada-ou-porteiro-de-tarefa |
-| TK-38 | **Comunicação entre agente e humano — skill própria e requisitos mínimos.** Aberto por decisão do dono em 2026-08-13. O framework nomeia objetos de projeto por prefixo abreviado (`DP-`, `DR-`,… | ready *(decisão do dono, 2026-08-13; evidência medida no handover da `EXA-T25`)* | docs/DIARIO_DE_OBRAS.md#tk-38--comunicação-entre-agente-e-humano--skill-própria-e-requisitos-mínimos |
-| TK-48 | `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**, sem ação intencional do dono, entre a `RPC-T4` e a escolha da `RPC-T5` — os 4 hooks registrados (premissa da `T5`) somem sem rastro. | ready *(**dono mandou resolver em 2026-09-19**. Estado medido no mesmo dia: a chave `hooks` **existe** — global com `PreToolUse` e `UserPromptSubmit`, projeto com `PreToolUse` e `SubagentStop` —, portanto **não há perda ativa a reparar**; o que falta é a **proteção**, que era o foco declarado do dono desde a abertura (proteger, não achar culpado). Não entra no `P-0740` por `DM-30` — cruza o tema; entra na fila logo depois do marco)* | docs/DIARIO_DE_OBRAS.md#tk-48--~/claude/settingsjson-perdeu-a-chave-hooks-inteira-silenciosamente |
+| TK-23 | A variante (b) do proxy de ocupação de contexto — contador de tarefas por janela calibrado pela série de `docs/telemetria.tsv` — não foi medida pela `EXA-T1` (orçamento esgotado). A variante (a),… | cancelled *(achado da `EXA-T1`)* *(encaminhado ao plano de contexto recomendado pelo P-0737 §8; **absorvido pelo P-0738 em 2026-08-22**, §4 — mede na CTX-T3, rota na CTX-T4)* | docs/DIARIO_DE_OBRAS.md#tk-23--a-variante-b-do-proxy-de-ocupação-de-contexto |
+| TK-32 | **Uso e teto: medida agregada ou porteiro de tarefa.** O teto por tarefa vem sendo cruzado com regularidade sem produzir a consequência que a doutrina prescreve — `EXA-T31` consumiu os 15 do teto… | cancelled — a parte interina foi **absorvida pela `DP-Q` em 2026-08-13** e deixou de ser interina: teto numérico não governa fluxo em lugar nenhum do framework, e custo/consumo são informação de agregado, com residência do qualitativo no card "Lições aprendidas na tarefa" do laudo (materializado pelo bloco `EXA-T49`..`T52`). O restante da matéria segue para plano próprio (`T17` item 4), com a `EXA-T34` cancelada por absorção *(achado do fechamento da `EXA-T31`)* *(encaminhado ao plano de contexto recomendado pelo P-0737 §8; **absorvido pelo P-0738 em 2026-08-22**, §4 — mede na CTX-T3, rota na CTX-T4)* | docs/DIARIO_DE_OBRAS.md#tk-32--uso-e-teto-medida-agregada-ou-porteiro-de-tarefa |
+| TK-38 | **Comunicação entre agente e humano — skill própria e requisitos mínimos.** Aberto por decisão do dono em 2026-08-13. O framework nomeia objetos de projeto por prefixo abreviado (`DP-`, `DR-`,… | ready | docs/DIARIO_DE_OBRAS.md#tk-38--comunicação-entre-agente-e-humano--skill-própria-e-requisitos-mínimos |
+| TK-48 | `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**, sem ação intencional do dono, entre a `RPC-T4` e a escolha da `RPC-T5` — os 4 hooks registrados (premissa da `T5`) somem sem rastro. | ready | docs/DIARIO_DE_OBRAS.md#tk-48--~/claude/settingsjson-perdeu-a-chave-hooks-inteira-silenciosamente |
 | TK-53 | O que mudou no corte da `95db6421…` que desloca o custo opaco de abertura de janela para as 6 janelas pós-corte inteiras (mediana 46.070 vs. 34.347 do grupo `antes`) — decisão do dono em 2026-08-24 sobre o achado do `TK-51`, causa ainda não investigada. Bloqueia `P-0737`. | done *(**desfecho negativo, decisão do dono em 2026-08-31** — a `TK-53a` mediu que não há degrau no corte: os dois regimes (`cache_read` 18.084 e 26.695) coexistem **antes e depois** dele, então a causa procurada não existe. `TK-53b` **cancelada por absorção** (seu insumo único, o bracket temporal, perdeu o objeto). A pergunta viva migrou para `TK-54`: não *o que mudou*, mas *do que o custo é feito*)* | docs/DIARIO_DE_OBRAS.md#tk-53--causa-do-deslocamento-de-custo-nas-janelas-pós-corte |
-| TK-54 | **Extrato do custo de abertura de uma janela principal.** O 1º `usage` decompõe-se em uma linha por fonte carregada, com tamanho medido, origem (nossa ou do harness) e classificação em *válido / necessário / dispensável / economizável* — o detalhamento sem o qual o dono não decide corte nenhum. Substitui o objetivo morto da `TK-53`. Bloqueia `P-0737`. | ready *(**escopado em 2026-08-31** — 2 tarefas independentes: `TK-54a` (extrato, delegável agora) e `TK-54b` (fonte da bimodalidade de 8.611 tok). **Não abre plano formal — `P-0739` segue livre**. **`TK-54a` voltou `blocked` razão `premissa` em 2026-09-18 (`AE-1`) e a rodada `RP-TK54-1` a devolveu a `ready` no mesmo dia, rota A: a rubrica das quatro categorias e a coluna de classificação já vêm preenchidas no card — o executor transcreve, não avalia. Rodada técnica/tática, nada escalado ao dono**)* | docs/DIARIO_DE_OBRAS.md#tk-54--extrato-do-custo-de-abertura-de-uma-janela-principal | **`TK-54a` fechou `done` em 2026-09-18, executada inline pela orquestração: `## 13` em `docs/CUSTO_DO_PICKUP.md:404-431`. A classificação das quatro categorias foi **ratificada pelo dono em 2026-09-19** — a `TK-54` fecha com isso. A `TK-54b` fica **despriorizada** por `DM-30` (`P-0740`): com os limites expandidos, o critério deixou de ser custo e passou a ser coesão/coerência de contexto; ela não é cancelada, apenas sai da fila sem previsão. A rodada de corte que a `TK-54a` habilitava **não se abre** pelo mesmo motivo. `AE-2` aberto (espelho `.claude/global/` duplica 6 skills e 1 agente).**
-| TK-55 | **Confiabilidade de agente e de instrumento.** Acumulador dos casos em que um **derivado** (comando de aceite, piso de regressão, linha de telemetria, achado de lint, linha de índice) erra sem sinal porque nada o confronta com a fonte — `AE-19`, `AE-18`, `AE-3`, `AE-1` e a projeção de índice desatualizada por um dia inteiro em 2026-09-19. Não é erro de execução de tarefa: a janela que os produziu fechou oito tarefas com zero reprovações. | backlog *(aberto por ato do dono em 2026-09-19. O gate caiu: o `P-0740` fechou em `35/35`. **Ato do dono, 2026-09-19:** este tíquete é o **acumulador da spec de robustez**, que ainda não tem arquivo, e as **imprecisões de contagem** medidas na janela do marco 3 entram nele como **estatística** — não como correção da `docs/consultant-spec.md`. Casos novos acumulados: `AE-49` (constante de corpus congelada pelo gate), `AE-51`/`AE-57`/`AE-61` (frase que conta envelhece sozinha e nenhum instrumento a lê), `AE-52`/`AE-59` (irmão não enumerado), `AE-70` (invariância é do recorte, não do valor), `AE-71` (rótulo ordinal que o recenseamento renumera), `AE-73` (o instrumento do aceite não vê soft-wrap), `AE-75` (o número que o próprio ato de medi-lo falsifica). Segue acumulando durante a retomada do `P-0739`; a rodada de planejamento é posterior)* | docs/DIARIO_DE_OBRAS.md#tk-55--confiabilidade-de-agente-e-de-instrumento |
+| TK-54 | **Extrato do custo de abertura de uma janela principal.** O 1º `usage` decompõe-se em uma linha por fonte carregada, com tamanho medido, origem (nossa ou do harness) e classificação em *válido / necessário / dispensável / economizável* — o detalhamento sem o qual o dono não decide corte nenhum. Substitui o objetivo morto da `TK-53`. Bloqueia `P-0737`. | ready | docs/DIARIO_DE_OBRAS.md#tk-54--extrato-do-custo-de-abertura-de-uma-janela-principal |
+| TK-55 | **Confiabilidade de agente e de instrumento.** Acumulador dos casos em que um **derivado** (comando de aceite, piso de regressão, linha de telemetria, achado de lint, linha de índice) erra sem sinal porque nada o confronta com a fonte — `AE-19`, `AE-18`, `AE-3`, `AE-1` e a projeção de índice desatualizada por um dia inteiro em 2026-09-19. Não é erro de execução de tarefa: a janela que os produziu fechou oito tarefas com zero reprovações. | ready | docs/DIARIO_DE_OBRAS.md#tk-55--confiabilidade-de-agente-e-de-instrumento |
+| P-0741-MC | O modelo conceitual do plano: a interface entre o dono e o loop | ready | docs/plans/P-0741-modelo-conceitual.md |
+| TK-56 | **Propagar o reparo de codificação de `stdin` aos três pontos de carga restantes.** `ocupacao.py:141`, `telemetria_hook.py:213` e `modelo_por_fase_userpromptsubmit.py:101` leem `sys.stdin.read()` e decodificam na codificação do host; em Windows sem `PYTHONUTF8` isso é `cp1252`. O terceiro é **global** e roda a cada prompt em todos os projetos — vem degradando em silêncio para prompt acentuado. Regra de reparo pronta na `DB-53` do `P-0739`. Depende do `TK-57`. | done 2/2 | `docs/DIARIO_DE_OBRAS.md` › `## TK-56` |
+| TK-57 | **Fixar o ambiente no teste por subprocesso do hook.** `test_tf_hook_executavel_*` em `tests/test_backlog.py` herda o ambiente do `pytest`: em host com `PYTHONUTF8=1` passa com ou sem o reparo, deixando de discriminar. Aplicar as três cláusulas da `DB-53` — roda o processo, fixa `env=` explícito, afirma a invariância entre os dois mundos. **Pré-requisito do `TK-56`.** | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-57` |
+| TK-58 | **Fechar a metade `usage_1` da medida de pickup.** O método `DC-4` tem duas metades; a de caracteres está publicada (26.760, −65,5%), e a do primeiro `usage` de uma sessão nova ficou **declarada sem valor** na `## 14` de `docs/CUSTO_DO_PICKUP.md` por não ser observável de dentro de um subagente. Exige abrir uma janela principal nova e ler o primeiro `usage`. | done 4/4 | `docs/DIARIO_DE_OBRAS.md` › `## TK-58` |
+| TK-59 | **Guarda para o contador de id do inbox.** `**Próximo id de plano:**` é recalculado por `max(id visto) + 1` sobre o que passou pelo inbox; plano criado sem linha de inbox fica invisível e o contador aponta para id já usado. Ocorreu com o `P-0742` e foi corrigido à mão para `P-0743`. Falta um verificador que confronte o contador com `docs/plans/`. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-59` |
+| TK-60 | **Verificador de citação de seção.** O kit resolve caminho de arquivo (`Test-Path`) e identificador de tarefa (`review_evidence`), mas **nada** resolve *“§X.Y publicada em Z”*. Um ponteiro para seção inexistente atravessou autoria, transcrição aprovada em 100%, duas varreduras e um despacho, e só caiu quando um executor foi abrir o arquivo para editar. | done 3/3 | `docs/DIARIO_DE_OBRAS.md` › `## TK-60` |
+| TK-61 | **Implementar o rodapé de “candidato a fechamento” (`DB-4`).** A norma está publicada na `## 3` do `P-0739` **sem implementação e sem teste**: a expressão não existe em `.claude/tools/backlog.py`, e o rodapé de `next` imprime só `inbox de planos`, `fila de memória` e `blocked`. Efeito hoje: pai cujos filhos ficaram todos terminais deveria aparecer no rodapé, e nada o mostra. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-61` |
+| TK-62 | **A gramática de ID de `rdo.py` não reconhece subtarefa de tíquete.** `_ID_HEADER_RE` e `_HEADER_BRACKET_RE` exigem `T` seguido de dígitos; `TK-<n><letra>` nunca casa. Bloqueia o dossiê de evidência e o `rdo.py close` de **toda** subtarefa de tíquete. A `DB-17` justificou a forma com *“já leem essa forma”* — cláusula falsa, nunca verificada. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-62` |
+| TK-63 | **O mundo hostil dos testes de executável é herdado do host, não construído.** Os dois sítios que discriminam hoje o fazem por acidente de plataforma: o mundo “sem `PYTHONUTF8`” só é hostil porque este host é Windows-cp1252. Medido: `PYTHONIOENCODING` prevalece sobre `PYTHONUTF8`, e é ele que constrói o mundo hostil portátil. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-63` |
+| TK-64 | **O `check-drift` está vermelho por linha de skill que nenhuma tarefa aberta possui.** `.claude/README.md` não tem a linha da skill `entrega-de-encerramento`, entrega do `TK-51a` (fechado). O vermelho chega sem dono a toda revisão desta janela e já obrigou três reconciliações manuais. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-64` |
+| TK-65 | **Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`.** O `check` aprova plano estruturalmente inselecionável (`Depende de:` com id que não é item); o `--help` e todo erro de argparse morrem com `UnicodeEncodeError` em console cp1252; o verbo `diretiva` descarta em silêncio os ids escritos depois do travessão. | ready 0/3 | `docs/DIARIO_DE_OBRAS.md` › `## TK-65` |
 
 ---
 
@@ -742,7 +683,18 @@ dependentes de decisão do dono.
 
 ---
 
+## P-0739 — O pickup vira instrumento
+
+- 2026-09-19 — **Fila corrente:** **`P-0740` FECHADO em 35/35, marco 3 commitado em `13ce6a3` (2026-09-19).** Janela de 2026-09-19 (a terceira do dia): **quinze tarefas fechadas, zero reprovações, zero retentativas consumidas**, três devoluções `blocked` razão `premissa` todas por conduta correta de `G-EXECREADY` (nenhum arquivo tocado em nenhuma). Consumo da janela: **6.729,2k tk / 819 tool uses / 3,54 h** em 41 linhas de `docs/telemetria.tsv` — execução 19%, revisão 15%, **consultor 67%**. Suíte **187 → 201**; `tests/test_backlog.py` 41 → 49. Achados `AE-47`..`AE-75`; escalonamentos `ESC-27`..`ESC-40`, **catorze, todos ao consultor instanciado uma vez, nenhum ao dono**. **PRÓXIMA JANELA: retomada do `P-0739`**, sob a *Diretiva de execução do `P-0739`* acima (dono, 2026-09-19). **Primeira tarefa: transcrever os três módulos `BKL-T10`..`BKL-T12`** em `docs/plans/P-0739-backlog-instrumento.md` — a partição, o mapa de herança das superfícies mortas e a regra de re-derivação do número **já estão decididos e registrados** pela `LM-T5a` (`AE-63`, `AE-65`, `AE-67`): `BKL-T10` absorve `BKL-T5` (`drain`) + `BKL-T6` (migração), `BKL-T11` absorve `BKL-T7` (hook) + `BKL-T8` (skills), `BKL-T12` absorve `BKL-T9` sozinha; ordem `BKL-T10` → `BKL-T11` → `BKL-T12`. Os cinco cards antigos ficam no arquivo como `cancelled` **por absorção** (autoridade: `AE-13` do `P-0739`, com o produto (c) da `LM-T5a` do `P-0740`; a citação anterior a `DM-33` (iii) era ponteiro quebrado — o `DM-33` trata de teste pré-existente, e a correção está registrada no `AE-14` (ii) do `P-0739`), nada se apaga. **Herança já decidida:** `passagem-de-bastao` herda a matéria de skill da `BKL-T8` (as skills `proximo-passo` e `handover` foram removidas pela `LM-T4` em `f1afbd3`); o `scrum-master` fica com a condução do loop; o número `≥ 3` do aceite herdado **não se transcreve** — escreve-se a regra (*toda skill que invoca o instrumento o cita*) e re-deriva-se no despacho (mede **1** em 2026-09-19). **`AE-10` encerrado** pelo reparo `AE-47`: a dependência de ordem que ele nomeava deixou de existir quando `transacionar_status` ganhou a guarda que declara a ausência dos marcadores em vez de estourar. **Estado medido do `P-0739` em 2026-09-19:** `11/16` — `ready 5` (`BKL-T5`..`BKL-T9`), `done 11`, e a nota `AE-13` **da série local do `P-0739`** (as séries `AE-<n>` são **por plano**; citação de achado de outro plano leva sempre o qualificador `AE-<n>` **do** `<plano>` — `AE-67`). **Números de aceite a re-derivar no despacho:** suíte **201 passed**, `tests/test_backlog.py` **49**, `- **Objetivo:**` no `P-0739` **18**. **Recorte de evidência da próxima rodada: `--desde 13ce6a3`** (as quinze entregas do marco 3 foram commitadas ali; o recorte volta a tamanho proporcional à entrega). **Matéria pós-plano, sem card e sem rodada:** o `TK-55` acumulou seis evidências novas nesta janela e é o acumulador da **spec de robustez**; o teto de saturação do `AE-60`/`AE-63` cobre `.claude/checks/check-readme.ps1`, `docs/RUBRICA_DE_REVISAO.md` e `.claude/tools/review_evidence.py`; o teto prospectivo do `AE-74` fecha `docs/consultant-spec.md` — **achado novo sobre esses arquivos não abre card**, registra-se e vai à spec correspondente. **Fila corrente anterior (texto do marco 2, 2026-09-19):** migra para `## P-0740` na condensação.
+- `P-0739` (`in-progress`, 11/16): `RP-2` fechou em 2026-09-16 (`pantonic-planner`, sobre o `AE-2`) — decisão técnica/tática, não escalada: `DB-21..DB-24` em `docs/plans/P-0739-backlog-instrumento.md` §1, rota = corrigir a gramática de ID em `rdo.py` (`_ID_HEADER_RE`/`_HEADER_BRACKET_RE`, ponto único) mais regressão em `tests/test_rdo.py`, sem retroação e sem tocar `P-0737`. Card novo `BKL-T2a` (`ready`, próxima tarefa). `BKL-T2` passou de `blocked` para `review` (entrega verde; `review` porque a rodada de revisão do `pantonic-reviewer` só roda depois que `BKL-T2a` destravar o dossiê de evidência — quem leva a `done` é o `scrum-master`). Pendência de doutrina **resolvida em 2026-09-16, por ordem do dono**: a lição da `RP-2` foi aplicada em `.claude/agents/pantonic-planner.md` fase 1 (último bullet: plano que introduz convenção de ID/caminho/nome de artefato verifica na fase 1 que os instrumentos do gate de aceite a aceitam; se não aceitam, corrigir o instrumento é tarefa do plano), com linha em `CHANGELOG.md` sob `## [Não lançado]`. Registro da pendência original (texto no parágrafo "Lição para o planejador" de `docs/plans/P-0739-backlog-instrumento.md`, seção `### RP-2`) — só o dono altera arquivo de definição de agente. Consumo: ver `docs/telemetria.tsv` (`BKL-RP2`). Revisão crítica do procedimento desta janela (7 achados, insumo §7.1): `docs/plans/_CARD-revisao-critica-pickup-opus.md`. **`BKL-T2a` entregue em 2026-09-16** (`pantonic-executor`, `review`): `_ID_HEADER_RE`/`_HEADER_BRACKET_RE` de `.claude/tools/rdo.py` passam a aceitar ID prefixado (`(?:[A-Z0-9]+-)?T[0-9]+[a-z]?`) e bracket com ` + dono`; 4 testes novos em `tests/test_rdo.py`, suíte `98 passed`, `review_evidence.py --tarefa BKL-T2` sai `OK` — o `AE-2` está fechado e a rodada de revisão da `BKL-T2`+`BKL-T2a` é a próxima tarefa. Entrega não commitada: `.claude/tools/rdo.py`, `tests/test_rdo.py`, `CHANGELOG.md`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2a`). **Rodada de revisão fechada em 2026-09-16** (`pantonic-reviewer`, um laudo por tarefa): `BKL-T2` → `done` com **ressalva** (94%, bloqueante nenhuma, única dimensão fora de `conforme`: `registro` `parcial`; laudo `docs/RDO/laudos/P-0739-BKL-T2.md`) e `BKL-T2a` → `done` **aprovado** (100%, bloqueante nenhuma; laudo `docs/RDO/laudos/P-0739-BKL-T2a.md`). Evidência mecânica verde nas duas (`guardas` e `testes` `conforme`), recorte por base distinta — `--desde 1a9645a` para a `BKL-T2` (entrega já em `6d7433c`) e `--desde 6d7433c` para a `BKL-T2a` (árvore de trabalho); dossiês em `docs/RDO/evidencia/`. Os dois laudos escalaram o **mesmo achado de processo**, registrado como `AE-3` (`docs/plans/P-0739-backlog-instrumento.md:729-767`), sem retroação sobre as entregas: a rodada `RP-3` é a próxima tarefa. Consumo: ver `docs/telemetria.tsv` (`BKL-T2-revisao`, `BKL-T2a-revisao`). **Rodada `RP-3` fechada em 2026-09-16** (`pantonic-planner`, sobre o `AE-3`) — decisão técnica/tática, **nada escalado ao dono**: `DB-25`..`DB-29` em `docs/plans/P-0739-backlog-instrumento.md` §1 (linhas 52-84), rodada em `docs/plans/P-0739-backlog-instrumento.md:1394-1466`, `AE-3` absorvido. Rotas: (1) atribuição de arquivo a tarefa é **do instrumento**, não doutrina — `review_evidence.py` classifica cada arquivo tocado em 4 baldes (alvo do card · alvo de outra tarefa do mesmo plano · registro da orquestração, lista fechada · fora sem atribuição) e só o último pesa no veredito (`DB-25`); commit isolado por tarefa descartado porque o registro da orquestração é escrito depois da entrega e antes da revisão; (2) forma canônica de `Arquivos-alvo` fixada — um caminho por bullet, nenhum outro caminho entre crases (`DB-26`), com leitura mecânica **por literal, não por linha** (`DB-27`, fato que manda: `rdo.py:151-183` junta as linhas do campo com espaço); a migração dos cards vivos foi feita na própria autoria (`BKL-T8` reescrito, `BKL-T9` com `Arquivos-alvo` reposto — estava ausente e `extrair_dossie` recusaria a tarefa); (3) `rdo.py laudo` ganha `--achado-processo <alvo> "<linha>"` (alvos `dossie`|`doutrina`|`rubrica`) fora de `calcular_laudo`, devolvendo `--escalar` a só pendência de arquitetura/requisito (`DB-28`); (4) a observação de card do laudo da `BKL-T2` virou regra de autoria (`DB-29`): `Pronto quando`/`Verificação` só citam efeito nos arquivos-alvo do card e comandos do executor; (5) o `UnicodeEncodeError` de `stdout` cp1252 entrou como `_forcar_utf8` no card `BKL-T2b` (o `→` que a `BKL-T2c` imprime depende dele — daí a ordem). Três cards novos `ready`: `BKL-T2b` (`docs/plans/P-0739-backlog-instrumento.md:407-584`), `BKL-T2c` (`:585-834`), `BKL-T2d` (`:835-994`); ordem `BKL-T2b` → `BKL-T2c` → `BKL-T2d` → `BKL-T3`; §6 riscos com 4 linhas novas. **Pendência que é ato do dono, não decisão** (mesmo precedente da `RP-1`/`RP-2`): publicar em `.claude/agents/pantonic-planner.md` as três lições da `RP-3` — fase 1, instrumento de gate cuja saída nunca foi inspecionada contra corpus real; fase 4, campo de card lido por máquina autorado como prosa; fase 4, critério de pronto sem poder discriminante. O `P-0739` **não** depende dessa edição: os três cards estão despacháveis desde já. Consumo: ver `docs/telemetria.tsv` (`BKL-RP3`). **`BKL-T2b` entregue em 2026-09-16** (`pantonic-executor`, `review`): `extrair_arquivos_alvo` de `.claude/tools/review_evidence.py` passa a ler o campo por **gramática de caminho** (`DB-27`) — `_eh_caminho` + `_classificar_campo_alvos`, com `extrair_literais_nao_caminho` alimentando a linha "Literais não reconhecidos como caminho" da seção `## Escopo`, e `_forcar_utf8` em `stdout`/`stderr` no `main`. Arquivo de raiz (`CHANGELOG.md`) volta a ser alvo e literal de regex deixa de ser; 4 testes novos em `tests/test_review_evidence.py` (`13 passed` → `17 passed`), suíte `102 passed` (piso 98), nenhuma contingência acionada. Entrega não commitada: `.claude/tools/review_evidence.py`, `tests/test_review_evidence.py`, `CHANGELOG.md`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2b`). **Correção de registro no mesmo ato:** os campos `**Status:**` de `BKL-T2` e `BKL-T2a` no plano ainda diziam `review` depois da rodada de revisão ter fechado as duas como `done` — divergência entre a residência do item e a projeção do índice (`DB-2`), corrigida com o veredito e o ponteiro do laudo de cada uma. **`BKL-T2c` entregue em 2026-09-16** (`pantonic-executor`, `review`): `confrontar_escopo` de `.claude/tools/review_evidence.py` passa a classificar o arquivo tocado nos quatro baldes da `DB-25` (coberto pelos alvos do card · alvo de outra tarefa do mesmo plano · registro da orquestração · fora sem atribuição), com `_REGISTRO_ORQUESTRACAO` + `_eh_registro_orquestracao` e `mapear_alvos_de_outras_tarefas` lendo a gramática de ID por `rdo._ID_HEADER_RE` (residência única, `DB-22`); só o quarto balde resolve o veredito, e a seção `## Escopo` nomeia os outros dois baldes em linha própria. 4 testes novos em `tests/test_review_evidence.py` (`17 passed` → `21 passed`), suíte `106 passed` (piso 102 preservado). **Contingência 2 do card acionada** (prevista no dossiê, não é desvio): `test_escopo_violado_gera_fato_sem_inventar_parcial` quebrou porque a frase do fato virou "fora dos alvos e sem atribuição" — só essa asserção foi ajustada. Entrega não commitada: `.claude/tools/review_evidence.py`, `tests/test_review_evidence.py`, `CHANGELOG.md`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2c`). **Âncoras do card re-derivadas no despacho** (fato de orquestração a reaproveitar na `BKL-T2d`, não achado de execução): os números de linha que a `RP-3` escreveu nos cards de instrumento envelheceram dentro da própria sprint — o card da `BKL-T2c` apontava `review_evidence.py:172-197`/`:360-368`/`:420` e os blocos reais estavam em `:214-239`/`:409-417`/`:470`, deslocados pela entrega não commitada da `BKL-T2b`; o item 3 do gate de delegação pegou antes do despacho e o dossiê seguiu com âncora fresca, sem acionar contingência `premissa`. **Rodada de revisão de `BKL-T2b`+`BKL-T2c` fechada em 2026-09-16** (`pantonic-reviewer`, um laudo por tarefa, mesmo protocolo da rodada anterior): as duas **aprovadas 100%**, bloqueante nenhuma, as sete dimensões `conforme` em ambas — `BKL-T2b` → `done` (laudo `docs/RDO/laudos/P-0739-BKL-T2b.md`) e `BKL-T2c` → `done` (laudo `docs/RDO/laudos/P-0739-BKL-T2c.md`). Evidência mecânica verde nas duas (`guardas` e `testes` `conforme`, bateria de 6 guardas toda exit 0), recorte `--desde 6d7433c` para ambas — as entregas estão todas não commitadas sobre `HEAD`, e quem as separou foi a atribuição por tarefa que a própria `BKL-T2c` instalou (`DB-25`): dossiês em `docs/RDO/evidencia/P-0739-BKL-T2b.md` e `...-BKL-T2c.md`. A contingência 2 acionada na `BKL-T2c` estava prevista no card, logo `rota` `conforme`. **Nada escalado ao dono** (sem `--escalar`: nenhuma pendência de arquitetura ou requisito). Os dois laudos escalaram achados de processo convergentes, registrados como `AE-4` (`docs/plans/P-0739-backlog-instrumento.md:1483-1513`), sem retroação sobre as entregas: residência do registro de contingência acionada, e a falta de balde para ato do dono no confronto de escopo (reincidente — já observado no laudo da `BKL-T2a`). A rodada `RP-4` é o próximo passo recomendado; ela não bloqueia a `BKL-T2d`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2bc-revisao` — uma linha, porque a rodada foi um único despacho cobrindo as duas tarefas). **Rodada `RP-4` fechada em 2026-09-16** (`pantonic-planner`, sobre o `AE-4`) — decisão técnica/tática, **nada escalado ao dono**: `DB-30`..`DB-32` em `docs/plans/P-0739-backlog-instrumento.md` §1 (linhas 85-87), rodada em `docs/plans/P-0739-backlog-instrumento.md:1717`-fim, `AE-4` absorvido (`:1711-1712`). Veredito por defeito: (1) **residência do registro de contingência acionada — não gera tarefa** (`DB-30`/`DB-31`): contingência acionada volta na linha de retorno da entrega (`contingência <n> acionada: <o que mudou>`) e é a **orquestração** que a materializa na linha `- **Status:**` do card; os três canais já existiam (`DB-15`, `DB-16`, `--nota` da `BKL-T4`), então nenhum artefato novo — rotas descartadas: artefato "nota de execução" próprio, executor escrevendo a linha `Status`, diff como registro; (2) **balde do ato do dono — gera tarefa** (`DB-32`): card novo `BKL-T2e` (`ready`, `docs/plans/P-0739-backlog-instrumento.md:1020-1205`), quinto balde em `review_evidence.py` para arquivo tocado por ato do dono fora do ciclo da tarefa — rotas descartadas: manter a atribuição externa como insumo do despacho, jogar `.claude/agents/` dentro de `_REGISTRO_ORQUESTRACAO`, branch/stash do dono, filtro por autoria do `git`; nada da entrega da `BKL-T2c` é desfeito. Card `BKL-T2d` ajustado (`Depende de` em `:859-861`; duas contingências na forma da `DB-30` em `:1000-1006`) e **segue despachável, sem depender da `BKL-T2e`**; cabeçalho do plano em 14 tarefas com a ordem `BKL-T2d` → `BKL-T2e` → `BKL-T3` (`:4-19`); §6 riscos com três linhas novas (`:1338-1340`). **Pendência que é ato do dono, não decisão** (mesmo precedente da `RP-1`/`RP-2`/`RP-3`): publicar em `.claude/agents/pantonic-planner.md` as duas lições da `RP-4` (`docs/plans/P-0739-backlog-instrumento.md:1776`) — classe nova *ação de contingência sem residência nomeada* (fase 4, item 3) e reforço de *classificação de vocabulário fechado sem destino para toda forma do inventário* (fase 4, item 7); somam-se às três da `RP-3` (`:1655`) na mesma superfície, numa única edição. O `P-0739` **não** depende dela. Consumo: ver `docs/telemetria.tsv` (`BKL-RP4`). **`BKL-T2d` entregue em 2026-09-16** (`pantonic-executor`, `review`): `rdo.py laudo` ganha `--achado-processo <alvo> "<linha>"` (repetível; alvos `dossie`|`doutrina`|`rubrica`) gravando a seção `## Achado de processo` fora de `calcular_laudo` — percentual, veredito, bloqueante e recomendação intactos (invariante 1 da `RUBRICA_DE_REVISAO.md` §6), com `_ALVOS_ACHADO`/`_formatar_achados_processo`, validação de alvo/linha vazia/`|` em `cmd_laudo` e a seção existindo sempre (`nenhum` sem a flag); `--escalar` volta a ser só pendência de arquitetura ou de requisito (`DB-28`). 4 testes novos em `tests/test_rdo.py` (`38 passed`), suíte `110 passed` (piso 106), **nenhuma das quatro contingências acionada** e nenhuma asserção pré-existente ajustada. Entrega não commitada: `.claude/tools/rdo.py`, `tests/test_rdo.py`, `CHANGELOG.md`. Âncoras do card re-derivadas no despacho e **sem deriva desta vez** (`rdo.py:24`, `:450-488`, `:698-705` idênticas ao literal transcrito pela `RP-3`) — a `BKL-T2d` não tocava os arquivos que a entrega não commitada da `BKL-T2b`/`BKL-T2c` deslocou. Achado da execução registrado como `AE-5` (`docs/plans/P-0739-backlog-instrumento.md:1802-1825`), sem retroação: a Verificação 3 do card afirma estado da **árvore inteira** (`git status --short` → exatamente três caminhos) e a própria sprint torna isso insatisfazível — contraria a `DB-29` do mesmo plano, e a forma correta (recorte por pathspec) já está no card da `BKL-T2e`, autorado pela `RP-4`; cards vivos ainda com a forma velha: `BKL-T3` e `BKL-T4`. Consumo: ver `docs/telemetria.tsv` (`BKL-T2d`). **Rodada de revisão de `BKL-T2d` fechada em 2026-09-17** (`pantonic-reviewer`, mesmo protocolo): **aprovada 100%**, bloqueante nenhuma, as sete dimensões `conforme` — `BKL-T2d` → `done` (RDO `docs/RDO/P-0739-BKL-T2d-rdo-py-laudo-o-campo-de-achado-de-processo-com-os-tres-alvos.md`; laudo consumido e apagado, `DP-H`). Evidência mecânica verde (`docs/RDO/evidencia/P-0739-BKL-T2d.md`, `--desde 6d7433c`). **Nada escalado ao dono:** o achado de processo do laudo repete o mesmo fato já registrado como `AE-5` (Verificação 3 do card não discrimina estado alheio na árvore compartilhada), com rota já aberta ali (emenda de `BKL-T3`/`BKL-T4`) — sem ação nova, sem retroação (`DB-23`). Consumo: ver `docs/telemetria.tsv` (`BKL-T2d-revisao`). **`BKL-T2e` entregue e revisada em 2026-09-17** (`pantonic-executor` → `pantonic-reviewer`, mesmo protocolo): os seis textos literais do quinto balde (`ato do dono`, `.claude/agents/`) aplicados em `.claude/tools/review_evidence.py` ao pé da letra, 4 testes novos em `tests/test_review_evidence.py` (`21 passed` → `25 passed`), suíte inteira `114 passed` (piso 110), nenhuma contingência acionada. Dossiê de evidência (`docs/RDO/evidencia/P-0739-BKL-T2e.md`, `--desde 6d7433c`) com `guardas`/`testes`/`escopo` `conforme` — `.claude/agents/pantonic-planner.md` sai nomeado no balde novo `ato do dono`, sem peso no veredito mecânico, fechando o caso real que motivou a `DB-32`. Laudo **aprovado 100%**, bloqueante nenhuma, sete dimensões `conforme` → `BKL-T2e` → `done` (RDO `docs/RDO/P-0739-BKL-T2e-review-evidence-py-o-balde-do-ato-do-dono-no-confronto-de-es.md`; laudo consumido e apagado, `DP-H`). **Nada escalado ao dono:** único achado é um nit de precisão sem rota e sem efeito em dimensão (docstring do módulo credita os cinco baldes à `DB-25`; o quinto é da `DB-32`), registrado no laudo. Consumo: ver `docs/telemetria.tsv` (`BKL-T2e`, `BKL-T2e-revisao`). **Janela encerrada por ocupação de contexto (`B2`, `GOVERNANCA.md` §4.3)** logo após o fechamento — `BKL-T3` segue `ready` e delegável, não despachada nesta janela. **`BKL-T3` despachada e devolvida defeituosa em 2026-09-17** (`pantonic-executor`, `blocked` razão `premissa`): a triagem parou no primeiro sinal e **nenhuma linha** de `.claude/tools/backlog.py` ou `tests/test_backlog.py` foi tocada — §2.6 fixa uma única linha de contexto do pai, com rótulo literal `plano:` e campos `P-NNNN`/`<done>/<total>`, mas §2.5 regra 4 faixa (b) faz vencer subtarefa de **tíquete**, e o TF obrigatório "bug antes de FIFO" do card só é satisfazível instanciando esse caso; quatro formas candidatas levantadas sem preferência, a escolha é do planejador. Registrado como `AE-6` (`docs/plans/P-0739-backlog-instrumento.md:1833-1865`), **nada escalado ao dono** (forma de saída de instrumento interno, não é arquitetura nem requisito). Âncoras do card re-derivadas no despacho e **sem deriva** (`backlog.py` intocado pelas entregas da `BKL-T2b`..`BKL-T2e`), números de aceite re-medidos na janela (`tests/test_backlog.py` `8 passed`, suíte `114 passed`). A rodada `RP-5` (`pantonic-planner`) é a próxima tarefa e absorve, sem custo de decisão, a emenda mecânica pendente do `AE-5` — que incide nos mesmos dois cards vivos (`BKL-T3`, `BKL-T4`). Consumo: ver `docs/telemetria.tsv` (`BKL-T3-devolvida`). **Rodada `RP-5` fechada em 2026-09-17** (`pantonic-planner`, sobre o `AE-6`) — decisão técnica/tática, **nada escalado ao dono**: `DB-33`..`DB-36` em `docs/plans/P-0739-backlog-instrumento.md:93-96`, rodada em `:2060-2135`, `AE-6` absorvido (`:2053-2058`). Rota escolhida para §2.6: a alternativa (1) do `AE-6` — mesmo conjunto de campos, **rótulo escolhido pelo tipo de pai** (`plano:` / `tíquete:`), porque §2.1/§2.2 já garantem título, residência, âncora de índice e par `<done>/<total>` também para tíquete e nenhum campo precisa de substituto; as outras três alternativas e mais duas variantes foram despachadas com motivo na `DB-33`. §2.6 reescrita (`:177-249`) com esqueleto, duas formas da linha 2, tabela campo a campo (sem remissão, `DB-18`) e dois worked examples (pai-plano com antecessora; pai-tíquete sem ela). **Vãos vizinhos fechados no mesmo ato**, sem os quais a `BKL-T3` pararia de novo: §2.3 (`:133-152`, um bullet por pai, token `P-NNNN` ou `TK-<n>`), §2.5 regra 4 (`:169-176`, três faixas sobre **itens elegíveis**; a faixa de bug casa `Tipo: bug` do próprio card ou do tíquete-pai; FIFO pela linha do pai no índice) e §3 (`:266-270`, fórmula única do par). `BKL-T3` reaberta `ready` (`:1296-1369`) com `Restrições desta tarefa`, `Não fazer`, quatro contingências fechadas e cinco testes novos; `BKL-T4` **também** precisava de emenda (`:1371-1407`) — o bullet do bloco `Fila corrente` carregava o mesmo vício, e o `Pronto quando` perdeu o "`check` verde", que depende da migração da `BKL-T6` (`DB-29`). **Nenhum card novo:** o plano segue com 14 tarefas e nada fechado foi reaberto (`DB-23`). **Correção de registro no mesmo ato:** a premissa do `AE-5` sobre *quais* cards vivos carregavam a `Verificação` por árvore inteira estava **errada** — `BKL-T3` e `BKL-T4` nunca a tiveram (as duas verificavam só `pytest verde`); os cards vivos afetados eram a `BKL-T6` e a `BKL-T9`, agora ambas por pathspec (`:1424-1430`, `:1489-1494`), com a correção apensada ao próprio `AE-5` (`:2004-2016`). O fato foi medido pela **orquestração** no gate de delegação (grep das 11 ocorrências de `git status --short`, conferidas uma a uma) e descarregado no dossiê antes do despacho, pelo item 2 do gate — a rodada não gastou contexto redescobrindo, e o achado de execução se confirmou como **indício**, não como fato apurado. **Pendência que é ato do dono, não decisão** (precedente `RP-1`/`RP-2`/`RP-3`/`RP-4`): publicar as três lições da `RP-5` em `.claude/agents/pantonic-planner.md`, com linha em `CHANGELOG.md`; o `P-0739` **não** depende dela. Consumo: ver `docs/telemetria.tsv` (`BKL-RP5`). **`BKL-T3` entregue e revisada em 2026-09-17** (`pantonic-executor` → `pantonic-reviewer`, mesmo protocolo): o verbo somente-leitura `next` implementado em `.claude/tools/backlog.py` — `selecionar_next` (§2.5, regras 1-5), `renderizar_next` (§2.6: formas pai-plano e pai-tíquete da `DB-33`, linha `antecessora` da `DB-34`, par `<done>/<total>` da `DB-36`), dataclasses `Candidato`/`SelecaoNext`, subcomando CLI `next`, mais os campos de suporte `Item.campo_tipo`, `LinhaIndice.ancora`, `Modelo.diario_linhas`/`diretiva_ids`. 13 testes novos em `tests/test_backlog.py` (`8 passed` → `21 passed`), suíte inteira `127 passed` (piso 114) e duas fixtures novas em disco (`tests/fixtures/backlog/next_tk90/` e `...next_tk90_sem_indice/`), **nenhuma contingência acionada**. Dossiê de evidência (`docs/RDO/evidencia/P-0739-BKL-T3.md`, `--desde 6d7433c`) com `guardas`/`testes`/`escopo` `conforme` — o balde `ato do dono` da `BKL-T2e` absorveu `.claude/agents/pantonic-planner.md` e os baldes de outra tarefa absorveram as entregas não commitadas das `BKL-T2a`..`BKL-T2e`, deixando o quarto balde vazio. Laudo **ressalva 94%**, bloqueante nenhuma, seis dimensões `conforme` e `rota` `parcial` → `BKL-T3` → `done` (RDO `docs/RDO/P-0739-BKL-T3-next-a-selecao-deterministica.md`; laudo consumido e apagado, `DP-H`). **Nada escalado ao dono:** os três achados de processo são alvo `dossiê`, registrados como `AE-7` (`docs/plans/P-0739-backlog-instrumento.md:2172-2215`), sem retroação sobre a entrega (`DB-23`) — e quem moveu `rota` foi o achado 3 (rodapé de §2.6 sem TF discriminante, com desvio medido no contador do inbox de planos), não o achado 1 que o executor relatou. A rodada `RP-6` é a próxima tarefa e vem **antes** da `BKL-T4`. Consumo: ver `docs/telemetria.tsv` (`BKL-T3`, `BKL-T3-revisao`). **Pendência de doutrina das `RP-3`/`RP-4`/`RP-5` encerrada em 2026-09-17, por ordem do dono** ("publicar é consequência do plano, não pergunta — o plano foi iniciado exatamente para modificar"): as lições da `RP-3` e da `RP-4` já estavam em `.claude/agents/pantonic-planner.md` (fase 1 saída real do instrumento de gate; fase 4 itens 2, 3, 7 e 9), e as três da `RP-5` foram publicadas no mesmo ato — fase 4 item 7 (worked example por caso que as regras do próprio plano admitem), fase 4 item 4 (coerência entre decisões do mesmo plano) e passo 1 da rodada de replanejamento (fato de achado é indício, re-derivar por busca antes de emendar) —, com a linha correspondente em `CHANGELOG.md` sob `## [Não lançado]`. `kit_check -Mode validate` e `check-readme.ps1` exit 0 depois da edição. **Rodada `RP-6` fechada em 2026-09-18** (`pantonic-planner`, sobre o `AE-7`) — decisão técnica/tática, **nada escalado ao dono**: `DB-37`..`DB-39` em `docs/plans/P-0739-backlog-instrumento.md:101-103`, rodada em `:2477-2564`, `AE-7` absorvido (`:2416-2476`). Rotas, por achado: (1) a lista de condições de exit 3 de `next` passa a ter **três** condições (`E-1`/`E-2`/`E-3`), cada uma com substring obrigatória de mensagem e fronteira explícita contra o lint — `linha de índice fora da gramática` deixa de ser condição de `next` (cai em `E-3` quando é linha de pai elegível; lint é `C-4`/`C-9`) e `plano vivo sem prefixo` é `C-7` + exit 3 do `drain` (`DB-37`); (2) **residência única em §2.5 item 6** (`:173-210`), com a `DB-6` mantendo o princípio e **deixando de enumerar** (emendada na própria célula, `:70`) e a cópia inline do card `done` rebaixada a registro — fecha a divergência que a `DB-2` proíbe; (3) uma gramática de linha viva **por arquivo de inbox** (`DB-38`, §2.4 em `:161-172`) mais TF que afirma o valor impresso sobre corpus onde as regras concorrentes discordam (1 vs. 3), com a correção de `_contar_pendentes_inbox` partida em dois contadores. **Card novo `BKL-T3a`** (`ready`, `:1429-1549`, `DB-39`) — residência da correção, **antes** da `BKL-T4`; plano passa a **15** tarefas. **Cards emendados no mesmo ato:** `BKL-T4` (`:1550-1623`) ganhou `Restrições desta tarefa`, `Não fazer`, `Contingências` e um TF — **não tinha nenhum desses campos**, ao contrário do que o `AE-7` supunha; e `BKL-T5` (`:1624-1653`) ganhou gramática inline, TF novo, `Arquivos-alvo` por bullet e `Pronto quando` discriminante (o anterior era satisfeito por inbox vazio). `BKL-T3` **intocada** (`DB-23`, sem retroação); §6 com três linhas de risco novas (`:1752-1771`). **Lição da rodada publicada no mesmo ato, como ato da orquestração** (precedente do dono, 2026-09-17 — publicar é consequência do plano, não pergunta): fase 4 item 4 de `.claude/agents/pantonic-planner.md` passa a exigir **residência única declarada para lista normativa copiada inline** (seção normativa do plano, nunca célula da tabela de decisões), e o item 7 passa a exigir, por **condição de erro** enumerada, a substring literal da mensagem + o TF que a afirma + a fronteira contra o instrumento vizinho, mais o valor que a **regra concorrente** daria sobre a mesma fixture; linha correspondente em `CHANGELOG.md` sob `## [Não lançado]`. Consumo: ver `docs/telemetria.tsv` (`BKL-RP6`). **`BKL-T3a` entregue em 2026-09-18** (`pantonic-executor`, `review`): as três condições de exit 3 de `next` em `.claude/tools/backlog.py` passam a imprimir as substrings obrigatórias de §2.5 item 6 — E-1 virou `dois ou mais itens in-progress: ` com os IDs **ordenados alfabeticamente** (antes `dois in-progress: `, sem ordem), E-2 virou `linha de status ausente para <ID>` (antes `item sem linha de Status: <ids>`) e E-3 ficou **intocada** por já estar conforme; `_contar_pendentes_inbox` partida em `_contar_inbox_planos` (regex nova `_CAMINHO_PLANO_INBOX_RE`, gramática de §2.4) e `_contar_inbox_memoria` (gramática preservada), com `renderizar_next` ligando cada campo do rodapé ao seu contador — até aqui o campo `inbox de planos:` contava pela gramática do inbox de memória (`DB-38`). Fixture nova `tests/fixtures/backlog/inbox_planos/_INBOX.md` com o texto literal do card (1 linha viva pela gramática de §2.4 contra 3 pela do inbox de memória — é essa diferença que dá poder discriminante ao TF), 3 testes novos em `tests/test_backlog.py` (`21 passed` → `24 passed`), suíte inteira `130 passed` (piso 127), **nenhuma das cinco contingências acionada** e nenhuma asserção pré-existente ajustada. Âncoras do card re-derivadas no despacho e **sem deriva** (`selecionar_next:655-696`, `_contar_pendentes_inbox:767-781`, `renderizar_next:784-839`) — o card não cita linha de código, e o gate de delegação ainda descartou as contingências 1 e 2 por verificação barata antes do despacho (função existe com o nome exato; `renderizar_next` já recebia os dois caminhos por parâmetro), o que o executor confirmou. Entrega não commitada: `.claude/tools/backlog.py`, `tests/test_backlog.py`, `tests/fixtures/backlog/inbox_planos/_INBOX.md`. **Nenhum achado de execução** — o executor não reportou nada fora do escopo do card. **Janela encerrada por ocupação de contexto (`B2`, `GOVERNANCA.md` §4.3)** logo após a entrega: a rodada de revisão da `BKL-T3a` **não** foi despachada nesta janela e é a próxima tarefa. Consumo: ver `docs/telemetria.tsv` (`BKL-T3a`). **Rodada `RP-7` fechada em 2026-09-18** (`pantonic-planner`, sobre o `AE-8`) — decisão técnica/tática, **nada escalado ao dono**: `DB-40`..`DB-42` em `docs/plans/P-0739-backlog-instrumento.md:107-109`, rodada em `:2807`-fim, `AE-8` absorvido (`:2773-2805`). Rotas, por achado: (1) **E-2 corre sobre a união item ∪ pai** — a norma de §2.5 item 6 sempre teve o sujeito composto ("item candidato **ou pai de candidato**") e o que faltava era o código cobrir a segunda metade mais a norma fechar os dois casos que só a segunda metade cria: pai compartilhado por dois candidatos (uma ocorrência por **ID distinto**) e item + pai os dois sem a linha (ordem **alfabética crescente**, separador `, `), com a ordem de avaliação entregue (E-2 antes de E-1 e E-3) ratificada e a fronteira contra o lint escrita na própria tabela (ausência de `Status` é `C-2`/`C-8` no `check`; em `next` é E-2, que recusa e não classifica) — `DB-40`; (2) **prefixo `- ` do contador de fila de memória** (`DB-41`): não há norma nova — §2.6 e `GOVERNANCA_MEMORIAS.md` §8 já escreviam o espaço —, o código é que testava `s.startswith("-")` e contava a régua `---` como candidato; a célula de §2.6 passa a dizer que o espaço faz parte do prefixo e que **nenhuma outra exclusão** entra no contador, e o TF obrigatório roda sobre corpus em que as duas leituras discordam (2 contra 3); filtro de indentação foi descartado por falta de forma real apurada (gramática autorada de memória é o defeito da `RP-1`). **Card novo `BKL-T3b`** (`ready`, `:1569-1704`, `DB-42`) — um card só para os dois defeitos (mesmo verbo, mesmo módulo, mesmo arquivo de teste, mesma família de fixture, pelo raciocínio da `DB-39`) e **antes** da `BKL-T4`, porque a `BKL-T4` aplica E-2 ao item alvo **e ao pai dele** antes de escrever e reusa a função que a `BKL-T3b` normaliza — despachada primeiro, ela criaria segunda residência para a mesma regra. Plano passa a **16** tarefas. **Cards emendados no mesmo ato:** `BKL-T4` (`:1705-1786`) ganhou `BKL-T3b` no `Depende de`, a forma da mensagem de E-2 nas `Restrições` com a instrução de **reusar** a função em vez de reescrever a regra, e o `Não fazer` atualizado. `BKL-T3a` **intocada** (`DB-23`, sem retroação); §6 com duas linhas de risco novas. **Fato re-derivado no passo 1** (achado é indício, não apuração): com os dois pais da fixture sem a linha, a seleção de hoje sai exit 2 (`nada delegável`), não exit 0 — o exit 0 elegendo `FFO-T2` que o `AE-8` relata ocorre quando **só** o tíquete perde a linha; as duas leituras entraram no card, e o TF afirma exit 3 nos dois casos. **Lição da rodada publicada no mesmo ato, como ato da orquestração** (precedente do dono, 2026-09-17): fase 4 item 7 de `.claude/agents/pantonic-planner.md` passa a exigir **um TF por termo de sujeito composto** de regra normativa, mais o fechamento na norma dos casos que o sujeito composto cria (referente repetido, dois termos falhando juntos), e o confronto do **instrumento irmão** com a mesma gramática quando um card corrige um de um par; linha correspondente em `CHANGELOG.md` sob `## [Não lançado]`. Consumo: ver `docs/telemetria.tsv` (`BKL-RP7`). **`BKL-T3b` entregue em 2026-09-18** (`pantonic-executor`, `review`): em `.claude/tools/backlog.py`, a condição **E-2** de `next` passa a correr sobre a **união item ∪ pai** (`DB-40`) — a lista `sem_status` virou `ids_sem_status`, união ordenada por `sorted` do `item.id` de cada candidato com `item.status is None` com o `pai.id` de cada candidato com `pai.status is None`, uma ocorrência de `linha de status ausente para <ID>` por **ID distinto**, mesma posição no fluxo (antes da contagem de `in-progress`); e `_contar_inbox_memoria` passa a testar o prefixo `- ` (hífen **e** espaço) em vez de `-` (`DB-41`), deixando de contar a régua markdown `---` como candidato, **sem** nenhum outro filtro novo. 2 testes novos em `tests/test_backlog.py` (`24 passed` → `26 passed`), suíte inteira `132 passed` (piso 130), **nenhuma das quatro contingências acionada**, nenhuma asserção pré-existente ajustada e **nenhum achado de execução** — as duas linhas literais da fixture transcritas pela `RP-7` bateram exatamente (contingência 1 descartada por verificação do próprio executor) e nenhum nome de teste colidiu (contingência 2 descartada). Âncoras e números de aceite re-derivados no despacho pelo item 3 do gate de delegação e **sem deriva** (`tests/test_backlog.py` `24`, suíte `130`, idênticos ao piso que a `BKL-T3a` mediu). Entrega não commitada: `.claude/tools/backlog.py`, `tests/test_backlog.py`. **Janela encerrada por ocupação de contexto (`B2`, `GOVERNANCA.md` §4.3)** logo após a entrega: a rodada de revisão da `BKL-T3b` **não** foi despachada nesta janela e é a próxima tarefa. Consumo: ver `docs/telemetria.tsv` (`BKL-T3b`). **`BKL-T3b` revisada e fechada em 2026-09-18** (`pantonic-reviewer`, mesmo protocolo): **aprovada 100%**, bloqueante nenhuma, as sete dimensões `conforme` → `BKL-T3b` → `done` (RDO `docs/RDO/P-0739-BKL-T3b-e-2-sobre-o-pai-do-candidato-e-o-prefixo-do-contador-de-memo.md`; laudo consumido e apagado, `DP-H`). O reviewer re-rodou a `Verificação` do card por conta própria (`tests/test_backlog.py` `26 passed`, os dois nomes de TF no `--collect-only`, coleta global `132`, `tests/ -q` `132 passed`) e conferiu o diff: E-2 virou conjunto de **IDs distintos** ordenado (união do `item.id` com o `pai.id` de cada candidato sem a linha de `Status`), na posição em que já estava, e `_contar_inbox_memoria` passou a testar `startswith("- ")`, com `_contar_inbox_planos` **intocado**, como o card exige. Evidência mecânica (`docs/RDO/evidencia/P-0739-BKL-T3b.md`, `--desde 6d7433c`) com `guardas`/`testes` `conforme`; o veredito de `escopo` saiu **aberto** na mecânica e o reviewer o fechou como `conforme` por datação de `mtime` — os 5 arquivos de `tests/fixtures/backlog/next_tk90*/` são de 2026-09-17 19:52 (`BKL-T3`) contra 2026-09-18 04:16 dos dois alvos. **Nada escalado ao dono pelo laudo** (recomendação `seguir`, pendência `nenhuma`, sem `--escalar`): o único achado de processo é alvo `dossiê` e está registrado como `AE-9` (`docs/plans/P-0739-backlog-instrumento.md:2920`-fim) — a atribuição cruzada de `review_evidence.py` casa só por caminho exato, com rota de card próprio e **sem** bloquear a `BKL-T4`. As duas decisões do dono pendentes (abrir `RP-8` antes da `BKL-T4` ou não; commitar as 7 entregas acumuladas ou não) estão no bloco `Fila corrente`, nenhuma despachada. Consumo: ver `docs/telemetria.tsv` (`BKL-T3b-revisao`).
+
+- 2026-09-18 — **Fila corrente anterior (texto de 2026-09-18, janela da `BKL-T4`; migra para `## P-0739` na condensação):** nada em execução. **A `BKL-T3b` fechou `done` em 2026-09-18** — **aprovada 100%**, bloqueante nenhuma, as sete dimensões `conforme`, recomendação `seguir`, sem `--escalar` (RDO `docs/RDO/P-0739-BKL-T3b-e-2-sobre-o-pai-do-candidato-e-o-prefixo-do-contador-de-memo.md`; laudo consumido e apagado, `DP-H`). Plano em **10/16**. O único achado do laudo (alvo `dossiê`) está registrado como `AE-9` (`docs/plans/P-0739-backlog-instrumento.md:2920`-fim), **sem retroação** (`DB-23`) e **sem bloquear a `BKL-T4`**: `review_evidence.py:295-320` atribui arquivo tocado a outra tarefa do mesmo plano só por **caminho exato**, então alvo-diretório declarado por outra tarefa (o `tests/fixtures/backlog/` da `BKL-T3`) nunca casa — nesta rodada isso deixou o veredito mecânico de `escopo` **aberto** e obrigou o reviewer a datar `mtime` para provar que a `BKL-T3b` não tocou os 5 arquivos de `tests/fixtures/backlog/next_tk90*/`. **Decisão do dono sobre o `AE-9` (2026-09-18, contexto novo):** seguir para a `BKL-T4` e deixar o `AE-9` registrado **sem agir** — não abrir `RP-8` (seria o terceiro adiamento seguido da `BKL-T4`; `AE-9` é achado de dossiê e não bloqueia). **Decisão de commit já satisfeita antes desta pergunta ser feita:** o dono commitou as 7 entregas em `428246c` (2026-09-18 17:57:52, "fecha BKL-T2a..T3b do P-0739") entre o encerramento da janela anterior e a abertura desta — o texto abaixo que descrevia a árvore como "não commitada" estava desatualizado, não a árvore; `git status` confirma limpo. Ordem do plano a partir daqui: `BKL-T4` → `BKL-T5` → `BKL-T6` → `BKL-T7` → `BKL-T8` → `BKL-T9` · ready 6 · blocked 0 · in-progress 0 · review 0 · done 10 · total 16. **Âncoras** (re-derivadas em 2026-09-18, re-derivar de novo no despacho): card `BKL-T4` em `docs/plans/P-0739-backlog-instrumento.md:1710-1791`, `BKL-T5` em `:1792-1821`, `AE-9` em `:2920`-fim. **Números de aceite (medidos em 2026-09-18, na revisão da `BKL-T3b`):** `tests/test_backlog.py` `26`, suíte inteira `132` (piso 130). Base de recorte da evidência para a próxima rodada: `--desde 428246c` (as entregas das `BKL-T2a`..`BKL-T3b` foram commitadas em `428246c`; recorte volta a tamanho proporcional à entrega). Consumo: ver `docs/telemetria.tsv` (`BKL-T3b-revisao`). **Achado de orquestração sem ação nova** (o mesmo das cinco janelas anteriores): `python .claude/tools/backlog.py check` segue vermelho no repo por desenho até a migração da `BKL-T6`. **Próxima tarefa delegável: `TK-54a`** (diretiva de emergência de 2026-09-18, acima — vem antes da `BKL-T4` e de tudo no `P-0739`). Ela voltou `blocked` razão `premissa` na triagem de 2026-09-18 (`AE-1`: a coluna de classificação não tinha critério) e a rodada `RP-TK54-1` a fechou e devolveu a `ready` no mesmo dia, rota A — rubrica das quatro categorias e coluna já preenchidas no card, executor transcreve e não avalia; rodada técnica/tática, nada escalado ao dono. Card fechado em `docs/DIARIO_DE_OBRAS.md` › `### TK-54a — O extrato [Sonnet · classe investigacao]`; registro da rodada em `## TK-54` › `### Achados da execução (TK-54)`. **RUN DE AFERIÇÃO DO `scrum-master` (2026-09-18):** a `BKL-T4` foi conduzida pelo loop de ponta a ponta como caso-teste — `done`, `ressalva` 85%, bloqueante `nenhuma`, RDO `docs/RDO/P-0739-BKL-T4-status-start-diretiva-transicao-e-projecoes.md`; suíte 132→142 verdes. Loop encerrado pela regra `B1` (pendência + ressalva com rota). Ressalva roteada como `AE-10` (dependência de ordem: `transacionar_status` chama `.index('<!-- fila:gerada -->')` sem guarda e os marcadores só entram na `BKL-T6` item (a)) — **o `P-0739` fica PARADO** (`DM-9` do `P-0740`): nem a `BKL-T5`, nem rodada de replanejamento sobre o `AE-10`. O plano espera a baseline do `scrum-master` fechar (`LM-T1`..`LM-T4` do `P-0740`), é reagrupado em módulos coesos pela `LM-T5` — que absorve o `AE-10` — e fecha em **rodada única** na `LM-T6`. Cinco defeitos do próprio loop em `AE-11` e no relatório de janela. `P-0739` passa a 11/16. **`LM-T1` do `P-0740` despachada e devolvida `blocked` razão `premissa` em 2026-09-18** (10 tool uses / 61,8k tk, nenhum arquivo tocado — conduta correta de `G-EXECREADY`): o entregável (a) mandava versionar `.claude/estado/` e o `.gitignore` excluía o diretório inteiro (`AE-2`). **Rodada `RP-1` fechada em 2026-09-18** (`pantonic-planner`, `G-REPLAN`) — decisão **técnica**, **nada escalado ao dono**: `DM-10` (o diretório é canônico do framework e viaja com `.gitkeep`; o conteúdo de sessão continua ignorado — `.gitignore` passa a `.claude/estado/*` + `!.claude/estado/.gitkeep`) e `DM-11` (`rdo.py close --tokens-k` vira `float` com uma casa decimal, a mesma forma que o hook já emite), em `docs/plans/P-0740-loop-de-modulos.md` §4; rodada registrada em `### RP-1` sob `## Achados da execução` do mesmo plano, `AE-2` absorvido. `LM-T1` reescrita (com `.gitignore` nominalmente nos `Arquivos-alvo`, três textos literais, quatro contingências e verificação por `git check-ignore`, que discrimina — o TF velho passava versionado ou não) e de volta a `ready`; `LM-T2` ganhou só o fato de contorno, `LM-T3` intocada, `LM-T5` ganhou o critério (vi) da rubrica com o `AE-2` como caso medido. Plano de volta a `in-progress`. **Lição publicada no mesmo ato** em `.claude/agents/pantonic-planner.md` (fase 4, item 10 — classe nova: entregável que versiona, cria ou apaga arquivo confrontado com a regra de versionamento vigente antes de publicar), com linha em `CHANGELOG.md`. **`LM-T1` despachada de novo em 2026-09-18 e devolvida `blocked` razão `premissa` pela SEGUNDA vez — mas com a entrega INTEIRA produzida e verde** (145 testes; `.gitignore:11-12` na ordem prescrita; `.gitkeep` criado; `rdo.py`, `scrum-master/SKILL.md` e os dois arquivos de teste editados): a contingência 1 do card disparou porque as **verificações 3 e 5 eram insatisfazíveis por desenho do git** — `git check-ignore -v` reporta o padrão decisivo mesmo quando é a negação (imprime `.gitignore:12:!.claude/estado/.gitkeep`, exit 0) e `git status --porcelain` sem `-uall` colapsa o diretório não rastreado. Registrado como `AE-4`. **Rodada `RP-2` fechada em 2026-09-18** (`pantonic-planner`, `G-REPLAN`) — decisão **técnica**, **nada escalado ao dono**: `DM-12` em `docs/plans/P-0740-loop-de-modulos.md` §4, rodada em `### RP-2` sob `## Achados da execução`, `AE-4` absorvido. **Veredito sobre a cláusula do segundo bloqueio: NÃO se aplica** — a premissa não caiu, a rota de `DM-10`/`DM-11` saiu **confirmada** pelo fato medido; o plano **não** vira `superseded`. A cláusula, que contava bloqueios em vez de olhar o objeto do bloqueio, foi **emendada** em `GOVERNANCA.md` §7 item 17: o teste passa a ser "existe entrega que satisfaz o entregável do card sob as decisões vigentes?" (não existe → bloqueio de rota → `superseded`; existe → bloqueio **de aceite** → a rodada corrige a redação), com dois tetos anti-abuso (terceiro bloqueio `premissa` na mesma tarefa; segundo bloqueio de aceite sobre a mesma verificação já reescrita). A saída (c) do `G-REPLAN` ganhou o ramo **`review`**, e a transição `blocked` → `review` (autoria do planejador, **gatilho 1**) foi publicada na tabela de transições de `.claude/skills/diario-de-obras/SKILL.md` — o loop não improvisa status. Cards reescritos: `LM-T1` (verificações 2/3/4/5 e contingência 1, com saída **medida**; `Status` → `review` com nota de atribuição para quem revisa), `LM-T2` e `LM-T3` (piso de suíte 142 → 145), `LM-T4` (aceite `backlog.py check` verde **removido** — insatisfazível pelos 315 achados pré-existentes do `AE-1` em arquivos que a tarefa não toca; no lugar, `kit_check -Mode check-drift` exit 0, piso 145 e varredura da régua antiga pelo literal `>8 write-clusters`, hoje com uma ocorrência em `.claude/skills/proximo-passo/SKILL.md:126`), `LM-T5` (critério (vii) da rubrica e o `AE-4` como quarto insumo medido). **Lição publicada no mesmo ato** em `.claude/agents/pantonic-planner.md` (fase 4, item 11 — classe nova: saída esperada de comando é fato **observado**, nunca deduzida da ferramenta; pergunta binária usa flag binária + exit code; nenhum card exige "verde" de instrumento que a tarefa não pode deixar verde — mais o gatilho correspondente na fase 1), com linha em `CHANGELOG.md`. Plano de volta a `in-progress`. **Próximo passo do `P-0740`: a rodada de REVISÃO da `LM-T1`** (`pantonic-reviewer` sobre a entrega que já está na árvore, não commitada, contra o dossiê corrigido) — **não** é despacho de executor e a `LM-T1` **não** se refaz. Depois dela, `LM-T2`. **O Passo 6 dessa revisão falhou em 2026-09-18 e a rodada `RP-3` o destravou** (`pantonic-planner`, `G-REPLAN`, decisão **tática**, **nada escalado ao dono**): `review_evidence.py` saía exit 1 em `LM-T1` porque o cabeçalho de três campos da `DM-5` (`[<modelo> · esforço <e> · classe <c>]`) não casa a gramática de **nenhum** dos dois parsers do kit — `rdo.py:85-89` (`_HEADER_BRACKET_RE`, compartilhada com o `review_evidence.py`, que fixa `esquema_legado=False` e não tem escotilha) nem `backlog.py:51` (`_BRACKET`, que faz o card sair `header_valido=False`) —, e `esforço` não existia em nenhum lugar da árvore `.claude/` (`F-7`). `DM-13` (`docs/plans/P-0740-loop-de-modulos.md` §4; rodada em `### RP-3`, `AE-5` absorvido) recua os **seis** cabeçalhos para a forma de dois campos com `- **Esforço:** <valor>` como campo do corpo — nenhuma linha de código tocada, nenhum executor despachado — e aloca a gramática de três campos, com o campo **opcional** e grupo **não capturante**, à tarefa nova **`LM-T4a`** (`Sonnet · classe implementacao`, esforço `low`), ordenada **antes** da `LM-T4`: a ordem é parser → doutrina → cards. Fila do plano: `LM-T1` → `LM-T2` → `LM-T3` → `LM-T4a` → `LM-T4` → `LM-T5` → `LM-T6`, 7 tarefas. `LM-T1` **segue em `review`**, intocada. **Lição: classe já conhecida** (dependência de ordem, mesma do `AE-10`, já coberta pelo bullet da fase 1 do `pantonic-planner` publicado em 2026-09-16) — `.claude/agents/pantonic-planner.md` **não** foi editado. Ao regerar o dossiê, use o comando já medido: `python .claude/tools/review_evidence.py --plano docs/plans/P-0740-loop-de-modulos.md --tarefa LM-T1 --desde 428246c --out docs/RDO/evidencia/P-0740-LM-T1.md`.
+
+---
+
 ## TK-23 — A variante (b) do proxy de ocupação de contexto
+
+- **Status:** `cancelled` · 2026-08-24
 
 A variante (b) do proxy de ocupação de contexto — contador de tarefas por janela calibrado pela série de `docs/telemetria.tsv` — não foi medida pela `EXA-T1` (orçamento esgotado). A variante (a), hook lendo o `transcript_path` exposto no payload de `PreToolUse`, tem viabilidade técnica confirmada com evidência colada. Decidir entre as duas é escopo da `EXA-T13`; se (b) continuar viva quando a `T13` chegar, ela precisa de sonda dedicada antes da escolha — nenhuma decisão pode se apoiar em (b) como se fosse medida
 
@@ -752,6 +704,8 @@ A variante (b) do proxy de ocupação de contexto — contador de tarefas por ja
 
 ## TK-32 — Uso e teto: medida agregada ou porteiro de tarefa
 
+- **Status:** `cancelled` · 2026-08-13
+
 **Uso e teto: medida agregada ou porteiro de tarefa.** O teto por tarefa vem sendo cruzado com regularidade sem produzir a consequência que a doutrina prescreve — `EXA-T31` consumiu os 15 do teto exatamente no fechamento e deixou a verificação órfã (coberta pelo orquestrador na mesma rodada), `EXA-T19` fechou em 41 contra 40, e a série `UXROUND3` registrou 56/35, 61/40 e 112/50. **Enunciado do dono (2026-08-11):** a questão é de **conceito de framework**, não de desenvolvimento deste projeto; uso e teto são medidas de **agregado** e não de indivíduo — avaliadas tarefa a tarefa medem ruído; o portador entre tarefas é o card **"Lições aprendidas na tarefa"** (metainformação **da tarefa**, nunca do entregável), acumulando até o **fecho do plano**, onde os números são lidos em conjunto. **Hipótese a confrontar com a série, não premissa:** o uso atual desse controle é mais poluição do que valor ou economia efetiva. **Regime interino, com efeito imediato:** até a posição final o teto é **alarme, nunca bloqueio** — nenhuma tarefa para, é impedida ou fica incompleta por cruzar o número, e quem delega não escreve cláusula de parada dura por teto; a medição em `docs/telemetria.tsv` continua obrigatória, porque é a série que decide. Execução: `EXA-T34`, que fecha a `DP-L` e para para ratificação em lote com `DP-I` e `DP-J`; a materialização em `GOVERNANCA.md` §3 é card autorado depois do aceite. **Encaminhamento do dono, 2026-08-12:** a matéria de consumo se revê **inteira e em plano próprio**, aberto depois que o `P-0734` fechar — o desdobramento está registrado na tarefa de fechamento (`### T17`, item 4), e a hipótese a confrontar com a série é que tanto alarme de teto não paga o que custa, já que todo cruzamento acaba justificado. **A `EXA-T34` foi cancelada por absorção na mesma decisão** e nenhuma `DP-L` se forma no `P-0734`: formar a posição ali decidiria agora o que o plano seguinte revê por inteiro. O corpo daquele card permanece como material absorvido — o insumo do dono (§15), a medição obrigatória de três números e o conteúdo que a decisão precisa cobrir —, e é dele que o plano novo parte. Até lá, o regime interino continua em vigor
 
 *(Âncora original do índice, preservada:* `docs/plans/P-0734-execucao-autonoma.md` §15, `### T34` e `### T17`; `GOVERNANCA.md` §3 (tabela de tetos por classe) *)*
@@ -759,6 +713,8 @@ A variante (b) do proxy de ocupação de contexto — contador de tarefas por ja
 ---
 
 ## TK-38 — Comunicação entre agente e humano — skill própria e requisitos mínimos
+
+- **Status:** `ready` · 2026-08-13
 
 **Comunicação entre agente e humano — skill própria e requisitos mínimos.** Aberto por decisão do dono em 2026-08-13. O framework nomeia objetos de projeto por prefixo abreviado (`DP-`, `DR-`, `DE-`, `DI-`, `DH-`, `DA-`, `TK-`, `EXA-T<n>`, `G-*`) e os agentes carregam esses tokens **crus** para dentro da conversa com o humano, que não participou do ato que os criou. **Fato medido nesta mesma rodada:** o relatório de handover da `EXA-T25` citou `DP-F`, `DP-I`, `DP-J` e `DP-L` sem expandir nenhum, o dono precisou gastar **um prompt inteiro** perguntando onde essas descrições moravam, e a expansão que ele inferiu (*"Decisão Pendente"*) **está errada** — `README.md:172` define o prefixo como *decision record* (decisão já ratificada) e **não expande as letras `D` e `P` em lugar nenhum do repositório**, de modo que a sigla é ilegível a partir do artefato até para quem a usa. Agravante declarado pelo dono: o framework almeja público de **outros idiomas**, para quem uma abreviação em português nunca fará sentido. **Recorte:** a nomenclatura abreviada **permanece** nos artefatos (é compacta e greppável); o que muda é a **superfície de conversa** — toda ocorrência em texto dirigido ao humano vem acompanhada do significado inline, na forma `DP-7 (<expansão> #7)`. **Golden rule a trabalhar no tíquete, enunciada pelo dono:** *"toda comunicação que demandar que o humano leia um documento extra, ou crie um novo prompt, é comunicação ineficiente, e deve ser registrada como lição aprendida para melhoria da skill de comunicação"*. **Escopo a cobrir:** (a) skill de comunicação agente↔humano, com os requisitos mínimos do corpo da mensagem para acelerar a tomada de decisão; (b) proibição de exigir leitura de artefato extra ou prompt de esclarecimento como caminho normal — o token gasto em pergunta de esclarecimento é desperdício mensurável; (c) tabela de expansão dos prefixos e termos intrínsecos do framework, **incluindo o que `DP-` e os demais de fato significam**, hoje inexistente; (d) alcance multilíngue; (e) o registro das falhas de comunicação como lição aprendida, ligando ao portador de metainformação de tarefa da `TK-32`. Área de superfície ampla — atinge kit executável, doutrina e espelho, e por isso nasce como tíquete, não como correção de rodada. **Fronteira declarada contra o `TK-36`** (dono, 2026-08-13, `P-0734` §19): este tíquete governa **exclusivamente** a superfície **agente↔humano**; a unificação `handover` + `proximo-passo` é maquinário **agente↔agente**, transparente ao gerente, e **não** recebe requisito de comunicação humana — arrastá-lo para lá acrescentaria custo a toda iteração do loop autônomo. Os dois eixos não se misturam e nenhum planejamento derivado pode tratá-los como a mesma matéria
 
@@ -773,17 +729,25 @@ critério novo, mas cruza o tema do plano e `DM-4` proíbe a absorção oportuni
 
 *(Âncora original do índice, preservada:* `README.md:172` (glossário, entrada `DR-`/`DP-`); `.claude/skills/` (skill nova a autorar); `GOVERNANCA.md` §3.1 *)*
 
+- 2026-09-19 — *(decisão do dono, 2026-08-13; evidência medida no handover da `EXA-T25`)*
+
 ---
 
 ## TK-48 — `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**
+
+- **Status:** `ready` · 2026-09-19
 
 `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**, sem ação intencional do dono, entre a `RPC-T4` e a escolha da `RPC-T5` — os 4 hooks registrados (premissa da `T5`) somem sem rastro. Causa não investigada por decisão do dono (foco em proteção, não em achar culpado); a `T5` não depende do estado atual do arquivo (reconstrói o registro pela tabela já transcrita no dossiê) e segue delegável. Vulnerabilidade a considerar: `settings.json` global pode perder chave inteira sem sinal
 
 *(Âncora original do índice, preservada:* `docs/plans/P-0735-residencia-e-ponto-de-carga.md` seção "Achados da execução" (2026-08-17) *)*
 
+- 2026-09-19 — *(**dono mandou resolver em 2026-09-19**. Estado medido no mesmo dia: a chave `hooks` **existe** — global com `PreToolUse` e `UserPromptSubmit`, projeto com `PreToolUse` e `SubagentStop` —, portanto **não há perda ativa a reparar**; o que falta é a **proteção**, que era o foco declarado do dono desde a abertura (proteger, não achar culpado). Não entra no `P-0740` por `DM-30` — cruza o tema; entra na fila logo depois do marco)*
+
 ---
 
 ## TK-51 — Composição do 1º usage de uma janela de orquestração
+
+- **Status:** `done` · 2026-08-24
 
 **Origem:** achado da `CTX-T10` (`docs/plans/P-0738-contexto-esgotado.md` `## 9`, 2026-08-24) — a
 rodada Estágio C não reduziu o custo fixo de abrir uma janela: 1º `usage` = **46.071 tok** contra
@@ -825,8 +789,9 @@ fechada.
 6. **Não é sprint e não abre plano** (`P-0739` segue livre): uma tarefa, três arquivos de registro,
    nenhuma superfície de `.claude/` tocada.
 
-### TK-51 — Do que é feito o 1º usage: preâmbulo visível × superfície opaca [Sonnet · classe investigacao]
+### TK-51a — Do que é feito o 1º usage: preâmbulo visível × superfície opaca [Sonnet · classe investigacao]
 
+- **Status:** `done` · 2026-08-24
 - **Objetivo:** devolver, em número medido, **de que é feito** o 1º `usage` de uma janela de
   orquestração e **qual componente** carrega o Δ de +11.779 tok que a `CTX-T10` mediu — ou registrar,
   também em número, que o Δ está dentro da dispersão que a série sempre teve. A tarefa **mede e
@@ -928,6 +893,8 @@ Consumo: ver `docs/telemetria.tsv`.
 
 ## TK-53 — Causa do deslocamento de custo nas janelas pós-corte
 
+- **Status:** `done` · 2026-08-31
+
 **Origem:** decisão do dono em 2026-08-24 sobre o Achado 3 do laudo `docs/RDO/laudos/DIARIO-TK-51.md`
 — a ressalva do `TK-51` (teste "dentro do intervalo [mín,máx]" não distingue ruído de deslocamento)
 foi resolvida como **deslocamento real**: a Tabela A mostra as 6 janelas pós-corte (grupo `depois`,
@@ -1023,6 +990,7 @@ ou do projeto), a segunda só é despachável com o insumo que a primeira public
 
 ### TK-53a — Onde e quando o degrau do 1º usage acontece [Sonnet · classe investigacao]
 
+- **Status:** `done` · 2026-08-31
 - **Objetivo:** publicar, em número, **três discriminações** sobre o degrau do componente opaco:
   (i) a **janela temporal** em que ele aparece na série de janelas principais; (ii) se ele atinge
   **também** janelas de subagente; (iii) se ele atinge **outros projetos** da mesma máquina. A
@@ -1098,6 +1066,7 @@ ou do projeto), a segunda só é despachável com o insumo que a primeira public
 
 ### TK-53b — Que superfície mudou dentro da janela do degrau [Sonnet · classe investigacao]
 
+- **Status:** `cancelled` · 2026-08-31
 - **Insumo obrigatório (pré-condição de despacho, verificada pelo `scrum-master`):** a linha
   `Janela temporal do degrau: <ts_a> → <ts_b>` da `## 12`. Se a `TK-53a` publicar `indefinida`, esta
   tarefa **não é despachada** e o tíquete volta ao planejamento — não é ramo dentro da tarefa.
@@ -1218,6 +1187,8 @@ A pergunta viva deixa de ser *o que mudou* e passa a ser *do que o custo é feit
 
 ## TK-54 — Extrato do custo de abertura de uma janela principal
 
+- **Status:** `ready` · 2026-08-31
+
 **Origem:** diretiva do dono, 2026-08-31 (citada acima), no ato de fechar a `TK-53`.
 
 **Diretiva de priorização vigente de 2026-08-31 a 2026-09-15 (movida verbatim em 2026-09-15, registro do `P-0739`, `DB-11`):**
@@ -1281,7 +1252,9 @@ Distinguir *carregado sempre* de *carregado sob demanda* é parte do entregável
 
 ### TK-54a — O extrato [Sonnet · classe investigacao]
 
-**Status:** `done` (executada inline pela orquestração em 2026-09-18; `## 13` publicada em `docs/CUSTO_DO_PICKUP.md:404-431`). Reaberta no mesmo dia pela rodada `RP-TK54-1`, rota **A**. A coluna de
+- **Status:** `done` · 2026-09-18 — executada inline pela orquestração em 2026-09-18; `## 13` publicada em `docs/CUSTO_DO_PICKUP.md:404-431`
+
+Reaberta no mesmo dia pela rodada `RP-TK54-1`, rota **A**. A coluna de
 classificação vem **fixada neste card**: o executor **transcreve** o valor e a justificativa da
 tabela `B` abaixo, não avalia e não propõe classificação própria.
 
@@ -1472,8 +1445,9 @@ e qualquer edição em fonte medida (rodada posterior à ratificação do dono);
 (pede medida que esta rodada não tem); o corte do bloco `Fila corrente` do diário (achado de
 processo registrado na `### Medição de 2026-09-18`).
 
-### TK-54b — A fonte da bimodalidade [classe investigacao]
+### TK-54b — A fonte da bimodalidade [Sonnet · classe investigacao]
 
+- **Status:** `ready` · 2026-08-31
 - **Objetivo:** identificar **qual fonte liga e desliga** entre os dois regimes que a `## 12` mediu
   — `cache_read` exatamente 18.084 vs 26.695 (Δ **8.611 tok**), `cache_creation` ~16,5k vs ~19,4k,
   **preâmbulo visível idêntico** (~11.684 chars) nos dois.
@@ -1619,9 +1593,86 @@ por teto de ocupação sem executar tarefa). **A `TK-54a` não os redescobre; re
   (*"com os limites expandidos, nossa preocupação agora é a coesão e coerência do contexto ao invés
   de uso"*, dono, 2026-09-19). O extrato fica como **linha de base medida**, não como gatilho.
 
+- 2026-08-31 — **Fila corrente anterior (texto de 2026-08-31; migra para `## TK-54`/`## TK-53` na `BKL-T6`):** nada em execução. **`TK-54a` é a próxima tarefa delegável** (escopada em
+2026-08-31, sem pré-condição). **`TK-53` fechada em 2026-08-31 por decisão do dono, com desfecho
+negativo:** a `TK-53a` mediu o eixo tempo como `sem degrau (oscilação pré-existente)`,
+contradizendo a premissa que abriu o tíquete — não há causa a achar no corte da `95db6421…`
+porque não houve mudança no corte. **`TK-53b` cancelada por absorção:** seu insumo único era o
+bracket temporal, que perdeu o objeto junto com a premissa. **Decisão do dono no mesmo ato:** o
+número agregado não sustenta decisão nenhuma — o que falta é o **extrato** do custo por fonte,
+classificado em *válido / necessário / dispensável / economizável*; aberto como `TK-54`. **Decisão do dono sobre a
+ressalva do `TK-51`
+(2026-08-24): causa é deslocamento real, não ruído** — a Tabela A do laudo
+(`docs/RDO/laudos/DIARIO-TK-51.md`, Achado 3) mostra as 6 janelas pós-corte agrupadas com mediana
+46.070 (grupo `depois`) contra 34.347 (grupo `antes`, n=233), e o teste "dentro do intervalo
+[mín,máx]" não discrimina isso. **Consequência:** `P-0737` segue `blocked` — a premissa de custo
+fixo de abrir janela que o loop constrói está contradita, não confirmada como estável (nova razão
+na seção `## P-0737`); investigação do que mudou no corte aberta como `TK-53`, **já desenhada**
+(2026-08-24) em duas tarefas de medição na própria seção — **`TK-53a` é a próxima tarefa
+delegável**, sem pré-condição; `TK-53b` só é despachada com a linha `Janela temporal do degrau:`
+que a `TK-53a` publica. Não abre plano formal: `P-0739` segue livre. Os 2 achados de processo do
+mesmo laudo (itens 1 e 2 —
+`review_evidence.py` não aceita tarefa residente no diário; desenho de sonda fixou fato de corpus
+não verificado) seguem sem tíquete, para rodada futura.
+A regra escalonada de 2026-08-21 e o `G-PLANREADY` continuam valendo.
+- `TK-52` **done** (2026-08-24, aceito pelo dono): resíduo do checkpoint corrigido nas duas superfícies vivas.
+  `GOVERNANCA.md` §4.3 — o bullet *"Contexto acabando sem plano de parada"* (que atribuía ao
+  **executor** gravar o checkpoint e dizia que *"o mesmo checkpoint responde ao sinal de poluição"*)
+  virou dois bullets: *Checkpoint intermediário* como ato da **orquestração**, e *Dois casos que não
+  são checkpoint* (contexto acabando dentro da tarefa = dimensionamento errado, volta ao planejamento;
+  sinal de poluição = sem ponteiro de retomada). `.claude/global/CLAUDE.md` Regra 2 **carregava o mesmo
+  resíduo** e teve o "Como aplicar" reescrito para enunciar a poluição como **único** critério de
+  parada de execução, com parada não graciosa e sem ponteiro de retomada. **Regressão detectada e
+  revertida no mesmo dia, pelo dono:** o dossiê da tarefa mandou o executor escrever um segundo ramo
+  ("capacidade cruzada → orquestração grava checkpoint"), que é exatamente a cláusula que a `CTX-T1a`
+  removeu por decisão do `P-0738` (`DX-13`/`DX-14`, dossiê `## CTX-T1a`: *"O parágrafo Como aplicar
+  perde 'ao cruzar a capacidade, grave um checkpoint' como caminho de interrupção de tarefa"*),
+  ratificada no guardrail 7 (`GOVERNANCA.md:586-592`: ocupação não é matéria de parada, é diretriz de
+  dimensionamento de §3). O erro foi de **autoria de dossiê**, não do executor, que cumpriu o
+  prescrito. Autoridade seguida: `.claude/skills/handover/SKILL.md:88-121`, espelhada em
+  `README.md:674-688` (já correto pela `CTX-T11`, não tocado). Verificação: 3 greps negativos +
+  `check-readme.ps1` exit 0 (8 agentes, 11 skills, 16 guardrails, 14 seções) + `git status --short` sem
+  arquivo novo. **Achado fora de escopo (1) — resolvido em 2026-08-24:** `.claude/tools/uow.py:23`
+  (arquivo ainda untracked) citava *"o checkpoint de interrupção da Regra 2"*, referente que a
+  correção eliminou — a parada por poluição não gera ponteiro. Rota do dono: **dispensar a cláusula**,
+  já que o checkpoint da orquestração não nasce dentro da UoW de uma tarefa e a exclusão de escopo
+  perdeu o objeto; a menção saiu do docstring. **Achado fora de escopo (2) — resolvido em
+  2026-08-24:** a cópia **implantada** em `C:\Users\panta\.claude\CLAUDE.md` estava **defasada do
+  kit** e carregava o resíduo em forma pior — *"ao detectar sinal de poluição, **ou ao cruzar a
+  capacidade**, grave um checkpoint… **faça handover**"*, na voz do executor. `Compare-Object` provou
+  que o bloco da Regra 2 era a **única** divergência entre kit e cópia; com autorização do dono o
+  arquivo foi copiado inteiro (165 linhas, diff vazio depois). **Achado colateral, sem tíquete por
+  decisão do dono:** o `CLAUDE.md` global **não tem ponto de carga** — o `materializar.py` projeta só
+  `.claude/settings.json` —, então correção de kit nesse arquivo fica sem efeito até ser copiada à
+  mão. Consumo: ver `docs/telemetria.tsv`.
+- `CTX-T11` **done** (2026-08-24): espelho do `README.md` revisado e **aprovado pelo dono** —
+  `check-readme.ps1` exit 0 antes e depois (o guarda não vê nada do que mudou). Sete correções de
+  sentido: verbete "Contexto" e guardrail 7 (capacidade deixa de encerrar contexto e de morar no
+  guardrail), duas células da tabela de classes (teto sai do dossiê), linha própria da *Rodada de
+  replanejamento*, "quem executa registra o consumo" (contradizia o §12 do próprio README), §9 do
+  checkpoint (era do executor, é da orquestração) e ponteiro novo para `docs/CUSTO_DO_PICKUP.md`.
+  `docs/DOC_MAP.md`: entrada do relatório de ~202→~306 linhas, seções 8-10. Achado registrado em
+  `P-0738` `## 9`: `GOVERNANCA.md` §4.3:416-420 ainda atribui o checkpoint ao executor, contra os
+  dois bullets acima dele e contra a skill `handover` — resíduo não varrido pela `CTX-T1`, fora dos
+  arquivos-alvo, **a corrigir em tíquete próprio**. Estouro de orçamento: 52 tool uses contra ≤30 da
+  classe `redacao` — a varredura achou 4 âncoras além das 3 pré-localizadas no dossiê; insumo de
+  dimensionamento, não bloqueio. Consumo: ver `docs/telemetria.tsv`.
+- `CTX-T10` **done** (2026-08-24): aferição publicada em `docs/CUSTO_DO_PICKUP.md` `## 10`. 1º
+  `usage` da 1ª janela pós-`CTX-T9` = **46.071 tok**, contra 34.260/34.292/45.872 antes — **subiu**
+  34,4%–34,5%. Critério (a) da iniciativa **reprovado**; (b) aprovado (abre/delega/fecha/telemetria
+  numa janela). Achado registrado em `P-0738` `## 9. Achados da execução` + `TK-51` aberto — decisão
+  do dono é pré-requisito antes de qualquer nova rodada. `git status --short` acusa só os dois
+  arquivos do plano/relatório. Consumo: ver `docs/telemetria.tsv`.
+
+- 2026-09-19 — *(**escopado em 2026-08-31** — 2 tarefas independentes: `TK-54a` (extrato, delegável agora) e `TK-54b` (fonte da bimodalidade de 8.611 tok). **Não abre plano formal — `P-0739` segue livre**. **`TK-54a` voltou `blocked` razão `premissa` em 2026-09-18 (`AE-1`) e a rodada `RP-TK54-1` a devolveu a `ready` no mesmo dia, rota A: a rubrica das quatro categorias e a coluna de classificação já vêm preenchidas no card — o executor transcreve, não avalia. Rodada técnica/tática, nada escalado ao dono**)*
+
+- 2026-09-19 — **`TK-54a` fechou `done` em 2026-09-18, executada inline pela orquestração: `## 13` em `docs/CUSTO_DO_PICKUP.md:404-431`. A classificação das quatro categorias foi **ratificada pelo dono em 2026-09-19** — a `TK-54` fecha com isso. A `TK-54b` fica **despriorizada** por `DM-30` (`P-0740`): com os limites expandidos, o critério deixou de ser custo e passou a ser coesão/coerência de contexto; ela não é cancelada, apenas sai da fila sem previsão. A rodada de corte que a `TK-54a` habilitava **não se abre** pelo mesmo motivo. `AE-2` aberto (espelho `.claude/global/` duplica 6 skills e 1 agente).**
+
 ---
 
 ## TK-55 — Confiabilidade de agente e de instrumento
+
+- **Status:** `ready` · 2026-09-19 — gated pelo encerramento do `P-0740` (ato do dono, 2026-09-19).
 
 **Aberto por ato do dono em 2026-09-19**, sobre o relatório de encerramento da janela do `P-0740`:
 *"vejo alguns casos de erros de agente com alguma frequência. No futuro (após terminar esse plano)
@@ -1663,4 +1714,955 @@ sem sinal, porque nada o confronta com o mundo.
 ninguém confronta com a fonte. O que a rodada tem de decidir é *quem* faz esse confronto e *quando*
 — não *quem* errou.
 
-**Status:** `backlog` — gated pelo encerramento do `P-0740` (ato do dono, 2026-09-19).
+
+- 2026-09-19 — *(aberto por ato do dono em 2026-09-19. O gate caiu: o `P-0740` fechou em `35/35`. **Ato do dono, 2026-09-19:** este tíquete é o **acumulador da spec de robustez**, que ainda não tem arquivo, e as **imprecisões de contagem** medidas na janela do marco 3 entram nele como **estatística** — não como correção da `docs/consultant-spec.md`. Casos novos acumulados: `AE-49` (constante de corpus congelada pelo gate), `AE-51`/`AE-57`/`AE-61` (frase que conta envelhece sozinha e nenhum instrumento a lê), `AE-52`/`AE-59` (irmão não enumerado), `AE-70` (invariância é do recorte, não do valor), `AE-71` (rótulo ordinal que o recenseamento renumera), `AE-73` (o instrumento do aceite não vê soft-wrap), `AE-75` (o número que o próprio ato de medi-lo falsifica). Segue acumulando durante a retomada do `P-0739`; a rodada de planejamento é posterior)*
+
+**Evidências da janela do `P-0739` (2026-09-20) — oito ocorrências da mesma classe, *o derivado
+cala onde deveria falar*:**
+
+- **`check` varria 20 planos** enquanto a norma falava de 3, porque decidia *vivo* por um campo que
+  a `DB-15` proíbe em plano fechado. O único sinal era um **número grande de achados**, que se lê
+  como dívida, não como defeito de escopo do instrumento (`AE-15` do `P-0739`).
+- **Aceite que conta a si mesmo:** itens de `Verificação` fazendo `Select-String` sobre o arquivo
+  que contém o próprio padrão escrito (`AE-15`).
+- **Aceite inatingível sem que nada o diga:** o `BKL-T10` passou por revisão de autoria aprovada
+  em 100%, duas reautorias de consultor e três conferências de despacho afirmando `check exit 0` —
+  e em nenhum desses momentos alguém **rodou** o aceite; todos o leram (`AE-23`).
+- **`next` respondeu “nada delegável” com a fila cheia**, por um literal entre crases numa linha
+  de prosa que o parser leu como id de dependência. Sem exit 3, sem violação, sem mensagem —
+  indistinguível de backlog legitimamente vazio (`ESC-7`, `DB-50`).
+- **Verbo destrutivo com `exit 0`:** `status` apagava a linha `**Fila corrente:**` e devolvia
+  sucesso, sem aviso. A perda só aparece para quem comparar o arquivo antes e depois (`AE-27`).
+- **Citação de seção é a única referência do kit que ninguém resolve:** caminho tem `Test-Path`,
+  id de tarefa tem `review_evidence`, literal tem `Select-String` — mas *“§2.5 publicada na skill
+  X”* atravessou autoria, transcrição aprovada em 100%, duas varreduras e um despacho, e só caiu
+  quando um executor foi **abrir o arquivo para editar** (`AE-33`).
+- **O hook devolvia 0 bytes com `exit 0`** no ponto de carga real (`stdin` em `cp1252`), e a tarefa
+  seguinte publicaria esse zero como **medida** de redução do pickup — a mais cara da série,
+  porque o silêncio viraria número (`AE-35`). **Três entrypoints seguem com a mesma lacuna**, um
+  deles **global**: `.claude/tools/ocupacao.py:141`, `.claude/tools/telemetria_hook.py:213` e
+  `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py:101` (`AE-36`).
+- **Teste que passa pelo motivo errado:** TF por subprocesso que **herda** o ambiente do `pytest`
+  deixa de discriminar em host com `PYTHONUTF8=1`. Primeira da série em que o silêncio previsto é
+  de um **teste**, não de um instrumento (`AE-37`).
+- **Contador de id que ignora o que nunca passou pelo inbox:** `**Próximo id de plano:**` apontava
+  para um id **já usado**; nada confronta o contador com `docs/plans/` (`AE-39`).
+
+**Pendência com pré-requisito, deixada pelo `ESC-10`:**
+
+> `P-0739`/`ESC-10` — emendar `test_tf_hook_executavel_*` em `tests/test_backlog.py` para fixar
+> `env=` (regra completa em `DB-53` do `P-0739`); hoje herda o ambiente e deixa de discriminar em
+> host com `PYTHONUTF8=1`. **Pré-requisito de propagar a regra** a `ocupacao.py:141`,
+> `telemetria_hook.py:213` e `modelo_por_fase_userpromptsubmit.py:101` (global).
+
+**O contraste que resume a série (medido no `ESC-9`):** dos cinco entrypoints do kit que leem
+`stdin`, os **dois** que acertam a codificação são exatamente os dois que **não têm teste** —
+escritos por quem já tinha se queimado. O acerto veio de **cicatriz, não de norma**, e cicatriz
+não se propaga: morre com quem a tem.
+
+**Item nomeado (escalonamento 1 da janela dos seis tíquetes, 2026-09-20) — a cláusula 3 da `DB-53`
+(`P-0739`) é satisfazível sem poder discriminante.**
+Medido na revisão do `TK-56a`: dois dos três testes propagados seguem **verdes com o reparo de
+`stdin` revertido**. A norma publicada manda construir o par negativo com "um executável
+deliberadamente quebrado escrito em `tmp_path`" — e um stub discrimina o **stub**, não o produto. No
+precedente `TK-57a` a regra funcionou por acidente feliz: lá o acento estava na frase-gatilho e
+atravessava até a saída observada. A emenda tem quatro partes, todas medidas:
+
+1. **Mundo hostil construído, não herdado.** Os dois mundos são `env` mínimo +
+   `PYTHONIOENCODING=<codec de byte único>` e `env` mínimo + `PYTHONUTF8=1`. "O host sem a variável"
+   mede o host, não o código — é o mesmo defeito do `TK-57` uma camada abaixo. Medido:
+   `PYTHONIOENCODING` **prevalece** sobre `PYTHONUTF8` para `stdin`, então o mundo hostil é hostil
+   até em host que exporte a variável.
+2. **Canal discriminante obrigatório.** O teste só vale se o payload acentuado **viaja até o
+   observável**. Preferência: (i) `stdout`, quando o valor sai nele; (ii) **efeito colateral**
+   (arquivo escrito, estado consumido), quando o executável é silencioso por contrato — caso do
+   `telemetria_hook.py`, cujo `stdout` é `b""` e `rc=0` em todos os mundos e cuja leitura exige
+   relocar a raiz para `tmp_path`; (iii) se nenhum canal carrega, o entrypoint **não é testável por
+   esta regra** e o fato se declara, em vez de se escrever um teste verde sem poder.
+3. **O par negativo é o próprio produto revertido.** Nasce da fonte real por substituição textual,
+   com `assert <literal do reparo> in fonte` antes. Stub escrito à mão fica **vedado**. Para
+   executável que resolve caminho por `__file__`, a cópia em `tmp_path` quebra: usa-se shim com
+   `exec(compile(src, str(alvo), "exec"), {"__name__": "__main__", "__file__": str(alvo)})`.
+4. **Condição de validade da invariância em bytes:** vale enquanto a saída for ASCII pura
+   (`json.dumps` com `ensure_ascii` default, caso dos quatro hooks). Executável que imprima não-ASCII
+   cru tem a saída legitimamente alterada pelo mundo hostil — aí compara-se o **texto decodificado**.
+
+A `DB-53` **publicada** segue com a cláusula 3 defeituosa: `docs/plans/P-0739-backlog-instrumento.md`
+não é editado (`DB-23`, e a própria `DB-53` já recusou matéria nova a 17/18). O apenso à decisão é
+**ato do dono**, não do loop. Rota executável já materializada: `TK-56b` e `TK-63a`.
+
+**Estatística da classe:** esta é *o derivado cala onde deveria falar* na variante **teste**, com
+agravante nova — o derivado não só calou, **a norma autorizava o silêncio**. Atravessou o autor
+(`TK-56a`), o gate de delegação e a própria decisão que a criou; quem a pegou foi o `reviewer`,
+executando a reversão à mão. A generalização — *toda norma que exige "o quebrado dá saída diferente"
+tem de dizer **qual** quebrado e **por qual canal*** — não tem instrumento que a cheque.
+
+**Item nomeado (escalonamento 3, 2026-09-20) — dado de teste vaza para o namespace de produção.**
+A fixture criada pela primeira entrega do `TK-60a` continha uma folha chamada `SKILL.md`, e o
+harness passou a **listá-la como skill invocável real** (`tests/fixtures/backlog/citacao_secao:diario-de-obras`).
+Nada avisou. Regra que a classe pede: **fixture não pode conter arquivo cujo nome seja convenção de
+descoberta do harness ou do agente** — `SKILL.md`, `CLAUDE.md`, `AGENTS.md`, `settings.json`. Não
+varrido: se há outras convenções descobríveis dentro de `tests/fixtures/`.
+
+**Item nomeado (escalonamento 3, 2026-09-20) — premissa citada em card também se mede, não se
+deduz.** Medido nesta janela: um card fixou como gramática de citação uma forma com **1** ocorrência
+no repositório, enquanto a forma real tem **1.017**; e fixou domínio de dois níveis quando **772**
+das citações reais são de um nível — reprovando 76% do universo. O executor implementou
+corretamente a gramática inventada, e o defeito só apareceu no laudo. Dos sete achados que
+motivaram escalonamento nesta janela, **quatro foram defeitos de card**, todos da mesma classe:
+campo obrigatório preenchido por dedução em vez de varredura. A regra é a extensão do `DM-12`
+(*comando de aceite não se deduz, se roda*) do **comando** para a **premissa**: gramática, domínio e
+contagem citados num card medem-se antes de publicar.
+
+**Item nomeado (escalonamento 4, 2026-09-20) — piso/allowlist como esconderijo de defeito.**
+Um mecanismo criado para **declarar dívida aceita** absorveu silenciosamente um falso positivo do
+colhedor, e o número inflado virou documentação oficial: o piso do `C-11` nasceu com 5 entradas,
+das quais **3** eram artefato de um item de card não implementado. O guarda contra isso é mecânico
+e barato, e nada no kit o exige hoje: **toda entrada de piso tem de acusar quando removida** — a
+entrada que some sem o lint reclamar nunca foi dívida, era defeito de gramática escondido no piso.
+
+**Item nomeado (escalonamento 4, 2026-09-20) — menção vira uso, e a contagem que o instrumento sabe
+fazer não se faz à mão.** Duas medidas da mesma rodada:
+(i) escrever uma citação quebrada dentro de um documento do corpus **para falar sobre ela** é
+indistinguível, para o colhedor, de **usá-la** — medido: o item que nomeava a dívida virou a 15ª
+ocorrência dela. Quem documenta ponteiro quebrado usa forma não-colhível, e quitar o piso exige
+**desarmar as menções antes**, senão o lint fica vermelho por causa dos próprios cards que o
+criaram.
+(ii) o número "13 ocorrências" publicado num card saiu de `grep -c`, que conta **linhas**, e não do
+instrumento, que conta **ocorrências**; nada confrontou um com o outro. É a definição do `TK-55`
+— derivado que erra sem sinal porque nada o confronta com a fonte — cometida por quem escreve os
+cards do `TK-55`. Regra que impõe: **número que vai para dentro de um card e que o instrumento sabe
+calcular é calculado pelo instrumento**, nunca por varredura ad-hoc.
+
+**Item nomeado (escalonamento 5, 2026-09-20) — caso de aferição citado em card é derivado, não
+fato, e aceite ancorado em população viva é o pior deles.** Medido nesta janela: **quatro** números
+de aceite envelhecidos, três pegos pelo gate antes do despacho e um só no laudo —
+(i) `7.123` bytes que eram **1.237** (`TK-57`); (ii) *"as 301 linhas não contêm o literal `2.5`"*,
+que contêm, em prosa (`TK-60`); (iii) *"casos vivos: `TK-51` e `TK-53`"*, ambos `done` desde a
+autoria, com a população do fenômeno **zerada** pela própria condução da janela (`TK-61`); (iv)
+`13` ocorrências de dívida que o instrumento conta como **15**.
+
+Forma única do vício: **o card cita medida real feita em outra data, e nada no kit confronta a
+medida com a data**. A regra que destila é mais forte que a do escalonamento 4: todo número, literal
+ou população citado como **caso de aferição** num card carrega a data da medida e é **re-derivado
+pelo instrumento no despacho**. Aceite ancorado em população viva é o pior caso, porque a própria
+execução do plano a extingue — o `TK-61a` mediria hoje o **oposto** do que o card mandava.
+
+**Item nomeado (escalonamento 6, 2026-09-20) — asserção de magnitude é dívida com juros.**
+Quatro números de aceite envelhecidos nesta janela, e o quarto foi **prescrito uma rodada depois**
+de a regra contra isso ser enunciada. A correção é de forma, não de disciplina: **asserção afirma
+relação, nunca magnitude** — (i) invariância: o produto correto dá a mesma saída nos dois mundos;
+(ii) divergência: o produto revertido dá saídas diferentes entre eles; (iii) não-vazio: a saída
+observada no mundo hostil difere de vazio, que é o que prova que o canal carrega. A magnitude vira
+**documentação datada no docstring**, com o mundo em que foi medida, e nunca entra num `assert`. O
+que discrimina no caso medido é **737 contra 0**, não o 737.
+
+**Item nomeado (escalonamento 6, 2026-09-20) — teste que lê estado vivo é canal de contaminação,
+não só de instabilidade.** O dano medido não foi teste intermitente: foi **dossiê de plano alheio
+entrando no contexto de um executor** pela saída do `pytest`, obrigando a descartar aquele contexto
+e a refazer o trabalho. Isolamento de teste tem valor de **contenção de contexto**, não só de
+determinismo — e é argumento independente do de reprodutibilidade.
+
+**Item nomeado (escalonamento 6, 2026-09-20) — o card fixa a propriedade, o executor escolhe a
+técnica.** Dos oito acionamentos de consultor desta janela, **cinco** foram defeitos de card, todos
+da mesma classe: o card **prescreveu o *como*** onde devia fixar o ***quê***. Shim com `__file__`
+preservado em vez de *"o teste não lê estado vivo"*; registro no RDO em vez de *"a assinatura fica
+em artefato do executor"*; gramática autorada em vez de *"a gramática é a que o corpus usa"*. Nos
+cinco o executor cumpriu a prescrição à risca e o defeito estava na premissa. Regra: do card são a
+**propriedade a satisfazer** e a **medida que a comprova**; a técnica é do executor.
+
+**Item nomeado (encerramento da janela dos tíquetes, 2026-09-20) — duas fontes do mesmo fato
+divergem sem sinal: `check` aprova o que `rdo.py` recusa.** Medido: os seis cards de tíquete abertos
+no encerramento do `P-0739` não tinham `Arquivos-alvo`, `Verificação` nem `Pronto quando` — três dos
+quatro campos que `rdo.py close` exige para fechar uma tarefa. O `backlog.py check` saiu **OK** sobre
+todos eles. Os dois instrumentos leem o **mesmo corpus** e discordam sobre o que é card válido, e
+nada confronta um com o outro: o defeito só aparece no fim, quando o fechamento falha e a tarefa já
+foi executada. Classe: *dois derivados do mesmo fato divergem, e o desacordo é invisível até o
+último passo*.
+
+**Item nomeado (encerramento da janela, 2026-09-20) — `rdo.py close` não confere o estado da
+tarefa.** Medido: o `close` escreveu RDO para uma tarefa que o kanban dava como `in-progress`. A
+transição `in-progress → done` havia sido **corretamente recusada** por `backlog.py status` um
+comando antes; o `close` não olhou. A doutrina diz que o RDO só nasce na transição `review → done`,
+e nada a impõe. Classe: *norma publicada sem guarda, num ponto em que o instrumento vizinho já tem
+a guarda certa*.
+
+**Item nomeado (encerramento da janela, 2026-09-20) — o marcador ` + dono` é descartado em silêncio
+na projeção do dossiê.** Medido: o card `TK-58a` tem cabeçalho `[Opus + dono · classe investigacao]`
+e `backlog.py next` projetou `[Opus · classe investigacao]`. O token que some é **exatamente** o que
+declara que a tarefa não é delegável a agente nenhum — e o card em questão manda **não estimar**. Um
+loop que confiasse na projeção despacharia a um executor um card cuja única saída honesta é o ato do
+dono. É a classe *o derivado cala onde deveria falar*, na variante mais perigosa: o silêncio recai
+sobre a marca de participação humana.
+
+**Item nomeado (encerramento da janela, 2026-09-20) — relatório de guarda que mente no console e
+não no arquivo, e conta 1 defeito como 2.** Medido em `kit_check.ps1 -Mode check-drift`: o
+`Write-Host` degrada `—` para `-` e `É` para caractere de substituição, enquanto o arquivo
+regenerado está íntegro no byte; e o relatório soma cabeçalho e linha de detalhe na mesma lista,
+reportando **2 problema(s)** para **1** defeito. Um agente que decida pelo console abre card de
+defeito inexistente — risco agravado por este kit ter acabado de fechar quatro cards consertando
+leitura de UTF-8. Classe: *o canal de apresentação do derivado corrompe o dado que o derivado
+apurou corretamente*.
+
+**Item nomeado (escalonamento 7, 2026-09-20) — rótulo errado é pior que número errado, porque
+sobrevive à conferência.** Medido: uma seção publicou *"o `additionalContext` do hook (16.459
+bytes)"*. O **número estava certo** — é o comprimento exato da linha JSONL — e o **objeto estava
+errado**: o texto efetivamente injetado eram 7.867 chars. O rótulo casa com o arquivo e resiste a
+qualquer recontagem; o que não casa é o que ele nomeia. Consequência medida: a suspeita **correta**
+de que as duas metades do método não fechavam produziu um recálculo (36.140) tão errado quanto o
+original, porque a aritmética se apoiou no rótulo. Há três comprimentos distintos para o mesmo
+objeto — registro, texto renderizado e texto-fonte — e nenhum instrumento do kit os distingue.
+
+**Item nomeado (escalonamento 7, 2026-09-20) — efeito abaixo do ruído do próprio controle,
+publicado como medida.** Medido: `usage_1` de **39.650 tk** publicado como resultado, com a linha de
+base sem tratamento — **36.023 · 36.262 · 48.171 · 49.533** — impressa **na mesma seção**. O valor
+cai dentro da faixa do controle: o efeito buscado é menor que a dispersão dele. Nenhum guarda do kit
+confronta um valor medido com a dispersão do controle que o acompanha, embora os dois estejam
+publicados lado a lado. A correção de método é o **controle pareado**: sessão gêmea, mesmo dia e
+mesma árvore, diferindo só no tratamento.
+
+**Nota de técnica (escalonamento 7, 2026-09-20) — medir não é ler.** O transcript auditado nesta
+rodada carrega dossiê de plano de **outra janela**, e ainda assim foi auditado sem poluir o
+contexto: mediram-se **apenas estrutura, chaves e comprimentos**, com sonda booleana para confirmar
+a presença dos marcadores, sem nunca extrair valores. A contenção entre janelas não obriga a
+renunciar à evidência — obriga a extrair dela apenas a **forma**.
+
+## TK-56 — Propagar o reparo de codificação de `stdin` aos três pontos de carga restantes
+
+- **Status:** `done` · 2026-09-20 — aberto no encerramento do `P-0739`, pendência 1 de
+  `docs/Entregas Aceitas/Entregas - P-0739.md`.
+
+**O defeito, medido:** três entrypoints leem `sys.stdin.read()` e decodificam na codificação do
+host. Em Windows sem `PYTHONUTF8` isso é `cp1252`, e payload UTF-8 chega mis-decodificado:
+
+| arquivo | gatilho | efeito hoje |
+|---|---|---|
+| `.claude/tools/ocupacao.py:141` | `PreToolUse`, matcher `.*` — roda a cada ferramenta | recebe mojibake sem falhar |
+| `.claude/tools/telemetria_hook.py:213` | `SubagentStop` | recebe mojibake sem falhar |
+| `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py:101` | `UserPromptSubmit`, **global** | normaliza acento mas lê `stdin` do modo inseguro; **degrada em silêncio** para prompt acentuado, em todos os projetos |
+
+**Por que é o mais urgente dos seis:** é o único com efeito **fora** deste projeto. O gate de
+modelo-por-fase roda a cada prompt em toda a família Pantonic*.
+
+**O que fecha:** aplicar as três cláusulas da `DB-53` do `P-0739` aos três arquivos.
+
+**Depende de `TK-57`** — propagar a regra com o teste incompleto multiplicaria por três um teste
+que não discrimina.
+
+### TK-56a — Os três pontos de carga passam a ler `stdin` em UTF-8 explícito [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Depende de:** `TK-57a`
+- **Razão da dependência (`DB-50` do `P-0739`; a linha acima só carrega IDs):** a regra de teste tem
+  de estar completa antes de ser propagada, senão multiplica por três um teste que não discrimina.
+- **Objetivo:** aplicar as três cláusulas da `DB-53` do `P-0739` a `.claude/tools/ocupacao.py:141`,
+  `.claude/tools/telemetria_hook.py:213` e
+  `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py:101`, cada um com teste por subprocesso
+  e ambiente fixo. O terceiro é global: o reparo dele vale para todos os projetos.
+- **Arquivos-alvo:**
+  - `.claude/tools/ocupacao.py`
+  - `.claude/tools/telemetria_hook.py`
+  - `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`
+  - `tests/test_ocupacao.py`
+  - `tests/test_telemetria_hook.py`
+  - `tests/test_materializar.py`
+- **Verificação:** `python -m pytest tests/test_ocupacao.py tests/test_telemetria_hook.py tests/test_materializar.py` verde, e a bateria completa `python -m pytest` sem queda de piso. Cada um dos três executáveis rodado por `subprocess.run` com `env=` mínimo, nos dois mundos da variável `PYTHONUTF8`, devolvendo a **mesma** saída.
+- **Pronto quando:** as três cláusulas da `DB-53` estão aplicadas aos três pontos de carga — (1) o teste roda o processo com entrada em bytes; (2) fixa `env=` explícito de dicionário mínimo, nunca copiado de `os.environ`; (3) afirma a invariância do executável correto e a divergência do quebrado —, e o terceiro arquivo, que é hook **global**, passa a ler `stdin` em UTF-8 explícito para todos os projetos.
+
+### TK-56b — Os dois testes sem poder discriminante passam a observar o produto [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** reparar `test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia`
+  (`tests/test_telemetria_hook.py`) e `test_tf_hook_modelo_por_fase_executavel_stdin_utf8_classifica_a_fase`
+  (`tests/test_materializar.py`), que hoje ficam **verdes com o reparo de `stdin` revertido** (medido
+  na revisão do `TK-56a`). Causa: o par negativo é um **stub** escrito à mão — discrimina o stub, não
+  o produto — e o payload acentuado nunca chega ao observável.
+- **Arquivos-alvo:**
+  - `tests/test_telemetria_hook.py`
+  - `tests/test_materializar.py`
+- **Verificação:** `python -m pytest tests/test_telemetria_hook.py tests/test_materializar.py` verde,
+  coletando **≥30**; `python -m pytest` verde, sem queda do piso de **230**. O RDO registra a
+  assinatura medida das duas variantes (reparada e revertida) nos dois mundos.
+- **Pronto quando:** os dois testes satisfazem as quatro condições abaixo, e cada uma é conferível no
+  arquivo de teste:
+  1. **Mundo hostil construído, não herdado:** os dois mundos são `env` mínimo + `PYTHONIOENCODING=cp1252`
+     (hostil) e `env` mínimo + `PYTHONUTF8=1` (seguro). O mundo "host sem a variável" deixa de ser o
+     hostil — ele mede o host. Medido em 2026-09-20: `PYTHONIOENCODING` prevalece sobre `PYTHONUTF8`.
+  2. **Canal discriminante:** o payload acentuado chega ao observável.
+     - `modelo_por_fase`: prompt cujo **único** gatilho de classificação é acentuado — `{"prompt": "me dê sua análise disso"}`.
+       Medido: reparado **470 B** nos dois mundos; revertido **2 B** (`{}`) no hostil e 470 B no seguro.
+       O payload entregue hoje (`"faça uma análise arquitetural do módulo"`) dá 470 B em todas as
+       combinações, porque `arquitet` casa sem acento.
+     - `telemetria_hook`: o `stdout` é `b""` e `rc=0` em **todas** as combinações — o canal é o
+       **efeito colateral**. O teste monta uma raiz falsa em `tmp_path`
+       (`.claude/tools/telemetria_hook.py` copiado do arquivo real, `.claude/tools/telemetria.py`
+       copiado, `.claude/estado/tarefa-corrente.json` válido, `docs/`) e usa `agent_transcript_path`
+       apontando para um arquivo de **nome acentuado**. A relocação é obrigatória e não é conveniência:
+       sem ela, `main` apagaria o `.claude/estado/tarefa-corrente.json` **real**.
+       Medido: reparado → estado consumido e TSV com uma linha
+       `2026-09-20 PantonicApp EXA-T55 sonnet 0 0.0 0.0 usage` (separado por TAB); revertido no mundo
+       hostil → estado **sobrevive** e o TSV não é criado.
+  3. **Par negativo é o produto revertido, nunca um stub:** a variante quebrada nasce de
+     `Path(<arquivo real>).read_text(encoding="utf-8").replace(<bloco do reparo>, "raw = sys.stdin.read()")`,
+     precedida de `assert <bloco do reparo> in fonte` — se o reparo mudar de forma, o teste cai
+     ruidosamente em vez de virar verde vazio. O bloco é o literal de 4 linhas
+     (`try: raw = sys.stdin.buffer.read().decode("utf-8", errors="replace")` / `except AttributeError:` /
+     `raw = sys.stdin.read()`), idêntico nos quatro entrypoints — conferido em 2026-09-20.
+     Os dois `stub = tmp_path / "hook_quebrado.py"` existentes são **removidos**.
+  4. **Asserções:** (i) produto reparado dá a **mesma** saída observada nos dois mundos; (ii) produto
+     **revertido** dá saídas **diferentes** entre os dois mundos; (iii) o valor acentuado chega íntegro
+     ao observável no mundo hostil. A comparação é de **bytes** — vale porque os dois executáveis
+     imprimem `json.dumps` com `ensure_ascii` default (`stdout` ASCII puro).
+- **Não fazer:** não editar `.claude/tools/telemetria_hook.py`, `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`
+  nem nenhum arquivo de produto — o reparo de `stdin` deles está correto e aprovado; não tocar
+  `tests/test_backlog.py` nem `tests/test_ocupacao.py` (matéria do `TK-63`); não editar
+  `docs/plans/P-0739-backlog-instrumento.md` (`DB-23`); não escrever em `.claude/estado/`,
+  `docs/telemetria.tsv` ou qualquer caminho real durante o teste.
+
+## TK-57 — Fixar o ambiente no teste por subprocesso do hook
+
+- **Status:** `done` · 2026-09-20 — aberto no encerramento do `P-0739`, pendência 2 de
+  `docs/Entregas Aceitas/Entregas - P-0739.md`.
+
+**O defeito, medido:** `test_tf_hook_executavel_*` em `tests/test_backlog.py` roda o executável por
+`subprocess.run`, o que é correto — mas **herda o ambiente do `pytest`**. Em host que exporte
+`PYTHONUTF8=1`, o teste passa **com ou sem** o reparo: deixa de discriminar. Medido ao autorar a
+`DB-53`: hook pré-reparo devolve **0** bytes com `env={SYSTEMROOT, PATH}` e **59** com
+`PYTHONUTF8=1` acrescido.
+
+**O que fecha:** as três cláusulas da `DB-53` — (1) roda o processo, entrada em bytes; (2) **fixa
+`env=` explícito**, montado de dicionário mínimo e nunca copiado de `os.environ`; (3) **afirma a
+invariância** — o executável correto dá a mesma saída nos dois mundos, o quebrado dá saídas
+diferentes.
+
+**Armadilha conferida:** em Windows o subprocesso sobe com `env={}` e com `{SYSTEMROOT, PATH}`; é a
+cópia preguiçosa de `os.environ` que reintroduz o problema.
+
+**É pré-requisito do `TK-56`.**
+
+### TK-57a — O teste do hook fixa o ambiente e afirma a invariância [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** emendar `test_tf_hook_executavel_*` em `tests/test_backlog.py` para montar `env=`
+  explícito de dicionário mínimo — nunca copiado de `os.environ` — e afirmar que o executável
+  correto devolve a **mesma** saída com e sem `PYTHONUTF8`, enquanto o quebrado devolve saídas
+  diferentes. Referência medida: pré-reparo dá **0** bytes com `env={SYSTEMROOT, PATH}` e **59**
+  com `PYTHONUTF8=1`.
+- **Arquivos-alvo:**
+  - `tests/test_backlog.py`
+- **Verificação:** `python -m pytest tests/test_backlog.py` verde, coletando **≥72** testes; `python -m pytest` verde, coletando **≥224**.
+- **Pronto quando:** os dois `test_tf_hook_executavel_*` montam `env=` explícito de dicionário mínimo (ler `SYSTEMROOT`/`PATH` individualmente é permitido; `dict(os.environ)` ou `os.environ.copy()` é o que fica vedado); existe asserção de **invariância** do executável correto — mesma saída sem e com `PYTHONUTF8=1` —; e existe o **par negativo**, um executável deliberadamente quebrado escrito em `tmp_path` que devolve saídas diferentes nos dois mundos.
+
+## TK-58 — Fechar a metade `usage_1` da medida de pickup
+
+- **Status:** `done` · 2026-09-20 — aberto no encerramento do `P-0739`, pendência 3 de
+  `docs/Entregas Aceitas/Entregas - P-0739.md`.
+
+**Estado:** o método `DC-4` tem duas metades. A de **caracteres** está publicada — pickup composto
+de **26.760 chars**, **−65,5%** contra os 77.457 da `## 3` e 66,9% do alvo de 40.000 da `## 6`. A
+do **primeiro `usage` de uma sessão nova** ficou **declarada sem valor** na `## 14` de
+`docs/CUSTO_DO_PICKUP.md`, porque não é observável de dentro de um subagente.
+
+**O que fecha:** abrir uma janela principal nova, ler o primeiro `usage` e publicar o par completo.
+Ato manual; nenhum agente o resolve sozinho.
+
+**Não estimar.** A lacuna foi deixada sem valor de propósito: número inventado ali seria publicado
+como fato num documento usado para decidir custo.
+
+### TK-58a — Medir o `usage_1` em janela nova e fechar o método `DC-4` [Opus + dono · classe investigacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** abrir uma janela principal nova, ler o **primeiro `usage`** dela e publicar o par
+  completo na `## 15` de `docs/CUSTO_DO_PICKUP.md`, substituindo a lacuna declarada na `## 14`. A
+  metade em caracteres já está publicada: **26.760**, **−65,5%** contra 77.457. **Não estimar** — o
+  valor ou é medido em sessão nova, ou a lacuna continua declarada.
+- **Arquivos-alvo:**
+  - `docs/CUSTO_DO_PICKUP.md`
+- **Verificação:** a `## 15` de `docs/CUSTO_DO_PICKUP.md` passa a conter o par completo, e a lacuna declarada na `## 14` é substituída por remissão a ele. O valor de `usage_1` é **lido** do primeiro `usage` de uma janela principal nova, não derivado de nenhuma outra medida do documento.
+- **Pronto quando:** o par (**caracteres** e **`usage_1`**) está publicado com as duas medidas ancoradas em observação, a metade em caracteres preservando os números já publicados (**26.760**, **−65,5%** contra 77.457), e a `## 14` não declara mais lacuna. **Não estimar:** sem sessão nova que produza o número, a tarefa devolve `blocked motivo=premissa` e a lacuna continua declarada — número inventado aqui seria publicado como fato num documento usado para decidir custo.
+
+### TK-58b — A `## 15` corrige o rótulo, declara a fronteira e o `DC-4` ganha emenda [Sonnet · classe redacao]
+
+- **Status:** `done` · 2026-09-20 — pendência do laudo do `TK-58a` (ressalva 88%), roteada pelo
+  `A8a` e resolvida pelo consultor no escalonamento 7. **Nada aqui é remedição:** tudo o que corrige
+  já está no transcript em disco.
+- **Objetivo:** a `## 15` de `docs/CUSTO_DO_PICKUP.md` deixa de sustentar *"o pickup custa 39.650
+  tk"* e passa a sustentar *"abrir janela com pickup custou 39.650 tk, dentro da faixa de abertura
+  sem pickup do mesmo dia"*; o método `DC-4` ganha as três cláusulas que o caso mediu; e a `## 14`
+  recebe um `a apurar` na composição dela.
+- **Arquivos-alvo:**
+  - `docs/CUSTO_DO_PICKUP.md`
+- **Verificação:**
+  - A `## 15` **não** contém mais a frase `o additionalContext do hook (**16.459 bytes**)`.
+  - A `## 15` contém os literais `7.867` e `Fronteira do que esta medida sustenta`.
+  - A `## 14` contém o literal `a apurar`.
+  - `python -m pytest` verde, coletando **238** — não pode cair.
+- **Pronto quando:** os três fatos medidos no transcript da sessão `8760907f` estão publicados, e
+  cada um com o objeto corretamente nomeado:
+  1. **Correção de rótulo.** `16.458` é o comprimento da **linha JSONL** do registro do hook, com
+     envelope e escapes. O texto efetivamente injetado é **7.867 chars** (`rendered[0].content`),
+     contra **7.079** na `## 14`: os dois pickups diferem **~11%**, não em ordem de grandeza. O
+     recálculo de 36.140 que a pendência propunha era aritmética sobre o rótulo errado e **não** se
+     publica.
+  2. **Fronteira declarada.** Os 39.650 tk **não isolam o pickup**: o registro do pickup é ~16% dos
+     ~48,5 mil chars renderizados que precedem o primeiro `usage` — o resto é listagem de agentes
+     (6.141), listagem de skills (11.948), arquivos anexados (13.605), `session_context` (3.377),
+     MCP (2.053) e ambiente (1.718). E 39.650 cai **dentro** da linha de base sem pickup do mesmo
+     dia (36.023 · 36.262 · 48.171 · 49.533): o efeito buscado é menor que a dispersão do controle.
+     A seção publica o custo de **abertura de janela que fez pickup**, comparável aos regimes da
+     `## 12` e da `## 13`, e **não** o custo do pickup. Isolar o pickup exige **controle pareado**
+     (sessão gêmea, mesmo dia e mesma árvore, sem o gatilho); enquanto não houver, o par do `DC-4`
+     fica **aberto por declaração**, não fechado por medida.
+  3. **A sessão nomeia o dossiê que o pickup projetou:** `MC-T1`, do plano `P-0741`. Medida de
+     pickup sem a tarefa declarada não é interpretável.
+  4. **Emenda ao `DC-4`, três cláusulas:** (i) o pickup é **função da tarefa**, não constante, e
+     toda medida nomeia o dossiê que projetou — duas medidas de tarefas diferentes **não formam
+     par**; (ii) a metade `usage_1` só vale se **isolar** o pickup, e sem controle pareado a metade
+     se declara aberta; (iii) **todo número publicado nomeia o objeto medido** — comprimento de
+     registro, de texto renderizado e de texto-fonte são três objetos distintos.
+  5. **`a apurar` na `## 14`.** Recomposta para a sessão `8760907f` pelo mesmo método, a metade em
+     chars dá **20.996** (`CLAUDE.md` 12.313 + `MEMORY.md` 816 + hook 7.867). A divergência contra
+     os 26.760 não é só de dossiê: a `## 14` publica `CLAUDE.md` em **10.376** (medido **12.313**
+     nesta data) e soma **8.488** chars de memórias indexadas que **não aparecem** entre os anexos
+     da primeira requisição daquela sessão. Isso se registra como **`a apurar`**, não como defeito,
+     e é pré-requisito de qualquer republicação da `## 14`.
+- **Não fazer:** não republicar os 26.760 nem os 36.140; não alterar a metade em chars nem a
+  redução de **−65,5%**, que nunca dependeu do `usage_1` e segue de pé; não abrir
+  `docs/plans/P-0741-modelo-conceitual.md`; não tocar `GOVERNANCA.md`,
+  `docs/RUBRICA_DE_REVISAO.md` nem `.claude/skills/diario-de-obras/SKILL.md` — a outra janela de
+  orquestração está editando os três **agora**.
+
+### TK-58c — O título e o lead da `## 15` dizem o que a seção mede [Sonnet · classe redacao]
+
+- **Status:** `done` · 2026-09-20 — pendência do laudo do `TK-58b` (ressalva 88%), roteada pelo
+  `A8a`. Sem decisão de rota: o corpo da seção já está aprovado e dita o conteúdo.
+- **Objetivo:** alinhar o **cabeçalho** da `## 15` de `docs/CUSTO_DO_PICKUP.md` ao **corpo** dela. O
+  título diz *"Par completo do método `DC-4`"* e o lead diz *"Fecha a aferição da `## 14`"* e *"as
+  duas estão medidas"* — mas o próprio corpo, três parágrafos abaixo, declara que a metade
+  `usage_1` **não isola o pickup** e que o par fica **aberto por declaração**. O cabeçalho promete o
+  que o texto desmente, e é o cabeçalho que se lê primeiro.
+- **Arquivos-alvo:**
+  - `docs/CUSTO_DO_PICKUP.md`
+- **Verificação:**
+  - A `## 15` **não** contém mais os literais `Par completo`, `Fecha a aferição` nem
+    `as duas estão medidas`.
+  - O título da `## 15` nomeia **abertura de janela com pickup**, não *par completo*.
+  - O lead declara, em uma frase, que a metade em chars está medida e que a metade `usage_1`
+    **fica aberta** à espera de controle pareado.
+  - O **corpo** da seção não muda: os parágrafos de proveniência, correção de rótulo, fronteira,
+    pickups distintos e emenda ao `DC-4` ficam **byte a byte** como estão.
+  - `python -m pytest` verde, coletando **238**.
+- **Pronto quando:** quem lê só o título e o lead da `## 15` chega à mesma conclusão de quem lê a
+  seção inteira — que a redução de **−65,5%** em chars está medida e de pé, e que o custo do pickup
+  **não** foi isolado. É o critério inteiro desta tarefa.
+- **Não fazer:** não alterar nenhum número; não tocar a `## 14`; não abrir
+  `docs/plans/P-0741-modelo-conceitual.md`; não tocar `GOVERNANCA.md`,
+  `docs/RUBRICA_DE_REVISAO.md` nem `.claude/skills/diario-de-obras/SKILL.md` — a outra janela de
+  orquestração está editando os três agora.
+
+### TK-58d — Nenhum lugar do corpus afirma que o par do `DC-4` está fechado [Sonnet · classe redacao]
+
+- **Status:** `done` · 2026-09-20 — pendência do laudo do `TK-58c` (aprovado 100%, recomendação
+  `escalar`), roteada pelo `A8a`. **Escopo por afirmação, não por local** — é a correção do defeito
+  que produziu três rodadas seguidas de rastro: `TK-58b` e `TK-58c` foram escopados por arquivo e
+  por seção, então cada um corrigiu uma instância e deixou as outras vivas.
+- **Objetivo:** a afirmação aposentada — *o par do `DC-4` está fechado / as duas metades estão
+  medidas* — deixa de existir em **todo** o corpus vivo. Ela sobrevive em dois lugares medidos, e
+  os dois são lidos **antes** da `## 15`.
+- **Arquivos-alvo:**
+  - `docs/CUSTO_DO_PICKUP.md`
+  - `docs/DOC_MAP.md`
+- **Verificação:**
+  - `grep -rn "par completo\|Par completo\|as duas metades do" docs/CUSTO_DO_PICKUP.md docs/DOC_MAP.md`
+    → **nenhuma** ocorrência.
+  - `docs/CUSTO_DO_PICKUP.md` não contém mais o literal `fecha o par`.
+  - A entrada da `## 15` no `DOC_MAP` traz o **título atual** da seção, que começa com
+    `Abertura de janela com pickup`.
+  - `python -m pytest` verde, coletando **238**.
+- **Pronto quando:** as duas ocorrências medidas em 2026-09-20 estão corrigidas, e cada uma passa a
+  dizer o que a `## 15` de fato sustenta — metade em chars medida e de pé (**−65,5%**), metade
+  `usage_1` medindo **abertura de janela com pickup**, sem isolar o pickup, **aberta** à espera de
+  controle pareado:
+  1. **Fecho da `## 14`** (parágrafo `**Metade em \`usage_1\`: medida.**`): hoje afirma que a
+     `## 15` *"fecha o par do `DC-4`"*. Passa a remeter à `## 15` dizendo que a metade foi **medida**
+     e que o **par segue aberto**, pelo motivo que a `## 15` declara.
+  2. **Entradas do `DOC_MAP`** (linhas 131-135): a da `## 14` diz `a metade usage_1 declarada não
+     medida` — defasada, o número existe desde 2026-09-20. A da `## 15` repete o **título antigo**
+     (`Par completo do método DC-4…`) e afirma `as duas metades do DC-4 medidas`. As duas passam a
+     descrever o estado atual, e a da `## 15` cita o título vigente.
+- **Não fazer:** não alterar nenhum número; não editar o **corpo** da `## 15`, aprovado em
+  `TK-58b`/`TK-58c`; não editar o texto histórico dos cards `TK-58`/`TK-58a` no diário — card
+  fechado não retroage (`DB-23`); não abrir `docs/plans/P-0741-modelo-conceitual.md`; não tocar
+  `GOVERNANCA.md`, `docs/RUBRICA_DE_REVISAO.md` nem `.claude/skills/diario-de-obras/SKILL.md` — a
+  outra janela de orquestração está editando os três agora.
+
+## TK-59 — Guarda para o contador de id do inbox
+
+- **Status:** `done` · 2026-09-20 — aberto no encerramento do `P-0739`, pendência 4 de
+  `docs/Entregas Aceitas/Entregas - P-0739.md`.
+
+**O defeito, medido:** `drain` recalcula `**Próximo id de plano:**` por `max(id visto) + 1` sobre o
+que **passou pelo inbox**. Plano criado sem linha de inbox é invisível para essa conta. Ocorreu:
+o contador ficou em `P-0742` enquanto `docs/plans/P-0742-loop-fora-do-llm.md` já existia — o
+próximo plano colidiria. **`check` não acusa.**
+
+**Já corrigido à mão** nesta execução, para `P-0743`, depois de conferir o maior id da árvore por
+varredura de `docs/plans/P-*.md` (**742**). O que falta é a **guarda**.
+
+**O que fecha:** um verificador que confronte o contador com `docs/plans/` e acuse divergência.
+
+### TK-59a — Verificador do contador de id do inbox contra `docs/plans/` [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** acrescentar ao `check` uma violação que confronte
+  `**Próximo id de plano: P-NNNN.**` de `docs/plans/_INBOX.md` com o maior id presente em
+  `docs/plans/P-*.md`, acusando quando o contador aponta para id **já usado**. Caso medido que a
+  motivou: contador em `P-0742` com `P-0742-loop-fora-do-llm.md` já na árvore.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+- **Verificação:** `python .claude/tools/backlog.py check` acusa a divergência sobre fixture em que o contador de `docs/plans/_INBOX.md` aponta para id já presente em `docs/plans/P-*.md`, e **não** acusa sobre fixture em que o contador aponta para id livre. `python -m pytest tests/test_backlog.py` verde.
+- **Pronto quando:** `check` tem uma violação nova, de vocabulário fechado como as demais (`C-*`), que confronta `**Próximo id de plano: P-NNNN.**` com o maior id presente em `docs/plans/P-*.md`; e o teste é **par presença-ausência**, sobre corpus em que as duas leituras dariam resultados diferentes. Caso medido que motivou: contador em `P-0742` com `docs/plans/P-0742-loop-fora-do-llm.md` já na árvore.
+
+## TK-60 — Verificador de citação de seção
+
+- **Status:** `done` · 2026-09-20 — aberto no encerramento do `P-0739`, pendência 5 de
+  `docs/Entregas Aceitas/Entregas - P-0739.md`.
+
+**A lacuna:** o kit resolve dois dos três tipos de referência que usa — caminho de arquivo tem
+`Test-Path`, identificador de tarefa tem `review_evidence`, literal de aceite tem `Select-String`
+nos dois mundos. **Citação de seção não tem nada.**
+
+**Custo medido da ausência:** o ponteiro *"§2.5 publicada na skill `diario-de-obras`"* atravessou a
+autoria de um card, uma transcrição **aprovada em 100%**, duas varreduras de consultor e um
+despacho — e só caiu quando um executor foi **abrir o arquivo para editar**. O que ele mediu, e é o
+que dá o critério do verbo: das 301 linhas, **nenhuma é heading numerado**, e o literal `2.5`
+aparece **uma vez, em prosa**, na linha 42 (`~2.5k para ~5k chars`). Por isso o casamento é por
+**heading**, nunca por substring. A redação anterior desta linha — *"as 301 linhas não contêm o
+literal `2.5`"* — era **falsa**; corrigida em 2026-09-20 pelo laudo do `TK-60a`.
+
+**Agravante:** o mundo que o card cria não resolve o caso — a seção não passaria a existir por
+efeito de passo nenhum, então nem o método da `DB-47` (rodar o aceite em cópia) o alcançaria.
+
+**O que fecha:** um verbo que resolva `§X.Y publicada em Z` contra o arquivo citado.
+
+### TK-60a — `check` resolve citação de seção e emite `C-11` [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20 — **reescrito** após reprovação 56% (bloqueante `guardas`).
+  A reprovação foi de **autoria do card**, não de conduta do executor: a `Verificação` anterior
+  exigia superfície de CLI e fixava uma gramática de citação que **não existe no corpus**.
+  Retentativa não consumida.
+- **Objetivo:** `check` passa a resolver as citações de seção do corpus contra o arquivo citado e a
+  emitir `C-11` quando a seção citada não existe nele. Fecha o terceiro resolvedor de referência do
+  kit — caminho de arquivo tem `Test-Path`, identificador de tarefa tem `review_evidence`, citação
+  de seção passa a ter este.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+  - `tests/fixtures/backlog/citacao_secao/`
+- **Verificação:**
+  - `python .claude/checks/dead_code.py` sai **exit 0** — hoje sai `FALHOU - 1 achado(s)`, nomeando
+    `.claude/tools/backlog.py:638: resolver_citacao_secao - sem chamador de producao alcancavel`.
+  - `python .claude/tools/backlog.py check` sai **exit 0**. Se sair 1, o **piso do item 7 está
+    errado** — não o corpus.
+  - `python -m pytest tests/test_backlog.py` verde; `python -m pytest` verde, sem queda do piso de
+    **234** (medido em 2026-09-20, com a entrega anterior na árvore).
+- **Pronto quando:** os oito itens abaixo valem, e cada um é conferível no arquivo entregue.
+  1. **Gramática de colheita — a observada, não a inventada.** A citação real do kit é
+     `` `<arquivo>.md` §<N>[.<N>]* `` (literal entre crases, espaço, `§`). Medido em 2026-09-20:
+     **1.017** ocorrências dessa forma contra **1** da forma `§X.Y publicada em <arquivo>` que o card
+     anterior fixava — e essa 1 é o texto do próprio tíquete. A `_REF_SECAO_RE` entregue **sai**.
+  2. **Domínio — um nível e N níveis.** Medido: **772** citações de um nível (`§3`, `§7`, `§10`)
+     contra **240** de dois ou mais. A gramática anterior exigia `\d+(?:\.\d+)+` e reprovava as 772.
+  3. **Casamento por heading numerado, nunca substring** — `^#{1,6}\s+<N>(\.<N>)*\b`. O núcleo
+     entregue está **correto e fica**: é o que faz o caso motivador sair `C-11` apesar de o literal
+     existir (`.claude/skills/diario-de-obras/SKILL.md` tem `2.5` em prosa na linha 42 e **zero**
+     headings numerados nas suas 301 linhas).
+  4. **Resolução de caminho: raiz do repo, com queda para basename único no corpus.** Medido: **56**
+     ocorrências / 20 distintas falhariam só por a citação omitir o prefixo — `` `RUBRICA_DE_REVISAO.md`
+     §8 `` (9 ocorrências) com o arquivo em `docs/`. Sem essa queda o lint vira ruído.
+  5. **Fronteira declarada, e é silêncio nos dois casos:** arquivo que não existe nem por basename
+     **não** é `C-11` — resolver caminho é do `Test-Path` (`DB-2`, uma residência por regra); e `§`
+     seguido de **três ou mais** componentes numéricos é **versão**, não seção (medido:
+     `` `CHANGELOG.md` §3.0.0 ``, 3 ocorrências).
+  6. **O chamador de produção é `check`.** Nenhum subcomando novo, nenhum segundo ponto de entrada.
+  7. **Piso, para o lint não nascer vermelho.** `check` não tem severidade: violação implica exit 1.
+     O corpus vivo já carrega dívida — medido: **duas** seções citadas que não existem,
+     `` `GOVERNANCA.md` §1.1 `` e `` §3.2 ``, em **13** ocorrências (`docs/DIARIO_HISTORICO.md` 5,
+     `docs/plans/P-0741-modelo-conceitual.md` 6, `P-0730` 1, `P-0731` 1). `C-11` nasce com um piso
+     dessas **duas** entradas, inline no módulo, cada uma com origem e data da medida — mesma trava
+     do `.claude/checks/ratchet_piso.py`. O lint falha no **próximo** ponteiro quebrado, que é o
+     defeito que o `TK-60` existe para pegar. Quitar o piso é tíquete próprio, não deste card.
+  8. **O mundo do teste é declarado.** A fixture `tests/fixtures/backlog/citacao_secao/` **fica** —
+     é a convenção do módulo e blinda o teste das edições da outra janela —, e a folha
+     `.claude/skills/diario-de-obras/SKILL.md` dentro dela é **renomeada para `SKILL.fixture.md`**,
+     preservando o diretório-espelho. Razão medida: com o nome real, o harness passou a listar a
+     fixture como **skill invocável** (`tests/fixtures/backlog/citacao_secao:diario-de-obras`).
+  E o **par de regressão do domínio**, que é o defeito medido nesta rodada, entra como teste:
+  `§3` contra `GOVERNANCA.md`, `§8` contra `docs/RUBRICA_DE_REVISAO.md` e `§9` contra
+  `docs/consultant-spec.md` resolvem (`None`); hoje os três saem `C-11`.
+- **Não fazer:** não editar `docs/plans/P-0741-modelo-conceitual.md` — é plano **vivo de outra janela
+  de orquestração ativa neste mesmo repositório**; as 6 ocorrências dele entram no piso, são
+  reportadas e **não** corrigidas. Não corrigir nenhuma das 13 ocorrências. Não criar subcomando de
+  CLI. Não editar `GOVERNANCA.md`, `.claude/tools/rdo.py`, `review_evidence.py` nem
+  `.claude/estado/tarefa-corrente.json`.
+
+### TK-60b — Item 5 implementado e piso devolvido à dívida real [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** implementar o item 5 do `TK-60a` **como ele já está escrito** — arquivo citado que
+  não resolve nem por basename devolve `None` em silêncio — e devolver `_PISO_C11` às duas entradas
+  de dívida real. Hoje `resolver_citacao_secao` devolve `C-11` quando `_resolver_arquivo_citado`
+  devolve `None`, **contra o próprio docstring**, e as 3 entradas extras do piso são artefato desse
+  defeito. Nenhuma rota nova: o estado final está medido.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+- **Verificação:**
+  - `python .claude/tools/backlog.py check` sai **exit 0** com `check: OK` e nenhuma violação
+    (medido em cópia patchada contra o repo real, 2026-09-20).
+  - `python .claude/checks/dead_code.py` sai **exit 0**.
+  - `python -m pytest` verde, sem queda do piso de **235**.
+- **Pronto quando:**
+  1. `resolver_citacao_secao` devolve `None` quando `_resolver_arquivo_citado` devolve `None` — um
+     `if caminho is None: return None` antes do laço de headings. **Nenhuma outra** mudança de
+     comportamento: gramática de colheita, domínio, casamento por heading, chamador em `check` e
+     fixture estão aprovados e não se tocam.
+  2. `_PISO_C11` tem **exatamente duas** entradas, as de dívida real em `GOVERNANCA.md`. As três
+     saem: duas citam doc de **outro repositório** (PantonicVideo) e uma é **nota de diff**, não
+     citação. As três são falso positivo do colhedor, que o item 5 silencia sozinho.
+     **O princípio que isso destila, e que vale para toda autoria desta família:** *piso absorve
+     dívida real, nunca falso positivo do colhedor*. O teste é mecânico — com o colhedor correto,
+     **remover** uma entrada do piso tem de fazer o lint **acusar**; a entrada que some sem acusar
+     nunca foi dívida, era defeito de gramática escondido dentro do piso.
+  3. **Teste que tranca a regra** (é o que impede a reincidência): par presença-ausência sobre o
+     ramo do item 5 — citação a arquivo que não existe, e a arquivo de basename ambíguo, saem
+     `None`; citação a arquivo existente com seção ausente sai `C-11`.
+  4. **Número de dívida corrigido no comentário de origem do piso: 15 ocorrências, não 13.** Medido
+     pelo próprio instrumento com `_PISO_C11` vazio, em cópia: 15 violações, todas das duas seções
+     ausentes, nenhuma das três espúrias reaparecendo. O 13 do `TK-60a` era contagem de **linhas**
+     (`grep -c`) e não contava a ocorrência que o próprio card criou.
+- **Não fazer:** não corrigir nenhuma das 15 ocorrências; não editar
+  `docs/plans/P-0741-modelo-conceitual.md` — plano vivo de outra janela; não editar `GOVERNANCA.md`;
+  não mexer em `_REF_SECAO_RE`, `_CITACAO_SECAO_HARVEST_RE`, `_HEADING_NUMERADO_RE`, na chamada
+  dentro de `check` nem na fixture.
+
+### TK-60c — A decomposição por arquivo do piso bate com o total que ela declara [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20 — pendência do laudo do `TK-60b` (ressalva 91%), roteada pelo
+  `A8a`.
+- **Objetivo:** corrigir o comentário de origem de `_PISO_C11` em `.claude/tools/backlog.py`, cuja
+  decomposição por arquivo soma **13** sob um cabeçalho que declara **15** — o comentário contradiz
+  a si mesmo dentro do próprio guarda que existe para pegar derivado que erra sem sinal.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+- **Verificação:** a soma das parcelas da decomposição é **15**, igual ao total do cabeçalho da
+  mesma frase. `python .claude/tools/backlog.py check` sai **exit 0**; `python -m pytest` verde, sem
+  queda do piso de **236**.
+- **Pronto quando:** a decomposição lista os cinco arquivos com as contagens **medidas pelo próprio
+  instrumento** em 2026-09-20 (`check` com `_PISO_C11` vazio, em processo, sem tocar a árvore):
+  `docs/plans/P-0741-modelo-conceitual.md` **6**, `docs/DIARIO_HISTORICO.md` **6**,
+  `docs/DIARIO_DE_OBRAS.md` **1**, `docs/plans/P-0730-v2-identidade.md` **1**,
+  `docs/plans/P-0731-v2-extracao-modalidade.md` **1**. A redação anterior omitia
+  `docs/DIARIO_DE_OBRAS.md` e contava 5 em vez de 6 no histórico. **Só o comentário muda** —
+  nenhuma linha de código, nenhuma entrada do piso, nenhum teste.
+- **Não fazer:** não corrigir nenhuma das 15 ocorrências de dívida; não alterar as duas entradas de
+  `_PISO_C11`; não editar `docs/plans/P-0741-modelo-conceitual.md`, plano vivo de outra janela de
+  orquestração ativa neste repositório.
+
+## TK-61 — Implementar o rodapé de "candidato a fechamento" (`DB-4`)
+
+- **Status:** `done` · 2026-09-20 — aberto no encerramento do `P-0739`, pendência 6 de
+  `docs/Entregas Aceitas/Entregas - P-0739.md`.
+
+**O defeito, medido:** a `DB-4` está publicada na `## 3` do `P-0739` como norma — pai cujos filhos
+diretos ficaram todos terminais entra no rodapé de `next` como *candidato a fechamento*. A
+expressão **não existe** em `.claude/tools/backlog.py`, e o rodapé imprime só `inbox de planos`,
+`fila de memória` e `blocked`. **Norma publicada sem implementação e sem teste.**
+
+**Efeito hoje:** com a migração feita, `TK-51` (**1/1**) e `TK-53` (**1/1**) têm todos os filhos
+terminais e *deveriam* aparecer no rodapé. Nada os mostra.
+
+**Por que ficou fora dos módulos do `P-0739`:** não é corpus nem migração — seria matéria
+transversal, vedada pelo critério (ii) da rubrica de criação de tarefa.
+
+**O que fecha:** implementar o rodapé que a norma descreve, com teste que discrimine pai com filhos
+todos terminais de pai com filho vivo.
+
+
+### TK-61a — O rodapé de `next` imprime candidato a fechamento [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20 — **reescrito** no gate, antes do despacho: o aceite anterior
+  citava `TK-51` e `TK-53` como casos vivos e ambos estão `done` desde então. Re-derivado em
+  2026-09-20 pelo instrumento, não por varredura.
+- **Objetivo:** implementar a `DB-4` do `P-0739` na metade que falta — a expressão *candidato a
+  fechamento* não existe em `.claude/tools/backlog.py` e o rodapé de `next` imprime só os três
+  contadores mecânicos.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+  - `tests/fixtures/backlog/`
+- **Verificação:** `python .claude/tools/backlog.py next` sai **exit 0** e o rodapé traz **duas**
+  linhas: a dos três contadores, **byte a byte como hoje**, e a nova, que sobre o corpus vivo
+  imprime `candidato a fechamento: nenhum` (população medida em 2026-09-20: **zero**).
+  `python .claude/tools/backlog.py check` exit 0; `python .claude/checks/dead_code.py` exit 0;
+  `python -m pytest` verde, sem queda do piso de **236**.
+- **Pronto quando:**
+  1. **Definição, quatro cláusulas conjuntas.** Candidato a fechamento é pai (plano **ou** tíquete)
+     que: (a) está no corpus da §2.0 (`DB-43`); (b) tem **>= 1 filho direto**; (c) tem **todos** os
+     filhos diretos terminais — `done` ou `cancelled`, o vocabulário da §2.5 (`superseded` não entra:
+     só plano o tem e plano não é filho); (d) **não é ele próprio terminal**
+     (`done`/`cancelled`/`superseded`).
+     **Medido em 2026-09-20, e é o que justifica (b) e (d):** sem (d) o rodapé carregaria **8**
+     entradas permanentes, todas de pai já `done` (`TK-51`, `TK-53`, `TK-56`, `TK-57`, `TK-59`,
+     `TK-60`, `TK-62`, `TK-64`); sem (b), mais **5** por verdade vacuosa, três delas de tíquete
+     aberto sem subtarefa (`TK-38`, `TK-48`, `TK-55`).
+     **A cláusula (d) é leitura declarada, não texto publicado:** a §2.5 não fala do status do pai.
+     Ela deriva do enunciado do `DB-4` — o rodapé é lista de **decisão pendente**, e pai fechado não
+     tem decisão pendente. Registrada assim para o dono poder derrubá-la sabendo o custo (as 8).
+  2. **Linha própria, e a linha dos três contadores não se toca.** A `DB-38` fixa aquela linha em
+     *"três campos ... sempre os três"*: acrescentar um quarto campo contradiria norma publicada. O
+     campo novo sai em **linha própria**, sob o mesmo `--- pendências mecânicas ---`, que é o
+     *"uma linha cada"* do `DB-4`. Literal: `candidato a fechamento: <ID> (<done>/<total>), ...`, IDs
+     em **ordem alfabética crescente** (`DB-37` E-1), `<done>/<total>` pela `DB-36`; sem população,
+     o literal exato `candidato a fechamento: nenhum` (espelha `blocked: nenhum`).
+  3. **Mundo do teste: fixture, quatro casos.** Nada de aferir contra o diário vivo — ele muda por
+     ato desta janela **e da outra janela de orquestração ativa**. A fixture traz: (i) pai vivo com
+     >=1 filho, todos terminais → **aparece**; (ii) pai vivo com filho vivo → **não aparece**;
+     (iii) pai já terminal com todos os filhos terminais → **não aparece**; (iv) pai com zero
+     filhos → **não aparece**. Os quatro num corpus só, para que a asserção seja sobre a **linha
+     inteira** e não sobre presença de substring.
+  4. **Regressão da linha antiga:** teste que afirma que a linha dos três contadores segue idêntica,
+     com os três campos e os mesmos literais.
+- **Não fazer:** não alterar a linha `inbox de planos: ... · fila de memória: ... · blocked: ...`; não
+  tocar `selecionar_next` nem a eleição de candidato a **despacho** (`_candidatos`, `_eh_elegivel`) —
+  este card só acrescenta projeção de rodapé, não muda o que `next` elege; não aferir contra
+  `docs/DIARIO_DE_OBRAS.md` nem contra `docs/plans/P-0741-modelo-conceitual.md`; não fechar nenhum
+  pai (fechar é juízo do agente com o dono, que é o que a `DB-4` diz).
+
+## TK-62 — A gramática de ID de `rdo.py` não reconhece subtarefa de tíquete
+
+- **Status:** `done` · 2026-09-20 — aberto pelo `scrum-master` na abertura da janela dos seis
+  tíquetes, por lacuna medida que bloqueia os seis (diretiva de execução do `P-0739`, item 3).
+
+**O defeito, medido:** `_ID_HEADER_RE` (`.claude/tools/rdo.py:84`) é
+`^### ((?:[A-Z0-9]+-)?T[0-9]+[a-z]?)(?=[\s—])` e `_HEADER_BRACKET_RE` (`.claude/tools/rdo.py:86-90`)
+repete a mesma classe de ID. Ambas exigem `T` **seguido de dígitos**. O ID de subtarefa de tíquete é
+`TK-<n><letra>` — prefixo `TK-`, depois dígitos: **nenhuma das duas leituras casa**. Medido nesta
+janela: `review_evidence.py --plano docs/DIARIO_DE_OBRAS.md --tarefa TK-57a` sai
+`FALHOU - tarefa: 'TK-57a' não encontrada em 'docs\DIARIO_DE_OBRAS.md'`, com o cabeçalho presente em
+`docs/DIARIO_DE_OBRAS.md:1819`.
+
+**A premissa que caiu:** a `DB-17` do `P-0739` publicou a forma `### TK-<n><letra> — <título>
+[<modelo> · classe <classe>]` justificando-a com *"porque a subtarefa é executada como tarefa e
+`rdo.py`/`review_evidence.py` já leem essa forma"*. Essa cláusula é **falsa**, e nunca foi
+verificada: a `DB-22`, que fixou a gramática de ID, escreveu `(?:[A-Z0-9]+-)?T[0-9]+[a-z]?` — que
+cobre `BKL-T2a` e **estruturalmente não pode** cobrir `TK-57a`.
+
+**Alcance:** bloqueia o Passo 6 (dossiê de evidência) e o Passo 9 (`rdo.py close`) do
+`scrum-master` para **toda** subtarefa de tíquete — os seis tíquetes desta fila, e todo tíquete
+futuro.
+
+**A rota já é doutrina publicada**, não decisão nova: `DB-21` — *"Limitação de instrumento não
+dispensa gate — conserta-se o instrumento"* — e `DB-22` — *"a gramática de ID mora num ponto só, em
+`rdo.py`"*.
+
+**Para a spec de robustez (`TK-55`):** classe *o derivado cala onde deveria falar*, na variante mais
+cara — aqui o derivado **não** calou, falhou ruidosamente; o que calou foi a **autoria**, que
+publicou como fato conferido (*"já leem essa forma"*) uma afirmação que um comando de uma linha
+teria derrubado. É o mesmo defeito que o `TK-60` combate em citação de seção, aplicado a citação de
+**comportamento de código**.
+
+### TK-62a — `rdo.py` reconhece `TK-<n><letra>` como ID de tarefa [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** alargar `_ID_HEADER_RE` e `_HEADER_BRACKET_RE` em `.claude/tools/rdo.py` para
+  reconhecer, além do `(?:[A-Z0-9]+-)?T[0-9]+[a-z]?` atual, a forma `TK-[0-9]+[a-z]?` da `DB-17`,
+  sem alargar para nada além dessas duas. Regressão em `tests/test_rdo.py` e
+  `tests/test_review_evidence.py` que discrimine ID de tíquete aceito de ID fora da gramática
+  recusado. Caso medido que motivou: `TK-57a` em `docs/DIARIO_DE_OBRAS.md:1819`.
+- **Arquivos-alvo:**
+  - `.claude/tools/rdo.py`
+  - `tests/test_rdo.py`
+  - `tests/test_review_evidence.py`
+- **Verificação:** `python .claude/tools/review_evidence.py --plano docs/DIARIO_DE_OBRAS.md --tarefa TK-57a --desde <ref> --out docs/RDO/evidencia/TK-57-TK-57a.md` sai **exit 0** e grava o arquivo — hoje sai exit 1 com `tarefa: 'TK-57a' não encontrada`. `python -m pytest` verde, sem queda do piso de **224**.
+- **Pronto quando:** `_ID_HEADER_RE` e `_HEADER_BRACKET_RE` aceitam `TK-<n>` e `TK-<n><letra>` além do `(?:[A-Z0-9]+-)?T[0-9]+[a-z]?` atual, e **nada além dessas duas** — `## TK-62 — …` (nível 2, tíquete-pai) continua não sendo reconhecido como tarefa, e `### 2.5 — …` continua fora. Regressão **par presença-ausência** nos dois arquivos de teste.
+
+
+## TK-63 — O mundo hostil dos testes de executável é herdado do host, não construído
+
+- **Status:** `done` · 2026-09-20 — aberto pelo `scrum-master` no escalonamento 1 desta janela, por
+  decisão do consultor de plano sobre a ressalva do `TK-56a`.
+
+**Por que é tíquete próprio, e não card do `TK-57`:** a matéria é a continuação do `TK-57`, mas o
+`TK-57` está `done` e a tabela de transições de §2.7 **não tem rota de reabertura** — `done` não é
+origem de nenhuma transição. A `DB-23` também veda retroação em entrega fechada. O tíquete novo é a
+residência correta; o `TK-57` permanece fechado como foi entregue e aprovado.
+
+**O defeito, medido pelo consultor em 2026-09-20:** os dois sítios que **já** discriminam neste host
+o fazem **por acidente de plataforma** — o mundo "sem `PYTHONUTF8`" só é hostil porque este host é
+Windows-cp1252. Em host que exporte `PYTHONUTF8=1`, ou em plataforma cujo default já seja UTF-8, os
+dois param de discriminar. É exatamente o defeito que abriu o `TK-57`, uma camada abaixo.
+
+**Medida que fecha a questão:** `PYTHONIOENCODING` **prevalece** sobre `PYTHONUTF8` para `stdin`.
+Logo o mundo hostil **construído** (`PYTHONIOENCODING=cp1252`) é hostil em qualquer host e em
+qualquer plataforma — que é a metade que a `DB-53` não cobre.
+
+### TK-63a — O mundo hostil do teste de executável é construído, não herdado do host [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20 — **reescrito** após devolução `blocked` razão `premissa`, por
+  conduta correta do executor: o card prescrevia shim com `__file__` preservado, e preservar
+  `__file__` faz o TF ler o `backlog.py` e o **diário reais**, acoplando o teste a estado vivo
+  escrito por outra janela de orquestração. A prescrição do shim **cai**; entra raiz relocada.
+- **Objetivo:** os dois sítios que discriminam **por acidente de plataforma** — o mundo "sem
+  `PYTHONUTF8`" só é hostil porque este host é Windows-cp1252 — passam a usar o mundo hostil
+  **construído**. Em host que exporte `PYTHONUTF8=1`, ou em plataforma cujo default seja UTF-8, os
+  dois param de discriminar hoje.
+- **Arquivos-alvo:**
+  - `tests/test_backlog.py`
+  - `tests/test_ocupacao.py`
+- **Verificação:** `python -m pytest tests/test_backlog.py tests/test_ocupacao.py` verde, coletando
+  **>=91**; `python -m pytest` verde, sem queda do piso de **238**. Nenhum teste lê
+  `docs/DIARIO_DE_OBRAS.md`, `docs/plans/*` ou `.claude/tools/backlog.py` **no lugar**.
+- **Pronto quando:**
+  1. **Mundo hostil construído.** Os dois mundos são `env` mínimo + `PYTHONIOENCODING=cp1252`
+     (hostil) e `env` mínimo + `PYTHONUTF8=1` (seguro). O mundo "host sem a variável" deixa de ser o
+     hostil — ele mede o host. Medido: `PYTHONIOENCODING` prevalece sobre `PYTHONUTF8`, então o
+     mundo hostil é hostil até em host que exporte a variável.
+  2. **`backlog_hook`: raiz relocada, sem shim.** O teste monta em `tmp_path` uma raiz falsa a
+     partir de `tests/fixtures/backlog/next_tk90/` e copia para `<raiz>/.claude/tools/` **os dois**
+     arquivos reais — `backlog_hook.py` e `backlog.py` — com `shutil.copy2`. Isso basta: o hook
+     resolve `backlog.py` como irmão de `__file__` e a raiz a partir do `backlog.py`, de modo que
+     todo o acoplamento se fecha **dentro** da raiz falsa. **Nenhum shim, nenhum `exec(compile(...))`,
+     nenhum `__file__` apontando para a árvore viva.** Mesma técnica do `telemetria_hook` no `TK-56b`
+     (aprovado 100%).
+  3. **Par negativo é o produto revertido**, materializado por substituição textual sobre a fonte
+     real (`assert <bloco do reparo> in fonte` antes), copiado para dentro da raiz falsa como o
+     positivo. O `stub = tmp_path / "hook_quebrado.py"` **sai** dos testes que ainda o têm.
+  4. **`ocupacao.py`: cópia simples em `tmp_path`** — não tem acoplamento por `__file__`; medido.
+  5. **As asserções afirmam relação, nunca magnitude.** Três, e nenhuma envelhece: (i) **invariância**
+     — o produto correto dá a mesma saída nos dois mundos; (ii) **divergência** — o produto revertido
+     dá saídas diferentes entre eles; (iii) **não-vazio** — a saída do produto correto no mundo
+     hostil é `!= b""`. **Nenhum `assert` cita número de bytes.**
+  6. **A magnitude vive no docstring, com data e mundo, como registro — não como aceite.** Medidas de
+     2026-09-20, a reproduzir: `backlog_hook` em raiz relocada sobre `next_tk90` → **737 B**
+     idênticos nos quatro mundos, revertido **0 B** no hostil; `ocupacao` → **323 B** idênticos nos
+     quatro mundos, revertido **335 B** no hostil.
+- **Não fazer:** não ler o diário real, nenhum arquivo de `docs/plans/` e nenhum estado vivo em
+  teste — foi o acoplamento que devolveu este card; não editar `.claude/tools/backlog_hook.py`,
+  `.claude/tools/backlog.py` nem `.claude/tools/ocupacao.py` (os reparos estão corretos e aprovados);
+  não reabrir `TK-57a` nem `TK-56a`; não tocar `docs/plans/P-0741-modelo-conceitual.md`.
+
+## TK-64 — O `check-drift` está vermelho por linha de skill que nenhuma tarefa aberta possui
+
+- **Status:** `done` · 2026-09-20 — aberto pelo loop na janela dos tíquetes do `P-0739`, por decisão
+  do consultor de plano no escalonamento 2.
+
+**O defeito, medido em 2026-09-20:** `pwsh .claude/checks/kit_check.ps1 -Mode check-drift` sai
+**exit 1** porque `.claude/README.md` não tem a linha da skill `entrega-de-encerramento`. A skill é
+entrega do `TK-51a`, **fechado** — o vermelho chega a esta janela sem dono e obrigou o reviewer a
+reconciliar à mão em **três** revisões (`TK-62a`, `TK-56a`, `TK-56b`).
+
+**Metade verde do guarda:** `materializar drift --alvo projeto` sai exit 0. Os "2 problema(s)" do
+relatório são o cabeçalho e a linha de detalhe do **mesmo** defeito — contagem inflada, item já
+roteado à spec de robustez (`TK-55`).
+
+**Por que card e não ato direto do loop:** regenerar sem card põe uma edição de `.claude/README.md`
+sem dono no recorte de evidência de toda revisão seguinte — falso positivo de escopo, classe do
+`AE-4` do `P-0739`. O que apaga o vermelho é a atribuição, não o comando. O `TK-51a` não reabre
+(`DB-23` do `P-0739`); o reparo nasce em card próprio, como `BKL-T2a`..`BKL-T3b` nasceram.
+
+### TK-64a — Regenerar `.claude/README.md` pelo gerador do kit [Sonnet · classe implementacao]
+
+- **Status:** `done` · 2026-09-20
+- **Objetivo:** pôr `.claude/README.md` em dia com `.claude/skills/` rodando o gerador do próprio
+  kit, para que o guarda pare de chegar vermelho a revisões que não o causaram.
+- **Arquivos-alvo:**
+  - `.claude/README.md`
+- **Verificação:** `pwsh .claude/checks/kit_check.ps1 -Mode generate` sai **exit 0**;
+  em seguida `pwsh .claude/checks/kit_check.ps1 -Mode check-drift` sai **exit 0** (hoje: exit 1);
+  e `git diff --numstat .claude/README.md` devolve **`1	0`** — uma linha acrescida, nenhuma removida.
+- **Pronto quando:** a única mudança na árvore é a linha nova da skill `entrega-de-encerramento` na
+  região `<!-- kit:skills:begin -->`…`<!-- kit:skills:end -->` de `.claude/README.md`, escrita **pelo
+  gerador** e não à mão; a linha traz a `description` do `SKILL.md` **íntegra**, com travessão `—` e
+  acentuação (`É o artefato pelo qual o dono valida o plano`) — medido em cópia via `-KitRoot` em
+  2026-09-20: 9 agentes, 11 skills, `52a53`, delta de exatamente uma linha.
+- **Não fazer:** não editar `.claude/skills/entrega-de-encerramento/SKILL.md` — a `description` é a
+  **fonte**, e é entrega fechada do `TK-51a`; não editar `.claude/README.md` à mão nem fora da região
+  marcada; não tocar `.claude/checks/kit_check.ps1` (o `-` e o caractere de substituição vistos no
+  console são renderização do `Write-Host`, não conteúdo — não há defeito de codificação a corrigir);
+  não reabrir o `TK-51a`.
+## TK-65 — Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`
+
+- **Status:** `ready` · 2026-09-20 — aberto pelo consultor de plano do `P-0741` no escalonamento
+  `ESC-1`; os três achados são `AE-2`, `AE-3` e `AE-4` de `docs/plans/P-0741-modelo-conceitual.md`
+  (seção `## Achados da execução`), atribuídos a `.claude/tools/backlog.py` e vedados ao plano
+  pelo invariante `I-3` dele.
+
+**Por que um tíquete e não cards do `P-0741`:** o plano proíbe, no `I-3`, que qualquer card edite
+`backlog.py`; e os três defeitos são do instrumento de fila, não do modelo conceitual. O que o
+`ESC-1` reparou foi o **plano** (`DMC-19`: `Depende de` só com id de item, proveniência no campo
+novo `Fundamento`) — o instrumento continua aceitando calado a forma que trava a janela.
+
+**Ordem sugerida:** `TK-65b` (o mais barato e o que mais atrapalha o diagnóstico dos outros dois),
+depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
+
+### TK-65a — `check` recusa id de `Depende de:` que não é item [Sonnet · classe implementacao]
+
+- **Status:** `ready` · 2026-09-20
+- **Objetivo:** acrescentar ao `check` uma violação de vocabulário fechado (`C-*`, como as demais)
+  que acuse `- **Depende de:**` citando id sem item correspondente na árvore, e prosa no campo.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+- **Verificação:** par presença-ausência sobre fixture — `check` acusa a violação sobre um plano
+  cujo card cita em `Depende de:` um id que não é item (ex.: `` `DMC-1` ``), e **não** acusa sobre
+  o mesmo plano com o campo em ids de tarefa; `python -m pytest tests/test_backlog.py` verde.
+- **Pronto quando:** a violação nova existe, é nomeada no vocabulário fechado do `check`, e o
+  teste é par presença-ausência sobre corpus em que as duas leituras dariam resultados diferentes.
+- **Caso medido que motivou (2026-09-20):** `check` devolveu `check: OK — nenhuma violação` sobre
+  a árvore em que as cinco tarefas do `P-0741` estavam inselecionáveis, e `next` devolveu
+  `nada delegável — 0 elegível(is) · blocked 0`. O lint aprovou um plano que o seletor não
+  consegue percorrer; o defeito só apareceu no gate de despacho, com a janela já aberta.
+- **Não fazer:** não mexer em `_eh_elegivel` nem na semântica de `next` — o campo é lista de ids
+  de item por gramática publicada (skill `diario-de-obras`, *Item e residência*); o que falta é o
+  lint recusar quem desvia, não o seletor tolerar.
+
+### TK-65b — O ponto de carga escreve em utf-8 antes de argparse abrir a boca [Sonnet · classe implementacao]
+
+- **Status:** `ready` · 2026-09-20
+- **Objetivo:** mover a reconfiguração de encoding de `main()` para antes de `parse_args`, de modo
+  que `--help` e toda mensagem de erro de argparse — que imprimem o `usage` com `→` — saiam sem
+  `UnicodeEncodeError` em console cp1252.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py` (`main()`, hoje: `reconfigure` em `:1415`, `parse_args` em `:1411`)
+  - `tests/test_backlog.py`
+- **Verificação:** par presença-ausência por subprocesso com o ambiente hostil explícito
+  (`PYTHONIOENCODING` vazio, `-X utf8=0`): `backlog.py --help` sai **exit 0** e imprime o `usage`;
+  hoje o mesmo comando sai em traceback. `python -m pytest tests/test_backlog.py` verde.
+- **Caso medido que motivou (2026-09-20):**
+  `PYTHONIOENCODING= python -X utf8=0 .claude/tools/backlog.py --help` →
+  `UnicodeEncodeError: 'charmap' codec can't encode character '→' in position 611`.
+  É a metade de **escrita** do defeito que o `TK-56a` fechou na leitura.
+- **Não fazer:** não trocar o `→` do texto de ajuda por ASCII — o defeito é do ponto de carga, não
+  do texto; não tocar os outros pontos de carga já fechados pelo `TK-56a`.
+
+### TK-65c — O verbo `diretiva` não descarta id em silêncio [Sonnet · classe implementacao]
+
+- **Status:** `ready` · 2026-09-20
+- **Objetivo:** `diretiva` passa a reportar quantos ids reconheceu e a recusar (ou a acusar) o
+  texto em que há id entre crases **depois** do ` — `, que hoje é cortado e perdido.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py` (`_parse_diretiva`, `:326`)
+  - `tests/test_backlog.py`
+- **Verificação:** par presença-ausência — a escrita de uma diretiva com ids depois do travessão
+  produz saída que nomeia os ids descartados (ou recusa a escrita), e a escrita de uma diretiva
+  bem-formada segue silenciosa; `python -m pytest tests/test_backlog.py` verde.
+- **Caso medido que motivou (2026-09-20):** `_parse_diretiva` sobre
+  ``**Diretiva de priorização:** Priorize `P-0741` — e depois `TK-57`, `TK-56` `` devolve
+  `['P-0741']`: os tíquetes que a própria diretiva do dono manda priorizar saem da fila sem aviso.
+  Na janela do `P-0741` isso produziu uma fila filtrada a um único item e uma inversão de
+  prioridade que só a leitura do código explicou.
+- **Não fazer:** não passar a colher ids da cauda livre — a cauda é para humanos por gramática
+  publicada (skill `diario-de-obras`, *Cabeçalho do diário*); o reparo é tornar o descarte
+  **audível**, não mudar o que o campo significa.

@@ -8,16 +8,23 @@ vem mais de inferência sobre prosa, e sim do estado que o `scrum-master` grava 
 caminho via `importlib.util.spec_from_file_location`, mesmo padrão de `tests/test_ocupacao.py` e
 `tests/test_materializar.py`.
 
-Superfície testável, separada do I/O de stdin do hook (`main`, não exercitado aqui — mesmo desenho
-de `ocupacao.py`): `calcular_consumo` (pura, soma de tokens/tool_uses/duração a partir das linhas
-do `agent_transcript_path`) e `processar` (núcleo do hook, recebe payload e caminhos já resolvidos
-em vez de ler stdin/`sys.argv` — mesmo padrão de `apply`/`check`/`drift` em `materializar.py`).
-`processar` chama o CLI real de `telemetria.py` via subprocess (`--file` apontado para `tmp_path`),
-nunca reimplementa a validação de coluna (Cuidado do dossiê `T55`)."""
+Superfície testável, separada do I/O de stdin do hook: `calcular_consumo` (pura, soma de
+tokens/tool_uses/duração a partir das linhas do `agent_transcript_path`) e `processar` (núcleo do
+hook, recebe payload e caminhos já resolvidos em vez de ler stdin/`sys.argv` — mesmo padrão de
+`apply`/`check`/`drift` em `materializar.py`). `processar` chama o CLI real de `telemetria.py` via
+subprocess (`--file` apontado para `tmp_path`), nunca reimplementa a validação de coluna (Cuidado
+do dossiê `T55`). `main` ganhou cobertura por subprocesso na `TK-56a` (`DB-53`) — leitura de stdin
+em UTF-8 explícito — restrita ao ramo `agent_type` fora do filtro do kit, o único seguro para
+rodar contra os caminhos de produção reais que `main` resolve sozinho (`_estado_path_default`/
+`_telemetria_cli_default`, sem injeção possível pela CLI)."""
 from __future__ import annotations
 
+import datetime
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -65,6 +72,32 @@ def _payload(**overrides) -> dict:
     }
     valores.update(overrides)
     return valores
+
+
+def _montar_raiz_isolada(base: Path, nome: str, fonte_hook: str) -> tuple[Path, Path, Path, Path]:
+    """Raiz falsa em `base/nome` para relocar `_repo_root()` do hook (derivada de `__file__`):
+    hook copiado em `.claude/tools/telemetria_hook.py`, CLI real copiado em
+    `.claude/tools/telemetria.py`, estado válido em `.claude/estado/tarefa-corrente.json` e
+    `docs/` — nunca toca `.claude/estado/` nem `docs/telemetria.tsv` reais. Devolve
+    `(hook_path, estado_path, tsv_path, transcript_path)`; o transcript tem nome acentuado e é
+    o canal por onde o payload acentuado chega ao observável (efeito colateral, já que o hook
+    é silencioso por contrato)."""
+    raiz = base / nome
+    tools_dir = raiz / ".claude" / "tools"
+    tools_dir.mkdir(parents=True)
+    hook_path = tools_dir / "telemetria_hook.py"
+    hook_path.write_text(fonte_hook, encoding="utf-8")
+    (tools_dir / "telemetria.py").write_text(
+        _TELEMETRIA_CLI_PATH.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    estado_path = raiz / ".claude" / "estado" / "tarefa-corrente.json"
+    estado_path.parent.mkdir(parents=True)
+    estado_path.write_text(json.dumps(_estado_valido()), encoding="utf-8")
+    (raiz / "docs").mkdir(parents=True)
+    transcript_path = raiz / "análise.jsonl"
+    transcript_path.write_text("", encoding="utf-8")
+    tsv_path = raiz / "docs" / "telemetria.tsv"
+    return hook_path, estado_path, tsv_path, transcript_path
 
 
 def test_tf_calcular_consumo_soma_tokens_e_conta_tool_uses_de_n_entradas_assistant():
@@ -296,3 +329,75 @@ def test_tr_processar_agent_type_fora_do_filtro_e_silencio_e_preserva_o_estado(t
     assert escreveu is False
     assert tsv_path.read_text(encoding="utf-8") == _HEADER
     assert estado_path.exists()
+
+
+def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path):
+    """TK-56b: repara a ressalva da `TK-56a` — o par negativo deixa de ser um stub (que só
+    discriminava a si mesmo) e passa a ser o produto revertido, extraído do arquivo real. Mundo
+    hostil: `env` mínimo + `PYTHONIOENCODING=cp1252` (o host sem a variável mede o host, não o
+    hostil). Mundo seguro: `env` mínimo + `PYTHONUTF8=1`. O hook é silencioso por contrato —
+    `stdout` é `b""` e `rc=0` em todas as combinações — então o canal discriminante é o efeito
+    colateral, observado numa raiz relocada para `tmp_path` (relocar é obrigatório: sem isso
+    `main` apagaria o `.claude/estado/tarefa-corrente.json` real). O payload acentuado viaja no
+    nome do transcript apontado por `agent_transcript_path`. Medido em 2026-09-20: reparado
+    escreve a mesma linha TSV nos dois mundos; revertido, no mundo hostil, decodifica o caminho
+    acentuado errado — o transcript não é encontrado, o estado sobrevive e o TSV não é criado."""
+    fonte = _HOOK_PATH.read_text(encoding="utf-8")
+    bloco_reparo = (
+        "        try:\n"
+        "            raw = sys.stdin.buffer.read().decode(\"utf-8\", errors=\"replace\")\n"
+        "        except AttributeError:\n"
+        "            raw = sys.stdin.read()\n"
+    )
+    assert bloco_reparo in fonte
+    fonte_revertida = fonte.replace(bloco_reparo, "        raw = sys.stdin.read()\n")
+
+    env_hostil = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PYTHONIOENCODING": "cp1252",
+    }
+    env_seguro = {
+        "SYSTEMROOT": os.environ["SYSTEMROOT"],
+        "PATH": os.environ["PATH"],
+        "PYTHONUTF8": "1",
+    }
+    hoje = datetime.date.today().isoformat()
+    linha_esperada = f"{hoje}\tPantonicApp\tEXA-T55\tsonnet\t0\t0.0\t0.0\tusage"
+
+    def _rodar(nome: str, fonte_hook: str, env: dict):
+        hook_path, estado_path, tsv_path, transcript_path = _montar_raiz_isolada(
+            tmp_path, nome, fonte_hook
+        )
+        payload = json.dumps(
+            _payload(agent_transcript_path=str(transcript_path)), ensure_ascii=False,
+        ).encode("utf-8")
+        resultado = subprocess.run(
+            [sys.executable, str(hook_path)], input=payload, capture_output=True, env=env,
+        )
+        tsv_conteudo = tsv_path.read_text(encoding="utf-8") if tsv_path.exists() else None
+        return resultado, estado_path.exists(), tsv_conteudo
+
+    reparado_hostil, estado_rh, tsv_rh = _rodar("reparado_hostil", fonte, env_hostil)
+    reparado_seguro, estado_rs, tsv_rs = _rodar("reparado_seguro", fonte, env_seguro)
+    revertido_hostil, estado_vh, tsv_vh = _rodar("revertido_hostil", fonte_revertida, env_hostil)
+    revertido_seguro, estado_vs, tsv_vs = _rodar("revertido_seguro", fonte_revertida, env_seguro)
+
+    for resultado in (reparado_hostil, reparado_seguro, revertido_hostil, revertido_seguro):
+        assert resultado.returncode == 0
+        assert resultado.stdout == b""
+
+    # (i) produto reparado dá a mesma saída (efeito colateral) nos dois mundos
+    assert estado_rh is False
+    assert estado_rs is False
+    assert tsv_rh is not None and tsv_rh.strip("\n") == linha_esperada
+    assert tsv_rs is not None and tsv_rs.strip("\n") == linha_esperada
+
+    # (iii) o valor acentuado chega íntegro ao observável no mundo hostil
+    assert tsv_rh == tsv_rs
+
+    # (ii) produto revertido dá saídas diferentes entre os dois mundos
+    assert estado_vh is True
+    assert tsv_vh is None
+    assert estado_vs is False
+    assert tsv_vs is not None and tsv_vs.strip("\n") == linha_esperada
