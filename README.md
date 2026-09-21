@@ -417,7 +417,7 @@ Planejador e executor são papéis distintos, em modelos distintos, com deveres 
 planejador nunca executa e é responsável por fechar todas as decisões antes de publicar (§8). O
 executor nunca replaneja: ele **não decide, não pergunta ao dono e não muda a rota**. Se a tarefa se
 mostrar mal decomposta, ou se surgir um obstáculo que ameace a arquitetura aprovada, ele para,
-**sinaliza** `blocked` com a razão tipada e escala — não improvisa uma alternativa própria.
+**sinaliza** `blocked` com a razão tipada e escala — não improvisa uma alternativa própria. O plano nasce com o **modelo de domínio** (§8.1), e o dono dá go ou no-go lendo só ele — é o Marco 1 de todo plano.
 
 O desenvolvimento é TDD, com dois tipos de teste garantidos prioritariamente: **funcionais (TF)**,
 derivados dos casos de uso e requisitos, definidos já no plano; e **de regressão (TR)**, que trancam o
@@ -641,6 +641,32 @@ decide bifurcar é o gerente, com decision record aprovado **antes** de a altern
 revisão de rota registrada declara o que mudou, o que **não** mudou e não deve ser revisitado, e o que
 sai do escopo.
 
+### 8.1 O modelo de domínio do plano — o que o dono lê
+
+Todo plano carrega, logo depois do pedido, a seção **Modelo conceitual**: uma tabela de **objetos**,
+cada um com as **propriedades** observadas e o contrato de quem implementa; um **fluxo de
+operações** encadeadas, que dizem quem age, o que faz, de que objetos precisa e que propriedades
+altera; o **estado inicial e o estado final** de cada propriedade; e o **registro de versões** do
+modelo. O texto da operação, com o contrato dos objetos, chega copiado ao card da tarefa, para que
+o executor saiba do que precisa sem abrir o plano.
+
+O **estado final é o desejo do dono**, e é por ele que o plano se aceita: o plano só é bem-sucedido
+se o estado final real for o especificado, e essa diferença é o que tem valor para quem pediu. O
+andamento, esse, **não é gravado em lugar nenhum**: é derivado do estado das tarefas. Uma operação
+está concluída quando todas as tarefas dela fecharam, em curso quando alguma está em execução ou em
+revisão, e prevista no resto. O **estágio atual** do plano é a primeira operação que ainda não
+concluiu. O dono lê uma linha — qual é o estágio — em vez de um estado por frase.
+
+O modelo **versiona, não se reescreve**: quando uma decisão muda o que o plano entrega, a versão
+nova nasce ao lado da vigente, marcada como pendente, e as duas coexistem até o marco seguinte, em
+que o dono aceita ou recusa. Quem escreve o modelo é um agente só, o `pantonic-model-designer`: ele
+escreve na autoria, emenda quando uma decisão muda o que o plano entrega e resolve conflito entre o
+texto e a entrega. Nenhum
+outro papel escreve ali; quem precisa de um ato de modelo devolve um dossiê fechado, e quem conduz
+a sessão o despacha. O instrumento `.claude/tools/modelo.py` confere a seção (`check`) e gera a
+leitura do dono (`show`), que abre pelo estágio atual. Planos escritos antes desta doutrina não são
+migrados: o instrumento os reconhece como forma anterior e não bloqueia nada.
+
 ## 9. O fechamento de tarefa e uma tarefa por contexto
 
 > Fonte da verdade: `GOVERNANCA.md` §4.3
@@ -786,7 +812,7 @@ registrado, com motivo — nunca erosão silenciosa.
 
 > Fonte da verdade: `.claude/README.md`
 
-O kit são nove agentes, onze skills, quatro verificadores executáveis e a declaração de projeções,
+O kit são dez agentes, onze skills, quatro verificadores executáveis e a declaração de projeções,
 que viajam juntos para todo projeto consumidor. O índice abaixo é derivado do conteúdo real do diretório e verificado por script
 nos dois sentidos — item listado aqui sem arquivo no disco, e arquivo no disco sem item aqui, são as
 duas falhas.
@@ -804,6 +830,7 @@ duas falhas.
 | `pantonic-auditor-cleancode` | Sonnet | Auditoria de clean code: code smells, coesão e acoplamento. Não altera código. |
 | `pantonic-fora-da-caixa` | Opus | Varrer procedimentos que ficaram complexos por acúmulo e propor o redesenho "como se recomeçasse hoje". |
 | `pantonic-benchmarker` | Haiku | Produzir, a partir de um repositório público confirmado, um relatório de benchmarking em esquema fixo de 16 dimensões. |
+| `pantonic-model-designer` | Opus | Todo ato sobre o modelo de domínio de um plano: escrever na autoria, emendar por decisão, resolver conflito entre o texto e a entrega e explicar o contexto. Não planeja, não executa e não julga. |
 
 **Skills**
 

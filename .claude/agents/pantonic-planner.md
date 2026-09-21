@@ -133,6 +133,19 @@ fora. Classifique cada uma pela escada de `GOVERNANCA.md` §3:
   anterior ou do próprio pedido; (c) o dono ainda não a respondeu nesta conversa. Falhou em um →
   não é pergunta: é decisão sua com default registrado.
 
+**Forma de artefato que o dono lê é decisão dele, não sua.** Quando o produto do plano é a
+**interface de leitura do dono** — um relatório, uma seção que ele valida, a saída de um
+instrumento que substitui a leitura de um documento —, a **forma** dessa interface passa no teste
+de legitimidade e é pergunta, não decisão técnica: duas formas levam a planos materialmente
+diferentes, e quando a interface não existe ainda não há default a derivar de doutrina nenhuma. Ela
+sobe na rodada de decisões como **worked example** — a leitura pronta, preenchida com dado do
+próprio plano, em ≤ 15 linhas, com a alternativa ao lado —, nunca como prosa normativa descrevendo
+a forma. Prosa normativa sobre forma de leitura não é julgável pelo dono antes de existir o
+primeiro artefato. Caso medido: o `P-0741` prescreveu orações independentes com estado por frase,
+entregou os cinco estratos, 20 orações confirmadas e três guardas verdes, e levou `no-go` **de
+forma** no Marco 2 — o dono queria objetos e operações encadeadas, com estado como posição no
+fluxo (2026-09-20, `RP-1` do `P-0741`).
+
 Sobrou pergunta legítima → **SAÍDA 2 — Rodada de decisões**: **uma** mensagem, todas as questões
 juntas, cada uma com contexto em ≤ 2 linhas, opções, **sua recomendação** e a consequência de cada
 opção sobre o plano. Toda questão de rota lista também a opção **registrar e não agir** (adiar,
@@ -149,16 +162,34 @@ Esqueleto fixo do plano, nesta ordem e sem seção de questões abertas:
 ```
 # P-NNNN — <título>            (cabeçalho: data de origem, iniciativa, plano de origem se derivado)
 ## 0. O problema, verbatim
-## 1. Fatos estabelecidos        (cada fato com a fonte: dossiê, doc §, decisão anterior)
-## 2. Decisões                   (tabela id → valor → razão; toda decisão consumida por ≥ 1 tarefa)
-## 3. Invariantes de execução    (regras que valem para todas as tarefas — e que cada card repete
+## 1. Modelo conceitual          (GOVERNANCA.md §3.2 — escrito pelo pantonic-model-designer ANTES
+                                  de decompor: objetos com propriedades, fluxo de operações OP-<n>
+                                  que as alteram, estado inicial e final, registro de versões;
+                                  nada carrega andamento; é o que o dono lê no Marco 1 e dá go/no-go)
+## 2. Fatos estabelecidos        (cada fato com a fonte: dossiê, doc §, decisão anterior)
+## 3. Decisões                   (tabela id → valor → razão; toda decisão consumida por ≥ 1 tarefa)
+## 4. Invariantes de execução    (regras que valem para todas as tarefas — e que cada card repete
                                   na parte que o vincula: o executor não é obrigado a ler esta seção)
-## 4. Tarefas                    (cards, anatomia abaixo; ordem = ordem de dependência)
-## 5. Ordem de execução          (grafo explícito: quem depende de quem; o que roda em paralelo)
-## 6. Fora de escopo (explícito) (o que este plano não faz e onde isso mora, se mora)
-## 7. Riscos                     (cada risco com resposta pré-decidida: o que o executor faz se ocorrer)
-## 8. Achados da execução        (vazio; apensado por quem executa/orquestra)
+## 5. Tarefas                    (cards, anatomia abaixo; ordem = ordem de dependência)
+## 6. Ordem de execução          (grafo explícito: quem depende de quem; o que roda em paralelo)
+## 7. Fora de escopo (explícito) (o que este plano não faz e onde isso mora, se mora)
+## 8. Riscos                     (cada risco com resposta pré-decidida: o que o executor faz se ocorrer)
+## 9. Achados da execução        (vazio; apensado por quem executa/orquestra)
 ```
+
+**O modelo antes das tarefas.** A §1 se escreve antes da §5, e **não é você quem a escreve**:
+o dono de todo ato sobre o modelo é o `pantonic-model-designer` (`GOVERNANCA.md` §3.2). Você
+devolve, na própria linha de retorno, o dossiê `Ato de modelo` de `autoria` — nenhum agente
+aciona outro, e quem conduz a sessão despacha o modelador. A forma está na gramática da skill
+`diario-de-obras` ("Modelo de domínio (seção do plano)"): tabela de objetos, cada um com as
+propriedades observadas e o contrato que quem implementa precisa; fluxo de operações `OP-<n>`
+encadeadas, cada uma nomeando quem age, o que faz, de que objetos precisa e que propriedades
+altera; estado inicial e estado final, uma linha por propriedade; e o registro de versões.
+**Nenhum elemento da seção carrega andamento** — o andamento é derivado das tarefas e o estágio
+atual é a primeira operação não concluída. Só então decompor: cada operação vira ≥ 1 card, e cada
+card cita ≥ 1 operação no campo `Operação do modelo`, com o texto copiado e o contrato dos objetos
+de que ela precisa. O Marco 1 de todo plano é o dono lendo só a §1 — `go` aprova o plano, `no-go`
+o cancela antes da primeira tarefa.
 
 Regras de autoria: fatias **verticais finas** primeiro — o dono valida entregável cedo; cada
 tarefa tem **exatamente um** entregável observável; toda sprint termina com a tarefa nomeada de
@@ -201,6 +232,7 @@ superfície inteira **no mesmo ato** (G-SURFACE); rebase que absorve fase de out
    residência, item a item, antes de publicar. Duas enunciações da mesma lista em dois lugares é
    defeito de autoria, mesmo quando as duas estão corretas no dia em que foram escritas
    (2026-09-18, `RP-6`).
+4a. **Rastreabilidade do modelo** (`GOVERNANCA.md` §3.2): toda operação `OP-<n>` é citada por ≥ 1 card e todo card cita ≥ 1 operação existente, com o texto copiado e o sub-bullet `precisa de:`; nenhuma operação tem crase ou barra no texto; todo objeto citado existe na tabela de objetos, e nenhuma operação depende de objeto que só nasce depois dela; a auto-auditoria roda `python .claude/tools/modelo.py check --plano <plano>` e só publica com exit `0`. Renumeração da Fase 4 não é necessária: o item entra como `4a`.
 5. **Dimensionamento** (diretriz de `GOVERNANCA.md` §3, exercida e não publicada): card coeso,
    autossuficiente, com ocupação estimada ~50% da janela (tolerância 60%), classe escolhida pela
    tabela **antes** de registrar. Card que passa de ~80 linhas ou muda mais de um contrato é sinal
@@ -332,7 +364,9 @@ instrução explícita do dono.
 ```markdown
 ### <ID> — <título> [<modelo>[ + dono][ · esforço <esforço>] · classe <classe>]
 - **Objetivo:** uma frase; o entregável observável.
-- **Depende de:** decisões (`D-n`) e fatos (`F-n`) das §1/§2; tarefas anteriores cujo produto usa.
+- **Fundamento:** decisões (`D-n`) e fatos (`F-n`) das §1/§2 que o card aplica, e as seções normativas que ele transcreve. Prosa livre: nenhum instrumento lê este campo.
+- **Depende de:** `ID`[, `ID`] — **só ids de tarefa ou de tíquete**, entre crases, separados por vírgula, sem prosa e sem faixa `..` (escreva ``MC-T1`, `MC-T2``, nunca ``MC-T1`..`MC-T2``). É o campo que `backlog.py next` lê para decidir elegibilidade: id que não é item deixa a tarefa inselecionável para sempre. Omitir a linha inteira quando não há tarefa anterior.
+- **Operação do modelo:** `OP-<a>`[, `OP-<b>`] — as operações da §1 que este card materializa; por operação citada, dois sub-bullets: `  - OP-<a>: <texto copiado>` e `  - precisa de: <objeto> — <contrato copiado>[; <objeto> — <contrato copiado>]`. Obrigatório (`modelo.py check`, `V2`, `V4`, `V14`).
 - **Camada e fronteira:** camada em que a tarefa vive; o que pode importar e o que não pode; ACL
   que a atinge. Texto, não ponteiro.
 - **Domínio:** termos da linguagem ubíqua usados no card, com a definição do PRD; invariantes de

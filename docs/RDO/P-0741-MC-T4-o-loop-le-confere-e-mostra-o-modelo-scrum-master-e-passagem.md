@@ -1,0 +1,58 @@
+# RDO — P-0741 · MC-T4
+
+**Plano:** `docs/plans/P-0741-modelo-conceitual.md`
+**Tarefa:** `MC-T4` — O loop lê, confere e mostra o modelo: `scrum-master` e `passagem-de-bastao`
+**Modelo:** Sonnet · **Classe:** redacao
+**Esquema de leitura do plano:** padrao
+
+## Dossiê
+
+**Objetivo:** o `scrum-master` roda `modelo.py check` no passo 3, abre o relatório de encerramento e cada marco com `modelo.py show`; a `passagem-de-bastao` roda `check` no gate de fechamento e garante que o dossiê leva o campo `Oração do modelo`.
+
+**Arquivos-alvo:** - `.claude/skills/scrum-master/SKILL.md` (Passo 3; Passo 6; Passo 9; Relatório de encerramento) - `.claude/skills/passagem-de-bastao/SKILL.md` (Parte 2, parágrafo "Fonte do contexto"; Parte 3 item 1) - `.claude/agents/pantonic-reviewer.md` — só o passo `5a`, em dois pontos (`DMC-27`)
+
+**Verificação:** 1. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'modelo.py show' -SimpleMatch | Measure-Object).Count" ``` → **1**. **Medido antes: 0**. 2. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'modelo.py check' -SimpleMatch | Measure-Object).Count" ``` → **2**. **Medido antes: 0**. 3. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/skills/passagem-de-bastao/SKILL.md -Pattern 'modelo.py check' -SimpleMatch | Measure-Object).Count" ``` → **1**. **Medido antes: 0**. 4. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/skills/passagem-de-bastao/SKILL.md -Pattern 'Oração do modelo' -SimpleMatch | Measure-Object).Count" ``` → **1**. **Medido antes: 0**. 5. ``` pwsh -NoProfile -Command "python .claude/tools/review_evidence.py --plano docs/plans/P-0741-modelo-conceitual.md --tarefa MC-T4 --desde HEAD --atribuir | Select-String -Pattern '-> alvo-do-card' -SimpleMatch | Measure-Object | Select-Object -ExpandProperty Count" ``` → **3**. **Medido antes: 1**. (`DMC-22`; re-derivada no `ESC-4` depois de o card ganhar o terceiro alvo: `pantonic-reviewer.md` já conta antes, porque a `MC-T3` o deixou sujo na árvore, e as duas skills entram com a entrega.) 6. ``` pwsh -NoProfile -Command "python .claude/tools/review_evidence.py --plano docs/plans/P-0741-modelo-conceitual.md --tarefa MC-T4 --desde HEAD --atribuir | Select-String -Pattern '0 sem atribuicao' -SimpleMatch | Measure-Object | Select-Object -ExpandProperty Count" ``` → **1**. **Medido antes: 1**. (invariância de escopo, `DMC-22`.) 7. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/skills/scrum-master/SKILL.md -Pattern 'Status diferente de' -SimpleMatch | Measure-Object).Count" ``` → **1**. **Medido antes: 0**. (`DMC-27`, passo 6 deste card.) 8. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-reviewer.md -Pattern 'a que você julga está em' -SimpleMatch | Measure-Object).Count" ``` → **1**. **Medido antes: 0**. (`DMC-27`, passo 7 (i).) 9. ``` pwsh -NoProfile -Command "(Select-String -Path .claude/agents/pantonic-reviewer.md -Pattern 'achado-processo doutrina' -SimpleMatch | Measure-Object).Count" ``` → **1**. **Medido antes: 0**. (`DMC-27`, passo 7 (ii).)
+
+**Pronto quando:** as nove linhas acima devolvem o esperado (`DMC-22` — sob o `I-7` a árvore fica suja com a materialização de status do loop, e o critério de escopo é a atribuição medida, não `git diff --stat`).
+
+**Dossiê fechado por:** nenhum
+
+**Extras (rótulos livres do plano, verbatim):**
+
+- **Status:** `done` · 2026-09-20
+- **Fundamento:** decisões `DMC-10`, `DMC-11`, a `DMC-27` do `ESC-4` (o contrato do estado `review` dito nos três lugares), e do `ESC-2` as `DMC-20` (o gate do passo 2 deste card só funciona porque a `V6` aceita `review`), `DMC-21` e `DMC-22`; fatos `F-9`, `F-14`.
+- **Depende de:** `MC-T2`, `MC-T3`
+- **Oração do modelo:** `M-8`, `M-9`, `M-10`, `M-17` - M-8: O executor lê só o card da tarefa, e o card já traz o texto das orações que ele materializa. - M-9: O orquestrador mostra o modelo ao dono no relatório de encerramento de cada janela e em cada marco de validação, usando a leitura gerada pelo instrumento. - M-10: O dono se inteira de qualquer plano em andamento pedindo a leitura do modelo. - M-17: O orquestrador roda o instrumento antes de despachar cada tarefa e ao fechar cada tarefa, e modelo inválido bloqueia o despacho e o fechamento.
+- **Camada e fronteira:** skills de orquestração; nenhum código.
+- **Contratos/classes:** nenhum.
+- **Passos (cada um um `Edit` com `old_string` único):** 1. `scrum-master`, Passo 3, depois do parágrafo que termina em `vai ao passo 10 por \`B3\`.` e antes de `Aprovados os dois, e **antes** de delegar`, inserir: `Terceiro gate, mecânico: \`python .claude/tools/modelo.py check --plano <plano>\` (\`GOVERNANCA.md\` §3.2). Exit \`1\`: **não delega** — o stderr vai à razão e a tarefa cai em \`B3\`. Exit \`2\`: plano anterior à doutrina do modelo; segue, com a nota "sem modelo" no relatório. Exit \`0\`: segue.` 2. `scrum-master`, Passo 9, ao final do bloco **Ação** (depois de `entre uma chamada e outra (\`DM-11\` do \`P-0740\`).`), inserir o parágrafo: `Antes de \`rdo.py close\`, rodar de novo \`python .claude/tools/modelo.py check --plano <plano>\`: o reviewer acabou de gravar confirmação ou emenda na \`## 1. Modelo conceitual\` (\`GOVERNANCA.md\` §3.2), e exit \`1\` aqui é defeito dessa gravação — a tarefa fica \`in-progress\`, o stderr vai ao consultor como escalonamento, e o fechamento espera o reparo. Exit \`0\` ou \`2\`: fecha.` 3. `scrum-master`, `## Relatório de encerramento`: substituir a linha `Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:` por `Uma vez por janela, na parada. Abre com a saída integral de \`python .claude/tools/modelo.py show --plano <plano> --desde <data de abertura da janela>\` — a única exceção à regra de conteúdo, porque o modelo **é** o que o dono lê (\`GOVERNANCA.md\` §3.2); plano sem modelo, a linha "sem modelo (plano anterior à doutrina)". Depois, ponteiros e números, nunca conteúdo:` 4. `passagem-de-bastao`, Parte 2, no parágrafo `**Fonte do contexto, em ordem de preferência:**`, substituir `(1) dossiê pré-autorado (\`sprint_plan.md\`, card de plano) copiado verbatim — exceto números de aceite, ver gate abaixo;` por `(1) dossiê pré-autorado (\`sprint_plan.md\`, card de plano) copiado verbatim, **inclusive o campo \`Oração do modelo\` com os sub-bullets de texto** (é a única forma de o executor ler o modelo — \`GOVERNANCA.md\` §3.2) — exceto números de aceite, ver gate abaixo;`. 5. `passagem-de-bastao`, Parte 3 item 1, substituir `Sem gate verde, o destino é \`blocked\` ou permanece \`in-progress\`, nunca \`done\`.` por `Sem gate verde, o destino é \`blocked\` ou permanece \`in-progress\`, nunca \`done\`. No mesmo gate, \`python .claude/tools/modelo.py check --plano <plano>\` sai \`0\` ou \`2\` (\`GOVERNANCA.md\` §3.2); exit \`1\` mantém \`in-progress\` e escala ao consultor com o stderr.` 6. `scrum-master`, Passo 6, substituir o bullet inteiro (duas linhas do arquivo, com a quebra entre `passa` e `  por aqui`) `- **Gatilho:** **gatilho 1** da \`DP-E\` — a tarefa entrou em \`review\`. Tarefa \`blocked\` **não** passa` ⏎ `  por aqui (\`DP-G\` item 4): não há entregável a julgar.` pelo mesmo bullet acrescido, ao final, de: ` **Confira, antes de invocar, que o status materializado da tarefa no plano é mesmo \`review\`** — é essa materialização do passo 5 que torna a confirmação de oração possível: a \`V6\` do \`modelo.py\` conta \`done\`, \`cancelled\` e \`review\` como fechados, e com a tarefa ainda em \`in-progress\` o revisor não consegue gravar \`confirmada\` sem que o \`check\` recuse (\`GOVERNANCA.md\` §3.2). Status diferente de \`review\` aqui é defeito de condução do passo 5, não do revisor: materialize e só então invoque.` 7. `pantonic-reviewer.md`, passo `5a`, dois `Edit` no mesmo parágrafo: (i) substituir `se esta é a última tarefa aberta que a materializa (as demais estão \`done\` ou \`cancelled\` no plano)` por `se esta é a última tarefa da oração a fechar — as **demais** que a materializam estão \`done\` ou \`cancelled\` no plano, e a que você julga está em \`review\`, estado que o loop materializa na recepção do retorno do executor, antes de invocar você (\`scrum-master\` passos 5 e 6), e que a \`V6\` conta como fechado`; (ii) substituir `só emita o laudo com exit \`0\` ou \`2\`.` por `só emita o laudo com exit \`0\` ou \`2\`. Se o \`check\` acusar \`V6\` citando a própria tarefa que você julga, ela não foi materializada em \`review\`: **não force** — desfaça a gravação, deixe a oração como estava e registre \`--achado-processo doutrina\` com a linha "a tarefa nao estava em review no ato da revisao". É defeito de condução do loop, e a oração fica para o revisor seguinte.` (as duas âncoras foram contadas pelo consultor em 2026-09-20: **1** cada.)
+- **Restrições desta tarefa:** texto verbatim (`I-4`); `old_string` único por passo (contado em 2026-09-19: uma ocorrência cada; as três âncoras dos passos 6 e 7, em 2026-09-20) e copiado do arquivo **com as quebras de linha que o arquivo tem** — os passos 4 e 5 atravessam uma quebra (`card de` ⏎ `plano)`; `ou` ⏎ `permanece`); nenhuma outra linha das duas skills muda; as tabelas de roteamento (`Bloco A`, `Bloco B`) não mudam.
+- **Não fazer:** não criar regra nova de roteamento (`B3` e escalonamento já existem); não editar `diario-de-obras` (feito na `MC-T1`); em `pantonic-reviewer.md` mexer **só** no passo `5a`, nos dois pontos do passo 7 — nenhuma outra linha do agente muda; não tentar consertar a guarda `check-drift` (ver `Nota ao revisor`).
+- **Contingências:** 1. se qualquer `old_string` não ocorrer exatamente uma vez → parar e sinalizar `blocked` razão `premissa`, nomeando o passo.
+- **Testes:** nenhum executável; inspeção mecânica.
+- **Nota ao revisor (não é tarefa do executor):** 1. **Regime transitório (`DMC-21`):** além das orações deste card, **confirme toda oração da §1.2 deste plano que ainda esteja `prevista` e cujas tarefas estejam todas em `done`, `cancelled` ou `review`** — inclusive as que o revisor da `MC-T3` não tenha conseguido gravar. `M-17` só fecha depois da `MC-T2b`, então não a force aqui. 2. **A guarda `check-drift` chega vermelha, e não é desta tarefa (`AE-15` item 1, `DMC-28`).** O vermelho foi criado pela `MC-T3` ao trocar a `description` do consultor, espelhada numa tabela **gerada** do `README.md`; o remédio é `kit_check.ps1 -Mode generate`, e está escrito como passo da `MC-T5`, dona nomeada do README. Medido em 2026-09-20 no `ESC-4`: exit `1`, três linhas de um achado só, todas na linha do `pantonic-consultant`. Não rebaixe `guardas` por isso e não peça à `MC-T4` que conserte — o card a proíbe de tocar o README.
+- **Fora do escopo desta tarefa:** README (`MC-T5`).
+
+## Execução
+
+**Consumo:** 27 tool uses, 63.9 k tokens, 120.0 s (fonte: `<usage>` do encerramento)
+
+**Pendência para o dono:** nenhuma
+
+## Laudo
+
+**Veredito:** ressalva
+
+**Percentual:** 88%
+
+**Dimensão bloqueante:** nenhuma
+
+**Recomendação:** seguir com ressalva
+
+## Lições aprendidas na tarefa
+
+Entrega verbatim exemplar: sete Edit, nove verificacoes medidas (1,2,1,1,3,1,1,1,1 contra o esperado), nenhuma contingencia acionada, nenhuma linha fora dos tres alvos. Os dois achados sao de autoria do card, nao de execucao - o texto literal ditado pelo dossie carregou as duas incoerencias, e o executor estava proibido de corrigi-las. O circuito ponta a ponta foi exercitado: passo 6 do scrum-master e passo 5a do revisor agora dizem a mesma coisa nos dois lados (DMC-27 fechada), com a V6 contando review como fechado.
+
+## Fechamento
+
+**Desdobramento:** aprovado com ressalva

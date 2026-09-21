@@ -250,13 +250,14 @@ critério de pronto inverificável, dossiê que empurra a execução contra a ar
 exigida que não discrimina nada: corrigir o sintoma na entrega deixa a causa de pé, e a tarefa
 seguinte reincide.
 
-O laudo carrega um campo próprio para esse achado, com três alvos possíveis:
+O laudo carrega um campo próprio para esse achado, com quatro alvos possíveis:
 
 | alvo | o que o achado denuncia |
 |---|---|
 | `dossiê` | decomposição errada, critério de pronto inverificável, arquivos-alvo incompletos, verificação sem poder discriminante |
 | `doutrina` | guardrail ausente, ambíguo ou em conflito com outro |
 | `rubrica` | dimensão mal formulada, nível sem fronteira clara, peso desalinhado com o dano real |
+| `modelo` | operação do modelo de domínio do plano que a entrega tornou falsa ou ambígua (`GOVERNANCA.md` §3.2); rota: dossiê `Ato de modelo` de conflito, devolvido junto com o laudo e despachado ao `pantonic-model-designer` por quem conduz a sessão — nunca corrigido pelo reviewer |
 
 Três invariantes governam a via:
 
@@ -278,7 +279,9 @@ A decisão de mudar rota é do dono.
 
 O reviewer marca dimensões, anexa achados e emite o laudo pelo gerador. O reviewer não corrige o que
 aponta, não replaneja, não edita os arquivos da tarefa e não escreve percentual nem veredito. A
-correção do que o laudo aponta pertence a uma execução seguinte, com o laudo em mãos.
+correção do que o laudo aponta pertence a uma execução seguinte, com o laudo em mãos. **O reviewer não escreve fora do caminho do laudo**, e isso inclui o modelo de domínio do plano
+(`GOVERNANCA.md` §3.2): divergência entre a entrega e o texto de uma operação vira achado de
+processo de alvo `modelo`, e o texto fica como está até o modelador agir.
 
 ## 8. Rubrica de criação de tarefa
 

@@ -1,12 +1,125 @@
 # Diário de Obras — PantonicApp (hub de governança Pantonic*)
 
-**Diretiva de priorização:** Priorize `P-0741`, `TK-57`, `TK-56`, `TK-58`, `TK-59`, `TK-60`, `TK-61` — o `P-0741` (modelo conceitual do plano, a interface entre o dono e o loop) vem primeiro e é para conduzir inteiro nesta execução (dono, 2026-09-20); atrás dele seguem os seis tíquetes de pendência abertos no encerramento do `P-0739`, com o `TK-57` antes do `TK-56` por dependência declarada.
+**Diretiva de priorização:** sem alvo fixo — a priorização volta a ser do agente (default), porque o alvo fixado foi entregue. O `P-0743` foi **aceito pelo dono em 2026-09-21**, fechou `done` 18/18, e a entrega validada está em `docs/Entregas Aceitas/Entregas - P-0743.md` — o as-is saiu de `docs/OPERACOES_AS_IS.md`, que volta a ficar livre para o próximo plano a produzir um. Fila viva: `TK-54`, `P-0741` (`MC-T5` em `review`), `TK-65`, `TK-66`, `TK-55`; `P-0744` segue `blocked`. Oito pendências do `P-0743` estão listadas na entrega aceita, três delas com efeito fora daquele plano.
 <!-- fila:gerada -->
-**Fila corrente:** `P-0741` — O modelo conceitual do plano: a interface entre o dono e o loop (`docs/plans/P-0741-modelo-conceitual.md:1-1148`) · fila: — · ready 17 · blocked 0 · in-progress 0
+**Fila corrente:** `TK-54` — Extrato do custo de abertura de uma janela principal (`docs/DIARIO_DE_OBRAS.md:1286-1770`) · fila: — · ready 15 · blocked 0 · in-progress 0
 - `TK-54` (`ready`, 1/2): próxima `TK-54b`
-- `P-0741` (`ready`, 0/5): próxima `MC-T1`
+- `P-0741` (`ready`, 7/8): próxima —
 - `TK-65` (`ready`, 0/3): próxima `TK-65a`
+- `P-0744` (`blocked`, 0/3): próxima —
 <!-- /fila:gerada -->
+
+> **⏹ Os quatro blocos de diretiva abaixo são HISTÓRICO — o `P-0743` fechou `done` 18/18 e foi
+> aceito pelo dono em 2026-09-21.** Não são instruções vivas, e nenhuma janela nova deve tentar
+> executá-las: foi diretiva velha tratada como viva que travou o pickup de 2026-09-21. O verbatim
+> das decisões vive no plano (`D-24` em diante) e a entrega validada, em
+> `docs/Entregas Aceitas/Entregas - P-0743.md`.
+>
+> **Duas cláusulas sobrevivem ao plano e seguem vinculantes:**
+> 1. **Relatório tem apêndice, e matéria tática mora nele** (`D-46`, item 10 da diretiva de
+>    desenho) — vinculante para a orquestração em qualquer plano, não só neste.
+> 2. **O critério de admissão de matéria nova é coesão, não custo** (ato do dono de 2026-09-19,
+>    materializado como `DM-30` no `P-0740`).
+>
+> **Uma cláusula CADUCOU no fechamento:** a exceção que punha o `scrum-master` em Opus era
+> *limitada a este plano* (item 1 da diretiva de execução). Com o `P-0743` fechado, a orquestração
+> **volta a Sonnet** pela matriz de `GOVERNANCA.md` §3, salvo novo ato do dono.
+>
+> A condensação destes blocos para uma seção de histórico segue **pendente** — decisão do dono.
+
+**Diretiva de desenho do `P-0743` (dono, 2026-09-20, sobre o as-is reescrito em 100 linhas):** o
+terceiro estágio do modelo. Oito decisões, vinculantes até o dono as revogar. O verbatim integral e
+as decisões formais (`D-24` em diante) vivem em `docs/plans/P-0743-modelo-de-dominio.md`; aqui fica
+o ponteiro e a essência, para sobreviver a troca de contexto.
+
+1. **`Mudanças` sai do modelo.** Mudança é **evento**, e evento não é estado. O estado do modelo é
+   definido por **duas variáveis**: os objetos trabalhados e o fluxo de operações em que esses
+   objetos participam.
+
+2. **No lugar entra `Propriedades`.** Os objetos entram com propriedades iniciais; o fluxo de
+   operações as altera; as propriedades finais são o estado **desejável** do modelo.
+
+3. **O aceite do plano passa a ser modelável.** O plano só teve sucesso se o estado final for o
+   especificado no modelo. A validação da mecânica é a **confrontação do estado final real contra o
+   estado final conceitual**, e é essa diferença que tem valor para o cliente.
+
+4. **Tarefa fora do modelo não é tarefa proibida.** Significa que não tem interesse para o
+   usuário, o gerente de projeto ou o domain expert; deve ser realizada, e mantida de forma
+   **transparente**. Contradiz a regra vigente de que toda tarefa cita operação (`V2` do
+   `modelo.py`), e a forma de materializar a contradição é matéria do replanejamento.
+
+5. **O teste do desenho é este plano.** O modelo dele seria `agente model designer` e `modelo`, com
+   a operação *"construir o modelo"* devolvendo `modelo` no padrão esperado — testável e ajustável.
+   Começa-se por este "modelo de um modelo"; outra forma, se a necessidade exigir, fica para depois.
+
+6. **A construção do modelo vira mecânica**, com entrada de dados declarada: **objetos, operações,
+   estado inicial e estado final**.
+
+7. **Versionamento, e nada de rewrite.** Emenda ao modelo original **versiona**, não reescreve. O
+   drift é apresentado no marco seguinte e avaliado ali; **validado**, aí cabe o merge das versões.
+   *"Modelos são seres vivos que podem se alterar com base na evolução do projeto, mas um rewrite
+   não é adequado."*
+
+9. **O terceiro estágio fica no `P-0743`** (dono, 2026-09-20: *"Manter plano."*). A recomendação
+   de abrir plano novo foi apresentada e recusada; o plano segue sendo um só.
+
+10. **Relatório tem apêndice, e matéria tática mora nele** (dono, 2026-09-20: *"você pode migrar
+    questões táticas para apendice do relatorio"*). Vinculante para a orquestração, a partir de já:
+    o **corpo** de todo relatório e de todo marco carrega o que tem **lastro no modelo**; o que é
+    tático **desce para apêndice** — não some e não sobe. A `V2` **não se toca**: nenhuma regra do
+    instrumento afrouxa, e a distinção tática/estratégia é de **apresentação**, não de mecanismo.
+
+**Diretiva de validação do `P-0743` (dono, 2026-09-21):** uma decisão, que substitui o gate do
+Marco 3. Verbatim: *"Eu somente vou validar com base no AS-IS. Continuar para a conclusão do plano,
+e depois eu valido."*
+
+1. **O Marco 3 não recebe veredito na forma prevista.** A saída de `modelo.py show` foi apresentada
+   ao dono em 2026-09-21 e ele **dispensou** o veredito sobre ela: não é por ali que ele valida.
+   A régua da `D-43` — marco é detector de desvio — **não cai**; o que muda é **qual artefato** é o
+   detector, e o dono nomeou o **as-is**.
+2. **A `DOM-T6` está destravada.** Ela era a única tarefa aberta e estava retida por ser card do
+   Marco 5. A janela de 2026-09-21 havia encerrado por `B3` exatamente por isso; o ato do dono
+   remove a trava, e o plano segue até **18/18**.
+3. **O artefato de validação é o `docs/OPERACOES_AS_IS.md`**, produzido pela skill
+   `entrega-de-encerramento` depois da última tarefa e **antes** de pedir o veredito. Ele cobre o
+   `P-0741` e o `P-0743` numa leitura só, e o documento hoje na árvore está na forma anterior
+   (datado de 2026-09-20): descreve três blocos com `Mudanças`, quatorze regras onde hoje são
+   vinte, e o gate do modelador antes da emenda da `D-53`. **Ele é reescrito, não apensado.**
+4. **Os Marcos 4 e 5 seguem sem cards novos.** O ato do dono move a validação, não abre escopo.
+   A matéria de replanejamento acumulada (`AE-20`, `AE-24`, `AE-25`) desce para a seção de
+   pendências do as-is, que é onde o dono a lê no veredito.
+
+**Ponto de partida do próximo contexto — é o VEREDITO DO MARCO 3, e ele é do dono.**
+A janela de 2026-09-21 fechou por `B3`: a próxima tarefa da fila (`DOM-T6`) pertence ao **Marco 5**,
+e a `D-43` a trava até o Marco 3 receber `go`. Não abrir janela de execução sobre o `P-0743` antes
+da resposta.
+
+- **O que o dono lê, e é a entrega do Marco 3:**
+  `python .claude/tools/modelo.py show --plano docs/plans/P-0743-modelo-de-dominio.md`
+  — sai `0`, abre por `estágio atual: OP-13`, traz 9 objetos com propriedades, 13 operações
+  (12 `[concluída]`, 1 `[prevista]`) e a tabela de estado inicial × estado final das 21
+  propriedades. `go` = os Marcos 4 e 5 ganham cards; `no-go` = o desenho falhou no meio do caminho,
+  que é exatamente o serviço do marco.
+- **Estado do plano:** `in-progress` **17/18**, `modelo.py check` sai `0`
+  (`13 operações, 9 objetos, 21 propriedades, 18 tarefas, versão 1`), `backlog.py check` sai `0`.
+  **Nada commitado** — a árvore carrega o plano inteiro.
+- **Fechado na janela de 2026-09-21:** `DOM-T9c` (`aprovado 100%`, via rodada `RP-1`/`D-54`, que
+  absorveu o `AE-23`) e `DOM-T10` (`aprovado 100%`, card de dois atos com o ato do
+  `pantonic-model-designer` no meio — primeira autoria do modelador no acervo).
+- **Matéria de replanejamento acumulada, sem ação:** `AE-20` (fixture das seis violações novas),
+  `AE-24` (residência das provas de proveniência de card de dois atos) e `AE-25` (rótulo de
+  telemetria por ato). Todas dependem do `go`.
+- **Conduta vinculante:** relatório tem **apêndice**, e matéria tática mora nele (`D-46`).
+
+8. **A resolução de conflito sai do modelador e volta ao consultor.** O modelador **guarda** a
+   informação recebida e a **versiona**; quem tem o cenário decide a pertinência. Ato do dono:
+   *"Não quero que o model designer seja mais um controle do processo. Sua função é ver o modelo, e
+   não o projeto, por isso ele não tem o cenário completo para inferir se uma mudança é pertinente
+   ou não."*
+
+**Diretiva de execução do `P-0743` (dono, 2026-09-20, no gate de modelo da abertura da janela):** uma decisão, vinculante para esta janela.
+
+1. **O `scrum-master` roda em Opus durante o `P-0743`.** Não é o modelo que a matriz de `GOVERNANCA.md` §3 atribui à Orquestração (Sonnet): é **exceção temporária, limitada a este plano**, concedida por ato do dono no Passo 1 do loop, depois de a janela ter parado no gate e nomeado a matriz. Precedente de forma: a exceção idêntica concedida ao `P-0739` (item 2 da diretiva daquele plano), que caducou com o fechamento dele em `18/18`. Ao fim do `P-0743` esta exceção caduca e a orquestração volta a Sonnet, salvo novo ato do dono. O modelo de cada tarefa continua sendo o do cabeçalho do card — as seis tarefas do `P-0743` são Sonnet e são despachadas assim; a exceção vale para o contexto principal que conduz, não para quem executa.
 
 **Diretiva de execução do `P-0740` (dono, 2026-09-18, ao fim da janela que fechou a `LM-T1`):** quatro decisões, todas vinculantes para a próxima janela e para as seguintes, até o dono as revogar.
 
@@ -79,7 +192,7 @@
 | TK-53 | O que mudou no corte da `95db6421…` que desloca o custo opaco de abertura de janela para as 6 janelas pós-corte inteiras (mediana 46.070 vs. 34.347 do grupo `antes`) — decisão do dono em 2026-08-24 sobre o achado do `TK-51`, causa ainda não investigada. Bloqueia `P-0737`. | done *(**desfecho negativo, decisão do dono em 2026-08-31** — a `TK-53a` mediu que não há degrau no corte: os dois regimes (`cache_read` 18.084 e 26.695) coexistem **antes e depois** dele, então a causa procurada não existe. `TK-53b` **cancelada por absorção** (seu insumo único, o bracket temporal, perdeu o objeto). A pergunta viva migrou para `TK-54`: não *o que mudou*, mas *do que o custo é feito*)* | docs/DIARIO_DE_OBRAS.md#tk-53--causa-do-deslocamento-de-custo-nas-janelas-pós-corte |
 | TK-54 | **Extrato do custo de abertura de uma janela principal.** O 1º `usage` decompõe-se em uma linha por fonte carregada, com tamanho medido, origem (nossa ou do harness) e classificação em *válido / necessário / dispensável / economizável* — o detalhamento sem o qual o dono não decide corte nenhum. Substitui o objetivo morto da `TK-53`. Bloqueia `P-0737`. | ready | docs/DIARIO_DE_OBRAS.md#tk-54--extrato-do-custo-de-abertura-de-uma-janela-principal |
 | TK-55 | **Confiabilidade de agente e de instrumento.** Acumulador dos casos em que um **derivado** (comando de aceite, piso de regressão, linha de telemetria, achado de lint, linha de índice) erra sem sinal porque nada o confronta com a fonte — `AE-19`, `AE-18`, `AE-3`, `AE-1` e a projeção de índice desatualizada por um dia inteiro em 2026-09-19. Não é erro de execução de tarefa: a janela que os produziu fechou oito tarefas com zero reprovações. | ready | docs/DIARIO_DE_OBRAS.md#tk-55--confiabilidade-de-agente-e-de-instrumento |
-| P-0741-MC | O modelo conceitual do plano: a interface entre o dono e o loop | ready | docs/plans/P-0741-modelo-conceitual.md |
+| P-0741-MC | O modelo conceitual do plano: a interface entre o dono e o loop | ready 7/8 | docs/plans/P-0741-modelo-conceitual.md |
 | TK-56 | **Propagar o reparo de codificação de `stdin` aos três pontos de carga restantes.** `ocupacao.py:141`, `telemetria_hook.py:213` e `modelo_por_fase_userpromptsubmit.py:101` leem `sys.stdin.read()` e decodificam na codificação do host; em Windows sem `PYTHONUTF8` isso é `cp1252`. O terceiro é **global** e roda a cada prompt em todos os projetos — vem degradando em silêncio para prompt acentuado. Regra de reparo pronta na `DB-53` do `P-0739`. Depende do `TK-57`. | done 2/2 | `docs/DIARIO_DE_OBRAS.md` › `## TK-56` |
 | TK-57 | **Fixar o ambiente no teste por subprocesso do hook.** `test_tf_hook_executavel_*` em `tests/test_backlog.py` herda o ambiente do `pytest`: em host com `PYTHONUTF8=1` passa com ou sem o reparo, deixando de discriminar. Aplicar as três cláusulas da `DB-53` — roda o processo, fixa `env=` explícito, afirma a invariância entre os dois mundos. **Pré-requisito do `TK-56`.** | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-57` |
 | TK-58 | **Fechar a metade `usage_1` da medida de pickup.** O método `DC-4` tem duas metades; a de caracteres está publicada (26.760, −65,5%), e a do primeiro `usage` de uma sessão nova ficou **declarada sem valor** na `## 14` de `docs/CUSTO_DO_PICKUP.md` por não ser observável de dentro de um subagente. Exige abrir uma janela principal nova e ler o primeiro `usage`. | done 4/4 | `docs/DIARIO_DE_OBRAS.md` › `## TK-58` |
@@ -90,6 +203,9 @@
 | TK-63 | **O mundo hostil dos testes de executável é herdado do host, não construído.** Os dois sítios que discriminam hoje o fazem por acidente de plataforma: o mundo “sem `PYTHONUTF8`” só é hostil porque este host é Windows-cp1252. Medido: `PYTHONIOENCODING` prevalece sobre `PYTHONUTF8`, e é ele que constrói o mundo hostil portátil. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-63` |
 | TK-64 | **O `check-drift` está vermelho por linha de skill que nenhuma tarefa aberta possui.** `.claude/README.md` não tem a linha da skill `entrega-de-encerramento`, entrega do `TK-51a` (fechado). O vermelho chega sem dono a toda revisão desta janela e já obrigou três reconciliações manuais. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-64` |
 | TK-65 | **Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`.** O `check` aprova plano estruturalmente inselecionável (`Depende de:` com id que não é item); o `--help` e todo erro de argparse morrem com `UnicodeEncodeError` em console cp1252; o verbo `diretiva` descarta em silêncio os ids escritos depois do travessão. | ready 0/3 | `docs/DIARIO_DE_OBRAS.md` › `## TK-65` |
+| TK-66 | **O atribuidor de `review_evidence.py` fabrica autoria com tarefa nunca despachada.** `--atribuir` casa caminho contra os `Arquivos-alvo` de **qualquer** tarefa do plano sem olhar o `status` dela: na janela do `P-0743` rotulou quatorze arquivos como `alvo-de-outra-tarefa (DOM-T3/T4/T5)` — tarefas em `ready`, que nada produziram —, quando eram entrega de uma janela paralela. No regime de commit por marco, é a atribuição que separa uma entrega da outra, e as duas revisões da janela tiveram de desmentir a evidência mecânica por injeção manual. | ready | `docs/DIARIO_DE_OBRAS.md` › `## TK-66` |
+| P-0743-DOM | O modelo conceitual vira modelo de domínio — **aceito pelo dono em 2026-09-21**. As 18 tarefas fecharam aprovadas; a norma, a gramática, o instrumento `modelo.py` e o agente `pantonic-model-designer` publicam o modelo de domínio em objetos com propriedades, fluxo de operações, estado inicial × estado final e registro de versões, e o próprio plano é o primeiro do acervo escrito na forma nova. O Marco 3 foi **dispensado** por ato do dono, que moveu a validação para o as-is. **Entrega validada: `docs/Entregas Aceitas/Entregas - P-0743.md`** (875 linhas, cobre também o `P-0741`), onde vivem as oito pendências abertas — três com efeito fora deste plano (`AE-25` telemetria, `TK-66` atribuição de evidência, `AE-24` residência de prova). Vinte e cinco achados (`AE-1`..`AE-25`), dez escalonamentos ao consultor, uma rodada de replanejamento (`RP-1`). Nada commitado. | done 18/18 | docs/plans/P-0743-modelo-de-dominio.md |
+| P-0744-PLS | A especificação do agente de planejamento | blocked | docs/plans/P-0744-spec-do-planejador.md |
 
 ---
 
@@ -2666,3 +2782,43 @@ depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
 - **Não fazer:** não passar a colher ids da cauda livre — a cauda é para humanos por gramática
   publicada (skill `diario-de-obras`, *Cabeçalho do diário*); o reparo é tornar o descarte
   **audível**, não mudar o que o campo significa.
+
+## TK-66 — O atribuidor de `review_evidence.py` fabrica autoria com tarefa nunca despachada
+
+- **Status:** `ready` · 2026-09-20 — aberto pela janela de orquestração do `P-0743` ao fechar a
+  `DOM-T2`; o achado é o `AE-3` de `docs/plans/P-0743-modelo-de-dominio.md` (seção
+  `## Achados da execução`), atribuído a `.claude/tools/review_evidence.py` e vedado ao plano pelo
+  invariante `I-1` dele, que proíbe qualquer card de editar o instrumento.
+
+**Fato medido (2026-09-20, janela do `P-0743`).** Ao montar a evidência das tarefas `DOM-T1` e
+`DOM-T2`, `python .claude/tools/review_evidence.py --plano docs/plans/P-0743-modelo-de-dominio.md
+--tarefa <ID> --desde e0efcf6 --atribuir` devolveu **quatorze** arquivos rotulados
+`alvo-de-outra-tarefa (DOM-T3)`, `(DOM-T4)` e `(DOM-T5)`. Nenhuma dessas três tarefas havia sido
+despachada — todas em `ready`, com zero entrega. Os arquivos (`.claude/agents/pantonic-*.md`,
+`.claude/tools/modelo.py`, `.claude/tools/rdo.py`, `README.md`, `.claude/README.md`,
+`tests/fixtures/modelo/*`, `tests/test_modelo.py`, entre outros) eram entrega **não commitada** da
+janela paralela que conduz o `P-0741`.
+
+**Por que importa.** A diretiva de execução do `P-0740`, item 3, trocou commit por tarefa por
+**commit no marco**. Nesse regime o recorte `--desde <ref>` sempre mistura entregas, e a atribuição
+é o **único** mecanismo que diz de quem é cada arquivo — é exatamente onde a `B0` do `scrum-master`
+decide se um vermelho rebaixa a entrega ou vira achado de outro dono. Um atribuidor que inventa
+autor não é ruído: ele contamina a decisão de rota com a aparência de medida. Nas duas revisões
+desta janela o despacho teve de **desmentir por escrito a evidência mecânica** que ele próprio
+gerou.
+
+**Causa provável.** O casamento caminho → tarefa percorre os `Arquivos-alvo` declarados de todas as
+tarefas do plano e não consulta o `status` de nenhuma. Uma tarefa `ready` tem alvos declarados e
+zero autoria; o instrumento trata as duas coisas como a mesma.
+
+**Rotas candidatas (o tíquete não decide qual — é do planejamento).**
+
+1. Filtrar a atribuição pelas tarefas cujo `status` seja `in-progress`, `review` ou `done` — as
+  únicas que podem ter escrito algo. Tarefa `ready` deixa de casar.
+2. Manter o casamento e criar categoria própria — `alvo-de-tarefa-nao-despachada` —, separada de
+  `alvo-de-outra-tarefa`, para que quem lê veja que aquilo é **previsão**, não autoria.
+3. Cruzar com o recorte temporal: se o arquivo já estava modificado na árvore **antes** do
+  `--desde` do despacho, rotular como `anterior-ao-recorte`, seja qual for o alvo declarado.
+
+**Não é escopo deste tíquete:** o `--desde` em si, nem a decisão de commitar por tarefa — essa é
+ato do dono e está fechada na diretiva do `P-0740`.

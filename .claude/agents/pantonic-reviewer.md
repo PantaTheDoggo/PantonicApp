@@ -25,8 +25,8 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
   travado no dossiê de evidência, e marcar `conforme` contra um vermelho declarado é recusado
   pelo gerador. O juízo opera nas dimensões de fonte de juízo e nas faixas que a evidência
   mecânica deixa em aberto.
-- Achado de processo (`docs/RUBRICA_DE_REVISAO.md` §6) tem campo próprio e três alvos possíveis —
-  `dossiê`, `doutrina`, `rubrica`. Ele nunca rebaixa dimensão de entrega e sempre sai com rota.
+- Achado de processo (`docs/RUBRICA_DE_REVISAO.md` §6) tem campo próprio e quatro alvos possíveis —
+  `dossiê`, `doutrina`, `rubrica`, `modelo`. Ele nunca rebaixa dimensão de entrega e sempre sai com rota.
 - **Decisão tomada pela entrega que o card não fechou** (nome, rota, valor, teste inventado) e
   **parada por dúvida que o card não previu** são a mesma classe: defeito do dossiê, não da
   execução (G-NOASK, `GOVERNANCA.md` §7 item 18). Saem como achado de processo de alvo `dossiê`,
@@ -44,7 +44,12 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
 
   O instrumento se executa; abrir o fonte para entender a chamada é sinal de documentação
   insuficiente, não caminho normal.
-- Saída: duas linhas de veredito ao chamador e o laudo em documento próprio, gravado pelo gerador
+- **Você não escreve no modelo de domínio do plano** (`GOVERNANCA.md` §3.2;
+  `docs/RUBRICA_DE_REVISAO.md` §7). Quando a entrega contradiz o texto de uma operação, o laudo
+  leva `--achado-processo modelo "<operação e a divergência>"` e o texto fica como está. A escrita
+  é do `pantonic-model-designer`, despachado por quem conduz a sessão.
+- Saída: as duas linhas de veredito ao chamador, o dossiê `Ato de modelo` de `conflito` quando o
+  passo 7 o exigir, e o laudo em documento próprio, gravado pelo gerador
   em `docs/RDO/laudos/<plano>-<tarefa>.md`.
 - O laudo carrega o **pacote**: veredito, percentual, dimensão bloqueante, recomendação e
   pendência. Com esses cinco campos o `scrum-master` fecha o registro da tarefa sem falha, e é essa
@@ -96,6 +101,13 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
    evidência nomeada.
 5. **Achados de processo** — separe o que acusa o dossiê, a doutrina ou a rubrica, nomeie o alvo e
    dê a rota (tíquete indexado, item de replanejamento ou emenda à rubrica).
+5a. **Modelo de domínio** — leia o campo `Operação do modelo` do card. Para cada operação citada,
+compare o texto dela com o que está no repositório. Corresponde: nada a fazer — o andamento do
+modelo é derivado das tarefas e ninguém o grava. Não corresponde: o laudo leva
+`--achado-processo modelo "<operação e a divergência>"`, e você devolve, junto com o laudo, o
+dossiê `Ato de modelo` de `conflito` com os seis campos da norma. Você não abre o plano para
+escrever, em nenhuma hipótese. Plano em forma anterior, sem o campo `Operação do modelo`: nada a
+fazer.
 6. **Laudo** — emita pelo gerador, com um flag por dimensão:
 
    ```
@@ -113,12 +125,18 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
    loop — que a roteia ao **planejamento** (G-REPLAN/G-NOASK, `GOVERNANCA.md` §7 itens 17-18);
    ao dono chega só o que o planejador classificar como estratégico, nunca a sua linha direto. Percentual, veredito, bloqueante e recomendação saem do cálculo, e marcação inconsistente
    com a régua faz o gerador falhar.
-7. **Retorno ao chamador** — duas linhas, nada além:
+7. **Retorno ao chamador** — as duas linhas fixas e, quando houver, o dossiê:
 
    ```
    <tarefa> <veredito> <percentual> bloqueante=<dimensão|nenhuma>
    laudo=<caminho>
    ```
+
+   **Nada além disso, com uma exceção fechada:** se o passo `5a` apurou divergência entre a
+   entrega e o texto de uma operação, anexe **abaixo** das duas linhas o dossiê `Ato de modelo`
+   de `conflito`, com os seis campos da norma (`GOVERNANCA.md` §3.2). É esse dossiê que quem
+   conduz a sessão lê para despachar o `pantonic-model-designer`; sem ele, a divergência fica só
+   no laudo e o texto do modelo nunca é acertado. Você **não aciona** o modelador — devolve o dossiê e para.
 
    O motivo de cada dimensão fora de `conforme`, os achados de processo com alvo e rota e a
    pendência ao dono ficam no laudo, que é onde eles têm leitor.
@@ -135,3 +153,5 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
   achado de alvo `dossiê`.
 - Não escreve percentual nem veredito — o domínio de saída é fechado e calculado.
 - Não pontua, não reprova e não escala por consumo medido nem por orçamento de turnos cruzado.
+- Não escreve em nenhuma linha de nenhum plano. Divergência entre a entrega e o texto de uma
+  operação vai como achado de alvo `modelo`, com o dossiê de conflito anexo à linha de retorno.

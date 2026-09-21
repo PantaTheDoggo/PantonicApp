@@ -57,7 +57,12 @@ Dez passos, nesta ordem.
   (`.claude/skills/passagem-de-bastao/SKILL.md`, seção "Gate de delegação", sete itens), sem
   recopiar o texto de nenhum dos dois. Recusa de qualquer um: **não delega** — vai ao passo 10 por `B3`.
 
-  Aprovados os dois, e **antes** de delegar, materializar `ready` → `in-progress` no kanban
+  Terceiro gate, mecânico: `python .claude/tools/modelo.py check --plano <plano>`
+  (`GOVERNANCA.md` §3.2). Exit `1`: **não delega** — o stderr vai à razão e a tarefa cai em
+  `B3`. Exit `2`: plano anterior à doutrina do modelo; segue, com a nota "sem modelo" no
+  relatório. Exit `0`: segue.
+
+  Aprovados os três, e **antes** de delegar, materializar `ready` → `in-progress` no kanban
   (`DP-G` item 1, consequência 3) — ato exclusivo do `scrum-master`.
 - **Saída:** tarefa materializada em `in-progress` e liberada para despacho, ou parada com o que
   falta fechar.
@@ -103,7 +108,12 @@ Dez passos, nesta ordem.
 ### Passo 6 — Despacho do `reviewer`
 
 - **Gatilho:** **gatilho 1** da `DP-E` — a tarefa entrou em `review`. Tarefa `blocked` **não** passa
-  por aqui (`DP-G` item 4): não há entregável a julgar.
+  por aqui (`DP-G` item 4): não há entregável a julgar. **Confira, antes de invocar, que o status materializado da tarefa no plano é mesmo
+  `review`** — é o estado em que o reviewer julga, e materializá-lo é ato do passo 5. O
+  reviewer **não escreve** no modelo de domínio do plano: o andamento é derivado das tarefas e
+  nenhum papel o grava (`GOVERNANCA.md` §3.2), então não há gravação de revisor a conferir
+  aqui. Status diferente de `review` é defeito de condução do passo 5, não do revisor:
+  materialize e só então invoque.
 - **Entrada:** o **mesmo dossiê** que o executor recebeu; plano e identificador da tarefa. Nenhum
   caminho de RDO é repassado.
 - **Ação:** gerar o dossiê de evidência mecânica, exigido pelo `reviewer`:
@@ -115,20 +125,25 @@ Dez passos, nesta ordem.
   ```
 
   Redirecionar a saída padrão do comando. Em seguida invocar `pantonic-reviewer` com o dossiê da
-  tarefa e o caminho do dossiê de evidência, instrução de devolver só as duas linhas de veredito.
-- **Saída:** duas linhas do `reviewer`.
+  tarefa e o caminho do dossiê de evidência. **Não limite o retorno dele às duas linhas.**
+  A forma do retorno é a que a definição do papel fixa: as duas linhas de veredito e, quando o
+  passo `5a` apurar divergência, o dossiê `Ato de modelo` de `conflito` anexo abaixo delas
+  (`GOVERNANCA.md` §3.2). É esse dossiê que o passo 8 consome para despachar o modelador.
+- **Saída:** as duas linhas do `reviewer` e, quando houver, o dossiê `Ato de modelo` anexo.
 
 ### Passo 7 — Leitura do veredito
 
 - **Gatilho:** retorno do `reviewer`.
-- **Entrada:** as duas linhas fixas:
+- **Entrada:** as duas linhas fixas e, quando houver, o dossiê anexo abaixo delas:
   `<tarefa> <veredito> <percentual> bloqueante=<dimensão|nenhuma>`
   `laudo=<caminho>`
+  Dossiê presente: são os seis campos do `Ato de modelo` (`GOVERNANCA.md` §3.2). O loop não o
+  reescreve, não o resume e não o interpreta — passa-o inteiro ao passo 8.
 - **Ação:** ler `veredito` ∈ {`aprovado`, `ressalva`, `reprovado`}, `bloqueante` e o caminho do
   laudo — calculados pelo gerador, não recalculados pelo loop. Colher a `recomendação` **do
   laudo**, campo fechado (`seguir`, `seguir com ressalva`, `refazer`, `escalar`), lido por `A6`,
   `A6a`, `A8a`, `A8`, `A9` e `B1`.
-- **Saída:** tripla (`veredito`, `bloqueante`, `recomendação`) para o roteamento.
+- **Saída:** tripla (`veredito`, `bloqueante`, `recomendação`) para o roteamento, mais o dossiê `Ato de modelo` quando ele veio no retorno.
 
 ### Passo 8 — Roteamento, bloco A
 
@@ -136,7 +151,11 @@ Dez passos, nesta ordem.
 - **Entrada:** `status`, `veredito`, `bloqueante`, `recomendação`, contador de retentativas.
 - **Ação:** aplicar a tabela do bloco A **em ordem de precedência** — a primeira regra que casa
   vence.
-- **Saída:** "segue" (vai ao passo 9) ou "PARA" (vai ao relatório de encerramento).
+- **Saída:** "segue" (vai ao passo 9) ou "PARA" (vai ao relatório de encerramento). Se a
+  linha de retorno do reviewer trouxer um dossiê `Ato de modelo`, despache o
+  `pantonic-model-designer` com esse dossiê **antes** de seguir ao passo 9: o texto do modelo
+  se acerta com a tarefa ainda aberta, e o andamento, que é derivado, não trava nada no
+  intervalo.
 
 ### Passo 9 — Arquivamento
 
@@ -145,7 +164,7 @@ Dez passos, nesta ordem.
 - **Entrada:** o **pacote** extraído do laudo — os cinco campos obrigatórios (`DP-H` item 4):
   veredito, percentual, dimensão bloqueante, recomendação e pendência — mais o consumo medido, o
   plano e o identificador da tarefa.
-- **Ação:** materializar o status com `python .claude/tools/backlog.py status <ID> <estado>`.
+- **Ação:** **primeiro o gate do modelo** (parágrafo ao final desta ação, `DMC-30`), e só então materializar o status com `python .claude/tools/backlog.py status <ID> <estado>`.
   Em seguida, escrever o RDO por **uma** chamada de `rdo.py close`, com o pacote como argumento:
 
   ```
@@ -169,6 +188,15 @@ Dez passos, nesta ordem.
   O `<tokens_k>` é o mesmo literal nas duas chamadas — decimal de uma casa (ex.: `203.7`), a forma
   que o hook `SubagentStop` já produz. O loop não converte, não arredonda e não trunca o número
   entre uma chamada e outra (`DM-11` do `P-0740`).
+
+  **Antes de materializar o status**, e portanto antes de `rdo.py close`, rodar de novo
+  `python .claude/tools/modelo.py check --plano <plano>`: o modelo de domínio do plano pode ter
+  sido emendado pelo `pantonic-model-designer` desde o despacho (`GOVERNANCA.md` §3.2), e exit
+  `1` aqui é defeito dessa emenda. Exit `1`: **não materializa e não fecha** — a tarefa
+  **permanece em `review`**, o stderr vai ao consultor como escalonamento, e o fechamento
+  espera o reparo. A tarefa fica em `review` porque é o estado em que o reviewer a julgou; para
+  o **andamento** a escolha é indiferente, já que `review` e `in-progress` deixam a operação
+  igualmente `em curso`. Exit `0` ou `2`: materializa e fecha.
 - **Saída:** RDO escrito com o desdobramento calculado, laudo apagado, linha nova em
   `docs/telemetria.tsv`, contadores da janela atualizados.
 
@@ -224,7 +252,7 @@ Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bl
 | `B0` | vermelho de verificação, ou item de `pendencia=`, **atribuível a arquivo fora dos `Arquivos-alvo` da tarefa** — atribuição **medida** por `python .claude/tools/review_evidence.py --plano <plano> --tarefa <ID> --desde <ref> --atribuir`, nunca julgada de memória | não é pendência da tarefa: registra `AE-<n>` com a atribuição medida, **não rebaixa** a entrega, não refaz laudo e **segue** por `B4` |
 | `B1` | **pendência substantiva**: `recomendacao=escalar` no laudo, **ou** `pendencia=` cujo texto **não** seja integralmente atribuível a arquivo fora dos alvos por `B0` | registra a pendência como `AE-<n>` em `## Achados da execução` do plano, descarta o laudo e escala ao **consultor de plano** (`pantonic-consultant`, instanciado uma vez por execução), que devolve decisão e reparo: a janela **segue** com o que ele devolver. **PARA** só se o consultor classificar o impedimento como **estratégico**; ao dono chega só isso (`G-NOASK`, `GOVERNANCA.md` §7 item 18) |
 | `B2` | sinal de poluição do contexto do loop (**coesão**) **ou** aviso de ocupação da janela no teto de trabalho, injetado no contexto pelo hook de medida (**capacidade**) — as duas condições do `GOVERNANCA.md` §4.3 | encerra com relatório de janela: **PARA** (encerramento normal, não falha). Por coesão o encerramento **não é gracioso**: nada produzido depois do sinal de poluição se aproveita. Sem o aviso na rodada, valem a coesão e o fim do plano |
-| `B3` | a próxima tarefa é recusada pelo `G-PLANREADY` ou pelo gate de delegação | não delega: **PARA**, com o que falta fechar |
+| `B3` | a próxima tarefa é recusada pelo `G-PLANREADY`, pelo gate de delegação ou pelo `modelo.py check` do passo 3 (exit `1`) | não delega: **PARA**, com o que falta fechar |
 | `B4` | nenhuma das anteriores | despacha a próxima tarefa do plano, sempre sequencial |
 
 ### O que obriga parada e o que segue com registro
@@ -251,7 +279,11 @@ fronteira do ponto do dono", e não se redecide aqui.
 
 ## Relatório de encerramento
 
-Uma vez por janela, na parada. Ponteiros e números, nunca conteúdo:
+Uma vez por janela, na parada. Abre com a saída integral de `python
+.claude/tools/modelo.py show --plano <plano> --desde <data de abertura da janela>` — a
+única exceção à regra de conteúdo, porque o modelo **é** o que o dono lê
+(`GOVERNANCA.md` §3.2); plano sem modelo, a linha "sem modelo (plano anterior à
+doutrina)". Depois, ponteiros e números, nunca conteúdo:
 
 - Plano conduzido e regra que encerrou a janela (`A1`..`A9`, inclusive `A3c`, `A6a` e `A8a`, ou `B0`..`B4`, pelo identificador).
 - Tarefas fechadas na janela, cada uma com identificador, desdobramento e caminho do RDO.

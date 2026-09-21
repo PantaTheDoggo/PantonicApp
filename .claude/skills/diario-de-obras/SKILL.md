@@ -131,7 +131,9 @@ objeto:
 
 Transcrição normativa de `docs/plans/P-0739-backlog-instrumento.md` §2.1–§2.4 e §2.7 — é a
 gramática que `.claude/tools/backlog.py` (§3 do mesmo plano) lê e escreve. Esta seção é a
-residência única do texto; o plano de origem não a recopia depois da transcrição.
+residência única do texto; o plano de origem não a recopia depois da transcrição. A subseção
+"Modelo de domínio (seção do plano)" transcreve `docs/plans/P-0743-modelo-de-dominio.md` §5 e §15 —
+onde as duas divergem, governa a §15 — e é lida por `.claude/tools/modelo.py`.
 
 ### Item e residência
 
@@ -170,11 +172,36 @@ Linha viva: começa com `- ` e contém um caminho `docs/plans/P-NNNN-<slug>.md` 
 Drenada: prefixada `- [drenado AAAA-MM-DD] ` e movida **verbatim** para `_INBOX_HISTORICO.md`.
 Contador: `**Próximo id de plano: P-NNNN.**` — `drain` o recalcula como `max(id visto) + 1`.
 
-### Máquina de transições (forma para o instrumento)
+### Modelo de domínio (seção do plano)
 
-Tabela da residência única acima ("Status — residência única" → "Máquina de transições") transcrita
-para `_TRANSICOES: dict[tuple[str, str], ...]`; `blocked` exige `--razao`; `done`/`cancelled` são
-terminais; `superseded` só para plano. Transição fora da tabela → exit 1 sem escrever nada.
+Seção `## 1. Modelo conceitual` do plano (`GOVERNANCA.md` §3.2), delimitada pelo próximo heading de
+nível 2. Dentro dela, nesta ordem:
+
+| elemento | forma | regra |
+|---|---|---|
+| cabeçalho | `**Estado do modelo:** versão <n> · AAAA-MM-DD · autor: <papel> · <k> operações · <p> propriedades · situação: <vigente \| pendente>` | linha única; obrigatória (`V13`); `<n>` monotônico e `situação` é `vigente` na seção `## 1` |
+| objetos | `### 1.1 Objetos` + tabela `\| objeto \| o que é \| propriedades \| contrato \| origem \|`; `<objeto>` é um nome em linguagem corrente, único na tabela; `<propriedades>` é uma lista separada por vírgula, em linguagem corrente, não vazia; `<origem>` é `externo` ou `OP-<n>` | obrigatória (`V13`); objeto sem propriedade é violação (`V15`); `<origem>` `OP-<n>` existe no fluxo (`V7`); objeto de origem `externo` é citado por alguma operação (`V6`) |
+| operações | `### 1.2 Fluxo de operações`; cada operação é o par de linhas: `- **OP-<n>** — <texto>` e, na linha seguinte, `  - \`precisa de: <objeto>[, <objeto>]\` · \`altera: <objeto>.<propriedade>[, <objeto>.<propriedade>]\` · \`tarefas: <ID>[, <ID>]\`` | numeração `1..k` na ordem do encadeamento, sem salto (`V8`); `<n>` único (`V11`); `<texto>` sem crase e sem `/` (`V12`); todo `<objeto>` existe na tabela de objetos (`V5`); todo par `<objeto>.<propriedade>` de `altera:` existe na tabela de objetos (`V16`); toda `<ID>` existe como `### <ID> — …` no plano (`V3`); lista de tarefas não vazia (`V1`); operação com `<n>` maior que 1 cita ao menos um objeto de origem `OP-<m>` (`V9`), e esse `<m>` é menor que `<n>` (`V10`). Subtítulos `**A. …**` entre operações são livres e ignorados |
+| estado | `### 1.3 Estado inicial e estado final` + tabela `\| propriedade \| estado inicial \| estado final \|`; a célula `propriedade` é `<objeto>.<propriedade>`; `estado inicial` é o retrato antes da implementação; `estado final` é o desejo do dono, quantificável ou qualificável | obrigatória (`V13`); toda propriedade da tabela de objetos tem exatamente uma linha aqui (`V17`) |
+| versões | `### 1.4 Registro de versões` + tabela `\| versão \| data \| situação \| por \|`; `situação` é `vigente`, `pendente` ou `obsoleta`; a linha `obsoleta` registra por aceite de qual versão ela caiu, e o conteúdo dela não fica no plano | obrigatória (`V13`); exatamente uma linha `vigente` (`V19`) |
+| campo do card | `- **Operação do modelo:** \`OP-<a>\`[, \`OP-<b>\`]` como campo de todo `### <ID> — …` do plano, seguido, por operação citada, de dois sub-bullets: `  - OP-<a>: <texto copiado>` e `  - precisa de: <objeto> — <contrato copiado>[; <objeto> — <contrato copiado>]` | obrigatório em toda tarefa do plano (`V2`); toda `OP-<a>` citada existe (`V4`); os dois sub-bullets existem para cada operação citada (`V14`) |
+
+**Versão pendente, como bloco irmão.** Uma versão pós-drift não sobrescreve a vigente: nasce como a
+seção `## 1A. Modelo conceitual — versão pendente de validação`, imediatamente depois da `## 1` e
+delimitada pelo próximo heading de nível 2, com a mesma estrutura interna de `### 1.1` a `### 1.3` e
+o cabeçalho em `situação: pendente`. As duas coexistem até o marco. `modelo.py show` mostra a
+**vigente** por omissão, a pendente com `--pendente` e a diferença entre as duas com `--drift`.
+Aceita a pendente, ela ocupa a `## 1` e a `## 1A` desaparece; recusada, a `## 1A` é eliminada e a
+`## 1` permanece sem marca.
+
+**Andamento, nunca gravado.** Nenhum elemento da seção carrega estado. `modelo.py show` deriva:
+operação `concluída` quando todas as tarefas dela estão `done` ou `cancelled`; `em curso` quando
+alguma está `in-progress` ou `review`; `prevista` nos demais casos. O **estágio atual** é a
+primeira operação não `concluída`, e é `concluído` quando não há nenhuma.
+
+Plano sem a seção `## 1. Modelo conceitual`, e plano com a seção mas sem o heading
+`### 1.2 Fluxo de operações`, são **forma anterior**: `modelo.py check` sai `2` e nada se exige
+deles.
 
 ## Formato de uma tarefa atômica
 

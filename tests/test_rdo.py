@@ -955,3 +955,22 @@ def test_tr_campo_multilinha_continua_valendo():
         "tests/test_rdo.py",
         ".claude/tools/review_evidence.py",
     ]
+
+
+# --- laudo · achado de processo, alvo modelo (MC-T2, `docs/RUBRICA_DE_REVISAO.md` §6) -----------
+
+
+def test_tf_laudo_aceita_alvo_modelo(tmp_path):
+    """TF-MC-7 (`docs/plans/P-0741-modelo-conceitual.md` `### MC-T2`): `--achado-processo modelo
+    "<linha>"` sai 0 e o laudo contém a linha de tabela `| modelo | oração M-3 divergente |` —
+    quarto alvo do vocabulário fechado de `_ALVOS_ACHADO`, ao lado de `dossie`/`doutrina`/`rubrica`."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(
+        _argv_laudo(laudos_dir) + ["--achado-processo", "modelo", "oração M-3 divergente"]
+    )
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "| modelo | oração M-3 divergente |" in conteudo

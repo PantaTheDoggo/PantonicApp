@@ -88,10 +88,11 @@ adequado ao seu custo — a coluna *Modelo* é a tabela vinculante do **modelo p
 | Papel | Modelo | Responde por | Não faz |
 |---|---|---|---|
 | **Dono / gerente** | humano | Última instância e **fonte da doutrina de produto**: decide o quê e o porquê, ratifica decisões (`DR-`/`DP-`), valida cada sprint (§4.5), aceita release, autoriza saída do piso de regressão (§4.4) e comando destrutivo (§7 item 13) | Não desempata, no meio de uma execução, o que o plano deveria ter decidido — a pergunta que chega até ele em execução é sintoma de plano não-pronto (§7 itens 11 e 12) |
-| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 11), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto; **o dimensionamento de cada tarefa** sob a *Diretriz de dimensionamento de tarefa* desta seção — coesão, autossuficiência em contexto e ocupação estimada, exercidas no recorte, não publicadas no card; **a revisão de plano, com exclusividade** — indício de que o plano precisa mudar chega aqui e só aqui, e o planejador decide por si o que for **técnico ou tático**, escalando ao dono o que for **estratégico ou alterar escopo**; **a revisão do README ao encerrar cada sprint** — tarefa nomeada do próprio plano, com o guarda executável como instrumento e o veredito do dono como aceite (G-README dever 2, §7 item 14); sprint planejada sem essa tarefa é plano incompleto; **o risco de interrupção de cada card** — plano em que um executor frio pararia por dúvida sem contingência fechada não se libera (G-NOASK, §7 item 18) | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
-| **Orquestração** | Melhor custo-benefício (Sonnet); o loop roda no contexto principal, onde o dono interrompe sem derrubar a sessão, e **para para pedir `/model`** quando a fase exige outro modelo | Conduzir um plano do começo ao fim: despachar cada tarefa ao papel competente com o dossiê fechado, rotear a linha de retorno do executor e o laudo do `reviewer` (aprovado segue, reprovado volta ao mesmo escopo, escalado sobe ao dono), registrar a telemetria medida e arquivar o resultado | Não implementa, não julga a entrega — o veredito é da revisão — e não decide arquitetura: obstáculo à rota e dossiê não fechado sobem ao **planejamento** (G-REPLAN e G-NOASK, §7 itens 17 e 18), nunca viram improviso do loop nem pergunta ao dono no meio da janela — ao dono chega, no relatório de encerramento, só o que o planejador classificar como estratégico. **Não revisa plano** — roteia a escalada ao planejamento, não replaneja |
+| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 11), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto; **o dimensionamento de cada tarefa** sob a *Diretriz de dimensionamento de tarefa* desta seção — coesão, autossuficiência em contexto e ocupação estimada, exercidas no recorte, não publicadas no card; **a revisão de plano, com exclusividade** — indício de que o plano precisa mudar chega aqui e só aqui, e o planejador decide por si o que for **técnico ou tático**, escalando ao dono o que for **estratégico ou alterar escopo**; **a revisão do README ao encerrar cada sprint** — tarefa nomeada do próprio plano, com o guarda executável como instrumento e o veredito do dono como aceite (G-README dever 2, §7 item 14); sprint planejada sem essa tarefa é plano incompleto; **o risco de interrupção de cada card** — plano em que um executor frio pararia por dúvida sem contingência fechada não se libera (G-NOASK, §7 item 18); **o dossiê de ato de modelo** (§3.2): o planejador não escreve a seção do modelo — devolve o dossiê de autoria junto com o plano gravado, e o de emenda em rodada de replanejamento | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
+| **Orquestração** | Melhor custo-benefício (Sonnet); o loop roda no contexto principal, onde o dono interrompe sem derrubar a sessão, e **para para pedir `/model`** quando a fase exige outro modelo | Conduzir um plano do começo ao fim: despachar cada tarefa ao papel competente com o dossiê fechado, rotear a linha de retorno do executor e o laudo do `reviewer` (aprovado segue, reprovado volta ao mesmo escopo, escalado sobe ao dono), registrar a telemetria medida e arquivar o resultado; roda `modelo.py check` antes de despachar e antes de fechar cada tarefa, abre o relatório e cada marco com `modelo.py show` e **despacha o modelador** ao receber um dossiê de ato de modelo (§3.2) | Não implementa, não julga a entrega — o veredito é da revisão — e não decide arquitetura: obstáculo à rota e dossiê não fechado sobem ao **planejamento** (G-REPLAN e G-NOASK, §7 itens 17 e 18), nunca viram improviso do loop nem pergunta ao dono no meio da janela — ao dono chega, no relatório de encerramento, só o que o planejador classificar como estratégico. **Não revisa plano** — roteia a escalada ao planejamento, não replaneja |
 | **Execução** | Melhor custo-benefício (Sonnet) | **Executar a tarefa — responsabilidade única**: implementar **uma** tarefa do checklist por vez, em contexto limpo, sob TDD (§4.4), entregando-a **tecnicamente correta** — testes da área tocada, conformance e piso de regressão verdes — e **sinalizando** o resultado (`review`, ou `blocked` com razão tipada) | Não decide, não pergunta ao dono, **não fica com dúvida** — dúvida é sinal de parada, não objeto de deliberação —, não replaneja escopo e não substitui a rota aprovada (G-EXECREADY, G-PLANFIDELITY e G-NOASK, §7 itens 12, 9 e 18): plano não-pronto, obstáculo à rota ou dúvida → para, registra o fato, sinaliza `blocked` e encerra; a escalada é ao planejamento, nunca direta ao dono. **Não se ocupa de teto nem de orçamento** — nem de turnos, nem de contexto: estouro se registra no corpo da tarefa como insumo do planejador, nunca vira decisão sua. **Não revisa plano.** Não escreve no diário de obras, não registra o resultado da própria entrega e não afere a própria aceitação — o veredito é da revisão |
-| **Revisão** | O mais poderoso disponível (Opus) — as dimensões de maior peso do laudo são juízo puro, e reviewer no mesmo modelo de quem executou tende a ratificar; é o único gate entre a entrega e o `done` sem round-trip humano | Julgar a entrega de **uma** tarefa contra o dossiê dela e emitir o laudo, em contexto próprio e com a escrita restrita ao caminho do laudo — independência imposta pela lista de ferramentas. Onde a camada mecânica (guardas, conformance, piso, escopo) mediu vermelho, o laudo acompanha a medição | Não corrige o que aponta, não replaneja e não fecha tarefa: o laudo é o veredito, e o encaminhamento do que ele aponta é da orquestração |
+| **Revisão** | O mais poderoso disponível (Opus) — as dimensões de maior peso do laudo são juízo puro, e reviewer no mesmo modelo de quem executou tende a ratificar; é o único gate entre a entrega e o `done` sem round-trip humano | Julgar a entrega de **uma** tarefa contra o dossiê dela e emitir o laudo, em contexto próprio e com a escrita restrita ao caminho do laudo — independência imposta pela lista de ferramentas. Onde a camada mecânica (guardas, conformance, piso, escopo) mediu vermelho, o laudo acompanha a medição; **não escreve no modelo de domínio** do plano (§3.2) — divergência entre a entrega e o texto de uma operação vira achado de alvo `modelo`, e a escrita é do modelador | Não corrige o que aponta, não replaneja e não fecha tarefa: o laudo é o veredito, e o encaminhamento do que ele aponta é da orquestração |
+| **Modelagem** | O mais poderoso disponível (Opus) — escrever o modelo de domínio de um plano é julgamento de domínio, e a consistência entre planos é o que um agente único compra | **Todo** ato sobre o modelo de domínio do plano (§3.2): escrever a seção na autoria, emendá-la quando uma decisão muda o que o plano entrega, resolver conflito entre o texto e a entrega e explicar o contexto do modelo a quem pergunta; devolve a seção literal e a linha do registro de versões que registra o ato (`pantonic-model-designer`) | Não planeja, não executa, não julga entrega e não escreve nenhuma outra linha do plano; não é acionado por outro agente — recebe despacho de quem conduz a sessão |
 | **Coleta** | O mais barato (Haiku ou equivalente) | Search, grep, leitura de codebase/documentos/prompts; filtra e devolve só o pertinente para o contexto dos agentes mais caros | Não edita, não conclui tarefa, não emite juízo sobre o que coletou |
 | **Auditoria** | Melhor custo-benefício (Sonnet) | Medir aderência **sem alterar código**, em duas frentes permanentes: **clean architecture + DDD** (`pantonic-auditor-arch`) e **clean code** (`pantonic-auditor-cleancode`) | Não corrige o que aponta — cada apontamento vira item no diário de obras, priorizado pelo dono |
 | **Redesenho** | O mais poderoso disponível (Opus) — separar complexidade acidental de essencial é juízo puro | Varrer a codebase pelo sweep mecânico, identificar procedimentos que ficaram complexos por acúmulo de correções e extensões e propor o redesenho **"do zero, hoje"** dentro das quatro camadas, cada proposta com o que **elimina** e o que **preserva**, riscos, os `TR-*` que protegem e a migração em passos atômicos, no relatório próprio (`pantonic-fora-da-caixa`) | Não implementa o que propõe e não altera código; não redesenha POC validada (`plugins/*/adhoc/`) e não sai das camadas — alvo cuja complexidade é **essencial** é declarado como tal em vez de virar proposta |
@@ -316,6 +317,92 @@ Nenhuma das quatro: não é doutrina. É estado de trabalho, e o lar é o diári
 **só o dono promove** — passa na pergunta 1: é doutrina global, canônica em
 `.claude/global/docs/GOVERNANCA_MEMORIAS.md` (§8) e projetada no ponto de carga
 `~/.claude/docs/GOVERNANCA_MEMORIAS.md`.
+
+### 3.2 O modelo de domínio do plano
+
+**O que é.** Todo plano carrega, logo depois de `## 0. O problema, verbatim`, a seção
+`## 1. Modelo conceitual`: a descrição, em linguagem corrente, do que o plano entrega, escrita como
+**objetos com propriedades** e **operações encadeadas** que alteram essas propriedades. São quatro
+blocos, nesta ordem: a tabela de **objetos** (`### 1.1 Objetos`), cada um com as propriedades
+observadas, o contrato e a operação que o produz; o **fluxo de operações**
+(`### 1.2 Fluxo de operações`), numeradas `OP-<n>`, cada uma nomeando quem age, o que faz, de que
+objetos precisa e que propriedades altera; o **estado inicial e o estado final**
+(`### 1.3 Estado inicial e estado final`), uma linha por propriedade; e o **registro de versões**
+(`### 1.4 Registro de versões`). A gramática que o instrumento lê mora na skill `diario-de-obras`
+(*Gramática legível por máquina*, "Modelo de domínio (seção do plano)").
+
+**Para quem é.** O modelo é a interface entre o dono e o loop. Quem lê só o modelo entende o que o
+plano entrega, **em que estágio está** e o que mudou desde a última leitura. Por isso o texto de
+uma operação não carrega crase, barra, caminho de arquivo, sigla nem identificador técnico — o
+instrumento recusa crase e barra (`V12`); o resto é dever de autoria. Máximo de 40 operações por
+plano.
+
+**Estágio, não status.** O andamento é **derivado e nunca gravado**. Uma operação está `concluída`
+quando todas as tarefas que a materializam estão `done` ou `cancelled`; está `em curso` quando
+alguma está `in-progress` ou `review`; está `prevista` nos demais casos. O **estágio atual** do
+plano é a primeira operação que não está `concluída`, e é `concluído` quando não há nenhuma.
+Nenhum papel escreve estado no modelo: `modelo.py show` o deriva do andamento das tarefas, e é a
+única fonte da leitura do dono.
+
+**Objeto, operação e propriedade.** **Propriedade** é a característica **observada** de um objeto:
+a que o processo altera, ou a que o processo tem de manter e por isso precisa vigiar. Característica
+que não interessa ao dono não é propriedade e não entra no modelo. **Objeto é o que possui
+propriedade. Operação não possui propriedade** — operação é o que **altera** a propriedade de um
+objeto. Propriedade que aparece numa operação é sinal de operação mal recortada, e a operação
+**decompõe-se em um objeto mais uma operação nova**. É assim que objetos e operações se descobrem:
+identificam-se as propriedades, e deles caem por decomposição — não por intuição.
+
+**Estado inicial, estado final e o aceite do plano.** O **estado inicial** é o retrato do começo do
+plano, antes de ele ser implementado, e serve para **calibrar as tarefas**: tarefa escrita sem
+conhecer o que será trabalhado é adivinhação. O **estado final** é o **desejo do dono**, e pode ser
+quantificável ou apenas qualificável — há plano cujo estado final é atender a requisitos, não
+alcançar um valor. **O aceite do plano é a confrontação dos dois:** o plano só é bem-sucedido se o
+estado final real for o estado final especificado, e essa diferença é o que tem valor para o dono.
+
+**Versão vigente, pendente e obsoleta.** A seção `## 1. Modelo conceitual` carrega **sempre o modelo
+vigente**, com o número de versão no cabeçalho, monotônico. Emenda ao modelo **versiona, não
+reescreve**: a versão nova nasce como **bloco irmão**, declarada pendente de validação, e as duas
+coexistem até o marco seguinte. No marco, a validação se busca em **duas instâncias, nesta ordem**:
+primeiro o consultor; validando ele, o dono — porque mudar a versão do modelo é mudar a entrega.
+Aceita, a pendente passa a vigente e a anterior passa a **obsoleta**; o conteúdo da obsoleta **não
+fica no plano**, cuja residência de histórico é o versionador, e o plano guarda só a linha que
+registra qual versão ficou obsoleta, quando e por aceite de qual versão. Recusada, a pendente é
+**eliminada** e a vigente permanece, sem marca.
+
+**Medição e drift não são a mesma coisa.** **Medição** é o confronto dos **resultados do processo**
+contra o modelo; **drift** é a **variação do modelo** em si. À medida que o modelo varia, as
+informações originais se perdem ou se modificam, e é por isso que o drift importa. A medição parte
+**sempre do modelo vigente** e nunca do obsoleto.
+
+**O contrato chega ao card.** Todo card carrega o campo `Operação do modelo` com as operações que
+materializa, o texto de cada uma copiado e a linha `precisa de` trazendo cada objeto com o contrato
+dele, copiado da tabela de objetos. É por esse campo que o executor sabe, sem abrir o plano, em que
+estágio está e do que precisa.
+
+**Quem escreve.** Um agente único — `pantonic-model-designer` — é dono de **todo** ato sobre o
+modelo: autoria, emenda, resolução de conflito entre o texto e a entrega, e explicação de contexto.
+Nenhum outro papel escreve na seção `## 1. Modelo conceitual`.
+
+| papel | o que faz diante do modelo |
+|---|---|
+| modelador | escreve a seção inteira, em todo ato; devolve a seção literal e a linha do ato em `### 1.4 Registro de versões` |
+| planejador | escreve o plano sem a seção do modelo e devolve o dossiê `Ato de modelo` de autoria junto com o plano gravado; o plano não vai ao Marco 1 sem a seção escrita pelo modelador e sem `modelo.py check` exit `0` |
+| consultor | devolve o dossiê `Ato de modelo` de emenda junto com o reparo do escalonamento, quando a decisão muda o que o plano entrega |
+| revisor | **não escreve**; divergência entre a entrega e o texto de uma operação vira achado de processo de alvo `modelo` (`docs/RUBRICA_DE_REVISAO.md` §6) |
+| executor | **não escreve**; lê a operação e o contrato no card |
+| orquestração | **não escreve**; despacha o modelador ao receber um dossiê `Ato de modelo`, roda `modelo.py check` antes de despachar e antes de fechar cada tarefa (exit `1` bloqueia; exit `2` = forma anterior, segue com nota) e abre o relatório de encerramento e cada marco com `modelo.py show` |
+| dono | lê o modelo no Marco 1 de todo plano e a leitura gerada pelo instrumento em cada marco e relatório |
+
+**Nenhum agente aciona outro agente.** Papel que precisa de um ato de modelo **devolve o dossiê na
+própria linha de retorno**; quem conduz a sessão o despacha. O dossiê é fechado e tem seis campos:
+`Plano`, `Ato` (`autoria`, `emenda`, `conflito` ou `leitura`), `Motivo` com o identificador da
+decisão ou do achado, `Fato novo` em uma frase, `Restrição` e `Devolver`.
+
+**Retroatividade.** Plano sem a seção `## 1. Modelo conceitual`, plano com a seção na **forma
+anterior** — frases `M-<n>` com estado gravado — e plano com a seção sem
+`### 1.3 Estado inicial e estado final` são forma anterior: `modelo.py check` sai `2` para eles e o
+loop segue. Nenhum plano é migrado. Caso medido de origem: diretiva do dono de 2026-09-20 sobre o
+Marco 2 do `P-0741`.
 
 ## 4. Fluxo de desenvolvimento
 

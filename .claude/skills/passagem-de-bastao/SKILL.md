@@ -76,7 +76,8 @@ vai para o papel barato — `pantonic-scout` (agente Pantonic* do projeto) ou, f
 O orquestrador monta o prompt de delegação a partir só do dossiê compacto devolvido pelo scout.
 
 **Fonte do contexto, em ordem de preferência:** (1) dossiê pré-autorado (`sprint_plan.md`, card de
-plano) copiado verbatim — exceto números de aceite, ver gate abaixo; (2) **herança de contexto** da
+plano) copiado verbatim, **inclusive o campo `Oração do modelo` com os sub-bullets de texto** (é a única forma de o executor ler o
+modelo — `GOVERNANCA.md` §3.2) — exceto números de aceite, ver gate abaixo; (2) **herança de contexto** da
 tarefa predecessora: precedente já pago nesta janela (âncoras re-derivadas, rota confirmada, rota
 descartada, achado já medido) colado na delegação — custo marginal zero, e é o que impede a sucessora
 de redescobrir o que a antecessora já pagou; (3) `pantonic-scout`/`context-scout` (skill
@@ -131,7 +132,8 @@ Recusa de qualquer item do gate: **não delega**, e o que falta fechar volta ao 
 
 1. **Gate** — tarefa dada como concluída já passou pela skill `guardrails-check` (Tier 2 no mínimo —
    dirs tocados + `tests/conformance/` verde; Tier 3 completo só quando a própria tarefa/sprint
-   exigir). Sem gate verde, o destino é `blocked` ou permanece `in-progress`, nunca `done`.
+   exigir). Sem gate verde, o destino é `blocked` ou permanece `in-progress`, nunca `done`. No mesmo gate, `python .claude/tools/modelo.py check --plano <plano>` sai `0` ou `2` (`GOVERNANCA.md` §3.2); exit `1` mantém
+   `in-progress` e escala ao consultor com o stderr.
 
 2. **Materializar o status e registrar**: `python .claude/tools/backlog.py status <ID> <estado>`
    materializa o `status`, em qualquer estado — ato exclusivo da **orquestração**: o executor é

@@ -69,3 +69,28 @@
 | P-0740-LM-T7a-o-invariante-de-contagem-da-secao-anatomia-do-kit.md | P-0740 | LM-T7a | aprovado |
 | P-0740-LM-T8-a-concessao-de-bash-ao-pantonic-planner-e-a-publicacao-na-de.md | P-0740 | LM-T8 | aprovado |
 | P-0740-LM-T9-consultant-spec-a-figura-ad-hoc-vira-especificacao.md | P-0740 | LM-T9 | aprovado com ressalva |
+| P-0741-MC-T1-a-norma-e-a-gramatica-do-modelo-publicadas-nas-residencias-u.md | P-0741 | MC-T1 | aprovado |
+| P-0741-MC-T2-modelo-py-check-e-show-e-o-alvo-modelo-no-gerador-de-laudo.md | P-0741 | MC-T2 | aprovado com ressalva |
+| P-0741-MC-T2a-o-campo-sem-consumidor-sai-da-dataclass-do-instrumento.md | P-0741 | MC-T2a | aprovado |
+| P-0741-MC-T2b-a-cadeia-sem-consumidor-sai-inteira-do-instrumento.md | P-0741 | MC-T2b | aprovado com ressalva |
+| P-0741-MC-T3-os-tres-papeis-que-escrevem-o-modelo-planejador-revisor-e-co.md | P-0741 | MC-T3 | aprovado com ressalva |
+| P-0741-MC-T4-o-loop-le-confere-e-mostra-o-modelo-scrum-master-e-passagem.md | P-0741 | MC-T4 | aprovado com ressalva |
+| P-0741-MC-T4a-o-gate-do-modelo-no-fechamento-para-de-criar-o-vermelho-que.md | P-0741 | MC-T4a | aprovado com ressalva |
+| P-0743-DOM-T1-a-norma-do-modelo-de-dominio-e-o-papel-que-a-executa.md | P-0743 | DOM-T1 | aprovado |
+| P-0743-DOM-T10-o-modelo-deste-plano-na-forma-nova.md | P-0743 | DOM-T10 | aprovado |
+| P-0743-DOM-T2-a-gramatica-que-a-maquina-le.md | P-0743 | DOM-T2 | aprovado |
+| P-0743-DOM-T3-o-instrumento-le-a-forma-nova.md | P-0743 | DOM-T3 | aprovado com ressalva |
+| P-0743-DOM-T3a-o-que-o-instrumento-e-a-gramatica-dizem-de-si-mesmos.md | P-0743 | DOM-T3a | aprovado com ressalva |
+| P-0743-DOM-T3b-a-referencia-cruzada-do-docstring.md | P-0743 | DOM-T3b | aprovado |
+| P-0743-DOM-T4-o-modelador.md | P-0743 | DOM-T4 | aprovado |
+| P-0743-DOM-T5-os-papeis-diante-do-modelador.md | P-0743 | DOM-T5 | aprovado |
+| P-0743-DOM-T5a-a-costura-do-retorno-do-revisor.md | P-0743 | DOM-T5a | aprovado |
+| P-0743-DOM-T5b-a-cadeia-do-retorno-do-emissor-ao-consumidor.md | P-0743 | DOM-T5b | aprovado |
+| P-0743-DOM-T6-a-porta-de-entrada-e-a-revisao-do-readme.md | P-0743 | DOM-T6 | aprovado |
+| P-0743-DOM-T7-a-norma-da-forma-nova-propriedades-estado-e-versao.md | P-0743 | DOM-T7 | aprovado |
+| P-0743-DOM-T8-a-gramatica-da-forma-nova.md | P-0743 | DOM-T8 | aprovado |
+| P-0743-DOM-T8a-os-ponteiros-que-a-forma-nova-deixou-para-tras.md | P-0743 | DOM-T8a | aprovado |
+| P-0743-DOM-T9-o-instrumento-aprende-propriedades-estado-e-versao.md | P-0743 | DOM-T9 | aprovado com ressalva |
+| P-0743-DOM-T9a-o-modelador-fala-a-forma-nova.md | P-0743 | DOM-T9a | aprovado |
+| P-0743-DOM-T9b-o-gate-que-o-modelador-consegue-fechar.md | P-0743 | DOM-T9b | aprovado |
+| P-0743-DOM-T9c-a-quarta-familia-de-violacoes-que-e-do-modelador.md | P-0743 | DOM-T9c | aprovado |
