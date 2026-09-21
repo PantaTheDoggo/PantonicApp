@@ -4,7 +4,11 @@
 **Plano de origem:** `P-0744` (classe B — este plano o sucede e herda as três tarefas dele, tarefa
 a tarefa; `docs/plans/P-0744-spec-do-planejador.md` passa a `superseded`) e `P-0743` (`done`,
 aceito em 2026-09-21 — é a premissa: o modelo de domínio e o modelador existem) ·
-**Status:** `ready` · 2026-09-21 · **Prefixo das tarefas no diário:** `PLN-T<n>` ·
+**Status:** `blocked` · 2026-09-21 · aguarda o `go` do dono no Marco 1: o plano só vira `ready`
+depois que ele ler a `## 1. Modelo conceitual`. Enquanto isso as sete tarefas não são elegíveis para o
+loop — `backlog.py next` não as seleciona porque o pai está `blocked` —, e é assim que a Regra 1 global
+(não iniciar execução sem instrução explícita) se materializa no kanban, no mesmo padrão do `P-0744` ·
+**Prefixo das tarefas no diário:** `PLN-T<n>` ·
 **Prefixo das decisões:** `DPN-<n>` · **Checagem de versão do kit:** modo hub — congelada em
 `0.0.0` (`GOVERNANCA.md` §10), nada a comparar · **Branch de trabalho:**
 `plan/planner-modelo-escopo` (criada em 2026-09-21 a pedido do dono; a execução inteira corre nela e
@@ -18,7 +22,7 @@ por `git merge --ff-only e4c1608` sem arrastar este plano.
 
 | marco | o que o dono lê | veredito |
 |---|---|---|
-| **Marco 1** | a `## 1. Modelo conceitual` deste plano, escrita pelo modelador — em especial o estado final da propriedade *régua de dimensionamento*, que aposenta o percentual de ocupação e a tabela de tetos | `go` = o plano segue `ready`; `no-go` = `cancelled`, e o `P-0744` volta de `superseded` a `blocked` |
+| **Marco 1** | a `## 1. Modelo conceitual` deste plano, escrita pelo modelador — em especial o estado final da propriedade *régua de dimensionamento*, que aposenta o percentual de ocupação e a tabela de tetos | `go` = o plano sai de `blocked` para `ready` e a fila o alcança; `no-go` = `cancelled`, e o `P-0744` volta de `superseded` a `blocked` |
 | **Marco 2** | `python .claude/tools/modelo.py show --plano docs/plans/P-0745-planejador-modelo-operacao.md` depois da `PLN-T5`, mais a *Diretriz de dimensionamento de tarefa* de `GOVERNANCA.md` §3 e a Fase 3 de `.claude/agents/pantonic-planner.md` | aceite registrado no diário (`GOVERNANCA.md` §4.5); `no-go` abre rodada de replanejamento |
 | **Marco 3** | `docs/planner-spec.md` depois da `PLN-T6`, o `README.md` revisado (`PLN-T7`) e o documento de encerramento (skill `entrega-de-encerramento`) | aceite registrado no diário; fecha o plano |
 
