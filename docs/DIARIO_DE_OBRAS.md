@@ -204,8 +204,10 @@ da resposta.
 | TK-64 | **O `check-drift` está vermelho por linha de skill que nenhuma tarefa aberta possui.** `.claude/README.md` não tem a linha da skill `entrega-de-encerramento`, entrega do `TK-51a` (fechado). O vermelho chega sem dono a toda revisão desta janela e já obrigou três reconciliações manuais. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-64` |
 | TK-65 | **Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`.** O `check` aprova plano estruturalmente inselecionável (`Depende de:` com id que não é item); o `--help` e todo erro de argparse morrem com `UnicodeEncodeError` em console cp1252; o verbo `diretiva` descarta em silêncio os ids escritos depois do travessão. | ready 0/3 | `docs/DIARIO_DE_OBRAS.md` › `## TK-65` |
 | TK-66 | **O atribuidor de `review_evidence.py` fabrica autoria com tarefa nunca despachada.** `--atribuir` casa caminho contra os `Arquivos-alvo` de **qualquer** tarefa do plano sem olhar o `status` dela: na janela do `P-0743` rotulou quatorze arquivos como `alvo-de-outra-tarefa (DOM-T3/T4/T5)` — tarefas em `ready`, que nada produziram —, quando eram entrega de uma janela paralela. No regime de commit por marco, é a atribuição que separa uma entrega da outra, e as duas revisões da janela tiveram de desmentir a evidência mecânica por injeção manual. | ready | `docs/DIARIO_DE_OBRAS.md` › `## TK-66` |
+| TK-67 | **A rodada de revisão de guardrails está pendente desde 2026-08-08.** `GOVERNANCA.md` §7.1 pendura a revisão no fechamento de cada plano; a última rodada registrada é a do `P-0731` (2026-08-08) e **sete** planos fecharam `done` depois dela (`P-0732`, `P-0735`, `P-0736`, `P-0738`, `P-0739`, `P-0740`, `P-0743`). §7 passou de 14 guardrails naquela rodada para **20** hoje. A skill `checar-versao-kit` reportou a pendência ao criar o `P-0745` em 2026-09-21; ela não executa a revisão — a revisão é tarefa nomeada, e é este tíquete. | ready | `docs/DIARIO_DE_OBRAS.md` § `## TK-67` |
+| TK-68 | **A cópia do kit das regras globais divergiu do arquivo que o dono carrega.** `.claude/global/CLAUDE.md` não tem os **Controles 1.1 e 1.2** da Regra 1 (28 linhas) que o `CLAUDE.md` global do dono carrega desde 2026-09-04, e `.claude/sync-kit.ps1` não projeta `.claude/global/` — as duas cópias se mantêm à mão e nada afere a diferença. Medido em 2026-09-21 na abertura do `P-0745`. | ready | `docs/DIARIO_DE_OBRAS.md` § `## TK-68` |
 | P-0743-DOM | O modelo conceitual vira modelo de domínio — **aceito pelo dono em 2026-09-21**. As 18 tarefas fecharam aprovadas; a norma, a gramática, o instrumento `modelo.py` e o agente `pantonic-model-designer` publicam o modelo de domínio em objetos com propriedades, fluxo de operações, estado inicial × estado final e registro de versões, e o próprio plano é o primeiro do acervo escrito na forma nova. O Marco 3 foi **dispensado** por ato do dono, que moveu a validação para o as-is. **Entrega validada: `docs/Entregas Aceitas/Entregas - P-0743.md`** (875 linhas, cobre também o `P-0741`), onde vivem as oito pendências abertas — três com efeito fora deste plano (`AE-25` telemetria, `TK-66` atribuição de evidência, `AE-24` residência de prova). Vinte e cinco achados (`AE-1`..`AE-25`), dez escalonamentos ao consultor, uma rodada de replanejamento (`RP-1`). Nada commitado. | done 18/18 | docs/plans/P-0743-modelo-de-dominio.md |
-| P-0744-PLS | A especificação do agente de planejamento | blocked | docs/plans/P-0744-spec-do-planejador.md |
+| P-0744-PLS | A especificação do agente de planejamento — substituído por: `P-0745` (2026-09-21, `DPN-1`) | superseded | docs/plans/P-0744-spec-do-planejador.md |
 
 ---
 
@@ -2822,3 +2824,76 @@ zero autoria; o instrumento trata as duas coisas como a mesma.
 
 **Não é escopo deste tíquete:** o `--desde` em si, nem a decisão de commitar por tarefa — essa é
 ato do dono e está fechada na diretiva do `P-0740`.
+
+## TK-67 — A rodada de revisão de guardrails está pendente desde 2026-08-08
+
+- **Status:** `ready` · 2026-09-21 — aberto pela sessão de planejamento do `P-0745`, quando a skill
+  `checar-versao-kit` armou o gatilho de `GOVERNANCA.md` §7.1 na criação do plano.
+
+**Fato medido (2026-09-21).** O **registro das rodadas** de `GOVERNANCA.md` §7.1 tem duas entradas:
+`1.4.0` (2026-08-01, primeira aplicação) e `P-0731` (2026-08-08, primeira rodada do regime por
+fechamento de plano). Desde então **sete** planos foram a `done` no índice deste diário — `P-0732`,
+`P-0735`, `P-0736`, `P-0738`, `P-0739`, `P-0740` e `P-0743` — e **nenhuma** rodada foi registrada.
+No mesmo intervalo §7 passou de **14** guardrails para **20**: nasceram `G-SCOPE`, `G-SURFACE`,
+`G-REPLAN`, `G-NOASK`, `G-MODULO` e `G-TOOLDENY`.
+
+**Por que é tíquete e não ato da skill.** §7.1 é explícito: a skill *arma* o gatilho e reporta, mas
+*"não executa a revisão — ela é tarefa nomeada, com registro próprio no diário"*. Este é o registro.
+
+**O que a rodada faz, quando for despachada.** Aplica a **pergunta única** de §7.1 — *"esta regra
+mudou algum comportamento desde a penúltima rodada registrada? Cite o caso."* — a cada guardrail
+**em escopo e não isenta**:
+
+1. **Escopo** — só guardrail com ≥2 rodadas de idade, isto é, a que já constava de §7 na penúltima
+   rodada registrada. Enquanto o registro não tiver duas rodadas **deste regime**, a `1.4.0` faz as
+   vezes de penúltima (ressalva escrita na própria entrada do `P-0731`): entram as **13** que
+   existiam em 2026-08-01, pelo nome e não pelo número — a numeração deslocou duas vezes desde
+   então. Os seis nascidos depois ficam **fora por idade**.
+2. **Isenção por enforcement executável** — guardrail verificado por check ativo não entra na
+   pergunta, e quem a invoca **nomeia o check e confirma que ele roda hoje**. Na rodada do `P-0731`
+   foram seis isentos, com os checks confirmados no consumidor `PantonicVideo`; a rodada nova
+   re-confirma, não herda.
+3. **Caso citável** é ocorrência **registrada** no intervalo — diário do hub ou de um consumidor,
+   `CHANGELOG.md`, nota de fechamento, decision record. Suíte verde não é caso; lembrança sem
+   registro não é caso.
+4. **Saída** — a entrada nova no *Registro das rodadas* de §7.1, com o plano que a disparou, as
+   guardrails avaliadas, as fora por idade, as isentas com o check nomeado e o resultado item a
+   item; mais a deprecação do que não passar.
+
+**Insumo farto, e é o motivo de a rodada valer agora.** O intervalo carrega sete planos, os achados
+`AE-*` de `P-0739`, `P-0740`, `P-0741` e `P-0743` e a entrega aceita em
+`docs/Entregas Aceitas/Entregas - P-0743.md` — material medido que não existia na rodada anterior.
+
+**Não é escopo deste tíquete:** criar guardrail novo. A porta de §7.1 é de **saída**.
+
+## TK-68 — A cópia do kit das regras globais divergiu do arquivo que o dono carrega
+
+- **Status:** `ready` · 2026-09-21 — aberto pela sessão de planejamento do `P-0745`, ao confrontar
+  as duas cópias antes de decidir quem edita o quê na `PLN-T2`.
+
+**Fato medido (2026-09-21).** `C:/Users/panta/.claude/CLAUDE.md` (12.752 bytes, 2026-09-04) e
+`.claude/global/CLAUDE.md` (10.751 bytes, 2026-08-24) **diferem**. A diferença é de uma direção só:
+o arquivo do dono carrega, sob a Regra 1, os **Controles 1.1** (*persistir o plano é encerramento do
+planejamento, não execução*) e **1.2** (*não abrir sessão de planejamento sobre alvo que já tem
+plano aprovado*) — 28 linhas nascidas do incidente medido de 2026-09-04 no `PantonicVideo` — e a
+cópia do kit não os tem. Nenhuma outra região diverge: em especial, o bullet *Capacidade* da Regra 2
+e o bullet *Orçamento por tarefa atômica* da Regra 7 são **idênticos byte a byte** nas duas — é o que
+permite à `PLN-T2` do `P-0745` editar as duas com o mesmo literal.
+
+**Por que importa.** `.claude/sync-kit.ps1` **não projeta** `.claude/global/` — busca por `global` no
+script não retorna ocorrência. As duas cópias se mantêm à mão, nada as afere, e a do kit é a que
+viaja para os projetos derivados. Consequência prática: um projeto Pantonic* que receba o kit hoje
+herda regras globais **sem** os dois controles, e a sessão seguinte pode repetir exatamente o defeito
+que eles existem para impedir — planejar duas vezes o mesmo alvo, ou aprovar plano que nunca é
+gravado.
+
+**Rotas candidatas (a decidir na execução, não aqui).**
+
+1. Trazer os Controles 1.1 e 1.2 para `.claude/global/CLAUDE.md` e declarar o arquivo do dono como
+   fonte, com um check que compare as duas.
+2. Fazer `sync-kit.ps1` projetar `.claude/global/`, transformando a cópia em projeção de verdade.
+3. Declarar as duas cópias como residências distintas por desenho — o que exige dizer, em
+   `docs/RESIDENCIA_DOUTRINA.md`, o que cabe em cada uma.
+
+**Não é escopo deste tíquete:** o percentual de ocupação e a tabela de tetos, que as duas cópias
+carregam hoje e que a `PLN-T2` do `P-0745` reescreve **nas duas** (`DPN-12`).

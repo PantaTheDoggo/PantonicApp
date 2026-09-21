@@ -2,8 +2,11 @@
 
 **Data:** 2026-09-20 · **Origem:** diretiva do dono sobre o Marco 2 do `P-0741`
 (`docs/plans/P-0741-modelo-conceitual.md`, `AE-18`), apontamento 3 · **Plano de origem:** `P-0741`
-(classe B — continuação; e `P-0743` é o irmão de fronteira disjunta) · **Status:** `blocked` ·
-2026-09-20 · depende de `P-0743` `done`: este plano é o **primeiro escrito na forma nova** do
+(classe B — continuação; e `P-0743` é o irmão de fronteira disjunta) · **Status:** `superseded` ·
+2026-09-21 · substituído por: `P-0745` (`docs/plans/P-0745-planejador-modelo-operacao.md`, `DPN-1`) — a
+iniciativa de melhoramento do agente de planejamento, cuja ausência a §0 pressupunha, passou a existir;
+`PLS-T1`..`PLS-T3` foram herdadas tarefa a tarefa (`PLN-T1`, `PLN-T6`, `PLN-T7`). Texto anterior:
+`blocked` · 2026-09-20 · depende de `P-0743` `done`: este plano é o **primeiro escrito na forma nova** do
 modelo, e o instrumento que lê essa forma nasce na `DOM-T3` do `P-0743` (`D-11` daquele plano) ·
 **Prefixo das tarefas no diário:** `PLS-T<n>` · **Prefixo das decisões:** `DPL-<n>` ·
 **Checagem de versão do kit:** modo hub — congelada em `0.0.0` (`GOVERNANCA.md` §10), nada a
