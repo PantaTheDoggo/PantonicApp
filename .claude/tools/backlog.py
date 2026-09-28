@@ -1,10 +1,11 @@
 """BKL-T2 (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T2`) — núcleo somente-leitura do
 instrumento de backlog: carrega o índice do diário, os planos vivos e o próprio diário; monta o
-grafo item → tarefas; `check` acusa cada violação de gramática (`C-1..C-11`, vocabulário fechado
+grafo item → tarefas; `check` acusa cada violação de gramática (`C-1..C-17`, vocabulário fechado
 definido no card) com `arquivo:linha`; `resolver_citacao_secao` (`TK-60a`) resolve uma citação
 `` `<arquivo>.md` §<N>[.<N>]* `` contra o arquivo citado, acusando `C-11` quando a seção não
-existe — vocabulário do instrumento fechado em `C-1..C-11`; `show` emite o dossiê verbatim de um item,
-truncado ao teto `DB-7` (8.000 chars / 120 linhas, com ponteiro `arquivo:l1-l2` quando corta).
+existe; `C-12` (`TK-65a`) acusa `Depende de:` fora da gramática ou citando id que não é item —
+vocabulário do instrumento fechado em `C-1..C-17`; `show` emite o dossiê verbatim de um item,
+inteiro no card de tarefa; o teto `DB-7` (8.000 chars / 120 linhas, com ponteiro `arquivo:l1-l2` quando corta) vale para plano, notas de execução e achados.
 
 Gramática implementada (residência canônica: skill `diario-de-obras`, seção "Gramática legível
 por máquina" — replicada aqui igual, `DB-17`/`DB-18`):
@@ -34,7 +35,7 @@ por máquina" — replicada aqui igual, `DB-17`/`DB-18`):
 `carregar` só lê `docs/DIARIO_DE_OBRAS.md` e `docs/plans/P-*.md` — nunca abre `*_HISTORICO.md`
 nem `_INBOX.md` (fora de escopo desta tarefa; a migração e o `drain` são tarefas futuras do
 plano). Superfície testável: `carregar`/`check`/`show` recebem `repo`/`modelo` já resolvidos e
-nunca leem `sys.argv` — mesmo desenho de `uow.py`/`telemetria.py` (`DB-1`).
+nunca leem `sys.argv` — mesmo desenho de `telemetria.py` (`DB-1`).
 
 CLI: ``python .claude/tools/backlog.py check [--repo <caminho>]`` (exit 0 sem violação, 1 com
 violação) e ``python .claude/tools/backlog.py show <ID> [--repo <caminho>]``. A CLI só embrulha
@@ -44,11 +45,43 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import importlib.util
+import json
 import os
 import re
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+
+def _carregar_caminhos():
+    caminho = Path(__file__).resolve().parent / "caminhos.py"
+    spec = importlib.util.spec_from_file_location("caminhos", caminho)
+    modulo = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = modulo
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_caminhos = _carregar_caminhos()
+
+
+_rdo_modulo = None
+
+
+def _carregar_rdo():
+    """Carregado sob demanda (não no import do módulo): ambientes de teste que copiam só
+    `backlog.py` + `caminhos.py` para uma raiz de teste isolada (sem `rdo.py`) continuam
+    funcionando para todo caminho que não liga `dossie=True` — só `_dossie_check` chama isto."""
+    global _rdo_modulo
+    if _rdo_modulo is None:
+        caminho = Path(__file__).resolve().parent / "rdo.py"
+        spec = importlib.util.spec_from_file_location("rdo", caminho)
+        modulo = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(modulo)
+        _rdo_modulo = modulo
+    return _rdo_modulo
 
 # --------------------------------------------------------------------------- #
 # Vocabulário fechado (DB-3) e gramática de ID (DB-14)
@@ -65,8 +98,16 @@ _BRACKET = (
     rf"\[({_MODELOS})(?: \+ dono)?(?: · esforço (?:{_ESFORCOS}))?"
     rf" · classe ({_CLASSES})(?: · teto \d+)?\]"
 )
+# EBK-T3 — regex independente (não usada por TAREFA_HEADER_RE/SUBTAREFA_HEADER_RE) só para
+# extrair `+ dono`/`esforço` do texto bruto do cabeçalho, sem tocar a numeração de grupos que
+# `test_tr_bkl_grupos_posicionais` (LM-T4a) trava: `_BRACKET` continua com dono/esforço não
+# capturantes ali.
+_BRACKET_DETALHE_RE = re.compile(
+    rf"\[(?:{_MODELOS})(?P<dono> \+ dono)?(?: · esforço (?P<esforco>{_ESFORCOS}))?"
+    rf" · classe (?:{_CLASSES})(?: · teto \d+)?\]"
+)
 
-PLANO_HEADER_RE = re.compile(r"^# (P-\d{4}) — (.+)$")
+PLANO_HEADER_RE = _caminhos.PLANO_HEADER_RE
 STATUS_CAMPO_RE = re.compile(r"\*\*Status:\*\* `([a-z-]+)`")
 PREFIXO_CAMPO_RE = re.compile(r"\*\*Prefixo das tarefas no diário:\*\* `([A-Za-z0-9]+)-T<n>`")
 ORDEM_CAMPO_RE = re.compile(r"\*\*Ordem de execução:\*\* (.+)$")
@@ -83,6 +124,9 @@ STATUS_BULLET_RE = re.compile(
     r"^- \*\*Status:\*\* `([a-z-]+)`(?: · \d{4}-\d{2}-\d{2}(?: · ([^—]+?))?|.*?)(?: — (.+))?$"
 )
 DEPENDE_BULLET_RE = re.compile(r"^- \*\*Depende de:\*\* (.+)$")
+# Gramática publicada do valor (skill `diario-de-obras`, *Item e residência*): `` `ID`[, `ID`] ``
+# e nada mais — `C-12` (TK-65a) acusa quem desvia.
+DEPENDE_VALOR_RE = re.compile(r"^`[^`\s]+`(?:, `[^`\s]+`)*$")
 TIPO_BULLET_RE = re.compile(r"^- \*\*Tipo:\*\* (.+)$")
 NOTAS_BULLET_RE = re.compile(r"^- \*\*Notas de execução:\*\*\s*$")
 DIRETIVA_RE = re.compile(r"^\*\*Diretiva de priorização:\*\* (.*)$")
@@ -122,12 +166,16 @@ class Item:
     texto: str
     modelo: str | None = None
     classe: str | None = None
+    dono: bool = False
+    esforco: str | None = None
     header_valido: bool = True
     status: str | None = None
     status_linha: int | None = None
     status_razao: str | None = None
     status_cauda: str | None = None
     depende_de: list[str] = field(default_factory=list)
+    depende_linha: int | None = None
+    depende_na_gramatica: bool = True
     campo_tipo: str | None = None
     pai: str | None = None
     filhos: list["Item"] = field(default_factory=list)
@@ -147,6 +195,10 @@ class Plano:
     ordem_execucao: list[str] = field(default_factory=list)
     tarefas: list[Item] = field(default_factory=list)
     fora_do_corpus: bool = False
+    estado_arquivo: str | None = None
+    estado_ids: list[tuple[str, int]] = field(default_factory=list)
+    estado_defeitos: list[tuple[int, str]] = field(default_factory=list)
+    status_no_texto: int | None = None
 
 
 @dataclass
@@ -228,12 +280,41 @@ def _extrair_depende(linhas: list[str], inicio_idx: int, fim_idx: int) -> list[s
     return []
 
 
+def _extrair_depende_forma(linhas: list[str], inicio_idx: int, fim_idx: int) -> tuple[int | None, bool]:
+    """Linha (1-based) do bullet `Depende de:` e se o valor está na gramática publicada. Linha
+    recuada logo depois do bullet é continuação do campo — `_extrair_depende` só lê a 1ª linha,
+    então id na continuação some do seletor: fora da gramática, igual a prosa (`C-12`)."""
+    for j in range(inicio_idx, fim_idx + 1):
+        m = DEPENDE_BULLET_RE.match(linhas[j])
+        if m:
+            na_gramatica = bool(DEPENDE_VALOR_RE.match(m.group(1).rstrip()))
+            if j + 1 <= fim_idx and linhas[j + 1][:1] in (" ", "\t") and linhas[j + 1].strip():
+                na_gramatica = False
+            return j + 1, na_gramatica
+    return None, True
+
+
 def _extrair_tipo(linhas: list[str], inicio_idx: int, fim_idx: int) -> str | None:
     for j in range(inicio_idx, fim_idx + 1):
         m = TIPO_BULLET_RE.match(linhas[j])
         if m:
             return m.group(1).strip()
     return None
+
+
+def _fim_na_secao(linhas: list[str], inicio_idx: int, fim_idx: int) -> int:
+    """TK-87a — fim do item também corta na primeira linha, entre `inicio_idx + 1` e `fim_idx`,
+    que casa `NIVEL_1_OU_2_RE` fora de cerca de código (```` ``` ```` ou `~~~` abre/fecha).
+    Devolve `fim_idx` sem alteração se nenhuma linha assim existir fora de cerca."""
+    em_cerca = False
+    for j in range(inicio_idx + 1, fim_idx + 1):
+        linha = linhas[j]
+        if linha.startswith("```") or linha.startswith("~~~"):
+            em_cerca = not em_cerca
+            continue
+        if not em_cerca and NIVEL_1_OU_2_RE.match(linha):
+            return j - 1
+    return fim_idx
 
 
 def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
@@ -249,6 +330,8 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
         resto = m_generic.group(3)
         titulo = resto.split(" [", 1)[0].strip()
         modelo_tok = classe_tok = None
+        dono_tok = False
+        esforco_tok = None
         if valido:
             if tipo == "tarefa":
                 mm = TAREFA_HEADER_RE.match(linha)
@@ -259,14 +342,21 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
             elif tipo == "tiquete":
                 mm = TIQUETE_HEADER_RE.match(linha)
                 titulo = mm.group(2)
+            if tipo in ("tarefa", "subtarefa"):
+                det = _BRACKET_DETALHE_RE.search(linha)
+                if det is not None:
+                    dono_tok = det.group("dono") is not None
+                    esforco_tok = det.group("esforco")
 
         fim_idx = heading_idxs[pos + 1] - 1 if pos + 1 < len(heading_idxs) else len(linhas) - 1
+        fim_idx = _fim_na_secao(linhas, i, fim_idx)
         linha_header = i + 1
         linha_fim = fim_idx + 1
         texto_secao = "\n".join(linhas[i : fim_idx + 1])
 
         status, status_linha, status_razao, status_cauda = _extrair_status(linhas, i + 1, fim_idx)
         depende_de = _extrair_depende(linhas, i + 1, fim_idx)
+        depende_linha, depende_na_gramatica = _extrair_depende_forma(linhas, i + 1, fim_idx)
         campo_tipo = _extrair_tipo(linhas, i + 1, fim_idx)
 
         itens.append(
@@ -280,12 +370,16 @@ def _scan_items(linhas: list[str], arquivo_rel: str) -> list[Item]:
                 texto=texto_secao,
                 modelo=modelo_tok,
                 classe=classe_tok,
+                dono=dono_tok,
+                esforco=esforco_tok,
                 header_valido=valido,
                 status=status,
                 status_linha=status_linha,
                 status_razao=status_razao,
                 status_cauda=status_cauda,
                 depende_de=depende_de,
+                depende_linha=depende_linha,
+                depende_na_gramatica=depende_na_gramatica,
                 campo_tipo=campo_tipo,
             )
         )
@@ -334,14 +428,55 @@ def _parse_diretiva(linhas: list[str]) -> list[str]:
     return []
 
 
+def _aplicar_estado_tsv(caminho: Path, repo: Path, plano: Plano, linhas_plano: list[str]) -> None:
+    """P-0749 SAN-T2 (`DSA-5`): plano em pasta tem o estado em `estado.tsv`, nunca no texto."""
+    plano.status, plano.status_linha = None, None
+    plano.status_no_texto = next(
+        (i for i, linha in enumerate(linhas_plano, start=1) if STATUS_CAMPO_RE.search(linha)), None
+    )
+    por_id = {t.id: t for t in plano.tarefas}
+    for tarefa in plano.tarefas:
+        tarefa.status = tarefa.status_linha = tarefa.status_razao = tarefa.status_cauda = None
+    estado_path = _caminhos.estado_tsv(caminho)
+    plano.estado_arquivo = estado_path.relative_to(repo).as_posix()
+    if not estado_path.is_file():
+        plano.estado_defeitos.append((1, "estado.tsv ausente"))
+        return
+    linhas = estado_path.read_text(encoding="utf-8").splitlines()
+    if not linhas or linhas[0] != _caminhos.CABECALHO_ESTADO:
+        plano.estado_defeitos.append((1, "cabeçalho fora do esquema"))
+        return
+    for n, linha in enumerate(linhas[1:], start=2):
+        if not linha.strip():
+            continue
+        campos = linha.split("\t")
+        if len(campos) != 6:
+            plano.estado_defeitos.append((n, "linha fora do esquema"))
+            continue
+        id_, tipo, status, razao, _data, nota = campos
+        if tipo == "plano" and id_ == plano.id:
+            plano.status = status
+        elif tipo == "tarefa":
+            plano.estado_ids.append((id_, n))
+            tarefa = por_id.get(id_)
+            if tarefa is not None:
+                tarefa.status = status
+                tarefa.status_razao = None if razao == "-" else razao
+                tarefa.status_cauda = None if nota == "-" else nota
+        else:
+            plano.estado_defeitos.append((n, f"{id_}: tipo '{tipo}' fora do esquema"))
+
+
 def _parse_plano(caminho: Path, repo: Path) -> Plano:
     texto = caminho.read_text(encoding="utf-8")
     linhas = texto.splitlines()
     rel = caminho.relative_to(repo).as_posix()
 
     m0 = PLANO_HEADER_RE.match(linhas[0]) if linhas else None
-    plano_id = m0.group(1) if m0 else caminho.stem
-    titulo = m0.group(2) if m0 else caminho.stem
+    pasta = _caminhos.pasta_do_plano(caminho)
+    nome = pasta.name if pasta is not None else caminho.stem
+    plano_id = m0.group(1) if m0 else nome
+    titulo = m0.group(2) if m0 else nome
 
     status: str | None = None
     status_linha: int | None = None
@@ -369,7 +504,7 @@ def _parse_plano(caminho: Path, repo: Path) -> Plano:
     for tarefa in tarefas:
         tarefa.pai = plano_id
 
-    return Plano(
+    plano = Plano(
         id=plano_id,
         titulo=titulo,
         arquivo=rel,
@@ -382,6 +517,9 @@ def _parse_plano(caminho: Path, repo: Path) -> Plano:
         ordem_execucao=ordem,
         tarefas=tarefas,
     )
+    if _caminhos.e_layout_pasta(caminho):
+        _aplicar_estado_tsv(caminho, repo, plano, linhas)
+    return plano
 
 
 def _parse_diario(caminho: Path, repo: Path) -> tuple[list[LinhaIndice], list[Item], list[str]]:
@@ -411,9 +549,8 @@ def carregar(repo: Path) -> Modelo:
     """Carrega índice + planos vivos + diário. Só abre `docs/DIARIO_DE_OBRAS.md` e
     `docs/plans/P-*.md` — nunca `*_HISTORICO.md` nem `_INBOX.md` (fora de escopo desta tarefa)."""
     diario_path = repo / "docs" / "DIARIO_DE_OBRAS.md"
-    planos_dir = repo / "docs" / "plans"
 
-    planos = [_parse_plano(caminho, repo) for caminho in sorted(planos_dir.glob("P-*.md"))]
+    planos = [_parse_plano(caminho, repo) for caminho in _caminhos.arquivos_de_plano(repo)]
     indice, tiquetes, diario_linhas = _parse_diario(diario_path, repo)
     diretiva_ids = _parse_diretiva(diario_linhas)
 
@@ -439,8 +576,10 @@ def carregar(repo: Path) -> Modelo:
 
 
 # --------------------------------------------------------------------------- #
-# check — violações C-1..C-11 (C-11 via resolver_citacao_secao, definido abaixo — TK-60a:
-# check é o chamador de produção, nenhum subcomando novo)
+# check — violações C-1..C-17 (C-11 via resolver_citacao_secao, definido abaixo — TK-60a:
+# check é o chamador de produção, nenhum subcomando novo; C-12 via _depende_checks — TK-65a;
+# C-15 acusa tíquete vivo sem subtarefa — EBK-T1; C-16 confronta card vivo com a leitura de
+# dossiê do rdo.py e C-17 acusa entrada órfã de piso_c11 — EBK-T2)
 # --------------------------------------------------------------------------- #
 
 
@@ -455,6 +594,19 @@ def _celula_indice(bruto: str) -> tuple[str, bool, str | None]:
         return m2.group(1), True, None
     primeiro = bruto.split(" ", 1)[0]
     return primeiro, True, None
+
+
+def _plano_em_esboco(plano: Plano, texto_inbox: str) -> bool:
+    """Domínio (`AF-T8`): plano em pasta cujo `estado.tsv` tem, depois do cabeçalho, uma linha
+    só — a do plano, `blocked` — e nenhuma linha de `docs/plans/_INBOX.md` cita o caminho dele.
+    É o estado entre a Fase 3a e a Fase 5 do planejador. `estado_arquivo` só existe em plano em
+    pasta: plano legado `blocked` segue acusado no `C-10` (`AE-10`, reparo do consultor)."""
+    return (
+        plano.estado_arquivo is not None
+        and plano.status == "blocked"
+        and not plano.estado_ids
+        and plano.arquivo not in texto_inbox
+    )
 
 
 def _status_do_id(modelo: Modelo, id_: str) -> str | None:
@@ -492,8 +644,70 @@ def _item_checks(item: Item, violacoes: list[Violacao]) -> None:
         )
 
 
-def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = None) -> list[Violacao]:
+def _ids_da_arvore(modelo: Modelo) -> set[str]:
+    """Todo id que `_status_do_id` resolve — o espaço em que o seletor percorre `Depende de`."""
+    ids: set[str] = set()
+    for plano in modelo.planos:
+        ids.add(plano.id)
+        ids.update(t.id for t in plano.tarefas)
+    for tiquete in modelo.tiquetes:
+        ids.add(tiquete.id)
+        ids.update(s.id for s in tiquete.filhos)
+    return ids
+
+
+def _depende_checks(item: Item, ids_arvore: set[str], violacoes: list[Violacao]) -> None:
+    """C-12 (TK-65a) — `Depende de:` é lista de ids de item por gramática publicada. Prosa no
+    campo, ou id que não resolve na árvore, deixa o item inselecionável por `next` sem que o
+    lint avise: o seletor exige `done` de cada id e id inexistente nunca fica `done`."""
+    if item.depende_linha is None:
+        return
+    if not item.depende_na_gramatica:
+        violacoes.append(
+            Violacao("C-12", item.arquivo, item.depende_linha, f"{item.id}: Depende de fora da gramática (prosa)")
+        )
+    for id_ in item.depende_de:
+        if id_ not in ids_arvore:
+            violacoes.append(
+                Violacao("C-12", item.arquivo, item.depende_linha, f"{item.id}: Depende de cita '{id_}', que não é item")
+            )
+
+
+_ITEM_VIVO_DOSSIE = {"ready", "in-progress", "review"}
+
+
+def _dossie_check(item: Item, repo: Path | None, dossie: bool, violacoes: list[Violacao]) -> None:
+    """C-16 (EBK-T2) — confronta o card com a mesma leitura de dossiê que `rdo.py close` usa
+    (`extrair_dossie`, leitura estrita: `esquema_legado=False, modelo_legado=None,
+    classe_legado=None`), sem reimplementar a gramática (propriedade 1). Só corre com
+    `dossie=True` e `repo` dado (propriedade 5); card `done`, `cancelled` ou `blocked` (fora de
+    `_ITEM_VIVO_DOSSIE`) não é lido (propriedade 2)."""
+    if not dossie or repo is None:
+        return
+    if item.status not in _ITEM_VIVO_DOSSIE:
+        return
+    rdo = _carregar_rdo()
+    try:
+        rdo.extrair_dossie(
+            repo / item.arquivo,
+            item.id,
+            esquema_legado=False,
+            modelo_legado=None,
+            classe_legado=None,
+        )
+    except rdo.RdoValidationError as exc:
+        violacoes.append(Violacao("C-16", item.arquivo, item.linha_header, str(exc)))
+
+
+def check(
+    modelo: Modelo,
+    inbox_planos: Path | None = None,
+    repo: Path | None = None,
+    piso_c11: set[tuple[str, str]] | None = None,
+    dossie: bool = False,
+) -> list[Violacao]:
     violacoes: list[Violacao] = []
+    ids_arvore = _ids_da_arvore(modelo)
 
     for plano in modelo.planos:
         if plano.fora_do_corpus:
@@ -523,8 +737,30 @@ def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = 
                 )
             )
 
+        if plano.estado_arquivo is not None:
+            for linha_n, mensagem in plano.estado_defeitos:
+                violacoes.append(Violacao("C-13", plano.estado_arquivo, linha_n, mensagem))
+            ids_estado = {id_ for id_, _ in plano.estado_ids}
+            ids_cards = {t.id for t in plano.tarefas}
+            for tarefa in plano.tarefas:
+                if tarefa.id not in ids_estado:
+                    violacoes.append(
+                        Violacao("C-13", plano.arquivo, tarefa.linha_header, f"{tarefa.id} sem linha em estado.tsv")
+                    )
+            for id_, linha_n in plano.estado_ids:
+                if id_ not in ids_cards:
+                    violacoes.append(
+                        Violacao("C-13", plano.estado_arquivo, linha_n, f"{id_}: linha de estado.tsv sem card em plano.md")
+                    )
+            if plano.status_no_texto is not None:
+                violacoes.append(
+                    Violacao("C-14", plano.arquivo, plano.status_no_texto, f"{plano.id}: linha **Status:** em plano de pasta")
+                )
+
         for tarefa in plano.tarefas:
             _item_checks(tarefa, violacoes)
+            _depende_checks(tarefa, ids_arvore, violacoes)
+            _dossie_check(tarefa, repo, dossie, violacoes)
 
         em_progresso = [t for t in plano.tarefas if t.status == "in-progress"]
         if len(em_progresso) > 1:
@@ -540,8 +776,15 @@ def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = 
 
     for tiquete in modelo.tiquetes:
         _item_checks(tiquete, violacoes)
+        _depende_checks(tiquete, ids_arvore, violacoes)
+        if tiquete.status not in {"done", "cancelled", "superseded"} and not tiquete.filhos:
+            violacoes.append(
+                Violacao("C-15", tiquete.arquivo, tiquete.linha_header, f"{tiquete.id} vivo sem subtarefa")
+            )
         for sub in tiquete.filhos:
             _item_checks(sub, violacoes)
+            _depende_checks(sub, ids_arvore, violacoes)
+            _dossie_check(sub, repo, dossie, violacoes)
 
         em_progresso = [x for x in [tiquete, *tiquete.filhos] if x.status == "in-progress"]
         if len(em_progresso) > 1:
@@ -600,7 +843,10 @@ def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = 
         # todo arquivo do glob, vivo ou não — DB-38). Nunca contra os ids mencionados no
         # próprio texto do inbox: plano criado sem linha de inbox não aparece lá, e é
         # exatamente esse o caso medido que motivou a violação.
-        for i, linha_inbox in enumerate(inbox_planos.read_text(encoding="utf-8").splitlines(), start=1):
+        # AF-T8: o plano em esboço cujo id é o do contador não entra em `ids_planos` — ele
+        # ainda não tem linha no inbox nem tarefa registrada (Domínio, `_plano_em_esboco`).
+        texto_inbox = inbox_planos.read_text(encoding="utf-8")
+        for i, linha_inbox in enumerate(texto_inbox.splitlines(), start=1):
             m = _CONTADOR_INBOX_ID_RE.search(linha_inbox)
             if m is None:
                 continue
@@ -608,16 +854,16 @@ def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = 
             ids_planos: list[int] = []
             for p in modelo.planos:
                 mid = _ID_PLANO_RE.match(p.id)
-                if mid:
+                if mid and not (int(mid.group(1)) == contador and _plano_em_esboco(p, texto_inbox)):
                     ids_planos.append(int(mid.group(1)))
-            maior = max(ids_planos) if ids_planos else 0
-            if contador <= maior:
+            # Sem plano presente (projeto novo, `DSA-14`), todo contador vale, `P-0` inclusive.
+            if ids_planos and contador <= max(ids_planos):
                 violacoes.append(
                     Violacao(
                         "C-10",
                         "docs/plans/_INBOX.md",
                         i,
-                        f"contador aponta para P-{contador:04d}, já presente em docs/plans/",
+                        f"contador aponta para {_caminhos.formatar_id(contador, len(m.group(1)))}, já presente em docs/plans/",
                     )
                 )
             break
@@ -635,6 +881,7 @@ def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = 
         if historico.exists():
             fontes.append((historico.relative_to(repo).as_posix(), historico.read_text(encoding="utf-8")))
 
+        chaves_quebradas: set[tuple[str, str]] = set()
         for arquivo_fonte, texto_fonte in fontes:
             for linha_num, referencia in _citacoes_do_texto(texto_fonte):
                 violacao = resolver_citacao_secao(referencia, repo)
@@ -642,11 +889,29 @@ def check(modelo: Modelo, inbox_planos: Path | None = None, repo: Path | None = 
                     continue
                 m = _REF_SECAO_RE.match(referencia.strip())
                 chave = (m.group("arquivo"), m.group("secao")) if m is not None else None
-                if chave in _PISO_C11:
+                if chave is not None:
+                    chaves_quebradas.add(chave)
+                if piso_c11 is not None and chave in piso_c11:
                     continue
                 violacoes.append(
                     Violacao("C-11", arquivo_fonte, linha_num, f"referência não resolvida: {referencia}")
                 )
+
+        # C-17 (EBK-T2, DEB-7 propriedade 5) — `piso_c11` é o único que decide o silêncio de
+        # C-11 e a existência deste lint: `None` = sem piso, nenhuma entrada a checar. O piso
+        # vem de `docs/PISO_C11.tsv` do repositório checado (`ler_piso_c11`, TK-86a). Entrada
+        # que não casa nenhuma citação quebrada do corpus corrente é órfã (propriedade 3).
+        if piso_c11 is not None:
+            for entry_arquivo, entry_secao in sorted(piso_c11):
+                if (entry_arquivo, entry_secao) not in chaves_quebradas:
+                    violacoes.append(
+                        Violacao(
+                            "C-17",
+                            entry_arquivo,
+                            1,
+                            f"piso_c11 nomeia entrada órfã: `{entry_arquivo}` §{entry_secao}",
+                        )
+                    )
 
     return violacoes
 
@@ -665,17 +930,45 @@ _REF_SECAO_RE = re.compile(r"^`(?P<arquivo>[^`]+\.md)`\s+§(?P<secao>\d+(?:\.\d+
 _CITACAO_SECAO_HARVEST_RE = re.compile(r"`(?P<arquivo>[^`]+\.md)`\s+§(?P<secao>\d+(?:\.\d+)*)")
 _HEADING_NUMERADO_RE = re.compile(r"^#{1,6}\s+(?P<num>\d+(?:\.\d+)*)\b")
 
-# Piso de C-11 (item 7, TK-60a) — dívida já presente no corpus vivo, contabilizada para o
-# lint não nascer vermelho; mesma trava do `.claude/checks/ratchet_piso.py` (falha só no
-# PRÓXIMO ponteiro quebrado, não nos já conhecidos). Quitar o piso é tíquete próprio, não
-# deste card.
-_PISO_C11: set[tuple[str, str]] = {
-    # Origem: medido em 2026-09-20 (TK-60a, card), 15 ocorrências (`docs/plans/P-0741-modelo-conceitual.md`
-    # 6, `docs/DIARIO_HISTORICO.md` 6, `docs/DIARIO_DE_OBRAS.md` 1, `docs/plans/P-0730-v2-identidade.md` 1,
-    # `docs/plans/P-0731-v2-extracao-modalidade.md` 1).
-    ("GOVERNANCA.md", "1.1"),
-    ("GOVERNANCA.md", "3.2"),
-}
+# Piso de C-11 (TK-86a) — lido de `docs/PISO_C11.tsv` do repositório checado, não mais
+# constante do código: o piso é dívida de um corpus, e cada repositório tem o seu.
+_PISO_C11_ARQUIVO = "docs/PISO_C11.tsv"
+_PISO_C11_CABECALHO = "arquivo\tsecao\torigem"
+_PISO_C11_SECAO_RE = re.compile(r"^\d+(?:\.\d+)*$")
+
+
+def ler_piso_c11(repo: Path) -> tuple[set[tuple[str, str]] | None, list[Violacao]]:
+    """Lê o piso de C-11 de `docs/PISO_C11.tsv` do repositório checado.
+
+    Piso de C-11 (item 7, TK-60a) — dívida já presente no corpus vivo, contabilizada para o
+    lint não nascer vermelho; mesma trava do `.claude/checks/ratchet_piso.py` (falha só no
+    PRÓXIMO ponteiro quebrado, não nos já conhecidos). Quitar o piso é tíquete próprio. Origem
+    da entrada do hub: medido em 2026-09-20 (TK-60a, card), 15 ocorrências
+    (`docs/plans/P-0741-modelo-conceitual.md` 6, `docs/DIARIO_HISTORICO.md` 6,
+    `docs/DIARIO_DE_OBRAS.md` 1, `docs/plans/P-0730-v2-identidade.md` 1,
+    `docs/plans/P-0731-v2-extracao-modalidade.md` 1).
+
+    Arquivo ausente → `(None, [])` (sem piso, e o C-17 não tem o que checar). Cabeçalho fora do
+    esquema → piso vazio e um C-17 na linha 1. Linha não vazia fora do esquema → C-17 com o
+    número dela, e a linha não entra no piso.
+    """
+    caminho = repo / _PISO_C11_ARQUIVO
+    if not caminho.is_file():
+        return None, []
+    linhas = caminho.read_text(encoding="utf-8").splitlines()
+    if not linhas or linhas[0] != _PISO_C11_CABECALHO:
+        return set(), [Violacao("C-17", _PISO_C11_ARQUIVO, 1, "cabeçalho fora do esquema")]
+    piso: set[tuple[str, str]] = set()
+    violacoes: list[Violacao] = []
+    for numero, linha in enumerate(linhas[1:], start=2):
+        if not linha.strip():
+            continue
+        campos = linha.split("\t")
+        if len(campos) != 3 or not campos[0] or not _PISO_C11_SECAO_RE.match(campos[1]):
+            violacoes.append(Violacao("C-17", _PISO_C11_ARQUIVO, numero, "linha fora do esquema"))
+            continue
+        piso.add((campos[0], campos[1]))
+    return piso, violacoes
 
 
 def _resolver_arquivo_citado(arquivo: str, repo: Path) -> Path | None:
@@ -776,10 +1069,98 @@ def _truncar(texto: str, arquivo: str, linha_header: int, linha_fim: int) -> str
     return cortado + f"\n… truncado ({arquivo}:{linha_header}-{linha_fim})"
 
 
+_ACHADOS_HEADING_RE = re.compile(r"^## .*Achados da execução")
+_AE_ID_RE = re.compile(r"\bAE-(\d+)\b")
+
+
+def achados_roteados(texto_plano: str, tarefa_id: str) -> list[str]:
+    """Entradas `AE-<n>` da seção `## Achados da execução` do plano cuja `**Rota:**` cita
+    `tarefa_id` como palavra inteira (DFP-7/DFP-19). Leitura duplicada de
+    `encerrar.achados_do_plano`/`_secao_achados`, sem import cruzado entre os dois módulos."""
+    linhas = texto_plano.splitlines()
+    ini = next((i for i, l in enumerate(linhas) if _ACHADOS_HEADING_RE.match(l)), None)
+    if ini is None:
+        return []
+    fim = next((j for j in range(ini + 1, len(linhas)) if re.match(r"^#{1,2} ", linhas[j])), len(linhas))
+
+    entradas_linhas: list[list[str]] = []
+    atual: list[str] | None = None
+    for linha in linhas[ini + 1 : fim]:
+        if linha.startswith("- "):
+            if atual is not None:
+                entradas_linhas.append(atual)
+            atual = [linha]
+        elif atual is not None:
+            atual.append(linha)
+    if atual is not None:
+        entradas_linhas.append(atual)
+
+    resultado: list[str] = []
+    for bruta in entradas_linhas:
+        aparada = list(bruta)
+        while aparada and aparada[-1].strip() == "":
+            aparada.pop()
+        if not aparada or not _AE_ID_RE.search(aparada[0]):
+            continue
+        texto_entrada = "\n".join(aparada)
+        marcador = "**Rota:**"
+        pos_rota = texto_entrada.find(marcador)
+        if pos_rota == -1:
+            continue
+        rota = texto_entrada[pos_rota + len(marcador) :]
+        if re.search(rf"(?<![\w-]){re.escape(tarefa_id)}(?![\w-])", rota):
+            resultado.append(texto_entrada)
+    return resultado
+
+
+def _bloco_achados(texto_plano: str, tarefa_id: str) -> str:
+    entradas = achados_roteados(texto_plano, tarefa_id)
+    if not entradas:
+        return "**Achados roteados a este card:** nenhum"
+    return "\n".join(["**Achados roteados a este card:**", *entradas])
+
+
+def _achados_truncados(plano: "Plano", tarefa_id: str) -> str:
+    """Bloco de achados roteados a `tarefa_id` sob o teto `DB-7`. O ponteiro do corte (`AE-11`
+    do `P-0753`) é a seção `## Achados da execução` no arquivo do plano — de onde o bloco foi
+    cortado —, não a faixa do plano inteiro; sem a seção, cai na faixa do plano."""
+    linhas = plano.texto.splitlines()
+    ini = next((i for i, l in enumerate(linhas) if _ACHADOS_HEADING_RE.match(l)), None)
+    if ini is None:
+        l1, l2 = plano.linha_header, plano.linha_fim
+    else:
+        fim = next((j for j in range(ini + 1, len(linhas)) if re.match(r"^#{1,2} ", linhas[j])), len(linhas))
+        l1, l2 = plano.linha_header + ini, plano.linha_header + fim - 1
+    return _truncar(_bloco_achados(plano.texto, tarefa_id), plano.arquivo, l1, l2)
+
+
+def _card_inteiro(item: Item) -> str:
+    """AF-T9 — o card de um `Item` sai inteiro até a linha anterior a
+    `- **Notas de execução:**`; o trecho que começa nessa linha (quando existe) passa por
+    `_truncar` (teto `DB-7`)."""
+    linhas = item.texto.splitlines()
+    idx = next((i for i, l in enumerate(linhas) if NOTAS_BULLET_RE.match(l)), None)
+    if idx is None:
+        return item.texto
+    antes = "\n".join(linhas[:idx])
+    notas = "\n".join(linhas[idx:])
+    notas_truncadas = _truncar(notas, item.arquivo, item.linha_header + idx, item.linha_fim)
+    if antes:
+        return antes + "\n" + notas_truncadas
+    return notas_truncadas
+
+
 def show(modelo: Modelo, id_: str) -> str:
     alvo = _localizar(modelo, id_)
     if alvo is None:
         return f"id não encontrado: {id_}"
+    if isinstance(alvo, Item):
+        texto = _card_inteiro(alvo)
+        if alvo.tipo == "tarefa":
+            plano = next(p for p in modelo.planos if p.id == alvo.pai)
+            bloco = _achados_truncados(plano, alvo.id)
+            return texto + "\n\n" + bloco
+        return texto
     return _truncar(alvo.texto, alvo.arquivo, alvo.linha_header, alvo.linha_fim)
 
 
@@ -988,6 +1369,55 @@ def _antecessora(pai: Plano | Item, tipo_pai: str, vencedor_item: Item) -> Item 
     return irmaos[idx - 1]
 
 
+HANDOVER_BULLET_RE = re.compile(r"^- \*\*Handover:\*\*(?P<cabecalho>.*)$")
+
+
+def extrair_handover(item: Item) -> str | None:
+    """TK-88 — o campo `- **Handover:**` do card, verbatim: o bullet de topo e as linhas
+    indentadas que o seguem (sub-bullets `Entregue`, `Contrato`, `Não refazer`, `Pendente`).
+    Escrito por `encerrar.py handover`; lido aqui para o `next` devolvê-lo à sucessora. Ausente
+    devolve None — o campo é opcional no card."""
+    linhas = item.texto.splitlines()
+    inicio = next((i for i, l in enumerate(linhas) if HANDOVER_BULLET_RE.match(l)), None)
+    if inicio is None:
+        return None
+    fim = inicio
+    for idx in range(inicio + 1, len(linhas)):
+        if linhas[idx][:1] in (" ", "\t") and linhas[idx].strip():
+            fim = idx
+            continue
+        break
+    return "\n".join(linhas[inicio:fim + 1])
+
+
+def handovers_para(pai: Plano | Item, tipo_pai: str, vencedor_item: Item) -> list[tuple[Item, str]]:
+    """TK-88 — os handovers que o `next` entrega junto com a próxima tarefa, por nomenclatura,
+    sem julgamento: (a) todo irmão cujo cabeçalho do handover nomeia a sucessora entre crases
+    depois de `para` (`- **Handover:** <data> · para \\`<ID>\\``); (b) sem nenhum endereçado, o
+    handover da antecessora imediata (`_antecessora`), quando ela o tem. A pertinência do que
+    entra no dossiê da sucessora é do orquestrador; o instrumento só devolve o registro."""
+    resultado: list[tuple[Item, str]] = []
+    for irmao in _irmaos_ordenados(pai, tipo_pai):
+        if irmao is vencedor_item:
+            continue
+        texto = extrair_handover(irmao)
+        if texto is None:
+            continue
+        m = HANDOVER_BULLET_RE.match(texto.splitlines()[0])
+        cabecalho = m.group("cabecalho") if m else ""
+        destinatarios = cabecalho.split("para", 1)[1] if "para" in cabecalho else ""
+        if f"`{vencedor_item.id}`" in destinatarios:
+            resultado.append((irmao, texto))
+    if resultado:
+        return resultado
+    antecessora_item = _antecessora(pai, tipo_pai, vencedor_item)
+    if antecessora_item is not None:
+        texto = extrair_handover(antecessora_item)
+        if texto is not None:
+            return [(antecessora_item, texto)]
+    return []
+
+
 def _range_notas(item: Item) -> tuple[int, int] | None:
     linhas = item.texto.splitlines()
     inicio: int | None = None
@@ -1055,11 +1485,11 @@ def _listar_candidatos_a_fechamento(modelo: Modelo) -> str:
     return ", ".join(f"{id_} ({done}/{total})" for id_, done, total in candidatos)
 
 
-_CAMINHO_PLANO_INBOX_RE = re.compile(r"docs/plans/P-\d{4}-[^)\s`]+\.md")
-_ID_PLANO_INBOX_RE = re.compile(r"docs/plans/P-(\d{4})-")
-_CONTADOR_INBOX_RE = re.compile(r"\*\*Próximo id de plano: P-\d{4}\.\*\*")
-_CONTADOR_INBOX_ID_RE = re.compile(r"\*\*Próximo id de plano: P-(\d{4})\.\*\*")
-_ID_PLANO_RE = re.compile(r"^P-(\d{4})$")
+_CAMINHO_PLANO_INBOX_RE = _caminhos.CAMINHO_PLANO_INBOX_RE
+_ID_PLANO_INBOX_RE = _caminhos.ID_PLANO_INBOX_RE
+_CONTADOR_INBOX_RE = _caminhos.CONTADOR_INBOX_RE
+_CONTADOR_INBOX_ID_RE = _caminhos.CONTADOR_INBOX_ID_RE
+_ID_PLANO_RE = _caminhos.ID_PLANO_RE
 
 
 def _contar_inbox_planos(caminho: Path) -> int:
@@ -1111,7 +1541,9 @@ def renderizar_next(
     pai = candidato.pai
     tipo_pai = candidato.tipo_pai
 
-    bracket = f"[{item.modelo} · classe {item.classe}]"
+    sufixo_dono = " + dono" if item.dono else ""
+    sufixo_esforco = f" · esforço {item.esforco}" if item.esforco else ""
+    bracket = f"[{item.modelo}{sufixo_dono}{sufixo_esforco} · classe {item.classe}]"
     linhas_saida = [f"=== PRÓXIMA TAREFA: {item.id} — {item.titulo} {bracket}"]
 
     if tipo_pai == "plano":
@@ -1141,8 +1573,16 @@ def renderizar_next(
                 f"({antecessora_item.status}; notas em {antecessora_item.arquivo}:{l1}-{l2})"
             )
 
-    linhas_saida.append("--- dossiê (verbatim, teto DB-7) ---")
-    linhas_saida.append(_truncar(item.texto, item.arquivo, item.linha_header, item.linha_fim))
+    # TK-88 — o handover da(s) tarefa(s) que entregaram para esta chega junto com o dossiê,
+    # verbatim, sob âncora própria: o orquestrador o cola na delegação quando pertinente.
+    for autor, texto_handover in handovers_para(pai, tipo_pai, item):
+        linhas_saida.append(f"=== HANDOVER DE {autor.id} — {autor.titulo} ({autor.status}; {autor.arquivo})")
+        linhas_saida.append(texto_handover)
+
+    linhas_saida.append("--- dossiê (verbatim, card inteiro) ---")
+    linhas_saida.append(_card_inteiro(item))
+    if tipo_pai == "plano":
+        linhas_saida.append(_achados_truncados(pai, item.id))
     linhas_saida.append("--- pendências mecânicas ---")
 
     n_inbox_planos = _contar_inbox_planos(inbox_planos) if inbox_planos is not None else 0
@@ -1320,17 +1760,17 @@ def _regenerar_bloco_fila(modelo: Modelo, diario_linhas: list[str]) -> str | Non
     return None
 
 
-def transacionar_status(
-    repo: Path,
+def checar_transicao(
     modelo: Modelo,
     id_: str,
     estado: str,
     razao: str | None = None,
-    nota: str | None = None,
-) -> ResultadoStatus:
-    """§2.7 + §3 — `status`/`start`: transição e escrita atômica das projeções, num ato
-    só. Nenhuma escrita ocorre antes de todas as checagens (E-2, E-3, tabela de §2.7,
-    `blocked` exige `--razao`) passarem."""
+) -> ResultadoStatus | None:
+    """As checagens de `transacionar_status` que não dependem do repositório (`TK-88d`): id,
+    E-2, posição de índice do pai, a tabela de §2.7 — com o ramo especial de plano `done` — ,
+    `blocked` exige `--razao` e o travessão na razão. `None` quando a transição pode passar;
+    quem chama ainda decide a escrita. As checagens de `estado.tsv` (dependem de `repo`)
+    continuam só em `transacionar_status`."""
     alvo = _localizar(modelo, id_)
     if alvo is None:
         return ResultadoStatus(1, f"id não encontrado: {id_}")
@@ -1345,7 +1785,22 @@ def transacionar_status(
         return ResultadoStatus(3, f"linha de índice ausente para {pai.id}")
 
     atual = alvo.status
-    if (atual, estado) not in _TRANSICOES:
+    if isinstance(alvo, Plano) and estado == "done":
+        # Fechamento de plano (`TK-88`; skill `diario-de-obras`, *Máquina de transições*,
+        # gatilho 3): plano não passa por `review` — o aceite é das tarefas —, então o `done`
+        # dele sai de `ready`, `in-progress` ou `blocked`, e só quando nenhuma tarefa está
+        # aberta e ao menos uma foi entregue. Antes desta regra o instrumento recusava
+        # `ready → done` e o fechamento era escrito à mão (medido: `P-0749`, 2026-09-25).
+        if atual not in ("ready", "in-progress", "blocked"):
+            return ResultadoStatus(1, f"plano {id_} em `{atual}` não fecha como done")
+        abertas = [t.id for t in alvo.tarefas if t.status not in ("done", "cancelled")]
+        if abertas:
+            return ResultadoStatus(
+                1, f"plano {id_} tem tarefa(s) não terminal(is): {', '.join(abertas)}"
+            )
+        if not any(t.status == "done" for t in alvo.tarefas):
+            return ResultadoStatus(1, f"plano {id_} sem tarefa done não fecha como done")
+    elif (atual, estado) not in _TRANSICOES:
         return ResultadoStatus(1, f"transição fora da tabela de §2.7: {atual} → {estado} para {id_}")
 
     if estado == "blocked" and not razao:
@@ -1363,6 +1818,42 @@ def transacionar_status(
         if any(irmao is not alvo and irmao.status == "in-progress" for irmao in irmaos):
             return ResultadoStatus(1, f"já há item in-progress no mesmo pai: {pai.id}")
 
+    return None
+
+
+def transacionar_status(
+    repo: Path,
+    modelo: Modelo,
+    id_: str,
+    estado: str,
+    razao: str | None = None,
+    nota: str | None = None,
+) -> ResultadoStatus:
+    """§2.7 + §3 — `status`/`start`: transição e escrita atômica das projeções, num ato
+    só. Nenhuma escrita ocorre antes de todas as checagens (`checar_transicao`, mais a
+    consistência de `estado.tsv`, que depende de `repo`) passarem."""
+    resultado = checar_transicao(modelo, id_, estado, razao)
+    if resultado is not None:
+        return resultado
+
+    alvo = _localizar(modelo, id_)
+    pai, tipo_pai = _pai_do_alvo(modelo, alvo)
+
+    plano_pasta = alvo if isinstance(alvo, Plano) else next(
+        (p for p in modelo.planos if alvo.tipo == "tarefa" and p.arquivo == alvo.arquivo), None
+    )
+    estado_rel = plano_pasta.estado_arquivo if plano_pasta is not None else None
+    if estado_rel is not None:
+        if "\t" in (razao or "") or "\t" in (nota or ""):
+            return ResultadoStatus(1, "razão ou nota contém TAB: estado.tsv usa TAB como separador")
+        estado_path = repo / estado_rel
+        estado_linhas = estado_path.read_text(encoding="utf-8").splitlines() if estado_path.is_file() else []
+        idx_estado = next(
+            (k for k, l in enumerate(estado_linhas) if k > 0 and l.split("\t")[0] == id_), None
+        )
+        if idx_estado is None:
+            return ResultadoStatus(3, f"{id_} sem linha em {estado_rel}")
+
     # Checagens concluídas — nenhum arquivo tocado até aqui. Muta o modelo em memória
     # (mesmos objetos referenciados por `pai.tarefas`/`pai.filhos`) para que done/total,
     # "próxima" e o bloco `Fila corrente` já reflitam a transição.
@@ -1370,11 +1861,13 @@ def transacionar_status(
     alvo.status = estado
     alvo.status_razao = razao
 
-    plano_arquivo = alvo.arquivo if (isinstance(alvo, Plano) or alvo.tipo == "tarefa") else None
+    plano_arquivo = alvo.arquivo if (estado_rel is None and (isinstance(alvo, Plano) or alvo.tipo == "tarefa")) else None
     plano_linhas = (repo / plano_arquivo).read_text(encoding="utf-8").splitlines() if plano_arquivo else None
     diario_linhas = list(modelo.diario_linhas)
 
-    if isinstance(alvo, Plano):
+    if estado_rel is not None:
+        estado_linhas[idx_estado] = "\t".join([id_, "plano" if isinstance(alvo, Plano) else "tarefa", estado, razao or "-", hoje, nota if nota is not None else (getattr(alvo, "status_cauda", None) or "-")])
+    elif isinstance(alvo, Plano):
         idx = alvo.status_linha - 1
         plano_linhas[idx] = STATUS_CAMPO_RE.sub(f"**Status:** `{estado}`", plano_linhas[idx], count=1)
     else:
@@ -1394,7 +1887,7 @@ def transacionar_status(
         f"| {linha_indice_pai.id} | {linha_indice_pai.titulo} | {novo_status_bruto} | {linha_indice_pai.ancora} |"
     )
 
-    if nota is not None and isinstance(alvo, Item):
+    if nota is not None and isinstance(alvo, Item) and estado_rel is None:
         linha_nota = f"  - {hoje} `{estado}` — {nota}"
         _inserir_nota(plano_linhas if alvo.tipo == "tarefa" else diario_linhas, alvo, linha_nota)
 
@@ -1411,8 +1904,25 @@ def transacionar_status(
     if plano_arquivo is not None:
         _escrever_atomico(repo / plano_arquivo, plano_linhas)
         arquivos_tocados.append(plano_arquivo)
+    if estado_rel is not None:
+        _escrever_atomico(repo / estado_rel, estado_linhas)
+        arquivos_tocados.append(estado_rel)
 
     return ResultadoStatus(0, aviso, sorted(set(arquivos_tocados)))
+
+
+def _ids_descartados_diretiva(texto: str, ids_reconhecidos: list[str], ids_arvore: set[str]) -> list[str]:
+    """TK-65c — id descartado, definição única: texto entre crases na cauda (depois do primeiro
+    ` — `) que está em `ids_arvore` e não está entre `ids_reconhecidos` (o que `_parse_diretiva`
+    devolveu). Sem repetição, na ordem em que aparece. Crase que não é id de item (`done`,
+    `next`, nome de arquivo) não está em `ids_arvore` e não entra."""
+    partes = texto.split(" — ", 1)
+    cauda = partes[1] if len(partes) > 1 else ""
+    descartados: list[str] = []
+    for candidato in re.findall(r"`([^`]+)`", cauda):
+        if candidato in ids_arvore and candidato not in ids_reconhecidos and candidato not in descartados:
+            descartados.append(candidato)
+    return descartados
 
 
 def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoStatus:
@@ -1420,7 +1930,12 @@ def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoSt
     `Fila corrente` na mesma escrita atômica, pela residência única `_regenerar_bloco_fila`
     (`BKL-T10b`, metade 4, DB-2) — a mesma que `transacionar_status` chama. `modelo.diretiva_ids`
     é reconstruído a partir da linha recém-escrita antes da regeneração, para que o vencedor de
-    `selecionar_next` usado na linha `Fila corrente` reflita a diretiva nova, não a antiga."""
+    `selecionar_next` usado na linha `Fila corrente` reflita a diretiva nova, não a antiga.
+
+    TK-65c — `diretiva` acusa em vez de recusar: id de item entre crases na cauda (depois do
+    primeiro ` — `) que `_parse_diretiva` não leu vira aviso nomeando cada id descartado e a
+    contagem de ids reconhecidos antes do ` — `, concatenado por quebra de linha ao aviso de
+    `_regenerar_bloco_fila` quando os dois existem. A escrita nunca é recusada por isso."""
     diario_linhas = list(modelo.diario_linhas)
     nova_linha = f"**Diretiva de priorização:** {texto}"
     for i, linha in enumerate(diario_linhas):
@@ -1431,7 +1946,18 @@ def transacionar_diretiva(repo: Path, modelo: Modelo, texto: str) -> ResultadoSt
         diario_linhas.insert(1, nova_linha)
 
     modelo.diretiva_ids = _parse_diretiva(diario_linhas)
-    aviso = _regenerar_bloco_fila(modelo, diario_linhas)
+    aviso_fila = _regenerar_bloco_fila(modelo, diario_linhas)
+
+    descartados = _ids_descartados_diretiva(texto, modelo.diretiva_ids, _ids_da_arvore(modelo))
+    aviso_descarte = None
+    if descartados:
+        nomes = ", ".join(f"`{id_}`" for id_ in descartados)
+        aviso_descarte = (
+            f"diretiva: {len(modelo.diretiva_ids)} id(s) reconhecido(s) antes de ' — '; "
+            f"id(s) de item descartado(s) na cauda (não lido(s) por `next`): {nomes}"
+        )
+    avisos = [a for a in (aviso_descarte, aviso_fila) if a]
+    aviso = "\n".join(avisos) if avisos else None
 
     _escrever_atomico(repo / modelo.diario_arquivo, diario_linhas)
     return ResultadoStatus(0, aviso, [modelo.diario_arquivo])
@@ -1484,6 +2010,8 @@ def transacionar_drain(
     hoje = data if data else datetime.date.today().isoformat()
     ids_vistos = [int(m.group(1)) for m in _ID_PLANO_INBOX_RE.finditer(texto_inbox)]
     novo_id = max(ids_vistos) + 1
+    m_contador = _CONTADOR_INBOX_ID_RE.search(texto_inbox)
+    largura = len(m_contador.group(1)) if m_contador else 1
 
     # Diário: uma linha de índice nova por plano drenado, na ordem do inbox. O modelo em
     # memória (`modelo.indice`, `plano.fora_do_corpus`) é atualizado junto, para que
@@ -1521,7 +2049,7 @@ def transacionar_drain(
     indices_remover = {i for i, _, _ in drenos}
     linhas_novo_inbox = [l for k, l in enumerate(linhas_inbox) if k not in indices_remover]
     linhas_novo_inbox = [
-        _CONTADOR_INBOX_RE.sub(f"**Próximo id de plano: P-{novo_id:04d}.**", l)
+        _CONTADOR_INBOX_RE.sub(f"**Próximo id de plano: {_caminhos.formatar_id(novo_id, largura)}.**", l)
         if _CONTADOR_INBOX_RE.search(l)
         else l
         for l in linhas_novo_inbox
@@ -1545,6 +2073,134 @@ def transacionar_drain(
         }
     )
     return ResultadoStatus(0, aviso, arquivos)
+
+
+def _ultima_linha_stderr(texto: str) -> str:
+    linhas = texto.splitlines()
+    return linhas[-1] if linhas else ""
+
+
+def despachar(repo: Path, id_: str, mundo: str | None = None) -> ResultadoStatus:
+    """AF-T10 (`DAF-41`) — um comando roda as conferências do despacho do passo 3/4 de
+    `.claude/skills/scrum-master/SKILL.md` (tarefa, `modelo.py check`, `card_check.py`,
+    `pytest --co`, captura do `<ref>`, materialização em `in-progress`), nesta ordem, recusando
+    pela primeira que falhar e sem escrever nada até a última checagem passar. `modelo.py`,
+    `card_check.py` e `review_evidence.py` rodam como subprocessos do irmão em
+    `Path(__file__).parent` (`sys.executable`), nunca por `import`.
+
+    `mundo` (`AE-26` do `P-0753`) repassa `--mundo` ao `card_check`: `depois` é o redespacho de
+    tarefa cuja entrega já está na árvore (só-verificações); ausente, o `card_check` deriva."""
+
+    def _recusar(gate: str, razao: str) -> ResultadoStatus:
+        print(f"despachar: recusado — {gate}: {razao}", file=sys.stderr)
+        return ResultadoStatus(1, razao)
+
+    modelo = carregar(repo)
+    alvo = _localizar(modelo, id_)
+    if not isinstance(alvo, Item) or alvo.tipo != "tarefa":
+        return _recusar("tarefa", f"{id_} não é tarefa de plano")
+    if alvo.status != "ready":
+        return _recusar("tarefa", f"{id_} está {alvo.status}, não ready")
+
+    pai, tipo_pai = _pai_do_alvo(modelo, alvo)
+    irmao = Path(__file__).resolve().parent
+    # `--plano` absoluto (`repo / pai.arquivo`): `card_check.verificar_tarefa` usa `Path(plano)`
+    # direto, sem juntar com `--root` — relativo dependeria do cwd do subprocesso, que este
+    # comando não fixa (`modelo.py` aceita os dois por `_resolver_plano`, mas o absoluto serve
+    # aos dois irmãos sem depender de onde o processo-pai foi invocado).
+    plano_abs = str(repo / pai.arquivo)
+
+    # `DAF-42` (`AE-14`): os irmãos escrevem o stderr em UTF-8; sem `encoding` explícito o
+    # texto sai na codificação do locale (cp1252 no Windows) — razão com mojibake, ou stderr
+    # `None` quando um byte UTF-8 não existe em cp1252. Vale para os quatro `subprocess.run`.
+    resultado_modelo = subprocess.run(
+        [sys.executable, str(irmao / "modelo.py"), "check", "--plano", plano_abs, "--root", str(repo)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if resultado_modelo.returncode not in (0, 2):
+        return _recusar("modelo", _ultima_linha_stderr(resultado_modelo.stderr))
+
+    resultado_cc = subprocess.run(
+        [
+            sys.executable,
+            str(irmao / "card_check.py"),
+            "--plano",
+            plano_abs,
+            "--tarefa",
+            id_,
+            "--root",
+            str(repo),
+            *(["--mundo", mundo] if mundo else []),
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if resultado_cc.returncode != 0:
+        return _recusar("card_check", _ultima_linha_stderr(resultado_cc.stderr))
+
+    resultado_pytest = subprocess.run(
+        [sys.executable, "-m", "pytest", "--co", "-q"],
+        cwd=str(repo),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if resultado_pytest.returncode not in (0, 5):
+        return _recusar("pytest --co", f"exit {resultado_pytest.returncode}")
+
+    estado_path = repo / ".claude" / "estado" / "tarefa-corrente.json"
+    ref: str | None = None
+    if estado_path.is_file():
+        try:
+            dados_existentes = json.loads(estado_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            dados_existentes = {}
+        if dados_existentes.get("tarefa") == id_ and dados_existentes.get("ref"):
+            ref = dados_existentes["ref"]
+    if ref is None:
+        resultado_ref = subprocess.run(
+            [sys.executable, str(irmao / "review_evidence.py"), "--capturar-ref", "--root", str(repo)],
+            capture_output=True,
+            text=True,
+        encoding="utf-8",
+        errors="replace",
+        )
+        if resultado_ref.returncode != 0:
+            return _recusar("ref", _ultima_linha_stderr(resultado_ref.stderr))
+        linhas_stdout = [linha for linha in resultado_ref.stdout.splitlines() if linha.strip()]
+        ref = linhas_stdout[-1]
+
+    resultado_status = transacionar_status(
+        repo, modelo, id_, "in-progress", nota="despachada por backlog.py despachar"
+    )
+    if resultado_status.exit_code != 0:
+        return _recusar("status", resultado_status.mensagem or "")
+
+    estado_path.parent.mkdir(parents=True, exist_ok=True)
+    dados = {
+        "tarefa": id_,
+        "projeto": repo.name,
+        "modelo": alvo.modelo,
+        "plano": pai.arquivo,
+        "despachado_em": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "ref": ref,
+    }
+    estado_path.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(f"=== DESPACHO: {id_} — {alvo.titulo}")
+    for autor, texto_handover in handovers_para(pai, tipo_pai, alvo):
+        print(f"=== HANDOVER DE {autor.id} — {autor.titulo} ({autor.status}; {autor.arquivo})")
+        print(texto_handover)
+    print(show(modelo, id_))
+    print(f"ref={ref}")
+
+    return ResultadoStatus(0)
 
 
 # --------------------------------------------------------------------------- #
@@ -1595,18 +2251,31 @@ def main(argv: list[str] | None = None) -> int:
     drain_parser.add_argument("--data", default=None)
     drain_parser.add_argument("--repo", default=None)
 
-    args = parser.parse_args(argv)
+    despachar_parser = subparsers.add_parser(
+        "despachar", help="Roda as conferências do despacho e recusa pela primeira que falhar."
+    )
+    despachar_parser.add_argument("id")
+    despachar_parser.add_argument(
+        "--mundo",
+        choices=["antes", "depois"],
+        default=None,
+        help="Repassado ao card_check; 'depois' redespacha tarefa cuja entrega já está na árvore.",
+    )
+    despachar_parser.add_argument("--repo", default=None)
 
     for fluxo in (sys.stdout, sys.stderr):
         if hasattr(fluxo, "reconfigure"):
             fluxo.reconfigure(encoding="utf-8")
 
+    args = parser.parse_args(argv)
+
     repo = resolve_repo(args.repo)
     modelo = carregar(repo)
 
     if args.comando == "check":
-        inbox_planos = repo / "docs" / "plans" / "_INBOX.md"
-        violacoes = check(modelo, inbox_planos=inbox_planos, repo=repo)
+        inbox_planos = _caminhos.inbox_planos(repo)
+        piso_c11, violacoes = ler_piso_c11(repo)
+        violacoes += check(modelo, inbox_planos=inbox_planos, repo=repo, piso_c11=piso_c11, dossie=True)
         for violacao in violacoes:
             print(str(violacao))
         if violacoes:
@@ -1624,7 +2293,7 @@ def main(argv: list[str] | None = None) -> int:
         if selecao.exit_code == 0:
             memoria_inbox = Path(args.memoria_inbox).resolve() if args.memoria_inbox else None
             inbox_planos = (
-                Path(args.inbox_planos).resolve() if args.inbox_planos else repo / "docs" / "plans" / "_INBOX.md"
+                Path(args.inbox_planos).resolve() if args.inbox_planos else _caminhos.inbox_planos(repo)
             )
             print(renderizar_next(modelo, selecao, memoria_inbox=memoria_inbox, inbox_planos=inbox_planos))
             return 0
@@ -1652,7 +2321,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.comando == "drain":
-        inbox_planos = repo / "docs" / "plans" / "_INBOX.md"
+        inbox_planos = _caminhos.inbox_planos(repo)
         historico = repo / "docs" / "plans" / "_INBOX_HISTORICO.md"
         resultado = transacionar_drain(repo, modelo, inbox_planos, historico, data=args.data)
         if resultado.exit_code == 0:
@@ -1664,6 +2333,10 @@ def main(argv: list[str] | None = None) -> int:
                 print(resultado.mensagem)
             return 0
         print(resultado.mensagem, file=sys.stderr if resultado.exit_code == 3 else sys.stdout)
+        return resultado.exit_code
+
+    if args.comando == "despachar":
+        resultado = despachar(repo, args.id, mundo=args.mundo)
         return resultado.exit_code
 
     parser.error(f"comando desconhecido: {args.comando}")

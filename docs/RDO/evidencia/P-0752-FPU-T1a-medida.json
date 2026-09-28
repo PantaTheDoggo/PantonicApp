@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T1a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T13:37:11+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_card_check.py -q -k prosa_na_continuacao",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 17 deselected in 0.16s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-corpus.md --tarefa CX-T5",
+      "exit": 0,
+      "saida": "card_check: OK - tarefa 'CX-T5' fecha.",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": "........................................................................ [ 17%]\n........................................................................ [ 35%]\n........................................................................ [ 52%]\n........................................................................ [ 70%]\n........................................................................ [ 87%]\n",
+      "bate": true
+    }
+  ]
+}

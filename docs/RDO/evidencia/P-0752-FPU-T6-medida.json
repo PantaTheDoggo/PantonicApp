@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T6",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T14:26:17+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_backlog.py -q",
+      "exit": 0,
+      "saida": "........................................................................ [ 64%]\n........................................                                 [100%]\n112 passed in 2.90s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(Path('.claude/tools/backlog.py').read_text(encoding='utf-8').count('Achados roteados')>=1)\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python .claude/tools/backlog.py check",
+      "exit": 0,
+      "saida": "check: OK — nenhuma violação.",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 34%]\n........................................................................ [ 51%]\n........................................................................ [ 68%]\n........................................................................ [ 85%]\n...........................................................              [100%]\n419 passed in 39.75s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -c \"import subprocess,sys;o=subprocess.run([sys.executable,'.claude/tools/backlog.py','show','FPU-T1'],capture_output=True,text=True,encoding='utf-8').stdout;b=o.split(chr(10)+'**Achados roteados a este card:**'+chr(10));print(len(b)==2 and b[1].count('**Rota:**')>=3)\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    }
+  ]
+}

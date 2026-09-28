@@ -1,7 +1,7 @@
 # P-0741 — O modelo conceitual do plano: a interface entre o dono e o loop
 
 **Data:** 2026-09-19 · **Origem:** pedido do dono, 2026-09-19 ("melhoramento do agente de
-planejamento — agregar o modelo conceitual do DDD") · **Status:** `ready` ·
+planejamento — agregar o modelo conceitual do DDD") · **Status:** `done` · 2026-09-24 — Marco 2 fechado pelo aceite do dono no fechamento de 2026-09-24 (`MC-T5`) ·
 **Prefixo das tarefas no diário:** `MC-T<n>` · **Prefixo das decisões:** `DMC-<n>` ·
 **Checagem de versão do kit:** modo hub — congelada em `0.0.0` (`DE-7`), nada a comparar.
 **Ordem de execução:** MC-T1 → MC-T2 → MC-T2a → MC-T3 → MC-T4 → MC-T4a → MC-T2b → MC-T5
@@ -13,7 +13,7 @@ planejamento — agregar o modelo conceitual do DDD") · **Status:** `ready` ·
 | marco | o que o dono lê | veredito |
 |---|---|---|
 | **Marco 1** | a seção `## 1. Modelo conceitual` deste plano, e só ela | `go` = aprovar este plano; `no-go` = plano `cancelled`, nada executado |
-| **Marco 2** | a visão do modelo gerada por `modelo.py show` sobre este mesmo plano, depois de `MC-T5`, mais o `README.md` revisado | aceite registrado no diário (`GOVERNANCA.md` §4.5) |
+| **Marco 2** | a visão do modelo gerada por `modelo.py show` sobre este mesmo plano, depois de `MC-T5`, mais o `README.md` revisado | **`go` em 2026-09-24**, verbatim: *"Aceite os planos, revise os tiquetes para ver quais são pertinentes ainda para enfileira-los na sequencia"* — a forma do modelo que este plano publicou foi sucedida pelo `P-0743` (`RP-1`); o aceite fecha a entrega que ficou de pé |
 
 **Tarefas:** 5 (`MC-T1`..`MC-T5`), todas em fila única; nenhuma roda em paralelo.
 
@@ -1279,7 +1279,7 @@ Valem para todas as tarefas; cada card repete a parte que o vincula.
   (`MC-T5`).
 
 ### MC-T5 — O README explica o modelo, a aferição sobre o próprio plano e o veredito do dono (Marco 2) [Opus + dono · classe redacao]
-- **Status:** `review` · 2026-09-20
+- **Status:** `done` · 2026-09-24
 - **Fundamento:** decisões `DMC-11`, `DMC-15`, a `DMC-28` do `ESC-4` (esta tarefa regenera a região marcada do README e devolve `check-drift` a exit 0), e do `ESC-2` a `DMC-21` (o regime transitório de confirmação expira nesta tarefa); fato `F-12`.
 - **Depende de:** `MC-T1`, `MC-T2`, `MC-T2a`, `MC-T2b`, `MC-T3`, `MC-T4`, `MC-T4a`
 - **Objetivo:** o `README.md` explica o modelo conceitual em §5 e §8 para o leitor externo; o
@@ -1813,6 +1813,8 @@ plano pelo dono; Marco 2 = fim da `MC-T5`. Commit único no Marco 2 (`I-7`).
   no diário, e o que chegou é diretiva de continuação. Nada foi commitado (`I-7`); 35 arquivos na
   árvore. Os três alvos de planejamento derivados desta diretiva são matéria do **planejador**, em
   contexto novo: o `scrum-master` não revisa plano (`GOVERNANCA.md` §3).
+- **Notas de execução:**
+  - 2026-09-24 `done` — veredito do dono no fechamento de 2026-09-24, verbatim: "Aceite os planos, revise os tiquetes para ver quais são pertinentes ainda para enfileira-los na sequencia" - Marco 2 fechado
 
 ### RP-1 — Rodada de replanejamento de 2026-09-20 (escalada do Marco 2, `AE-18`)
 

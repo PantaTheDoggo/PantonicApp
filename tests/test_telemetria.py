@@ -200,3 +200,53 @@ def test_tr_celula_vazia_recusada_com_fonte_usage(tmp_path, capsys):
     assert tsv.read_bytes() == conteudo_anterior
     saida = capsys.readouterr()
     assert "tokens_k" in saida.err
+
+
+def test_tf_append_repetido_recusa(tmp_path, capsys):
+    """TF (DFP-8/FPU-T7): duas chamadas `append` para a mesma tarefa com o mesmo `modelo`,
+    `tool_uses` e `tokens_k` — a segunda é a "linha repetida da mesma rodada": exit 3, mensagem
+    em stderr e o arquivo continua com uma única linha dessa tarefa."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+
+    primeiro = telemetria.main(_args(tsv))
+    segundo = telemetria.main(_args(tsv))
+
+    assert primeiro == 0
+    assert segundo == 3
+    conteudo = tsv.read_text(encoding="utf-8")
+    assert conteudo.count("EXA-T7") == 1
+    saida = capsys.readouterr()
+    assert (
+        "linha repetida: EXA-T7 já tem linha com modelo, tool_uses e tokens_k iguais "
+        "(data 2026-08-08)" in saida.err
+    )
+
+
+def test_tf_append_com_tokens_diferentes_apensa(tmp_path):
+    """TF (DFP-8/FPU-T7): mesma tarefa e modelo, mas `tokens_k` diferente — não é a mesma
+    rodada, e a segunda chamada apensa normalmente (série com duas linhas)."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+
+    primeiro = telemetria.main(_args(tsv))
+    segundo = telemetria.main(_args(tsv, tokens_k="99"))
+
+    assert primeiro == 0
+    assert segundo == 0
+    linhas = [linha for linha in tsv.read_text(encoding="utf-8").splitlines() if linha]
+    assert len(linhas) == 2
+
+
+def test_tr_serie_existente_nao_reescrita(tmp_path):
+    """TR (DFP-8/FPU-T7): a recusa da linha repetida não toca os bytes já gravados — a série
+    fica byte a byte igual à que existia antes da tentativa recusada."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    telemetria.main(_args(tsv))
+    bytes_antes = tsv.read_bytes()
+
+    exit_code = telemetria.main(_args(tsv))
+
+    assert exit_code == 3
+    assert tsv.read_bytes() == bytes_antes

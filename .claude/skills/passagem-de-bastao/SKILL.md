@@ -8,8 +8,9 @@ description: Maquinário de transição entre tarefas de um plano Pantonic*, na 
 Procedimento da **Orquestração** (`GOVERNANCA.md` §3). Ele é o maquinário que o
 `.claude/skills/scrum-master/SKILL.md` usa entre uma tarefa e a seguinte: **superfície
 agente↔agente**, transparente para o gerente do projeto — ele não a invoca, não a lê e não a
-acompanha. Não é skill de comunicação com humano; o que chega ao dono chega pelo **relatório de
-encerramento** do `scrum-master`, e só lá.
+acompanha. Não é skill de comunicação com humano; o que chega ao dono chega pelas linhas do
+**repertório de mensagens ao gerente**, que o gancho do kit gera a partir dos eventos do loop e grava no arquivo de progresso, e pelo
+**relatório de encerramento** do `scrum-master`, e só por eles.
 
 Esta skill não implementa, não julga entrega e não substitui decisão do dono
 (`.claude/global/CLAUDE.md` Regra 8). Os "fatos estáveis" da arquitetura de cada projeto ficam no
@@ -70,17 +71,25 @@ turnos do executor.
 
 **Levantamento de contexto antes do dossiê** — regra de precedência, não gatilho condicional: toda
 coleta que não seja Read de âncora já conhecida (arquivo + range de linhas) ou Grep de string exata
-vai para o papel barato — `pantonic-scout` (agente Pantonic* do projeto) ou, fora dele,
+vai para o papel de coleta — `pantonic-scout` (agente Pantonic* do projeto) ou, fora dele,
 `context-scout` (`.claude/global/agents/context-scout.md`) via skill `context-prep`
 (`.claude/global/skills/context-prep/SKILL.md`) —, nunca para leitura direta do modelo principal.
 O orquestrador monta o prompt de delegação a partir só do dossiê compacto devolvido pelo scout.
 
+**O card chega inteiro.** `backlog.py next` e `backlog.py show <ID>` imprimem o card inteiro, sem
+corte; o teto `DB-7` (8.000 caracteres ou 120 linhas, com o ponteiro `arquivo:l1-l2` de onde
+cortou) vale só para o bloco de achados roteados ao card e para as notas de execução do plano
+legado. O dossiê se copia da saída do instrumento, sem reler o plano.
+
 **Fonte do contexto, em ordem de preferência:** (1) dossiê pré-autorado (`sprint_plan.md`, card de
 plano) copiado verbatim, **inclusive o campo `Oração do modelo` com os sub-bullets de texto** (é a única forma de o executor ler o
 modelo — `GOVERNANCA.md` §3.2) — exceto números de aceite, ver gate abaixo; (2) **herança de contexto** da
-tarefa predecessora: precedente já pago nesta janela (âncoras re-derivadas, rota confirmada, rota
-descartada, achado já medido) colado na delegação — custo marginal zero, e é o que impede a sucessora
-de redescobrir o que a antecessora já pagou; (3) `pantonic-scout`/`context-scout` (skill
+tarefa predecessora: o bloco `=== HANDOVER DE <ID>` que o `next` imprime antes do dossiê — o campo
+`- **Handover:**` que `encerrar.py handover` registrou no card da antecessora (`Entregue`,
+`Contrato`, `Não refazer`, `Pendente`), colado verbatim na delegação quando pertinente — mais o
+precedente já pago nesta janela (âncoras re-derivadas, rota confirmada, rota descartada, achado já
+medido) — custo marginal zero, e é o que impede a sucessora de redescobrir o que a antecessora já
+pagou; (3) `pantonic-scout`/`context-scout` (skill
 `context-prep`): DESCOBERTA quando não há dossiê; DETALHE (1 pergunta fechada por spawn, paralelos)
 quando o pré-autorado referencia shapes de módulos implementados depois dele; (4) leitura direta —
 exceção declarada no ato, motivo escrito — só para Read de âncora já conhecida ou Grep de string
@@ -125,6 +134,7 @@ decisão para o executor, no modelo mais barato e sem o contexto de quem decidiu
    `GOVERNANCA.md` §3, e não vira declaração no card.
 7. Build/verify com artefato existente (`dist/`, `.exe`): o dossiê declara "não deletar o artefato de
    saída" — deleção não autorizada é ação destrutiva, não limpeza.
+8. `card_check` exit 0 sobre o card.
 
 Recusa de qualquer item do gate: **não delega**, e o que falta fechar volta ao planejamento.
 
@@ -135,11 +145,20 @@ Recusa de qualquer item do gate: **não delega**, e o que falta fechar volta ao 
    exigir). Sem gate verde, o destino é `blocked` ou permanece `in-progress`, nunca `done`. No mesmo gate, `python .claude/tools/modelo.py check --plano <plano>` sai `0` ou `2` (`GOVERNANCA.md` §3.2); exit `1` mantém
    `in-progress` e escala ao consultor com o stderr.
 
-2. **Materializar o status e registrar**: `python .claude/tools/backlog.py status <ID> <estado>`
-   materializa o `status`, em qualquer estado — ato exclusivo da **orquestração**: o executor é
-   **autor** de `review` e `blocked`, e de mais nada. O registro canônico da tarefa é o **RDO**; o
-   diário guarda a linha de status que aponta para lá (`GOVERNANCA.md` §4.2, "Fronteira de
-   registro").
+2. **Materializar o status e registrar**: handover passa pela skill `fatos-frescos` antes de
+   gravar. Antes, o **handover** — `python .claude/tools/encerrar.py
+   handover --plano <plano> --tarefa <ID> --entregue "…" --contrato "…" [--nao-refazer "…"]
+   [--pendente "…"] [--para <ID>]...` registra no card, de máquina, o que a sucessora espera desta
+   tarefa. A transição `review` → `done` é **um comando** —
+   `python .claude/tools/encerrar.py tarefa --plano <plano> --tarefa <ID> [--resumo "…"]
+   [--pendencia "…"] [--achado "<texto>" "<rota>"]... [--tool-uses N --tokens-k K --duracao-s S]`
+   (`TK-88`; forma e efeito na skill `scrum-master`, Passo 9) — que materializa o `done`, escreve o
+   RDO nas três seções (`# Humano`, `# Máquina`, `# Histórico`) com o pacote transcrito do laudo,
+   garante a linha de telemetria e registra os achados. Os demais estados continuam por
+   `python .claude/tools/backlog.py status <ID> <estado>`. Materializar é ato exclusivo da
+   **orquestração**: o executor é **autor** de `review` e `blocked`, e de mais nada. O registro
+   canônico da tarefa é o **RDO**; o diário guarda a linha de status que aponta para lá
+   (`GOVERNANCA.md` §4.2, "Fronteira de registro").
    - **Nunca na célula do índice:** se a tarefa pertence a um `### <ID>` do diário, o destino é a
      "Notas de execução" daquela seção; se a sprint vive inteiramente em `docs/plans/P-*.md`, o
      destino é uma seção do próprio plano — a célula do índice fica travada em status + ≤ ~1-2 frases
@@ -166,10 +185,12 @@ Recusa de qualquer item do gate: **não delega**, e o que falta fechar volta ao 
      é o canal vivo.
 
 3. **Telemetria pós-notificação** — a série é do orquestrador, e o executor não edita o diário nem
-   relata o próprio consumo. Fechar = apender **uma linha** a `docs/telemetria.tsv`
-   (`.claude/tools/telemetria.py append`; `--fonte usage` a partir do bloco `<usage>` da notificação,
-   `--fonte contado` na execução inline sem `<usage>` — contagem efetiva das chamadas no transcript,
-   nunca estimativa; sem contagem, `nao_medido`) e escrever no registro o ponteiro
+   relata o próprio consumo. A linha de `docs/telemetria.tsv` chega pelo hook `SubagentStop` ou
+   pelo trio `--tool-uses/--tokens-k/--duracao-s` do `encerrar.py tarefa`, lido do bloco `<usage>`
+   da notificação (`--fonte usage`); fora do instrumento, `.claude/tools/telemetria.py append`
+   (`--fonte contado` na execução inline sem `<usage>` — contagem efetiva das chamadas no
+   transcript, nunca estimativa; sem contagem, `nao_medido`); no fechamento, `encerrar.py tarefa
+   --nao-medido "<razão>"`. No registro vai o ponteiro
    `Consumo: ver docs/telemetria.tsv` — **nunca o número em prosa** (`GOVERNANCA.md` §4.2, fonte
    única). Read offset/limit da região do bullet → Edit; NUNCA Edit apoiado em Read anterior à
    chamada `Agent` (o hiato de delegação invalida o rastreio). No pickup, 1 Grep pelo texto-promessa:
@@ -236,7 +257,7 @@ Residência única desta fronteira; quem precisar dela aponta para cá.
 - **Quando o ponto do dono se apresenta:** só no **relatório de encerramento** da janela — nunca
   entre o despacho e o fechamento. Obstáculo, instrumento que não produz ou dúvida no meio da janela
   não viram pergunta: viram `AE-<n>` em `## Achados da execução` do plano, tarefa `blocked` razão
-  `premissa` e rodada de replanejamento como próxima tarefa (`G-NOASK`, `GOVERNANCA.md` §7 item 18).
+  `premissa` e triagem do consultor, que devolve a rota (`G-NOASK`, `GOVERNANCA.md` §7 item 18).
 - **Decisão pendente é o próximo passo:** se a tarefa executada deixou ponto para o dono decidir, o
   próximo passo é **a decisão**, não a próxima tarefa do backlog. Cada ponto é apresentado com (1) o
   **fato medido** que o originou, (2) o que **cada opção implica**, (3) o que **fica bloqueado ou
@@ -258,11 +279,7 @@ Residência única desta fronteira; quem precisar dela aponta para cá.
 - Plano `blocked` por decisão owner-gated não resolvida **não é delegável ao executor**: os pontos
   pendentes vão ao dono e o procedimento para — nunca iniciar a implementação nem redescobrir o que o
   plano já responde.
-- **Bloqueio por premissa abre rodada, não pula tarefa** (`G-REPLAN`, `GOVERNANCA.md` §7 item 17):
-  tarefa `blocked` com razão `premissa` no plano priorizado torna a **rodada de replanejamento** a
-  próxima tarefa — delegada ao `pantonic-planner`, com o achado do corpo da tarefa como dossiê, nunca
-  ao executor; a tarefa seguinte do mesmo plano não é despachada enquanto a rodada não fechar. Só o
-  que o planejador classificar como estratégico chega ao dono.
+- **Bloqueio de executor vai à triagem, não pula tarefa** (`G-REPLAN`, `GOVERNANCA.md` §7 item 17): tarefa `blocked` no plano priorizado vai ao `pantonic-consultant`, que devolve a rota; só a rota `planejador` torna a **rodada de replanejamento** a próxima tarefa — delegada ao `pantonic-planner`, com o achado do corpo da tarefa como dossiê, nunca ao executor —, e a tarefa seguinte do mesmo plano não é despachada enquanto a rodada não fechar. Ao dono chega só, no marco, o pedido de validar o drift do modelo, e o estratégico.
 - Empate entre itens do mesmo nível desempata por ordem de entrada no índice (mais antigo primeiro).
 - Diário sem item `ready`/`in-progress`/`blocked`: reportar explicitamente — não inventar trabalho
   nem reabrir item `done`/`cancelled`.
@@ -283,7 +300,7 @@ Residência única desta fronteira; quem precisar dela aponta para cá.
 ## Proibições
 
 - Não decide arquitetura, não replaneja e não revisa plano — indício de que o plano precisa mudar vai
-  ao planejador (`GOVERNANCA.md` §3, escada de revisão de plano).
+  à triagem do consultor (`GOVERNANCA.md` §3, escada de revisão de plano).
 - Não marca `done` com conformance vermelho ou piso de regressão abaixo do registrado.
 - Não deixa o registro canônico desatualizado: tarefa fechada sem RDO e sem a linha de status no
   diário não está fechada.

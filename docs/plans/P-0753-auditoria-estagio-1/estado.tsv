@@ -1,0 +1,24 @@
+id	tipo	status	razao	data	nota
+P-0753	plano	done	-	2026-09-28	-
+AF-T1	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T1.md`, veredito aprovado 100%
+AF-T2	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T2.md`, veredito aprovado 100%
+AF-T3	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T3.md`, veredito aprovado 100%
+AF-T4	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T4.md`, veredito aprovado 100%
+AF-T5	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T5.md`, veredito aprovado 100%
+AF-T6	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T6.md`, veredito aprovado 100%
+AF-T7	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T7.md`, veredito aprovado 100%
+AF-T8	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T8.md`, veredito ressalva 91%
+AF-T9	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T9.md`, veredito aprovado 100%
+AF-T10	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T10.md`, veredito ressalva 91%
+AF-T11	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T11.md`, veredito aprovado 100%
+AF-T12	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T12.md`, veredito ressalva 91%
+AF-T13	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T13.md`, veredito aprovado 100%
+AF-T14	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T14.md`, veredito aprovado 100%
+AF-T15	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T15.md`, veredito aprovado 100%
+AF-T16	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T16.md`, veredito aprovado 100%
+AF-T17	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T17.md`, veredito ressalva 91%
+AF-T18	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T18.md`, veredito aprovado 100%
+AF-T19	tarefa	cancelled	-	2026-09-27	rodada de replanejamento: DAF-46 revoga a DAF-6; segue pelo card corretivo AF-T19a
+AF-T19a	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T19a.md`, veredito ressalva 93%
+AF-T20	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T20.md`, veredito aprovado 100%
+AF-T21	tarefa	done	-	2026-09-27	fechada por `encerrar.py`: RDO `docs/plans/P-0753-auditoria-estagio-1/rdo/AF-T21.md`, veredito aprovado 100%

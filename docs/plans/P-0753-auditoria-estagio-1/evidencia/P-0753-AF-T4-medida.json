@@ -1,0 +1,36 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T4",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T12:30:04+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k \"achado_do_laudo\"",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 21 deselected in 0.45s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8').count('cada linha da tabela'))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 46%]\n........................................................................ [ 62%]\n........................................................................ [ 77%]\n........................................................................ [ 93%]\n..............................                                           [100%]\n462 passed in 44.02s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

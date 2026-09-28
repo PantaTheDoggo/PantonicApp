@@ -1,0 +1,43 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-93a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T04:31:14+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/tools/review_evidence.py --capturar-ref",
+      "exit": 0,
+      "saida": "114a178a4ea4632e5feae01e9a95165008b40601",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"capturar_ref or nao_rastreado_no_ref\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 57 deselected in 1.48s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(t.count('git stash create'),t.count('review_evidence.py --capturar-ref'),t.count('vale o do primeiro despacho'))\"",
+      "exit": 0,
+      "saida": "0 1 1",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 47%]\n........................................................................ [ 63%]\n........................................................................ [ 79%]\n........................................................................ [ 95%]\n....................                                                     [100%]\n452 passed in 36.44s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

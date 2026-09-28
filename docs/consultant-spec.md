@@ -1,8 +1,6 @@
 # Especificação do consultor de plano
 
-**Estatuto.** Especificação de uma figura **provisória**. Este documento não é doutrina: não altera
-`GOVERNANCA.md`, não cria guardrail `G-*` e não se declara fonte normativa. Promovê-lo a doutrina é
-ato posterior, e até lá o consultor de plano permanece figura ad-hoc.
+**Estatuto.** Lastro medido, não fonte normativa. A figura virou papel de doutrina pelo `docs/plans/P-0747-consultor-de-plano.md`: o papel mora na linha *Consultoria* da matriz de `GOVERNANCA.md` §3 e a conduta em `.claude/agents/pantonic-consultant.md`. Este documento registra o comportamento medido que as fundamenta, e as contagens dele não se corrigem.
 
 **Método.** Toda afirmação abaixo descreve comportamento **medido** ao longo de quatro instanciações,
 não comportamento desejado. Nenhuma recomendação entra sem lastro. Os identificadores do lastro
@@ -75,7 +73,11 @@ até o `ESC-36`, recorte que a própria frase declara.
 **O que aciona.** Quatro classes, todas medidas, e nenhuma outra apareceu em 37 acionamentos até o
 `ESC-36`:
 
-1. **Card devolvido `blocked` pelo executor** — motivo `premissa` ou `dependencia`. Medido duas
+1. **Card devolvido `blocked` pelo executor** — qualquer motivo: `premissa`, `dependencia` ou
+   `ferramenta`. **Toda** parada de executor aciona a figura, que é quem avalia o motivo e decide a
+   rota (ato do dono de 2026-09-22, `DC-4` da §3): a palavra que o executor devolve é evidência do
+   que ele encontrou, nunca a rota — como o `DP-G` item 1 do `P-0734` já estabelecia ao dizer que
+   quem decide é o roteamento. Medido duas
    vezes na mesma tarefa da instância do recorte `ESC-27`..`ESC-36`: nas duas o executor não tocou
    arquivo nenhum, enumerou as saídas possíveis em vez de escolher uma, e nas duas a recusa foi
    conduta correta. O consultor é quem decide; o executor não tinha a quem perguntar.
@@ -133,6 +135,43 @@ permissão, que é outra coisa.
 
 **Onde a figura não decide.** Ela não julga entrega — o veredito é da revisão, pelo gerador — e não
 commita: o commit acontece nos marcos de validação, por ato do loop.
+
+### Ato do dono de 2026-09-22 — a triagem de toda parada de executor
+
+Quatro diretivas, vinculantes desde a data, que fixam a autoridade da figura sobre a parada de
+executor. Elas nasceram de uma parada que **não** chegou até ela: a `PLN-T2` do `P-0745` voltou
+`blocked motivo=premissa`, o loop a roteou pela regra `A3b` da skill `scrum-master` — que manda
+parar a janela e escalar ao planejador — e a matéria subiu ao dono como escolha entre três opções
+táticas. A figura ficou de standby enquanto isso acontecia.
+
+- **`DC-1` — questão não correlata ao modelo conceitual é tática, e tática é da figura.** Não sobe
+  ao dono.
+- **`DC-2` — a guarda é o drift do modelo.** A figura resolve **preservando o modelo**. Se a
+  resolução implicar drift, ela **para e pede a decisão do dono** para validar ou recusar o drift —
+  e só esse pedido sobe. O drift é a fronteira; o resto é dela.
+- **`DC-3` — decisão técnica ou tática da figura não passa por validação do dono.** Ela tem
+  autoridade para fechar. Verbatim do ato: *"Eu não vou validar a decisão dele para questões
+  técnicas e táticas."*
+- **`DC-4` — a figura é o ponto de triagem de toda parada de executor.** Ela avalia o motivo e
+  decide entre três rotas: ao **agente model designer**, se houver drift do modelo; ao
+  **planejador**, se a parada demandar replanejamento; ou **resolve ela mesma**, se for questão
+  operacional, técnica ou tática.
+
+**Por que a lacuna existia.** O bloco A da skill `scrum-master` tem fonte normativa no
+`P-0734`, que abriu em 2026-08-08. A figura foi criada por decisão do dono em **2026-09-18**, 41
+dias depois, e a palavra *consultor* não ocorre nenhuma vez no `P-0734` — medido. A única regra do
+bloco A que a menciona, a `A6a`, foi remendada depois pela Diretiva de execução do `P-0740`. As
+regras `A3a`, `A3b` e `A3c` nunca foram revistas e seguem roteando em volta de uma figura que não
+existia quando foram escritas.
+
+**Consequência sobre a §2.** A classe 1 de gatilho já dizia que card devolvido `blocked` aciona a
+figura. A `A3b` da skill dizia o contrário para o motivo `premissa`. Enquanto o bloco A não foi
+reescrito, a spec prevaleceu por precedência do dono. Registro histórico: o bloco A foi reescrito pela
+`CON-T3` do `P-0747` (2026-09-23; corretivos `CON-T3a`..`CON-T3c`), a regra mora hoje na skill
+`scrum-master` e em `G-REPLAN` (`GOVERNANCA.md` §7 item 17), e a spec não prevalece (estatuto, `:3-5`).
+
+> **Lastro:** ato do dono de 2026-09-22, sobre a parada da `PLN-T2` do `P-0745`; `DP-G` item 1 do
+> `P-0734` (o `motivo=` do executor é evidência, não rota); `AE-6` do `P-0745`.
 
 > **Lastro:** `I-4`; `AE-56`/`ESC-31`, `AE-58`/`ESC-32`, `AE-60`/`ESC-33`, `AE-63`/`ESC-34`,
 > `AE-65`/`ESC-35`; `G-NOASK` (`GOVERNANCA.md` §7 item 18); definição do agente, seção
@@ -359,22 +398,22 @@ três despachos, e **o que a destravou não foi refinar o card: foi trocar o pro
 
 ## 10. O que esta especificação não fecha
 
-Registrado para que o plano próprio não comece frio, e **sem rota decidida aqui**:
+Registrado para que o plano próprio não comece frio. O `P-0747` fechou as sete lacunas, uma a uma, e o ponteiro de cada uma segue o bullet:
 
-- **A forma do handover de fim de vida** (seção 8) — o conteúdo está fixado, a forma é ad-hoc.
+- **A forma do handover de fim de vida** (seção 8) — o conteúdo está fixado, a forma é ad-hoc. → fechado: o cenário persistido é o handover (`.claude/skills/scrum-master/SKILL.md`, seção *Acionamento do consultor*; `P-0747` `DCS-6`).
 - **A residência estruturada da estatística de acionamento** (seção 9) — a matéria existe em prosa;
-  a estrutura, não.
+  a estrutura, não. → fechado: `docs/ACIONAMENTOS_CONSULTOR.tsv`, uma linha por acionamento (`P-0747` `DCS-8`).
 - **A norma sobre autoria de card novo** (seção 4) — o empréstimo é fato medido nove vezes, e
-  continua sem regra que o autorize ou o proíba.
+  continua sem regra que o autorize ou o proíba. → fechado: o card corretivo `T<n>a` da mesma operação é do consultor, e operação nova vai ao modelador (`GOVERNANCA.md` §3, linha *Consultoria*; `P-0747` `DCS-4`).
 - **O critério de não-acionamento na entrada** (seções 2 e 6) — os dois tetos medidos agem na
-  saída; nenhum critério de entrada foi exercido.
+  saída; nenhum critério de entrada foi exercido. → residência nomeada: `TK-55`, decidido sobre a estatística de `docs/ACIONAMENTOS_CONSULTOR.tsv` (`P-0747` `DCS-10`).
 - **O caminho de poluição de contexto** (seção 7) — previsto, vinculante, zero ocorrências, não
-  exercitado.
+  exercitado. → residência nomeada: a regra geral, na seção *Coesão do seu contexto* de `.claude/agents/pantonic-consultant.md` (`P-0747` `DCS-10`).
 - **A forma da figura — standby ou efêmera com cenário persistido** (seção 11) — a medida de custo
   por acionamento reabre a premissa de que o standby entrega continuidade barata; o plano próprio
-  decide a forma **por piloto medido**, não por argumento.
+  decide a forma **por piloto medido**, não por argumento. → fechado: efêmera com cenário persistido, em piloto medido na §11 (`P-0747` `DCS-6`, `DCS-7`).
 - **A disciplina de saída** (seção 11, item iii) — `Edit` mínimo em vez de `Write` de seção;
-  hoje é recomendação, não regra.
+  hoje é recomendação, não regra. → fechado: regra do agente, item 4 de *O que você faz* (`P-0747` `DCS-9`).
 
 > **Lastro:** `I-5`, `I-7`, `I-9`, `I-10`; `DM-28` (o ad-hoc é insumo, não precedente).
 
@@ -438,3 +477,15 @@ próprios; **nada delas altera esta especificação** — o que altera é (i)–
 
 > **Lastro:** `docs/plans/_VIABILIDADE-agente-leitor.md` §7.1–7.4 (medida e posição);
 > sonda descartável `%TEMP%\claude\sonda_leituras.py`; seções 6, 8 e 9 desta especificação.
+
+### Veredito do piloto da forma efêmera (`P-0747`, `CON-T7`)
+
+Janela medida: do aceite da `CON-T4` ao despacho da `CON-T7`. Método da própria §11: transcripts do `pantonic-consultant` cuja mensagem de entrada cita `_CENARIO-P-0747.md`, deduplicados por `message.id`; Opus a $5/M de entrada, $25/M de saída, cache read a 10% e cache write a 125%. Reprovações e retentativas contam todas as revisões e execuções repetidas das tarefas `CON-T5` e `CON-T6` e dos seus corretivos (`DCS-22`).
+
+| acionamentos | $/acionamento, média | $/acionamento, mín–máx | reprovações | retentativas | veredito |
+|---|---|---|---|---|---|
+| 3 | $2,8 | $2,4–$3,0 | 0 | 0 | adotada |
+
+A forma efêmera fica adotada: a média ficou abaixo de $3,7, o piso medido da forma standby, com zero reprovações.
+
+Modelo das instâncias medidas: as três rodaram `claude-fable-5-1`, por ato do dono (`P-0747` `DCS-23`); as instâncias 1-4 da tabela desta seção, que dão o piso de $3,7, rodaram Opus. A coluna de custo é contagem de tokens precificada pela tabela Opus nos dois lados — preço-Opus-equivalente, não custo real — e compara a forma da figura (contexto reescrito e relido por acionamento), não o modelo; quanto um modelo distinto consome de tokens para a mesma decisão não foi medido. A sonda recebe o filtro do cenário como argumento e se reexecuta sobre a primeira execução de plano com o consultor em Opus, para conferir o veredito (`P-0747` `DCS-32`, `AE-19`).

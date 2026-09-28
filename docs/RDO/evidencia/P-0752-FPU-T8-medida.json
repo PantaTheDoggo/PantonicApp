@@ -1,0 +1,50 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T8",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T14:57:27+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/ARMADILHAS_DE_FERRAMENTA.md');print(p.exists() and p.read_text(encoding='utf-8').count('|')>=40)\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(Path('GOVERNANCA.md').read_text(encoding='utf-8').count('ARMADILHAS_DE_FERRAMENTA'))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;print(Path('.claude/agents/pantonic-planner.md').read_text(encoding='utf-8').count('ARMADILHAS_DE_FERRAMENTA'))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh .claude/checks/kit_check.ps1",
+      "exit": 0,
+      "saida": "kit_check: OK - 10 agente(s), 12 skill(s) e 27 entrada(s) canonica(s) validados; VERSION == KIT_VERSION ('0.0.0').",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/ARMADILHAS_DE_FERRAMENTA.md');print(p.exists() and '| forma segura |' in p.read_text(encoding='utf-8') and 'git ls-files --others' in p.read_text(encoding='utf-8'))\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "python -c \"from pathlib import Path;print(Path('docs/DOC_MAP.md').read_text(encoding='utf-8').count('## docs/ARMADILHAS_DE_FERRAMENTA.md'))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    }
+  ]
+}

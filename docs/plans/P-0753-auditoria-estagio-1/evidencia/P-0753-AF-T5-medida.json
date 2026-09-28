@@ -1,0 +1,50 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T5",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T12:52:34+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_telemetria_hook.py -q -k \"papel\"",
+      "exit": 0,
+      "saida": "....                                                                     [100%]\n4 passed, 10 deselected in 0.37s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k \"consumo_por_papel\"",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 24 deselected in 0.30s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;c=chr(96);t=Path('GOVERNANCA.md').read_text(encoding='utf-8');print(t.count('só grava a linha do '+c+'pantonic-executor'+c),t.count('grava a rodada de todo papel'))\"",
+      "exit": 0,
+      "saida": "0 1",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(t.count('da notificação, como a de qualquer subagente'))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 46%]\n........................................................................ [ 61%]\n........................................................................ [ 77%]\n........................................................................ [ 92%]\n..................................                                       [100%]\n466 passed in 41.02s",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

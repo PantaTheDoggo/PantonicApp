@@ -42,7 +42,11 @@ def _load_hook():
 
 
 def _linha_assistant(
-    usage: dict | None, timestamp: str, n_tool_uses: int = 0, message_id: str | None = None
+    usage: dict | None,
+    timestamp: str,
+    n_tool_uses: int = 0,
+    message_id: str | None = None,
+    model: str | None = None,
 ) -> str:
     conteudo = [{"type": "text", "text": "ok"}]
     for i in range(n_tool_uses):
@@ -50,7 +54,13 @@ def _linha_assistant(
     mensagem = {"usage": usage or {}, "content": conteudo}
     if message_id is not None:
         mensagem["id"] = message_id
+    if model is not None:
+        mensagem["model"] = model
     return json.dumps({"type": "assistant", "timestamp": timestamp, "message": mensagem})
+
+
+def _linha_user(texto: str, timestamp: str = "2026-09-26T09:00:00+00:00") -> str:
+    return json.dumps({"type": "user", "timestamp": timestamp, "message": {"role": "user", "content": texto}})
 
 
 def _estado_valido(**overrides) -> dict:
@@ -285,7 +295,43 @@ def test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv(tmp_path):
     linhas = tsv_path.read_text(encoding="utf-8").splitlines()
     assert linhas[0] == _HEADER.rstrip("\n")
     assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tsonnet\t5\t1.0\t0.0\tusage"
-    assert not estado_path.exists()
+    assert estado_path.exists()
+
+
+def test_tr_processar_sem_tsv_path_grava_na_serie_do_repo_do_estado(tmp_path):
+    """TR (`AE-5` do `P-0753`): sem `tsv_path`, a linha vai para `docs/telemetria.tsv` do
+    repositório do estado (`estado_path.parents[2]`) — a mesma série de onde a contagem do
+    consultor já lê —, nunca para a série padrão do CLI. Exercitar o hook com estado de fixture
+    não escreve na série real; antes, a linha caía em `docs/telemetria.tsv` do kit."""
+    hook = _load_hook()
+    real = _ROOT / "docs" / "telemetria.tsv"
+    antes_real = real.read_bytes() if real.is_file() else None
+
+    repo = tmp_path / "repo"
+    estado_path = repo / ".claude" / "estado" / "tarefa-corrente.json"
+    estado_path.parent.mkdir(parents=True)
+    estado_path.write_text(json.dumps(_estado_valido(tarefa="AE5-TR-SONDA")), encoding="utf-8")
+    serie = repo / "docs" / "telemetria.tsv"
+    serie.parent.mkdir(parents=True)
+    serie.write_text(_HEADER, encoding="utf-8")
+    transcript_path = tmp_path / "agent-transcript.jsonl"
+    transcript_path.write_text(
+        _linha_assistant({"input_tokens": 1000}, "2026-08-19T10:00:00+00:00", n_tool_uses=2),
+        encoding="utf-8",
+    )
+
+    escreveu = hook.processar(
+        _payload(agent_transcript_path=str(transcript_path)),
+        estado_path=estado_path,
+        telemetria_cli=_TELEMETRIA_CLI_PATH,
+        data="2026-08-19",
+    )
+
+    assert escreveu is True
+    assert serie.read_text(encoding="utf-8").splitlines()[1] == (
+        "2026-08-19\tPantonicApp\tAE5-TR-SONDA\tsonnet\t2\t1.0\t0.0\tusage"
+    )
+    assert (real.read_bytes() if real.is_file() else None) == antes_real
 
 
 def test_tr_processar_sem_estado_e_silencio_sem_escrita(tmp_path):
@@ -331,6 +377,156 @@ def test_tr_processar_agent_type_fora_do_filtro_e_silencio_e_preserva_o_estado(t
     assert estado_path.exists()
 
 
+def test_tf_hook_grava_revisor_com_papel(tmp_path):
+    """TF (`DAF-15`/`DAF-25`): `agent_type` `pantonic-reviewer` grava a própria rodada — tarefa
+    `<tarefa>-revisao` (a do estado corrente) e modelo normalizado do `message.model` do
+    transcript — e o estado permanece no disco (a regra de hoje não gravaria nada, porque
+    filtrava todo papel que não fosse o executor)."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"
+    estado_path.parent.mkdir(parents=True)
+    estado_path.write_text(json.dumps(_estado_valido()), encoding="utf-8")
+
+    transcript_path = tmp_path / "reviewer-transcript.jsonl"
+    transcript_path.write_text(
+        _linha_assistant(
+            {"input_tokens": 10, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+            "2026-09-26T10:00:00+00:00",
+            n_tool_uses=1,
+            model="claude-opus-4",
+        ),
+        encoding="utf-8",
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    payload = _payload(agent_type="pantonic-reviewer", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    colunas = linhas[1].split("\t")
+    assert colunas[2] == "EXA-T55-revisao"
+    assert colunas[3] == "opus"
+    assert estado_path.exists()
+
+
+def test_tf_hook_grava_consultor_numerado_por_papel(tmp_path):
+    """TF: `pantonic-consultant` numera pela série já existente — com uma linha
+    `EXA-T55-consultor-1` presente, a nova rodada grava `EXA-T55-consultor-2`."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"
+    estado_path.parent.mkdir(parents=True)
+    estado_path.write_text(json.dumps(_estado_valido()), encoding="utf-8")
+
+    transcript_path = tmp_path / "consultor-transcript.jsonl"
+    transcript_path.write_text(
+        _linha_assistant(
+            {"input_tokens": 10, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+            "2026-09-26T10:00:00+00:00",
+            n_tool_uses=1,
+        ),
+        encoding="utf-8",
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(
+        _HEADER + "2026-09-25\tPantonicApp\tEXA-T55-consultor-1\tsonnet\t1\t1.0\t1.0\tusage\n",
+        encoding="utf-8",
+    )
+
+    payload = _payload(agent_type="pantonic-consultant", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[-1].split("\t")[2] == "EXA-T55-consultor-2"
+
+
+def test_tf_hook_grava_planejador_pelo_id_do_plano_papel(tmp_path):
+    """TF: `pantonic-planner` deriva o id do plano da primeira mensagem de usuário do
+    transcript — `P-0753` de `docs/plans/P-0753-auditoria-estagio-1/plano.md` — e grava
+    `P-0753-planejador`, mesmo sem estado no disco."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"  # nunca criado
+
+    transcript_path = tmp_path / "planejador-transcript.jsonl"
+    transcript_path.write_text(
+        "\n".join(
+            [
+                _linha_user(
+                    "Planeje a decomposição de docs/plans/P-0753-auditoria-estagio-1/plano.md agora."
+                ),
+                _linha_assistant(
+                    {"input_tokens": 10, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+                    "2026-09-26T10:00:00+00:00",
+                    n_tool_uses=1,
+                ),
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    payload = _payload(agent_type="pantonic-planner", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[1].split("\t")[2] == "P-0753-planejador"
+
+
+def test_tr_hook_sem_id_derivavel_grava_sem_id_papel(tmp_path):
+    """TR: `pantonic-scout` cuja primeira mensagem de usuário não cita `P-<n>` nenhum grava a
+    linha sob `sem-id-scout`, em vez de ficar em silêncio."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"  # nunca criado
+
+    transcript_path = tmp_path / "scout-transcript.jsonl"
+    transcript_path.write_text(
+        "\n".join(
+            [
+                _linha_user("Faça uma varredura geral no repositório."),
+                _linha_assistant(
+                    {"input_tokens": 10, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0},
+                    "2026-09-26T10:00:00+00:00",
+                    n_tool_uses=1,
+                ),
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    payload = _payload(agent_type="pantonic-scout", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[1].split("\t")[2] == "sem-id-scout"
+
+
 def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path):
     """TK-56b: repara a ressalva da `TK-56a` — o par negativo deixa de ser um stub (que só
     discriminava a si mesmo) e passa a ser o produto revertido, extraído do arquivo real. Mundo
@@ -338,10 +534,10 @@ def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path
     hostil). Mundo seguro: `env` mínimo + `PYTHONUTF8=1`. O hook é silencioso por contrato —
     `stdout` é `b""` e `rc=0` em todas as combinações — então o canal discriminante é o efeito
     colateral, observado numa raiz relocada para `tmp_path` (relocar é obrigatório: sem isso
-    `main` apagaria o `.claude/estado/tarefa-corrente.json` real). O payload acentuado viaja no
+    `main` gravaria na `docs/telemetria.tsv` real). O payload acentuado viaja no
     nome do transcript apontado por `agent_transcript_path`. Medido em 2026-09-20: reparado
     escreve a mesma linha TSV nos dois mundos; revertido, no mundo hostil, decodifica o caminho
-    acentuado errado — o transcript não é encontrado, o estado sobrevive e o TSV não é criado."""
+    acentuado errado — o transcript não é encontrado e o TSV não é criado."""
     fonte = _HOOK_PATH.read_text(encoding="utf-8")
     bloco_reparo = (
         "        try:\n"
@@ -388,8 +584,8 @@ def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path
         assert resultado.stdout == b""
 
     # (i) produto reparado dá a mesma saída (efeito colateral) nos dois mundos
-    assert estado_rh is False
-    assert estado_rs is False
+    assert estado_rh is True
+    assert estado_rs is True
     assert tsv_rh is not None and tsv_rh.strip("\n") == linha_esperada
     assert tsv_rs is not None and tsv_rs.strip("\n") == linha_esperada
 
@@ -399,5 +595,5 @@ def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path
     # (ii) produto revertido dá saídas diferentes entre os dois mundos
     assert estado_vh is True
     assert tsv_vh is None
-    assert estado_vs is False
+    assert estado_vs is True
     assert tsv_vs is not None and tsv_vs.strip("\n") == linha_esperada

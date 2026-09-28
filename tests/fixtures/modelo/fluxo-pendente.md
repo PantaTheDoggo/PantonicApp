@@ -8,11 +8,11 @@
 
 ### 1.1 Objetos
 
-| objeto | o que é | propriedades | contrato | origem |
-|---|---|---|---|---|
-| insumo externo | dado de entrada do fluxo pendente | status | um registro por rodada | externo |
-| resultado alfa | o produto da primeira operação | status | um registro validado | OP-1 |
-| objeto obsoleto | objeto que sai na versão pendente | nota | um registro descontinuado | externo |
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo externo | dado de entrada do fluxo pendente | status | um registro por rodada | externo | lastro sintético da fixture |
+| resultado alfa | o produto da primeira operação | status | um registro validado | OP-1 | lastro sintético da fixture |
+| objeto obsoleto | objeto que sai na versão pendente | nota | um registro descontinuado | externo | lastro sintético da fixture |
 
 ### 1.2 Fluxo de operações
 
@@ -38,11 +38,11 @@
 
 ### 1.1 Objetos
 
-| objeto | o que é | propriedades | contrato | origem |
-|---|---|---|---|---|
-| insumo externo | dado de entrada do fluxo pendente | status | um registro por rodada | externo |
-| resultado alfa | o produto da primeira operação | status, prazo | um registro validado | OP-1 |
-| resultado beta | o produto da segunda operação, nova nesta versão | nível | um relatório derivado | OP-2 |
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo externo | dado de entrada do fluxo pendente | status | um registro por rodada | externo | lastro sintético da fixture |
+| resultado alfa | o produto da primeira operação | status, prazo | um registro validado | OP-1 | lastro sintético da fixture |
+| resultado beta | o produto da segunda operação, nova nesta versão | nível | um relatório derivado | OP-2 | lastro sintético da fixture |
 
 ### 1.2 Fluxo de operações
 

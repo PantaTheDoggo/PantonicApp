@@ -5584,3 +5584,157 @@ Estágio 7 — as portas do core e a camada de casos de uso: contrato de porta p
 | TK-47 | `materializar.py apply --alvo usuario` **reescreve o `settings.json` do destino mesmo quando não há drift semântico**: o primeiro `apply` real da `RPC-T4` mudou o mtime de `~/.claude/settings.json` por normalização de serialização JSON (indentação/ordem de chaves reemitidas pelo dump), com todo o conteúdo preservado (`model`, `effortLevel`, `switchModelsOnFlag`, `statusLine`, `permissions.allow`, `additionalDirectories` intactos). Comportamento pré-existente do materializador entregue na `RPC-T2`, não introduzido pela `T4`. **Por que importa agora:** o critério de verificação da `RPC-T5` exige que o `settings.json` resultante difira do anterior **apenas** no caminho dos comandos resolvido pelo placeholder, e manda a tarefa parar em qualquer outra diferença — com a normalização em vigor, a `T5` para por um efeito que não é do escopo dela. Decidir se `apply` passa a ser byte-idempotente quando não há mudança semântica (preservar a formatação existente) ou se a normalização é aceita e o critério da `T5` é reescrito para comparar semanticamente | done *(achado da `RPC-T4`; decidido pelo dono em 2026-08-17 — `apply` byte-idempotente sob equivalência semântica; quitado pela `RPC-T10` no mesmo dia: comparação semântica em `write_settings`, 2 testes novos, suíte 65 → 67)* | `docs/plans/P-0735-residencia-e-ponto-de-carga.md` `DL-10` e `### T10`; `.claude/tools/materializar.py:220-231` |
 | TK-49 | **O hook do alvo `projeto` é materializado com caminho relativo e derruba a sessão inteira.** `.claude/projecoes.json` declara `python {KIT_ROOT}/tools/ocupacao.py` e o materializador resolve `{KIT_ROOT}` para o caminho **relativo** `.claude`, de modo que o `settings.json` do projeto registra `python .claude/tools/ocupacao.py`. Basta o cwd de uma chamada de ferramenta sair da raiz do repositório para o hook falhar — e hook `PreToolUse` que falha **bloqueia toda ferramenta da sessão** (Bash, PowerShell, Glob, Read, ToolSearch), inclusive a chamada que restauraria o cwd: sessão irrecuperável, só sai abrindo outra. Medido ao vivo em 2026-08-17, durante a verificação da `RPC-T5`. O mesmo campo minado viaja para todo consumidor que materializar o alvo `projeto`. **Decidido pelo dono em 2026-08-17:** corrigir na origem — `{KIT_ROOT}` resolve para caminho absoluto na escrita do `settings.json`, com TF em fixture `tmp_path`; recusada a alternativa de tratar como limitação operacional ("não mude o cwd"), que deixaria o defeito nascer propagado nos consumidores. **Dossiê autorado fechado em 2026-08-17** como `RPC-T11` do `P-0735`, logo depois da `T5`: `kit_root_placeholder` passa a devolver `kit_root.as_posix()`, a classificação de entrada de kit (`is_kit_command`) migra para um marcador relativo próprio — sem isso o `apply` preservaria a entrada relativa já instalada ao lado da nova, deixando o hook defeituoso vivo —, e a premissa foi verificada no ato: `.claude/settings.json` é gitignorado (`.gitignore:3`), então a portabilidade que o desenho original perseguia não tinha objeto | done *(fechado pela `RPC-T11` em 2026-08-18: `{KIT_ROOT}` grava caminho absoluto, TR de substituição da entrada relativa antiga, `apply`/`drift` reais em exit 0)* | `docs/plans/P-0735-residencia-e-ponto-de-carga.md` `### T11` |
 | TK-50 | **`.claude/tools/telemetria.py append` não expressa o caso `nao_medido`/`contado` que a própria doutrina prescreve.** `GOVERNANCA.md` §4.2 e a skill `proximo-passo` mandam apender uma linha com `fonte: nao_medido` quando a telemetria da tarefa venceu (sessão anterior encerrou sem fechar) e `fonte: contado` na execução inline sem `<usage>` — casos em que `tokens_k` e `duracao_s` **não existem**. O validador rejeita campo vazio (`tool_uses: '' não é inteiro`, `tokens_k: '' não é numérico`) e não aceita nada além de número, então a única saída pelo instrumento é inventar `0` — número falso numa série cujo propósito é consumo medido. A série já tem o precedente da forma correta, escrito fora do instrumento (`EXA-DPS-replan`, 2026-08-19: `tool_uses` preenchido, `tokens_k`/`duracao_s` em branco). Medido ao vivo no fechamento da `CPK-T2`, cuja linha teve de ser apendida por `Add-Content` para não gravar zeros falsos. Rota candidata: campos numéricos passam a aceitar vazio quando `fonte` ∈ {`nao_medido`, `contado`}, mantendo a exigência para `fonte: usage` | cancelled *(absorvido pelo P-0737, fecha na AUT-T5)* | `.claude/tools/telemetria.py`; `docs/telemetria.tsv` |
+
+## P-0737 — Loop autônomo
+
+> **Condensado em 2026-09-21.** Plano terminal (`superseded` em 2026-09-18 pelo
+> `P-0740-loop-de-modulos`, `DM-1`). Seção migrada verbatim do `docs/DIARIO_DE_OBRAS.md`,
+> onde ficou só a linha do índice com ponteiro para cá.
+
+
+> **Índice (texto integral do campo Título, migrado da tabela ativa em 2026-08-23):** Loop autônomo — o plano que consolida a `EXECUCAO-AUTONOMA`: 10 tarefas (`AUT-T1..T10`), decisões `DU-1..DU-13`, absorve as 8 tarefas abertas do `P-0734` e 11 tíquetes, poda 10 e encaminha 2; `AUT-T5` partida em `T5a`/`T5b`/`T5c` por orçamento no gate de delegação (3/12). **`superseded` em 2026-09-18 pelo `P-0740-loop-de-modulos` (`DM-1`)** — as 3 fechadas ficam como registro e as 7 abertas foram absorvidas e entregues lá (`done 35/35`). Histórico: ficou `blocked` de 2026-08-22 a 2026-09-18 por custo fixo de contexto, razão que caiu com a correção do denominador de janela para 1M; nenhum defeito do plano foi apontado
+>
+> *(Âncora original do índice, preservada:* `docs/plans/P-0737-loop-autonomo.md` *)*
+
+**Objetivo (herdado verbatim da diretiva do dono, 2026-08-22):** transformar o trabalho de
+`proximo-passo` num agente autônomo, capaz de rodar sozinho todas as delegações e ajustes de modelo e
+entregar ao cliente o entregável do plano, sem delegar ao humano tarefa rotineira e mecânica. O plano
+existe para desfazer o drift medido — instrumento, papel e doutrina em volume, e o loop nunca rodando.
+
+**Plano:** `docs/plans/P-0737-loop-autonomo.md` — **10 tarefas** (`AUT-T1..T10`), decisões
+`DU-1..DU-13` fechadas no ato do planejamento (cinco do dono, oito de planejamento). Absorve as **8**
+tarefas abertas do `P-0734` e **11** tíquetes; **10** tíquetes são podados e **2** encaminhados ao
+plano de contexto recomendado; `TK-38` e `TK-48` seguem vivos, sem toque. Sem bump e sem tag
+(`DE-7`). **Checagem de versão do kit:** modo hub — congelada em `0.0.0`, nada a comparar.
+
+**Ordem de execução (§7 do plano, e não a numeração):** `AUT-T1` → `AUT-T5` → `AUT-T4` → `AUT-T2` →
+`AUT-T3` → **[ratificação em lote do dono, `DU-12`]** → `AUT-T6` → `AUT-T7` → `AUT-T8` → `AUT-T9` →
+`AUT-T10`.
+
+**Próxima tarefa:** **nenhuma — plano encerrado como `superseded` em 2026-09-18** (`DM-1` do
+`P-0740-loop-de-modulos`). Não há fila a retomar: as **7 tarefas abertas** (`AUT-T2`, `T3`, `T4`,
+`T5c`, `T6`..`T10`) foram **absorvidas e entregues** pelo `P-0740`, que fechou `done 35/35` —
+`AUT-T2`/`T6`/`T7`/`T8` pela `LM-T4` (aprovado 100%), `AUT-T3`, `AUT-T4` e `AUT-T5c` pelos módulos
+correspondentes, e `AUT-T9`/`AUT-T10` pela `LM-T6`. A recomendação **(a)** do §8 — o piloto medido,
+única prova de que o desenho entrega o que promete — foi cumprida pela `LM-T6` com troca de
+**veículo** decidida pelo dono (o corpus passou a ser a execução do próprio `P-0740` sob o loop):
+está publicada em `docs/plans/P-0740-loop-de-modulos.md` › `## 10`, com **Veredito do dono:
+APROVADO (2026-09-19)**. As recomendações **(b)** e **(c)** do §8 são matéria exclusivamente de
+custo e encerram por obsolescência sob a diretiva de priorização de 2026-09-21 (`DM-30`).
+
+**Reconciliação de 2026-09-21 — o que esta seção dizia e por que foi corrigida.** O flip de
+2026-09-18 foi aplicado na tabela do índice, mas não aqui: a seção seguiu declarando `blocked`,
+mandando a fila retomar em `AUT-T5c` (tarefa já entregue por outro plano) e argumentando contra
+destravar sobre a premissa do **custo bimodal de abertura de janela** — premissa que o `P-0740`
+derrubou ao medir a janela real de 1M (`## 2` daquele plano). Esse texto morto alimentou um **ponto
+aberto falso** na *Diretiva de priorização* do topo deste diário, que afirmava haver trabalho de
+framework parado por um critério que não vale mais. Nenhum defeito do `P-0737` foi apontado em
+momento algum, e nada do registro histórico abaixo é reaberto ou reescrito — o que segue são as
+notas de execução das 3 tarefas que fecharam no próprio plano (`AUT-T1`, `AUT-T5a`, `AUT-T5b`).
+
+- **Paralisação por decisão do dono — 2026-08-22.** Registrada no ato da análise crítica do pickup da
+  `AUT-T5b`. Fato medido que a originou: a tarefa consumiu **três janelas de orquestração** — (A)
+  pickup pago, teto cruzado no gate de delegação **sem delegar**; (B) pickup pago, delegação
+  despachada e teto cruzado **antes do retorno**, deixando o ato de fechamento órfão; (C) pickup pago
+  integralmente para verificar entrega já pronta e escrever 2 edits. O trabalho real coube num único
+  subagente em background. Cada janela repagou os **77.457 chars (~19.364 tokens)** que a `CPK-T2`
+  mediu como pickup típico, dos quais **43,8% são custo fixo de entrada**. Diagnóstico preliminar
+  levado à linha do `_INBOX.md` **sem ratificar rota**: o gate de delegação orça o teto do executor e
+  não o saldo do orquestrador; o custo fixo não amortiza entre tarefas; e a verificação foi feita à
+  mão, no contexto mais caro, existindo `review_evidence.py` e `pantonic-reviewer` para isso. A
+  **Diretiva** deste diário foi condensada de 20 para 15 linhas no mesmo ato — o conteúdo retirado
+  (drift da `EXECUCAO-AUTONOMA`, reconciliação `P-0734`/`P-0733`, recomendações do §8) não foi
+  apagado: vive na linha `P-0737-loop-autonomo` do `_INBOX.md` e nesta seção.
+
+**`AUT-T5` partida em `T5a`/`T5b`/`T5c` por orçamento — 2026-08-22, no gate de delegação.** Medidos
+~12-14 write-clusters contra o limite de 8, com duas das três frentes comportamentais (mudam
+contrato de CLI e assinatura de renderização). **Sem mudança de rota ou de escopo**: a partição segue
+as três frentes já publicadas no dossiê, que permanece intocado, e o corte é o mesmo precedente da
+`RPC-T7` do `P-0735`. Fatias: **`T5a`** = frente (a), sentinela de métrica ausente
+(`.claude/tools/telemetria.py`, `docs/telemetria.tsv:50`, `tests/test_telemetria.py`), classe
+`implementacao`, Sonnet, teto 40; **`T5b`** = frente (b), escopo do dossiê de evidência
+(`.claude/tools/review_evidence.py`, `tests/test_review_evidence.py` e a conciliação de
+`.claude/skills/scrum-master/SKILL.md:143`, que o *Conteúdo* do dossiê manda tocar e o campo
+*Arquivos-alvo* omitiu), classe `implementacao`, Sonnet, teto 40; **`T5c`** = frente (c), medição do
+`TK-27` e o achado no §9 do plano, **tarefa-investigação** que mede e **para** para a ratificação em
+lote da `DU-12`, teto 15. O denominador do plano passa de 10 para 12.
+
+**Notas de execução:**
+
+- **`AUT-T5b` — done, confirmado em contexto novo — 2026-08-22.** Achado no pickup: o trabalho já
+  estava materializado no working tree (agente em background da rodada anterior concluiu antes do
+  retorno chegar a esta sessão — contexto anterior encerrado por capacidade sem consumir a
+  notificação). Verificado, não redelegado: diff de `review_evidence.py`/`test_review_evidence.py`/
+  `scrum-master/SKILL.md:143` bate exatamente com as duas frentes do dossiê (alvo-diretório por
+  prefixo, `--desde <ref>`); suíte **83 passed** (piso `AUT-T5a` era 80, +3 testes novos da `T5b`).
+  Consumo: ver `docs/telemetria.tsv` (`nao_medido` — notificação da sessão anterior perdida no
+  `<usage>`, mesmo padrão da `RPC-T11`).
+- **Checkpoint de janela — `AUT-T5b` delegada, aguardando retorno — 2026-08-22.** Dossiê montado com
+  design já resolvido (alvo-diretório por prefixo, `--desde <ref>` sem tocar `DP-S`/`tarefa-corrente.json`)
+  e despachado ao `pantonic-executor` em background (agentId `adb71e11660fbf127`). Contexto encerrado
+  por capacidade antes do retorno. **Próximo passo:** aguardar a notificação de conclusão, fechar o
+  registro (bullet + `docs/telemetria.tsv`) e seguir a ordem do §7 (`AUT-T4` depois).
+
+- **Checkpoint de janela — pickup da `AUT-T5b` encerrado por capacidade, sem delegação — 2026-08-22.**
+  Janela cruzou o teto no gate de delegação, depois do levantamento das âncoras. **Âncoras
+  re-derivadas nesta rodada, para o contexto novo não repagar:** `review_evidence.py` 413 linhas —
+  comparação literal de escopo em `confrontar_escopo:129-138` (`t not in alvo_set`), fallback
+  "arquivo ausente na árvore de trabalho" em `_diff_para_arquivo:141-151`, recorte da árvore inteira
+  em `coletar_arquivos_tocados:111-126` (`git status --porcelain=v1 --untracked-files=all`), bloco
+  `argparse` em `main:362-384` (sem `--desde`), seção `## Escopo` do render em `_renderizar:272-285`
+  (onde entra a declaração de recorte), chamada em `montar_documento:336`;
+  `tests/test_review_evidence.py` 277 linhas; conciliação da skill em
+  `.claude/skills/scrum-master/SKILL.md:143-145` (comando) — o `.claude/estado/tarefa-corrente.json`
+  do passo 4 (`:88-94`) **não** tem campo de ref de git, então de onde sai o `<ref>` do `--desde` é
+  ponto a fechar no dossiê. Piso da suíte (80 passed, `AUT-T5a`) **não** re-medido — a suíte não
+  chegou a rodar.
+
+- **`AUT-T5a` — done em 2026-08-22.** A célula vazia passou a ser a sentinela única de métrica
+  ausente: `_validar_inteiro_nao_negativo` e `_validar_numero_nao_negativo` ganharam `permite_vazio`,
+  e `build_row` valida `fonte` primeiro para propagá-lo às três colunas numéricas — com
+  `fonte = usage` o vazio continua falha ruidosa, porque ali a medida é perdida, não ausente. A
+  única linha histórica com traço literal (`docs/telemetria.tsv` L50, `V2I-T3`) foi normalizada, com
+  o Grep de reconferência medindo 1 match antes e 0 depois e o resto do arquivo preservado. Ordem TDD
+  demonstrada por `git stash` do fix: os dois testes de aceitação falharam sem ele e passaram com
+  ele; o de recusa por `fonte = usage` já passava. Bateria do §3 inteira em exit 0; suíte em **80
+  passed** (piso era 77 — subiu). **Reconciliação de série feita pelo orquestrador no fechamento:** a
+  prova ponta a ponta exigida pela *Verificação* apende uma linha real pelo instrumento, e essa
+  linha nasce auto-relatada (`fonte = contado`), o que colidiria com a linha medida da mesma tarefa;
+  a célula `tarefa` da linha de prova passou a `AUT-T5a-prova-instrumento` — correção de
+  identificador, não de número — e a linha canônica da tarefa foi apendada do bloco `<usage>` com
+  `fonte = usage`. Nenhum achado fora de escopo. Consumo: ver `docs/telemetria.tsv`.
+
+- **Registro do plano — 2026-08-22.** Plano autorado em contexto novo, a partir do inventário e das
+  decisões que a rodada de consolidação do mesmo dia deixou na linha `P-0737-loop-autonomo` do
+  `docs/plans/_INBOX.md` (agora `[drenado]`). Reconciliação de planos derivados aplicada no mesmo
+  ato: `P-0734` → `superseded` (classificação B), `P-0733` → `cancelled` (`DU-1`) — a iniciativa
+  volta a ter **um** plano vivo. Nenhuma questão precisou subir ao dono na autoria: as duas que
+  ameaçavam abrir ramo — o portador do checkpoint de contexto (`TK-37`) e a fronteira de ferramenta
+  do `pantonic-reviewer` (`TK-27`) — foram fechadas, a primeira por derivação do já ratificado
+  (`DU-8`) e a segunda como medição que **para** para a ratificação em lote (`DU-12`). O agente de
+  planejamento caiu por **limite de sessão da API** depois de publicar o plano e antes de fechar o
+  registro no diário; retomado pelo mesmo `agentId` com o delta, sem re-delegação a frio. Consumo:
+  ver `docs/telemetria.tsv` — a fatia anterior à queda não traz bloco `<usage>` e está **PARCIAL,
+  não medida**.
+- **Acréscimo de escopo por decisão do dono — 2026-08-22.** Achado de fronteira levantado no
+  fechamento da autoria: o `P-0737` nasceu com 574 linhas, acima do gatilho de 500 do
+  `docs/DOC_MAP.md`, que hoje indexa três planos grandes e não este. O dono decidiu acrescentar a
+  entrada ao dossiê da `AUT-T1` (frente **(e)**) em vez de abrir tíquete ou ignorar — a `T1` já
+  edita o kanban, o custo marginal é zero, e plano desse porte fora do mapa reintroduz o custo de
+  navegação que o `P-0736` mediu. Único ponto do plano publicado alterado depois da publicação;
+  `Arquivos-alvo`, `Invariantes`, `Verificação` e `Pronto quando` da `AUT-T1` atualizados no mesmo
+  ato. Teto da tarefa mantido em 20.
+- **`AUT-T1` — done em 2026-08-22.** O kanban passou a dizer a verdade do dia: as 23 células de
+  tíquete do índice receberam rota única — 10 `cancelled` por poda, 11 com a nota de absorção e a
+  `AUT-T<n>` que as fecha, 2 encaminhadas ao plano de contexto recomendado —, e `TK-38`/`TK-48`
+  ficaram intocados. O `TK-18` teve a razão do `blocked` amarrada à `AUT-T9`. O
+  `P-0734-execucao-autonoma.md` ganhou a seção `## 24. Rebase pelo P-0737` como acréscimo no fim do
+  arquivo, com a tabela das 8 absorvidas e a `T16` cancelada por absorção; nenhum dossiê, bullet ou
+  decision record anterior foi tocado. A frente **(e)** indexou o plano no `docs/DOC_MAP.md` com o
+  porte re-derivado no ato (**586 linhas**, e não as 574 que o dossiê supunha) e padrão de acesso
+  `^### AUT-T5 ` conferido por execução. As 23 anotações foram aplicadas num único passo
+  programático, com guarda de 6 campos por linha da tabela — 23 edições linha a linha estourariam o
+  teto da classe `mecanica`. Bateria do §3 inteira em exit 0; suíte em **77 passed**. Nenhum achado
+  fora de escopo. Consumo: ver `docs/telemetria.tsv`.
+
+- **2026-08-23 (`CTX-T6a`, item 4):** os 11 tíquetes absorvidos por este plano fecham `cancelled` no índice (preservando o ponteiro `fecha na AUT-T<n>` de cada célula) e migram para `docs/DIARIO_HISTORICO.md`: `TK-04` (fecha na `AUT-T9`), `TK-18` (fecha na `AUT-T10`), `TK-26` (fecha na `AUT-T5`), `TK-27` (fecha na `AUT-T5`), `TK-30` (fecha na `AUT-T8`), `TK-44` (fecha na `AUT-T5`), `TK-36` (fecha na `AUT-T6`), `TK-37` (fecha na `AUT-T6`), `TK-42` (fecha na `AUT-T9`), `TK-46` (fecha na `AUT-T10`), `TK-50` (fecha na `AUT-T5`).

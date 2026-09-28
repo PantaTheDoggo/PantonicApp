@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T9",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T15:04:49+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;print(Path('.claude/skills/fatos-frescos/SKILL.md').exists())\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(sum(Path(p).read_text(encoding='utf-8').count('fatos-frescos') for p in ['.claude/skills/mensagem-ao-dono/SKILL.md','.claude/skills/scrum-master/SKILL.md','.claude/skills/passagem-de-bastao/SKILL.md'])>=3)\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;t=Path('README.md').read_text(encoding='utf-8');print(t.count('treze skills'),t.count('doze skills'))\"",
+      "exit": 0,
+      "saida": "1 0",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh .claude/checks/check-readme.ps1",
+      "exit": 0,
+      "saida": "check-readme: OK - 10 agente(s), 13 skill(s), 20 guardrail(s), vers�o '0.0.0', 14 se��o(�es) com Fonte da verdade v�lida; frases de contagem de 'Os guardrails' conferidas: 'regras m�nimas obrigat�rias'=True, 'regras falham como teste execut�vel'=True.",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python .claude/checks/frontmatter_yaml.py",
+      "exit": 0,
+      "saida": "",
+      "bate": true
+    }
+  ]
+}

@@ -516,3 +516,174 @@ requisição desta sessão. Esse item fica **a apurar** antes de qualquer republ
 3. **Todo número publicado nomeia o objeto medido.** "16.459 bytes de `additionalContext`" era o
    comprimento da linha do JSONL. Comprimento de registro, de texto renderizado e de texto-fonte
    são três objetos; o rótulo diz qual.
+
+## 16 A fonte da bimodalidade (2026-09-21, TK-54b)
+
+Sonda `sonda_tk54b.py` (scratchpad, descartável, stdlib, fora do repo — mesmo método da `## 12`
+e da `## 13`). Corpus: `C:\Users\panta\.claude\projects\` inteiro, janelas principais
+(`*.jsonl` na raiz de cada diretório de projeto). Fórmula: `usage_1 = input_tokens +
+cache_creation_input_tokens + cache_read_input_tokens` da 1ª entrada `assistant`.
+
+**Gate — PASS.** As quatro canônicas reproduzidas exatamente: `08a29a54`=34.260, `a7432333`=34.292,
+`29dd40a9`=45.872, `95db6421`=46.071.
+
+**Corpus:** 303 janelas principais, 302 com `usage` observável (1 descartada, `usage` zerado).
+
+**Partição pelo valor discreto de `cache_read` (18 valores distintos no corpus):**
+
+| `cache_read` | n | `usage_1` mediana | `deferred_tools_delta` n_names (conjunto) | chars (conjunto) |
+|---|---|---|---|---|
+| 0 | 36 | 52.584 | {17, 18, 25} | {182, 191, 194, 449} |
+| 14.721 | 4 | 37.194 | {25} | {449} |
+| 18.012 | 3 | 35.810 | {25} | {449} |
+| **18.084** | **120** | 38.285 | **{18}** | **{191}** |
+| 18.866 | 1 | 36.262 | {25} | {449} |
+| 26.691 | 5 | 45.999 | {18} | {191} |
+| **26.695** | **74** | 50.034 | **{18}** | **{191}** |
+| 29.946 | 11 | 49.518 | {17, 18} | {182, 194} |
+| 31.429 | 2 | 52.681 | {17} | {182} |
+| 33.224 | 2 | 59.243 | {25} | {449} |
+| 33.237 | 10 | 49.042 | {17} | {182} |
+| 33.238 | 1 | 54.547 | {17} | {182} |
+| 34.091 | 3 | 50.475 | {17} | {182} |
+| 36.516 | 2 | 59.199 | {25} | {449} |
+| 36.737 | 4 | 64.390 | {17} | {182} |
+| 38.671 | 2 | 66.062 | {17} | {182} |
+| 42.702 | 9 | 64.066 | {17, 18} | {182, 194} |
+| 44.340 | 13 | 61.074 | {17} | {182} |
+
+O par nomeado pela `## 12` — `cache_read` 18.084 (n=120) vs 26.695 (n=74), Δ **8.611 tok** — tem o
+**mesmo** conjunto de `deferred_tools_delta`: 18 nomes, 191 chars, lista idêntica
+(`CronCreate, CronDelete, CronList, DesignSync, EnterPlanMode, EnterWorktree, ExitPlanMode,
+ExitWorktree, Monitor, NotebookEdit, PushNotification, RemoteTrigger, SendMessage, TaskOutput,
+TaskStop, TodoWrite, WebFetch, WebSearch`) nos dois grupos.
+
+**Comparação completa do par nomeado — todo anexo (`attachment`) observável antes da 1ª resposta,
+nos dois grupos:**
+
+| atributo | `cache_read`=18.084 (n=120) | `cache_read`=26.695 (n=74) | separa o par? |
+|---|---|---|---|
+| `version` (harness) | `{2.1.220}` | `{2.1.220}` | não — idêntico |
+| `deferred_tools_delta` chars | `{191}` | `{191}` | não — idêntico |
+| `agent_listing_delta` chars | `{231, 240}` | `{218, 231, 240}` | não — sobreposto |
+| `hook_system_message` chars | `{128, 129}` | `{128, 129}` | não — sobreposto |
+| `hook_additional_context` chars | `{213, 220}` | `{213, 220}` | não — sobreposto |
+| `skill_listing` chars | `{8.496, 11.113}` | `{8.496, 9.371, 11.113}` | não — sobreposto (os dois extremos ocorrem nos dois grupos) |
+| `auto_mode` (presença) | ausente (0/120) | 8/74 | não — presente só numa fração do grupo `26.695`, que é 100% constante em `cache_read`; não pode explicar um valor discreto uniforme |
+
+Nenhum atributo observável nos anexos do primeiro request particiona o par 18.084/26.695. O teto de
+explicação medida, para qualquer atributo correlacionado com o regime, é **0 chars**.
+
+**Aritmética (decisão 1 do escopamento — medir em chars, conversão só como faixa declarada):** o
+candidato *deferred tools* explica **0 chars / 0 tok** do Δ de 8.611 tok exigido — não bate nem em
+ordem de grandeza, porque o conteúdo é byte-idêntico nos dois grupos. **Candidato descartado para
+este par.**
+
+**Referente ausente — achado de método.** O card pede medir "o `system` e a lista de `tools` do
+primeiro request". Nenhum dos dois é logado em campo algum do JSONL, em nenhuma versão do
+formato: a enumeração exaustiva de chaves de topo, feita tanto no arquivo canônico antigo
+(`08a29a54`, versão `2.1.220`) quanto no arquivo de origem do próprio achado de *deferred tools*
+(`4f46cd5b`, sessão de 2026-09-18) não encontra `system` nem `tools` em lugar nenhum — só
+`message.content`, `message.usage` e os tipos de entrada (`attachment`, `mode`, `system`
+[=`local_command_stdout`], `queue-operation`, etc.). O texto legível mais próximo do que o card
+pede é o conjunto de anexos estruturados (`deferred_tools_delta`, `agent_listing_delta`,
+`skill_listing`, `hook_system_message`, `hook_additional_context`, e, só em sessões de versão mais
+nova, `environment`/`instructions`/`session_context`/`date` — ausentes nos dois grupos deste par,
+que são ambos `2.1.220`) — todos medidos acima. O payload real de schema JSON de cada ferramenta
+enviado à API não é observável de dentro do transcript em nenhuma versão.
+
+**O que foi descartado e como:**
+1. `deferred_tools_delta` (candidato nomeado) — conteúdo byte-idêntico nos dois grupos (191 chars,
+   18 nomes, mesma lista) — descartado por medida direta, Δ explicado = 0.
+2. `agent_listing_delta`, `hook_system_message`, `hook_additional_context` — faixas sobrepostas
+   entre os dois grupos e variação máxima de poucas dezenas de chars — descartados por magnitude
+   (não chegam perto de 8.611 tok) e por não correlacionar com o regime.
+3. `skill_listing` — varia até 2.617 chars, mas os dois extremos (8.496 e 11.113) ocorrem nos dois
+   grupos — descartado por não correlacionar com o regime (varia com o tempo/conteúdo de skills,
+   não com o valor de `cache_read`).
+4. Versão do harness — `2.1.220` nos dois grupos, sem exceção — descartado, sem variação a
+   explicar.
+5. Conjunto de MCP servers conectados — o marcador observável (`mcp__claude_ai_Claude_Docs__*` nos
+   nomes de `deferred_tools_delta`) está ausente nos dois grupos do par nomeado; aparece em outros
+   grupos do corpus (`cache_read` 0/14.721/18.012/18.866/33.224/36.516, ver tabela acima) —
+   descartado **para este par** por ausência simétrica, embora seja candidato não descartado para
+   outros pares do corpus (fora do escopo desta seção).
+6. `system` e `tools` do request (literais) — referente ausente do formato de log; não há como
+   medi-los a partir deste corpus (ver achado de método acima).
+
+**Nota fora do escopo do par nomeado, sem ação aqui:** o corpus inteiro mostra `deferred_tools_delta`
+variando entre 17/18/25 nomes conforme o grupo de `cache_read` (ex.: 17 nomes — sem `TodoWrite` —
+nos grupos 29.946/31.429/33.237/33.238/34.091/36.737/38.671/42.702/44.340, incluindo o terceiro
+regime da `TK-54` de 2026-09-18). O mecanismo de *deferred tools* correlaciona com variação de
+`cache_read` **em outros pares** do corpus — só não no par 18.084/26.695 que esta seção investiga.
+
+**Veredito: não identificada**, para o Δ de 8.611 tok entre `cache_read` 18.084 e 26.695. O
+candidato nomeado (*deferred tools*) está descartado por medida direta (byte-idêntico nos dois
+grupos); os demais atributos observáveis no primeiro request (harness version, listagem de
+agentes, listagem de skills, mensagens de hook, MCP servers conectados) também não separam o par.
+A fonte do Δ está fora do que o transcript expõe do lado do cliente — no `system`/`tools` reais da
+requisição, que este formato de log não persiste em nenhuma versão observada.
+
+**Resultado.** Gate PASS. Candidato nomeado descartado por medida direta (Δ explicado = 0 de
+8.611 tok exigidos). Cinco suspeitos adicionais descartados (harness version, agent listing, skill
+listing, hook messages, MCP servers — os dois últimos por ausência simétrica no par, não por
+medida de conteúdo). Fonte da bimodalidade: **não identificada** — o `system`/`tools` reais do
+request não são observáveis neste corpus, em nenhuma versão do formato de log examinada.
+
+## 17 Retomada do planejador por mensagem × invocação fria (2026-09-26, EBK-T13)
+
+Sonda `estrutura_t13c.py` (scratchpad, `%TEMP%\claude\`, adaptada da `sonda_p0747.py` — papel
+trocado por `pantonic-planner`, filtro por `P-0747`, soma por segmento). Corpus: os 2 agentes
+`pantonic-planner` do `P-0747` — `agent-a19e1fec74025c07a` e `agent-a332b22b3e70b5799`, sob
+`C:\Users\panta\.claude\projects\d--workspaces-PantonicApp\*\subagents\`.
+
+**Regra de enumeração de segmento (`DEB-11`), só por chaves.** Abre segmento a linha 0 (a
+invocação fria) e toda entrada `type=user` com `message.content` do tipo texto e
+`origin.kind == "coordinator"` (a retomada por mensagem, gravada com `isMeta=true`). Entrada
+`isMeta=true` sem `origin` (linha injetada pelo harness na mesma invocação) não abre segmento;
+`promptId` não delimita segmento. Custo por segmento: soma de `input_tokens`, `output_tokens`,
+`cache_read_input_tokens` e `cache_creation_input_tokens` das mensagens `assistant` de
+`message.id` distinto, a $5 / $25 / $0,5 / $6,25 por milhão; intervalo em minutos desde o fim do
+segmento anterior. Nenhum texto de mensagem entrou na sonda — só chaves, contagens e datas.
+
+**Contagem:** 2 frias, 6 retomadas — nenhuma fria de custo zero.
+
+| agente | segmento | tipo | linha | msgs `assistant` | custo | gap (min) |
+|---|---|---|---|---|---|---|
+| `a19e1fec` | 0 | fria | 0 | 3 | $0,65 | — |
+| `a19e1fec` | 1 | retomada | 23 | 7 | $1,07 | 3,7 |
+| `a19e1fec` | 2 | retomada | 58 | 74 | $12,94 | 2,9 |
+| `a332b22b` | 0 | fria | 0 | 3 | $0,65 | — |
+| `a332b22b` | 1 | retomada | 28 | 5 | $0,86 | 4,0 |
+| `a332b22b` | 2 | retomada | 49 | 14 | $2,21 | 5,8 |
+| `a332b22b` | 3 | retomada | 145 | 9 | $1,17 | 4,7 |
+| `a332b22b` | 4 | retomada | 188 | 43 | $12,88 | 1,1 |
+
+**Agregado por grupo.** Frias: n=2, média $0,65, mínimo $0,65, máximo $0,65. Retomadas: n=6,
+média $5,19, mínimo $0,86, máximo $12,94; gaps entre 1,1 e 5,8 min.
+
+**Resultado.** A média das retomadas ($5,19) é maior que a média das invocações frias ($0,65) —
+o desfecho do passo 5 aplica o **Texto novo B** ao `GOVERNANCA.md`.
+
+**Decomposição do custo de retomada (2026-09-26, EBK-T13a).** A média por segmento soma o
+trabalho feito na rodada (3 mensagens nas frias, 5 a 74 nas retomadas), e a média por mensagem
+também não decide: ela inclui os tokens de saída, que são trabalho, e dá a fria a $0,22 e as
+retomadas de $0,13 a $0,30. O que difere entre as duas opções é o custo de partida. Base `b` =
+contexto da primeira mensagem da fria; carregado `c` = contexto da primeira mensagem da
+retomada menos `b`; `n` = mensagens `assistant` de `message.id` distinto. Partida da retomada =
+`c × (n × 0,5 + 5,75 se o cache expirou)` por milhão; partida da fria = `b × 5,75` por milhão
+mais a redescoberta, entre zero e `c × 6,25` por milhão (recriar todo o contexto carregado).
+
+| agente | segmento | n | carregado | cache expirou | partida da retomada | partida da fria (mín–máx) | vence |
+|---|---|---|---|---|---|---|---|
+| `a19e1fec` | 1 | 7 | 18 668 | não | $0,07 | $0,19–$0,31 | retomada |
+| `a19e1fec` | 2 | 74 | 48 125 | não | $1,78 | $0,19–$0,49 | fria |
+| `a332b22b` | 1 | 5 | 32 168 | não | $0,08 | $0,19–$0,40 | retomada |
+| `a332b22b` | 2 | 14 | 56 587 | sim | $0,72 | $0,19–$0,55 | fria |
+| `a332b22b` | 3 | 9 | 121 526 | não | $0,55 | $0,19–$0,95 | indeterminado |
+| `a332b22b` | 4 | 43 | 144 261 | não | $3,10 | $0,19–$1,10 | fria |
+
+Soma: partida das retomadas $6,30; partida da fria de $1,16 a $3,80. A retomada vence as rodadas
+curtas (5 e 7 mensagens, $0,11 a $0,13 a menos cada, contra a fria mínima) e perde as longas
+($0,17 a $2,01 a mais cada, contra a fria máxima); no corpus, abrir fria custa menos mesmo
+supondo que ela recrie todo o contexto carregado. O **Texto novo B** fica, com a razão reescrita.

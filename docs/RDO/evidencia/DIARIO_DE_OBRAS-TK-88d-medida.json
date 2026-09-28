@@ -1,0 +1,29 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-88d",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T01:25:58+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_encerrar.py tests/test_rdo.py tests/test_backlog.py -q -k \"checar_close or checar_transicao or fechado_conta\"",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 202 deselected in 4.87s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/tools/encerrar.py').read_text(encoding='utf-8');print(t.count('tarefa já fechada'),t.count('não terminal(is)'))\"",
+      "exit": 0,
+      "saida": "0 0",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": "......................................... [ 48%]\n........................................................................ [ 65%]\n........................................................................ [ 81%]\n........................................................................ [ 97%]\n..........                                                               [100%]\n442 passed in 100.82s (0:01:40)",
+      "bate": true
+    }
+  ]
+}

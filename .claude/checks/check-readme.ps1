@@ -42,6 +42,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 
 if (-not $Root) {
     # .claude/checks/check-readme.ps1 -> .claude -> raiz do repo

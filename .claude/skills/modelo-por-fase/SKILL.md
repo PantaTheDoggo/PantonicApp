@@ -1,6 +1,6 @@
 ---
 name: modelo-por-fase
-description: Gatilho operacional da regra "modelo por fase" (GOVERNANCA.md §3) — classifica a fase do trabalho (intelectual/execução/varredura), confere o modelo ativo contra a tabela vinculante e para para pedir o /model correto ao dono. Usar no início de qualquer tarefa/subagente, ao trocar de fase no meio de uma sessão, ou quando o hook global de nudge (UserPromptSubmit) disparar o aviso.
+description: Gatilho operacional da regra "modelo por fase" (GOVERNANCA.md §3) — classifica a fase do trabalho (intelectual/execução/varredura), confere o modelo ativo contra a tabela vinculante; acima do exigido segue e anota a divergência, e só abaixo do exigido para para pedir o /model melhor ao dono. Usar no início de qualquer tarefa/subagente, ao trocar de fase no meio de uma sessão, ou quando o hook global de nudge (UserPromptSubmit) disparar o aviso.
 ---
 
 # modelo-por-fase — gatilho operacional do modelo por fase
@@ -21,8 +21,8 @@ si.
 | Fase | Modelo | Sinal típico |
 |---|---|---|
 | Intelectual (planejar/arquitetar/auditar/decidir/especificar) | Opus (Fable só sob pedido explícito do dono) | PRD, arquitetura, spec, decomposição, auditoria, parecer |
-| Execução (implementar/editar/testar/corrigir) | Sonnet | Uma tarefa atômica do diário de obras, TDD |
-| Varredura (search/grep/leitura ampla) | Haiku (ou subagente de coleta) | Levantar contexto antes de planejar/executar |
+| Execução (implementar/editar/testar/corrigir) | Sonnet | Um card do diário de obras — a materialização de uma operação do modelo —, TDD |
+| Varredura (search/grep/leitura ampla) | Opus, em subagente de coleta (`pantonic-scout` ou `context-scout`); leitura pontual, direto no modelo ativo | Levantar contexto antes de planejar/executar |
 
 ## Os três gatilhos
 
@@ -32,20 +32,26 @@ si.
    implementar. Repita o gate; não herde o modelo da fase anterior por inércia.
 3. **Nudge do hook global** — quando `modelo_por_fase_userpromptsubmit.py` emitir o aviso
    (`systemMessage` + `additionalContext`), esta skill é o procedimento que traduz o aviso em
-   ação (passo "Gate de parada" abaixo). O hook é heurística de palavra-chave sobre o prompt do
+   ação (passo "Gate de subida" abaixo). O hook é heurística de palavra-chave sobre o prompt do
    dono; esta skill cobre também os casos que o hook não vê (ex.: subagente sem hook rodando,
    troca de fase decidida pelo próprio agente sem novo prompt do dono).
 
-## Gate de parada
+## Gate de subida
 
-Se o modelo ativo **não bate** com a fase:
+Se o modelo ativo **não bate** com a fase (ordem: Haiku < Sonnet < Opus):
 
-- **Pare** — não prossiga a fase com o modelo errado (não decida sozinho, não assuma que "dessa
-  vez tanto faz").
-- **Peça** ao dono, de forma explícita, o comando `/model <opus|sonnet|haiku>` correspondente.
+- **Acima do indicado** (ex.: Opus numa fase de Sonnet): **não pare** e não peça `/model` ao
+  dono — siga no modelo ativo. O contexto principal só orquestra: o modelo de cada tarefa
+  delegada viaja no despacho (`model` do cabeçalho do card), e rebaixar a tela principal nunca
+  justifica interromper o trabalho. **Anote** a divergência em uma linha, no fim da resposta —
+  uma vez por fase, não a cada turno; no loop de execução a nota vai ao relatório de
+  encerramento (`scrum-master`, passo 1).
+- **Abaixo do indicado** (ex.: Sonnet numa fase de Opus): **pare** e peça ao dono, de forma
+  explícita, o `/model <opus|sonnet>` do modelo melhor — a única parada do gate. Não prossiga a
+  fase com o modelo mais fraco nem assuma que "dessa vez tanto faz".
 - Só o dono decide inverter a tabela para um agente de **execução** (custo caro em execução
-  exige OK explícito e registrado — `GOVERNANCA.md` §3, penúltimo bullet). Para as demais fases
-  não há inversão silenciosa possível: preferência genérica de memória não decide isso.
+  exige OK explícito e registrado — `GOVERNANCA.md` §3, penúltimo bullet); a inversão se
+  materializa no `model` do despacho, nunca numa parada do contexto principal.
 - Se o modelo já bate com a fase, siga sem ruído — o gate não é anúncio a cada turno.
 
 ## Convenção de anúncio (Regra 5, `.claude/global/CLAUDE.md`)

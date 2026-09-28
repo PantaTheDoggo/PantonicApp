@@ -1,0 +1,43 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-87a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T23:17:35+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import subprocess,sys;o=subprocess.run([sys.executable,'.claude/tools/backlog.py','show','EBK-T14'],capture_output=True,text=True,encoding='utf-8').stdout;print(sum(1 for l in o.splitlines() if l.startswith('## ')))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python .claude/tools/backlog.py check",
+      "exit": 0,
+      "saida": "check: OK — nenhuma violação.",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest tests/test_backlog.py -q -k scan_items_corta_no_nivel_2",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 114 deselected in 0.60s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest tests/test_backlog.py -q",
+      "exit": 0,
+      "saida": "........................................................................ [ 62%]\n...........................................                              [100%]\n115 passed in 3.22s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 33%]\n........................................................................ [ 50%]\n........................................................................ [ 67%]\n........................................................................ [ 83%]\n.....................................................................    [100%]\n429 passed in 42.43s",
+      "bate": true
+    }
+  ]
+}

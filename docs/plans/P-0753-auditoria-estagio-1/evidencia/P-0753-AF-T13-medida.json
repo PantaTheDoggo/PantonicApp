@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T13",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T15:46:10+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/tools/encerrar.py operacoes --help",
+      "exit": 0,
+      "saida": "rogresso.txt).\n  --rdo-dir RDO_DIR     Diretório dos RDO (default: docs/RDO ou a pasta do\n                        plano).\n  --telemetria TELEMETRIA\n                        Caminho do TSV (default: docs/telemetria.tsv).\n  --checar              Não escreve: confere a cobertura do esqueleto já\n                        gravado (todo card citado, toda seção com os quatro\n                        blocos).",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k \"esqueleto_de_operacoes\"",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 31 deselected in 0.10s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/entrega-de-encerramento/SKILL.md').read_text(encoding='utf-8');print(t.count('encerrar.py operacoes --plano'),t.count('citados = set(re.findall'))\"",
+      "exit": 0,
+      "saida": "2 0",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 44%]\n........................................................................ [ 59%]\n........................................................................ [ 73%]\n........................................................................ [ 88%]\n.......................................................                  [100%]\n487 passed in 45.26s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

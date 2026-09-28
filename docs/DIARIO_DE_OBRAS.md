@@ -1,12 +1,78 @@
 # Diário de Obras — PantonicApp (hub de governança Pantonic*)
+**Diretiva do dono (2026-09-26, vigente até o fechamento da auditoria final):** *"Execute em loop as tarefas abertas."* (1) O objetivo é **esgotar os tíquetes e planos abertos hoje**, para desbloquear o plano de auditoria final; (2) **nenhum card nem tíquete novo por ajuste**: achado novo vira `AE-<n>` com rota "auditoria final"; (3) tíquete ou card que o dono não abriu **fecha pelo condutor**, sem pedir o veredito do dono.
 
-**Diretiva de priorização:** sem alvo fixo — a priorização volta a ser do agente (default), porque o alvo fixado foi entregue. O `P-0743` foi **aceito pelo dono em 2026-09-21**, fechou `done` 18/18, e a entrega validada está em `docs/Entregas Aceitas/Entregas - P-0743.md` — o as-is saiu de `docs/OPERACOES_AS_IS.md`, que volta a ficar livre para o próximo plano a produzir um. Fila viva: `TK-54`, `P-0741` (`MC-T5` em `review`), `TK-65`, `TK-66`, `TK-55`, `TK-67`, `TK-68`; o `P-0744` foi a `superseded` em 2026-09-21, substituído pelo `P-0745`, que nasce `blocked` aguardando o `go` do dono no Marco 1 e por isso não é elegível. Oito pendências do `P-0743` estão listadas na entrega aceita, três delas com efeito fora daquele plano.
+**Diretiva de priorização:** o plano de auditoria final é o próximo, em contexto novo: ainda não existe, e a sessão de planejamento o escreve herdando os `AE-<n>` com rota "auditoria final" — o `AE-95` do `P-0742` (mecanizar as ações mecânicas do `scrum-master` sem tirá-lo do loop) e, do `P-0753`, a classe "card publicado com contingência ou valor não ensaiado", as notas de redação de card e a verificação "impedimento de papel é configuração do kit?" do `RP-1`. Fora da fila, atos do dono: a projeção da camada global em `~/.claude` (`materializar.py apply`), que leva o batedor em Opus à máquina.
+
+**`P-0753` — FECHADO `done` 21/21 em 2026-09-28, pelo aceite do dono** (*"Conclua o que estiver pendente, e me entregue o plano concluído"*). Entrega: `docs/plans/P-0753-auditoria-estagio-1/entrega.md` · validação: `docs/plans/P-0753-auditoria-estagio-1/operacoes.md`.
+
+**`P-0742` — CANCELADO `cancelled` 0/8 em 2026-09-27, no-go do dono no Marco 1.** O loop não sai do LLM: o `scrum-master` fica no loop. A mecanização das ações mecânicas dele e a otimização das rotinas vão à auditoria final:
+- **AE-95** (`P-0742`, Marco 1, 2026-09-27) — matéria de avaliação herdada do `P-0742` cancelado: o `scrum-master` **continua** no loop, porque a orquestração de vários agentes ainda pede julgamento em casos não padronizados; o que se avalia é **mecanizar as ações mecânicas** do `scrum-master` (os passos que já são materialização por instrumento — apurar a fila, capturar o `<ref>`, coletar a evidência, gravar telemetria, fechar a tarefa) e **otimizar as rotinas dele**, sem tirar o agente do loop. Insumos: o problema medido na `## 0` do `P-0742` (orquestrar uma tarefa custa $2–6, 7–13 turnos do orquestrador por despacho) e os fatos `F-*` e o roteamento da `## 12` de `docs/plans/P-0742-loop-fora-do-llm.md`. Veredito do dono, verbatim: *"Eu não concordo em tirar o agente scrum-master do loop, acho que é necessário algum nível de julgamento no processo, pois a orquestração de multiplos agentes eventualmente requer tratar diversos casos  não padronizados ainda. O que eu concordo é que pode existir potencial para ganhor mecanizado ações mecânicas do scrum-master ou otimizar as rotinas dele. Mas essas tarefas podem ser herdadas no plano de auditoria. Deixe registrado na spec do plano de auditoria essa matéria de avaliação, e encerre este plano"* **Rota:** auditoria final — entra na spec do plano de auditoria final como item de avaliação.
+
+**`P-0752` — FECHADO `done` 17/17 em 2026-09-27, pelo aceite do dono** (*"Marcar como concluído o que estiver esperando validação."*). Entrega: `docs/plans/_ENTREGA-P-0752.md` · validação: `docs/OPERACOES_AS_IS_P-0752.md`.
+
+**`P-0751` — FECHADO `done` 16/16 em 2026-09-26, pelo aceite do dono** (*"Rode o revisor, considere o veredito do 0751 aceito e encerre."*). Entrega: `docs/plans/_ENTREGA-P-0751.md` · validação: `docs/OPERACOES_AS_IS_P-0751.md`.
+
+**`P-0750` — FECHADO `done` 6/6 em 2026-09-25, pelo aceite do dono** (*"continue executando as tarefas em aberto. O desejo é esgotar o backlog para priorizar os testes em projetos reais. No que depender de aceite, considerar aceito."*). Regra da mensagem legível ao dono em `GOVERNANCA.md` §4.2 com eco na Regra 9 de `.claude/global/CLAUDE.md`, glossário das famílias de sigla no `README.md`, `docs/FALHAS_COMUNICACAO.tsv` com as 3 falhas medidas, skill `mensagem-ao-dono`, e os textos que mandavam citar sigla ao dono passam a mandar o título. 6 aprovados 100%, 9 achados (`AE-1`..`AE-9`), todos com rota. Modelo versão 1 vigente, `modelo check` 0. Documento de validação: `docs/OPERACOES_AS_IS_P-0750.md`. Pendência com efeito fora do repositório: o `apply` do regulamento global em `~/.claude/` (ato do dono, `TK-68`). **Nada commitado.**
+
+**`P-0749` — FECHADO `done` 10/10 em 2026-09-25, pelo aceite do dono** (*"conclua o plano atual 749 e inicie o 750 nesta mesma janela logo em sequencia"*), com o veredito sobre as trocas `M1`..`M6` do `README.md` incluso. 7 achados (`AE-1`..`AE-7`), todos com rota. Modelo na versão 1 vigente, `modelo check` 0. Documento de validação: `docs/OPERACOES_AS_IS_P-0749.md`. **Nada commitado.** O instrumento recusa `ready → done` para plano (tabela de §2.7 do `backlog.py`); o fechamento foi escrito à mão, como nos planos anteriores.
+
+**`P-0746` e `P-0741` — FECHADOS em 2026-09-24, pelo aceite do dono** (*"Aceite os planos, revise os tiquetes para ver quais são pertinentes ainda para enfileira-los na sequencia"*). `P-0746` `done` 7/7: Marcos 2 e 3 fechados, modelo promovido à **versão 4 vigente** (a 3 obsoleta, bloco `## 1A` retirado), documento de validação `docs/OPERACOES_AS_IS_P-0746.md`; a pendência `AE-18` (critério de ator inédito) **não** foi decidida no ato e segue no `TK-73` Pacote 2. `P-0741` `done` 8/8: `MC-T5` `review` → `done` com o veredito do Marco 2, RDO gerado. Revisão de pertinência dos 17 tíquetes `ready`: 3 fechados (`TK-69` absorvido pelo `P-0746`, `TK-48` caducou, `TK-80` absorvido pelo `TK-72`), 14 enfileirados na diretiva acima. Instrumentos: `backlog check` 0 · `modelo check` 0 no `P-0746`. **Nada commitado.**
+
+**`P-0748` — FECHADO `done` 17/17 em 2026-09-24, com o aceite do dono no Marco 3.** Veredito verbatim: *"Vamos aprovar esse plano e ver ele ocorrendo na prática."* e *"Aceite os planos, revise os tiquetes para ver quais são pertinentes ainda para enfileira-los na sequencia"*. O painel do gerente passa a ser gerado pelo gancho `.claude/tools/progresso_hook.py` a partir do evento de cada transição do loop, com o título da tarefa no lugar da sigla, em `.claude/estado/progresso.txt` (aberto por `Get-Content -Path .claude/estado/progresso.txt -Wait -Tail 30 -Encoding utf8`). Na primeira leitura do Marco 3 o dono aceitou a forma e recusou a confiabilidade (`DTG-42`); os corretivos `TLG-T3c`..`TLG-T3h` e `TLG-T5a` fecharam cada linha que se perdia ou afirmava o que não aconteceu. Modelo na **versão 4 vigente**. Instrumentos: `backlog check` 0 · `modelo check` 0 · `313 passed`. Documento de validação: `docs/OPERACOES_AS_IS_P-0748.md`. **Nada commitado.** Pendências com rota: `TK-79` (prosa depois da linha de retorno do executor), `TK-80` (régua de autoria: `AE-13` e `AE-1`), `TK-81` (propagação aos derivados), `TK-55` (ponteiro para `AE-4`/`AE-5`/`AE-11`), `AE-28` (registro, sem efeito funcional). **Próxima janela: a diretiva acima, em contexto novo.**
+
+**`P-0747` — FECHADO `done` 19/19 em 2026-09-23, com `go` do dono no marco de fechamento.** Veredito verbatim: *"pode fechar esse plano, irei iniciar um plano novo na próxima janela"*. O consultor virou papel de doutrina (linha *Consultoria* da matriz de `GOVERNANCA.md` §3), triagem de toda parada de executor, forma efêmera com cenário persistido **adotada** no piloto ($2,8 equivalente-Opus por acionamento contra $3,7 da prontidão; amostras em Fable, declarado na spec §11). 8 cards de autoria e 11 corretivos, 18 aprovados 100% e `CON-T8` com ressalva 93; zero reprovações e zero perguntas ao dono na execução. Modelo em **versão 2 vigente**, promovida no fechamento (inclui a recusa de impedimento improcedente, `DCS-35`). Instrumentos: `backlog check` 0 · `modelo check` 0 · `277 passed` · frontmatters YAML ok. Documento de validação: `docs/OPERACOES_AS_IS_P-0747.md` — **cobre 17 das 19 tarefas**: as seções de `CON-T2b`/`CON-T3d` e a nova validação do consultor sobre a v2 emendada foram dispensadas pelo fechamento. **Nada commitado** (commit é ato do dono, `DCS-16`). Pendências herdadas, com rota: `AE-24` (passo 8 sem saída para o redespacho), `AE-17`/`AE-18`/`AE-23` (redação), `TK-72`, `TK-77`, `TK-66`, `TK-55`, e a cópia do dono em `~/.claude/CLAUDE.md` com a Regra 8 antiga. Nesta janela também fechou o `TK-76`. **Próxima janela: plano novo, por decisão do dono.**
+
+**`P-0745` — FECHADO `done` 10/10 em 2026-09-22, com `go` do dono no Marco 3.** Veredito verbatim:
+*"Pode concluir o plano"*. Documento de validação: `docs/OPERACOES_AS_IS_P-0745.md` (563 linhas,
+cobertura 10/10 conferida por comando). O plano nasceu com 7 cards e ganhou **3 corretivos**
+(`PLN-T4a`, `PLN-T5a`, `PLN-T7a`), somados às operações que reparam. Vereditos: 7 × `aprovado` 100%,
+3 × `ressalva` (88%, 94%, 83%), **dimensão bloqueante em nenhum**. Modelo em **versão 4 vigente**
+(`go` do Marco 2 no mesmo dia), `estágio atual: concluído`. Estado dos instrumentos no fechamento:
+`backlog.py check` exit 0 · `modelo.py check` exit 0 · `277 passed`. Os **26 achados** (`AE-1`..`AE-26`)
+estão triados, todos com `**Rota:**` explícita.
+
+**O QUE A PRÓXIMA JANELA PRECISA SABER — planejamento do consultor (decisão do dono, 2026-09-22).**
+
+1. **As diretivas do dono já estão gravadas** em `docs/consultant-spec.md` §3, subseção *Ato do dono
+   de 2026-09-22*: `DC-1` (questão não correlata ao modelo é tática, e tática é do consultor, não
+   sobe ao dono) · `DC-2` (a guarda é o drift do modelo; havendo drift, para e pede decisão do dono)
+   · `DC-3` (decisão técnica ou tática do consultor não passa por validação do dono) · `DC-4` (o
+   consultor é o ponto de triagem de **toda** parada de executor, e decide entre model designer,
+   planejador ou resolver). A §2, classe 1 de gatilho, foi estendida aos três motivos.
+2. **`TK-75` NÃO se abre — a matéria virou o `P-0747`** (`docs/plans/P-0747-consultor-de-plano.md`,
+   `DCS-1`), registrado em 2026-09-22 pelo `pantonic-planner` sob o protocolo novo (SAÍDA 3 +
+   autoria do `pantonic-model-designer`, três dossiês antes do primeiro card): 8 cards `CON-T1`..
+   `CON-T8`, um por operação, `modelo.py check` e `backlog.py check` exit 0, **`blocked` até o `go`
+   do dono no Marco 1** sobre a versão 1 do modelo. Linha no `_INBOX.md` por drenar. O veredito da
+   sessão sobre os procedimentos do `P-0743`/`P-0745`/`P-0746`, com o custo medido, está em
+   `docs/plans/_VEREDITO-procedimentos-2026-09-22.md`. O registro original da lacuna segue: três
+   residências do kit **contradizem** a spec do consultor e não foram tocadas de propósito, por
+   decisão do dono de fechar o `P-0745` antes: **(a)** `.claude/skills/scrum-master/SKILL.md` —
+   regras `A3a`/`A3b`/`A3c` do bloco A, o passo 8 e a lista *O que obriga parada*, que roteiam a
+   parada de executor **em volta** do consultor; **(b)** `GOVERNANCA.md` §3 (matriz de
+   responsabilidades) e §7 (`G-REPLAN` item 17, `G-NOASK` item 18); **(c)**
+   `.claude/agents/pantonic-consultant.md`, conduta e estatuto. **Regra de precedência vigente,
+   fixada pelo dono e escrita na spec:** enquanto o bloco A não for reescrito, **a spec prevalece**.
+   Causa medida da lacuna: o bloco A tem fonte no `P-0734`, que abriu em 2026-08-08; o consultor foi
+   criado em 2026-09-18, e a palavra *consultor* **não ocorre nenhuma vez** naquele plano.
+3. **Insumo medido para esse planejamento, colhido nesta janela:** o consultor foi acionado **sete
+   vezes** e resolveu **todas** como tática, sem escalar nada ao dono — incluindo criar três cards
+   corretivos e devolver três dossiês `Ato de modelo` de lastro. Duas paradas idênticas de executor
+   tiveram desfechos opostos: a `PLN-T2` (manhã, antes da `DC-4`) encerrou a janela e chegou ao dono
+   como três opções táticas; a `PLN-T5` (tarde, sob a `DC-4`) foi triada, reparada e devolvida ao
+   loop sem round-trip. Custo em `docs/telemetria.tsv`, linhas `*-consultor-*` de 2026-09-22.
+4. **Pendências herdadas, com texto pronto:** `TK-72` recebe **quatro** emendas à régua de autoria de
+   card, todas redigidas verbatim nos achados do `P-0745` (`AE-16` de quem é o número; `AE-17` que
+   pergunta o comando responde; `AE-24` varredura pelo conceito aposentado; `AE-25` guarda de
+   invariante afere contagem, não pertinência) — custo de redação zero. `TK-66`/`TK-74` recebem as
+   facetas de instrumento (`AE-3`, `AE-9`, `AE-11`, `AE-18`, `AE-21`, `AE-23`). `TK-68` ganha um
+   segundo caso: a cópia global do dono está correta e **sem guarda executável**.
+5. **Estado da árvore:** nada commitado. Convivem o WIP do `P-0746` (7/7, **sem fechamento**) e as
+   dez entregas do `P-0745`. Enquanto não commitar, `review_evidence.py --desde <ref>` não isola a
+   entrega e toda revisão exige aviso à mão mais reconciliação por hunk e mtime.
+
 <!-- fila:gerada -->
-**Fila corrente:** `TK-54` — Extrato do custo de abertura de uma janela principal (`docs/DIARIO_DE_OBRAS.md:1286-1770`) · fila: — · ready 15 · blocked 0 · in-progress 0
-- `TK-54` (`ready`, 1/2): próxima `TK-54b`
-- `P-0741` (`ready`, 7/8): próxima —
-- `TK-65` (`ready`, 0/3): próxima `TK-65a`
-- `P-0744` (`blocked`, 0/3): próxima —
+**Fila corrente:** nada delegável — 0 elegível(is) · blocked 0
 <!-- /fila:gerada -->
 
 > **⏹ Os quatro blocos de diretiva abaixo são HISTÓRICO — o `P-0743` fechou `done` 18/18 e foi
@@ -175,7 +241,7 @@ da resposta.
 | P-0734-EXA | Execução autônoma — o backlog deixa de custar um round-trip humano por tarefa: papel de orquestração (skill `scrum-master`), papel de revisão (agente `pantonic-reviewer`) e documental gerado por… | superseded *(rebase de classificação (B) pelo `P-0737` em 2026-08-22 — as 52 entregues ficam como registro, as 8 abertas são absorvidas uma a uma e a `T16` é cancelada por absorção no plano recomendado do piloto; mapa em `docs/plans/P-0737-loop-autonomo.md` §4. Histórico: destravado em 2026-08-19 pelo fechamento do `P-0735`; retomado pela `T14`, que fechou no mesmo dia em **ramo B** — o `SubagentStop` expõe o consumo do subagente, mas não a identidade da tarefa, e o terceiro ramo — um contrato que a carregue até o hook — subiu ao dono como decisão; a `T15` fechou o enxugamento dos prompts com −1 linha líquida, medindo que o texto de formato coberto por instrumento já não vivia nos prompts declarados; a `T55` fechou a automação da série — o `scrum-master` grava a tarefa corrente e o hook de `SubagentStop` apende a linha sem gastar turno, com dedupe por `message.id` achado na calibração obrigatória; denominador 60 → 61 pela `DP-S`; 52/61)* | docs/DIARIO_HISTORICO.md#p-0734--execução-autônoma |
 | P-0735-RPC | Residência e ponto de carga — o pacote materializa o que a doutrina invoca: a régua de residência deixa de responder *onde mora* com uma resposta só e separa **autoridade** de **ponto de carga** em… | done | docs/DIARIO_HISTORICO.md#p-0735--residência-e-ponto-de-carga |
 | P-0736-CPK | Custo do pickup — mede por fonte o que uma retomada ingere, ranqueia e lista rotas candidatas; termina antes da decisão da rota (nível 2). 5 tarefas `CPK-T1..T5`, 3 executadas; `T4`/`T5`… | done | docs/DIARIO_HISTORICO.md#p-0736--custo-do-pickup |
-| P-0737-AUT | Loop autônomo — o plano que consolida a `EXECUCAO-AUTONOMA`: 10 tarefas (`AUT-T1..T10`), decisões `DU-1..DU-13`, absorve as 8 tarefas abertas do `P-0734` e 11 tíquetes, poda 10 e encaminha 2;… | superseded *(sucedido pelo `P-0740-loop-de-modulos` em 2026-09-18, `DM-1` — a condição do bloqueio (`P-0738` fechar) foi satisfeita e a razão de fundo (custo fixo de contexto) caiu com a correção do denominador de janela para 1M; as 7 tarefas abertas foram absorvidas e reagrupadas em módulos)* | docs/DIARIO_DE_OBRAS.md#p-0737--loop-autônomo |
+| P-0737-AUT | Loop autônomo — o plano que consolida a `EXECUCAO-AUTONOMA`: 10 tarefas (`AUT-T1..T10`), decisões `DU-1..DU-13`, absorve as 8 tarefas abertas do `P-0734` e 11 tíquetes, poda 10 e encaminha 2;… | superseded *(sucedido pelo `P-0740-loop-de-modulos` em 2026-09-18, `DM-1` — a condição do bloqueio (`P-0738` fechar) foi satisfeita e a razão de fundo (custo fixo de contexto) caiu com a correção do denominador de janela para 1M; as 7 tarefas abertas foram absorvidas e reagrupadas em módulos, e **entregues** — o `P-0740` fechou `done 35/35`, com o piloto do §8(a) cumprido na `LM-T6` e **veredito do dono APROVADO** em 2026-09-19. Condensado para o histórico em 2026-09-21)* | docs/DIARIO_HISTORICO.md#p-0737--loop-autônomo |
 | P-0738-CTX | Contexto esgotado na partida — medir por que uma janela nasce cara e parar de repagar o custo fixo; Estágio C autorado pela charneira em 7 cards; `CTX-T10` mediu **regressão** (DX-5 subiu 34%, não caiu); 17/17 | done | `docs/plans/P-0738-contexto-esgotado.md` |
 | P-0739-BKL | O pickup vira instrumento — `backlog.py` (`next`/`status`/`drain`/`check`), gramática legível por máquina e hook `UserPromptSubmit`; 16 tarefas (`BKL-T1`..`T9` + `T2a`..`T2e` + `T3a` + `T3b`). **11 fechadas:** `T1`, `T2`, `T2a`..`T2e`, `T3`, `T3a`, `T3b` e `T4` — a `BKL-T4` fechou `done` em 2026-09-18 com ressalva 85%, bloqueante `nenhuma`, ressalva roteada como `AE-10`. Rodadas `RP-1`..`RP-7` fechadas. **DESESTACIONADO em 2026-09-19**: a condição do dono (*não volta à fila enquanto o `P-0740` não encerrar*) foi **satisfeita** — o `P-0740` fechou em `35/35`, marco 3 commitado em `13ce6a3` —, e o plano é a **próxima janela**, sob a *Diretiva de execução do `P-0739`* (dono, 2026-09-19). O `DM-9` caduca com o encerramento do `P-0740`. **Primeiro ato da retomada: transcrever `BKL-T10`..`BKL-T12`**, cuja partição e mapa de herança já estão decididos pela `LM-T5a` do `P-0740` (`AE-63`, `AE-65`, `AE-67`) — o executor transcreve, não re-decide. As 5 tarefas restantes (`T5`..`T9`) **não** voltam uma a uma — a `LM-T5` as reagrupa em módulos coesos e o plano fecha em rodada única na `LM-T6`. O `AE-10` não abre rodada própria (absorvido pela `LM-T5`); o `AE-9` foi resolvido pelo dono em 2026-09-18 (seguir sem `RP-8`). | done 18/18 | docs/plans/P-0739-backlog-instrumento.md |
 | P-0740-LM | O loop de módulos — a convergência da `EXECUCAO-AUTONOMA` sob a janela real de 1M: sucede o `P-0737` (`DM-1`), troca a tarefa atômica pelo **módulo coeso** (`DM-2`..`DM-5`) e corrige os seis defeitos medidos no run de aferição do `scrum-master` sobre a `BKL-T4`. **35 tarefas, 35 fechadas** (a `LM-T2e` nasceu no `ESC-9` desta janela; `LM-T4b`, `LM-T2f` e `LM-T3b` no `ESC-12`), decisões `DM-1`..`DM-50`. Marco 1 **commitado em `6eebccd`** (2026-09-19, oito entregas + `BKL-T4`, suíte 165 verde); recorte de evidência passa a `--desde 6eebccd`. Rodadas `RP-1`..`RP-5` e escalonamentos `ESC-1`..`ESC-26` fechados — os oito últimos pelo `pantonic-consultant`, figura ad-hoc instanciada uma vez e acionada em 9 passagens sem reler o plano. Atos do dono de 2026-09-19 (`DM-27`..`DM-30`): permissão de `.claude/agents/` concedida (`LM-T8` sai de `blocked`), técnica não projetada se executa ad-hoc com a lição registrada em `## 9` (`I-1`..`I-8`), card novo `LM-T9` (`consultant-spec`) como penúltima, e o critério de admissão de matéria nova passa a ser **coesão, não custo**. Fila: `LM-T6` (medida publicada, aguarda veredito do dono) → `LM-T9`, com `LM-T4c`, `LM-T5d`, `LM-T5a` fora do caminho crítico e `LM-T8` `blocked` por permissão (`AE-42`). | done 35/35 | docs/plans/P-0740-loop-de-modulos.md |
@@ -187,12 +253,12 @@ da resposta.
 | P-0725-HU | Hub único: PantonicApp canônico, PantonicVideo como prova | done | `docs/plans/P-0725-governanca-hub-unico.md` |
 | TK-23 | A variante (b) do proxy de ocupação de contexto — contador de tarefas por janela calibrado pela série de `docs/telemetria.tsv` — não foi medida pela `EXA-T1` (orçamento esgotado). A variante (a),… | cancelled *(achado da `EXA-T1`)* *(encaminhado ao plano de contexto recomendado pelo P-0737 §8; **absorvido pelo P-0738 em 2026-08-22**, §4 — mede na CTX-T3, rota na CTX-T4)* | docs/DIARIO_DE_OBRAS.md#tk-23--a-variante-b-do-proxy-de-ocupação-de-contexto |
 | TK-32 | **Uso e teto: medida agregada ou porteiro de tarefa.** O teto por tarefa vem sendo cruzado com regularidade sem produzir a consequência que a doutrina prescreve — `EXA-T31` consumiu os 15 do teto… | cancelled — a parte interina foi **absorvida pela `DP-Q` em 2026-08-13** e deixou de ser interina: teto numérico não governa fluxo em lugar nenhum do framework, e custo/consumo são informação de agregado, com residência do qualitativo no card "Lições aprendidas na tarefa" do laudo (materializado pelo bloco `EXA-T49`..`T52`). O restante da matéria segue para plano próprio (`T17` item 4), com a `EXA-T34` cancelada por absorção *(achado do fechamento da `EXA-T31`)* *(encaminhado ao plano de contexto recomendado pelo P-0737 §8; **absorvido pelo P-0738 em 2026-08-22**, §4 — mede na CTX-T3, rota na CTX-T4)* | docs/DIARIO_DE_OBRAS.md#tk-32--uso-e-teto-medida-agregada-ou-porteiro-de-tarefa |
-| TK-38 | **Comunicação entre agente e humano — skill própria e requisitos mínimos.** Aberto por decisão do dono em 2026-08-13. O framework nomeia objetos de projeto por prefixo abreviado (`DP-`, `DR-`,… | ready | docs/DIARIO_DE_OBRAS.md#tk-38--comunicação-entre-agente-e-humano--skill-própria-e-requisitos-mínimos |
-| TK-48 | `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**, sem ação intencional do dono, entre a `RPC-T4` e a escolha da `RPC-T5` — os 4 hooks registrados (premissa da `T5`) somem sem rastro. | ready | docs/DIARIO_DE_OBRAS.md#tk-48--~/claude/settingsjson-perdeu-a-chave-hooks-inteira-silenciosamente |
+| TK-38 | **Comunicação entre agente e humano — skill própria e requisitos mínimos.** Aberto por decisão do dono em 2026-08-13. O framework nomeia objetos de projeto por prefixo abreviado (`DP-`, `DR-`,… | cancelled | docs/DIARIO_DE_OBRAS.md#tk-38--comunicação-entre-agente-e-humano--skill-própria-e-requisitos-mínimos |
+| TK-48 | `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**, sem ação intencional do dono, entre a `RPC-T4` e a escolha da `RPC-T5` — os 4 hooks registrados (premissa da `T5`) somem sem rastro. | cancelled | docs/DIARIO_DE_OBRAS.md#tk-48--~/claude/settingsjson-perdeu-a-chave-hooks-inteira-silenciosamente |
 | TK-53 | O que mudou no corte da `95db6421…` que desloca o custo opaco de abertura de janela para as 6 janelas pós-corte inteiras (mediana 46.070 vs. 34.347 do grupo `antes`) — decisão do dono em 2026-08-24 sobre o achado do `TK-51`, causa ainda não investigada. Bloqueia `P-0737`. | done *(**desfecho negativo, decisão do dono em 2026-08-31** — a `TK-53a` mediu que não há degrau no corte: os dois regimes (`cache_read` 18.084 e 26.695) coexistem **antes e depois** dele, então a causa procurada não existe. `TK-53b` **cancelada por absorção** (seu insumo único, o bracket temporal, perdeu o objeto). A pergunta viva migrou para `TK-54`: não *o que mudou*, mas *do que o custo é feito*)* | docs/DIARIO_DE_OBRAS.md#tk-53--causa-do-deslocamento-de-custo-nas-janelas-pós-corte |
-| TK-54 | **Extrato do custo de abertura de uma janela principal.** O 1º `usage` decompõe-se em uma linha por fonte carregada, com tamanho medido, origem (nossa ou do harness) e classificação em *válido / necessário / dispensável / economizável* — o detalhamento sem o qual o dono não decide corte nenhum. Substitui o objetivo morto da `TK-53`. Bloqueia `P-0737`. | ready | docs/DIARIO_DE_OBRAS.md#tk-54--extrato-do-custo-de-abertura-de-uma-janela-principal |
-| TK-55 | **Confiabilidade de agente e de instrumento.** Acumulador dos casos em que um **derivado** (comando de aceite, piso de regressão, linha de telemetria, achado de lint, linha de índice) erra sem sinal porque nada o confronta com a fonte — `AE-19`, `AE-18`, `AE-3`, `AE-1` e a projeção de índice desatualizada por um dia inteiro em 2026-09-19. Não é erro de execução de tarefa: a janela que os produziu fechou oito tarefas com zero reprovações. | ready | docs/DIARIO_DE_OBRAS.md#tk-55--confiabilidade-de-agente-e-de-instrumento |
-| P-0741-MC | O modelo conceitual do plano: a interface entre o dono e o loop | ready 7/8 | docs/plans/P-0741-modelo-conceitual.md |
+| TK-54 | **Extrato do custo de abertura de uma janela principal.** O 1º `usage` decompõe-se em uma linha por fonte carregada, com tamanho medido, origem (nossa ou do harness) e classificação em *válido / necessário / dispensável / economizável* — o detalhamento sem o qual o dono não decide corte nenhum. Substitui o objetivo morto da `TK-53`. Bloqueia `P-0737`. | cancelled 2/2 | docs/DIARIO_DE_OBRAS.md#tk-54--extrato-do-custo-de-abertura-de-uma-janela-principal |
+| TK-55 | **Confiabilidade de agente e de instrumento.** Acumulador dos casos em que um **derivado** (comando de aceite, piso de regressão, linha de telemetria, achado de lint, linha de índice) erra sem sinal porque nada o confronta com a fonte — `AE-19`, `AE-18`, `AE-3`, `AE-1` e a projeção de índice desatualizada por um dia inteiro em 2026-09-19. Não é erro de execução de tarefa: a janela que os produziu fechou oito tarefas com zero reprovações. | cancelled | docs/DIARIO_DE_OBRAS.md#tk-55--confiabilidade-de-agente-e-de-instrumento |
+| P-0741-MC | O modelo conceitual do plano: a interface entre o dono e o loop | done 8/8 | docs/plans/P-0741-modelo-conceitual.md |
 | TK-56 | **Propagar o reparo de codificação de `stdin` aos três pontos de carga restantes.** `ocupacao.py:141`, `telemetria_hook.py:213` e `modelo_por_fase_userpromptsubmit.py:101` leem `sys.stdin.read()` e decodificam na codificação do host; em Windows sem `PYTHONUTF8` isso é `cp1252`. O terceiro é **global** e roda a cada prompt em todos os projetos — vem degradando em silêncio para prompt acentuado. Regra de reparo pronta na `DB-53` do `P-0739`. Depende do `TK-57`. | done 2/2 | `docs/DIARIO_DE_OBRAS.md` › `## TK-56` |
 | TK-57 | **Fixar o ambiente no teste por subprocesso do hook.** `test_tf_hook_executavel_*` em `tests/test_backlog.py` herda o ambiente do `pytest`: em host com `PYTHONUTF8=1` passa com ou sem o reparo, deixando de discriminar. Aplicar as três cláusulas da `DB-53` — roda o processo, fixa `env=` explícito, afirma a invariância entre os dois mundos. **Pré-requisito do `TK-56`.** | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-57` |
 | TK-58 | **Fechar a metade `usage_1` da medida de pickup.** O método `DC-4` tem duas metades; a de caracteres está publicada (26.760, −65,5%), e a do primeiro `usage` de uma sessão nova ficou **declarada sem valor** na `## 14` de `docs/CUSTO_DO_PICKUP.md` por não ser observável de dentro de um subagente. Exige abrir uma janela principal nova e ler o primeiro `usage`. | done 4/4 | `docs/DIARIO_DE_OBRAS.md` › `## TK-58` |
@@ -202,162 +268,49 @@ da resposta.
 | TK-62 | **A gramática de ID de `rdo.py` não reconhece subtarefa de tíquete.** `_ID_HEADER_RE` e `_HEADER_BRACKET_RE` exigem `T` seguido de dígitos; `TK-<n><letra>` nunca casa. Bloqueia o dossiê de evidência e o `rdo.py close` de **toda** subtarefa de tíquete. A `DB-17` justificou a forma com *“já leem essa forma”* — cláusula falsa, nunca verificada. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-62` |
 | TK-63 | **O mundo hostil dos testes de executável é herdado do host, não construído.** Os dois sítios que discriminam hoje o fazem por acidente de plataforma: o mundo “sem `PYTHONUTF8`” só é hostil porque este host é Windows-cp1252. Medido: `PYTHONIOENCODING` prevalece sobre `PYTHONUTF8`, e é ele que constrói o mundo hostil portátil. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-63` |
 | TK-64 | **O `check-drift` está vermelho por linha de skill que nenhuma tarefa aberta possui.** `.claude/README.md` não tem a linha da skill `entrega-de-encerramento`, entrega do `TK-51a` (fechado). O vermelho chega sem dono a toda revisão desta janela e já obrigou três reconciliações manuais. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-64` |
-| TK-65 | **Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`.** O `check` aprova plano estruturalmente inselecionável (`Depende de:` com id que não é item); o `--help` e todo erro de argparse morrem com `UnicodeEncodeError` em console cp1252; o verbo `diretiva` descarta em silêncio os ids escritos depois do travessão. | ready 0/3 | `docs/DIARIO_DE_OBRAS.md` › `## TK-65` |
-| TK-66 | **O atribuidor de `review_evidence.py` fabrica autoria com tarefa nunca despachada.** `--atribuir` casa caminho contra os `Arquivos-alvo` de **qualquer** tarefa do plano sem olhar o `status` dela: na janela do `P-0743` rotulou quatorze arquivos como `alvo-de-outra-tarefa (DOM-T3/T4/T5)` — tarefas em `ready`, que nada produziram —, quando eram entrega de uma janela paralela. No regime de commit por marco, é a atribuição que separa uma entrega da outra, e as duas revisões da janela tiveram de desmentir a evidência mecânica por injeção manual. | ready | `docs/DIARIO_DE_OBRAS.md` › `## TK-66` |
-| TK-67 | **A rodada de revisão de guardrails está pendente desde 2026-08-08.** `GOVERNANCA.md` §7.1 pendura a revisão no fechamento de cada plano; a última rodada registrada é a do `P-0731` (2026-08-08) e **sete** planos fecharam `done` depois dela (`P-0732`, `P-0735`, `P-0736`, `P-0738`, `P-0739`, `P-0740`, `P-0743`). §7 passou de 14 guardrails naquela rodada para **20** hoje. A skill `checar-versao-kit` reportou a pendência ao criar o `P-0745` em 2026-09-21; ela não executa a revisão — a revisão é tarefa nomeada, e é este tíquete. | ready | `docs/DIARIO_DE_OBRAS.md` § `## TK-67` |
-| TK-68 | **A cópia do kit das regras globais divergiu do arquivo que o dono carrega.** `.claude/global/CLAUDE.md` não tem os **Controles 1.1 e 1.2** da Regra 1 (28 linhas) que o `CLAUDE.md` global do dono carrega desde 2026-09-04, e `.claude/sync-kit.ps1` não projeta `.claude/global/` — as duas cópias se mantêm à mão e nada afere a diferença. Medido em 2026-09-21 na abertura do `P-0745`. | ready | `docs/DIARIO_DE_OBRAS.md` § `## TK-68` |
+| TK-65 | **Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`.** O `check` aprova plano estruturalmente inselecionável (`Depende de:` com id que não é item); o `--help` e todo erro de argparse morrem com `UnicodeEncodeError` em console cp1252; o verbo `diretiva` descarta em silêncio os ids escritos depois do travessão. | done 5/5 | `docs/DIARIO_DE_OBRAS.md` › `## TK-65` |
+| TK-66 | **O atribuidor de `review_evidence.py` fabrica autoria com tarefa nunca despachada.** `--atribuir` casa caminho contra os `Arquivos-alvo` de **qualquer** tarefa do plano sem olhar o `status` dela: na janela do `P-0743` rotulou quatorze arquivos como `alvo-de-outra-tarefa (DOM-T3/T4/T5)` — tarefas em `ready`, que nada produziram —, quando eram entrega de uma janela paralela. No regime de commit por marco, é a atribuição que separa uma entrega da outra, e as duas revisões da janela tiveram de desmentir a evidência mecânica por injeção manual. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-66` |
+| TK-67 | **A rodada de revisão de guardrails está pendente desde 2026-08-08.** `GOVERNANCA.md` §7.1 pendura a revisão no fechamento de cada plano; a última rodada registrada é a do `P-0731` (2026-08-08) e **sete** planos fecharam `done` depois dela (`P-0732`, `P-0735`, `P-0736`, `P-0738`, `P-0739`, `P-0740`, `P-0743`). §7 passou de 14 guardrails naquela rodada para **20** hoje. A skill `checar-versao-kit` reportou a pendência ao criar o `P-0745` em 2026-09-21; ela não executa a revisão — a revisão é tarefa nomeada, e é este tíquete. | cancelled | `docs/DIARIO_DE_OBRAS.md` § `## TK-67` |
+| TK-68 | **A cópia do kit das regras globais divergiu do arquivo que o dono carrega.** `.claude/global/CLAUDE.md` não tem os **Controles 1.1 e 1.2** da Regra 1 (28 linhas) que o `CLAUDE.md` global do dono carrega desde 2026-09-04, e `.claude/sync-kit.ps1` não projeta `.claude/global/` — as duas cópias se mantêm à mão e nada afere a diferença. Medido em 2026-09-21 na abertura do `P-0745`. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` § `## TK-68` |
+| TK-69 | **O lastro obrigatório do modelo conceitual, e o modelo como contrato bilateral.** Ato do dono em 2026-09-21, na validação **prática** do `P-0741`: todo objeto, operação e propriedade do modelo tem de ter lastro direto no enunciado do problema e no prompt de origem; elemento sem lastro é requisito secundário, executável mas **fora do modelo**, e de responsabilidade inteira do agente. Segunda doutrina no mesmo ato: o modelo só vigora validado pelo cliente/gerente — *"contrato onde só um dos atores estabelece as condições não é contrato, é imposição"* —, o que torna a autoria do modelo **etapa assistida** e abre exceção declarada ao loop desassistido. Seis classes de defeito tipificadas sobre o modelo do `P-0745` (exemplos, não avaliação exaustiva), mais a leitura correta do enunciado dele e o defeito de gate do Marco 1. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-69` |
+| TK-70 | **A vigência bilateral do modelo e a conduta de drift do loop.** Recorte do `P-0746` na versão 3 do modelo dele: ao aceitar o modelo, o dono apontou que a restrição de atualização *"foge um pouco do escopo de lastro"* — o trecho do enunciado que a sustentava é conversação, não pedido de trabalho — e que o conteúdo *"já deve estar abrangido por outra ferramenta"*. Dois pacotes, com os dossiês da ex-`LST-T2` e da ex-`LST-T4` preservados inteiros: a vigência bilateral do modelo em `GOVERNANCA.md` §3.2 (mais a correção do `TK-69` §2 pela `DLS-3`), e a conduta de drift do loop na skill `scrum-master` e em `GOVERNANCA.md` §4.5. **Antes de executar, confirmar a suposição do dono** — a medição de 2026-09-21 diz que nenhuma das duas está coberta hoje (`drift`: 0 ocorrências na skill; `só vigora`: 0 em `GOVERNANCA.md`); pacote já coberto fecha por obsolescência. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-70` |
+| TK-71 | **A `V2` e a tarefa que não materializa operação.** Recorte do `P-0746` em 2026-09-22 (`AE-15`, `DLS-18`): a `V2` do `check` acusa toda tarefa sem o campo `Operação do modelo`, e o modelo daquele plano pedia que ela reconhecesse a tarefa que **declara** não materializar operação por ser requisito não fundamental — mas a forma textual dessa declaração nunca foi publicada (`requisito não fundamental`: **0** ocorrências na skill `diario-de-obras` e **0** em `GOVERNANCA.md`, medido em 2026-09-22), e o enunciado do `P-0746` não a pede: ele fala de **elemento** sem lastro, que já reside na seção nomeada do plano. Dois pacotes, nesta ordem: **(1)** decidir se a categoria existe — uma tarefa pode entregar requisito secundário sem materializar operação? hoje nenhum plano vivo tem o caso, e a `LST-T0` que o teria foi dissolvida (`DLS-10`); pacote sem caso fecha por obsolescência; **(2)** se existir, publicar a forma do campo na gramática e só então ensinar a `V2` a reconhecê-la — gramática antes do parser, nunca o contrário (`F-17` do `P-0746`). | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-71` |
+| TK-72 | **A régua de autoria de card do kit.** Quatro achados medidos da janela do `P-0746`, todos sobre como se escreve um card para executor frio: aceite de card de `redacao` é recorte de literal e não contagem de palavra (`DLS-14` — a linha da `LST-T1` sairia verde com três menções decorativas); card que recebe rota de achado declara-a no próprio dossiê (`AE-11` — a `LST-T8` herdou rota que o card dela punha fora de escopo); `Arquivos-alvo` fecha o efeito colateral obrigatório (`AE-19` — reautorar o modelo obrigava a reescrever o campo de operação dos sete cards); e verificação sem valor esperado não é verificação (`AE-20`, família do `DM-12`). Residência: `GOVERNANCA.md` §3 e a gramática do card na skill `diario-de-obras`. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-72` |
+| TK-73 | **A oração da operação: recorte e sujeito.** A `OP-5` do `P-0746` tinha três orações com lastros diferentes, e as duas defeituosas só apareceram na implementação, a dois executores frios e cinco escalonamentos do Marco 1. Pacote 1: operação com mais de uma oração é operação mal recortada. Pacote 2, **bloqueado na decisão do dono** (`AE-18`): o critério de *ator inédito na operação*, que ele tipificou como integralmente mecânico, acusa 6 dos 7 atores do `P-0743` que ele aceitou, 4 dos 4 do `P-0746` e 5 dos 5 do `P-0745` reautorado — reprova o acervo inteiro ao pé da letra. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-73` |
+| TK-74 | **`review_evidence.py` não expande alvo terminado em barra.** `tests/fixtures/modelo/`, prescrito no reparo da `LST-T5`, chegou ao revisor da tarefa seguinte como falso `sem-atribuicao` para **10** fixtures; o revisor reconciliou à mão. Decide se o alvo de diretório se expande no instrumento ou se a gramática do card passa a exigir enumeração. Origem: `AE-22` do `P-0746`, por `I-4`. | done 2/2 | `docs/DIARIO_DE_OBRAS.md` › `## TK-74` |
+| TK-76 | **As tabelas do modelo se escrevem para o dono.** Ato do dono de 2026-09-23 ao ler o modelo do `P-0747`: as três tabelas do modelo conceitual (objetos, operações, estados) passam a ser escritas *human-friendly*, em frases curtas e ilustrativas do conteúdo real — a coluna de contrato do `P-0747` ficou cheia de indireções difíceis de compreender —, e a especificidade que o executor precisa vai para as seções *machine-friendly* do plano. Vale para os próximos atos do modelador; o `P-0747` não se toca. Um card, `TK-76a`. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-76` |
+| TK-77 | **`kit_check` não recusa frontmatter de agente que não é YAML válido.** Medido no `P-0747` (`AE-20` iii): uma `description` com `: ` sem aspas quebrou o YAML de `.claude/agents/pantonic-consultant.md`, e o `validate` e o check-drift saíram `0`; o harness pode deixar de carregar o agente. O corretivo `CON-T8a` reparou o arquivo; a guarda segue sem pegar a classe. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-77` |
+| TK-78 | **As pendências da janela de 2026-09-24 do `P-0748`, antes de voltar a ele.** Ordem do dono: o loop deixa de parar para rebaixar o modelo — só para para subir a um melhor (`TK-78a`), a régua do card aprende rótulo, contingência de permissão e verificação por delta (`TK-78b`), e o gerador de evidência mede só o que mudou desde o despacho (`TK-78c`). | done 4/4 | `docs/DIARIO_DE_OBRAS.md` › `## TK-78` |
+| TK-79 | **O executor devolve a linha de retorno seguida de prosa.** Medido em três despachos seguidos do `P-0748` (`TLG-T5`, `TLG-T3e`, `TLG-T3f`), o último com a proibição escrita no próprio despacho. A `A2` da `scrum-master` tipifica prosa **no lugar** da linha, não prosa **depois** dela; o loop e o gancho do painel leem só a primeira linha, e o resto se perde calado. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-79` |
+| TK-80 | **A régua de autoria do card: valor de aceite não viaja em `pendencia=`, e o rótulo do card de investigação que o parser não conhece.** Duas lições do `P-0748` sem residência: o `AE-13` (a Verificação 5 da `TLG-T4a` mandou colar valor medido na linha de retorno, e o `B1` escalou uma pendência que não existia) e o `AE-1` (o `pantonic-planner` manda o card de investigação trocar *Pronto quando* por um rótulo que o `rdo.py` recusa). O `TK-78`, destino previsto, fechou sem elas. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-80` |
+| TK-81 | **Propagar o painel do gerente aos cinco kits derivados.** O `P-0748` alterou só o hub (`DTG-8`): o gancho `.claude/tools/progresso_hook.py`, a declaração dele em `.claude/projecoes.json`/`settings.json`, a seção *Repertório de mensagens ao gerente* e o guardrail do painel na `scrum-master`, e o trecho do `README.md`. Nenhum derivado tem o gancho. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-81` |
+| TK-82 | **`rdo.py` imprime em cp1252 no pipe do Windows.** O `--help` de `rdo.py` (e toda saída dele) sai com `Diret\xf3rio`/`t\xedquete` quando redirecionado, porque o `rdo.py` não reconfigura `stdout` para UTF-8 como o `review_evidence.py` já faz. Achado do laudo da `SAN-T3a` do `P-0749`. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-82` |
+| TK-83 | **O tíquete nasce executável.** Ato do dono de 2026-09-25: problema identificado entra no fluxo já como trabalho, e só fica fora da fila por bloqueio real. A doutrina foi publicada na sessão; o card fecha a guarda no `backlog.py check`. | cancelled | `docs/DIARIO_DE_OBRAS.md` › `## TK-83` |
+| TK-84 | **`review_evidence.py --desde` lista não rastreado anterior ao despacho.** Na evidência da `EBK-T5` do `P-0751`, 19 arquivos não rastreados anteriores ao commit do despacho saíram como "sem atribuição" e o reviewer os reconciliou à mão pela data de modificação. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-84` |
+| TK-85 | **O `rdo.py laudo` não tem onde pôr o motivo da dimensão, e recusa o alvo `dossiê`.** Achado do laudo da `EBK-T5` do `P-0751`: o motivo de dimensão fora de `conforme` foi parar no card de lições. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-85` |
+| TK-86 | **O piso do `C-11` mora no código do `backlog.py` e acusa `C-17` em todo outro repositório.** O subcomando `check` liga a constante do piso deste repositório para qualquer `--repo`: uma cópia sem alteração da fixture `verde` sai `C-17`, e o mesmo esperaria cada derivado depois da publicação do kit. Achado do fechamento do `P-0751` (`AE-6`). | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-86` |
+| TK-87 | **O dossiê do último card de um plano leva as seções seguintes do plano.** O `backlog.py show`/`next` do `EBK-T14` imprimiu as seções `## 6`..`## 8` do `P-0751` como parte do card: o item só termina no próximo cabeçalho de item. Achado do fechamento do `P-0751` (`AE-6`). | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-87` |
+| TK-88 | **O encerramento de tarefa e de plano era uma sequência de comandos e prosa à mão.** Fechar uma tarefa eram quatro comandos em turnos separados, com o pacote do laudo redigitado; fechar um plano era inteiramente manual, porque o instrumento recusava `ready → done` para plano (diário, 2026-09-25). Pedido do dono em 2026-09-26: tornar mecânicos os dois fechamentos, com relatório em três seções (humana, máquina, histórico), e um verbo `handover` que registra no card o que a sucessora espera da tarefa. | done 4/4 | `docs/DIARIO_DE_OBRAS.md` › `## TK-88` |
+| TK-89 | **O gate do card religado deixou atrás o leitor de alvos e a doutrina.** A `FPU-T2` do `P-0752` religou o `card_check` como gate de despacho; o laudo dela achou o `review_evidence.py` sem ler a entrada `caminho:linha — <literal>` de `Arquivos-alvo` (3 de 4 alvos fora), o `scrum-master` com "sete itens" e o `B3` sem o `card_check`, e a rubrica `### 8.1` com a comparação de literal antiga (`AE-38`, `AE-40`, `AE-41` do plano). | done 2/2 | `docs/DIARIO_DE_OBRAS.md` › `## TK-89` |
+| TK-90 | **O `P-0742` está fora do índice do diário, `blocked` com a condição já satisfeita.** Achado na varredura do gate do card pelo consultor do `P-0752`: o plano "O loop sai do LLM" nunca entrou no índice (o caso do `TK-59`), espera o `P-0739`, que já fechou, e os oito cards dele não passam no gate. Registro no índice pelo `TK-90a`; o dono decidiu *"Retomar"* (2026-09-26), e o `TK-90b` é a rodada de replanejamento `RP-1` do plano. | done 2/2 | `docs/DIARIO_DE_OBRAS.md` › `## TK-90` |
+| TK-91 | **O modelador não tem o ato que promove ou elimina a versão pendente no marco.** Achado pelo consultor do `P-0752` ao validar a versão 2 do modelo: a `GOVERNANCA.md` §3.2 diz o desfecho do marco e dá ao modelador todo ato sobre o modelo, e o arquivo do agente só diz, na emenda, que a `## 1` vigente não se toca. Correção no `TK-91a`. | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-91` |
+| TK-92 | **A medida do executor de card de tíquete grava onde o `review_evidence.py` não procura.** A doutrina fixa o nome do arquivo de medida pelo id do plano, que card de tíquete do diário não tem: o executor do `TK-86a` gravou com o id `P-0751`, e a evidência deu a medida como ausente. O destino passa a ser uma função só, usada pelos dois instrumentos (`AE-77`). | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-92` |
+| TK-93 | **A evidência não mostra o que mudou em arquivo não rastreado, e o redespacho perde a primeira execução.** O `<ref>` do despacho vem de `git stash create`, que ignora não rastreado: a evidência do `TK-86a` trouxe `encerrar.py` inteiro, truncado antes da linha editada, e o `<ref>` recapturado no redespacho deixou fora a primeira execução (`AE-78`). | done 1/1 | `docs/DIARIO_DE_OBRAS.md` › `## TK-93` |
 | P-0743-DOM | O modelo conceitual vira modelo de domínio — **aceito pelo dono em 2026-09-21**. As 18 tarefas fecharam aprovadas; a norma, a gramática, o instrumento `modelo.py` e o agente `pantonic-model-designer` publicam o modelo de domínio em objetos com propriedades, fluxo de operações, estado inicial × estado final e registro de versões, e o próprio plano é o primeiro do acervo escrito na forma nova. O Marco 3 foi **dispensado** por ato do dono, que moveu a validação para o as-is. **Entrega validada: `docs/Entregas Aceitas/Entregas - P-0743.md`** (875 linhas, cobre também o `P-0741`), onde vivem as oito pendências abertas — três com efeito fora deste plano (`AE-25` telemetria, `TK-66` atribuição de evidência, `AE-24` residência de prova). Vinte e cinco achados (`AE-1`..`AE-25`), dez escalonamentos ao consultor, uma rodada de replanejamento (`RP-1`). Nada commitado. | done 18/18 | docs/plans/P-0743-modelo-de-dominio.md |
 | P-0744-PLS | A especificação do agente de planejamento — substituído por: `P-0745` (2026-09-21, `DPN-1`) | superseded | docs/plans/P-0744-spec-do-planejador.md |
+| P-0745-PLN | O planejador diante do modelo: uma operação, um card | done 10/10 | docs/plans/P-0745-planejador-modelo-operacao.md |
+| P-0746-LST | **O lastro do modelo: o contrato se escreve do enunciado.** Institui o lastro obrigatório (todo objeto, operação e propriedade derivado do enunciado e do prompt de origem; elemento sem lastro vira requisito secundário, fora do contrato e de responsabilidade inteira do agente), a vigência bilateral do modelo, as duas vias de leitura do enunciado (estado × operação) e a conduta de drift do loop (carrega até o marco; o marco adjudica; recusa retroage as tarefas). 7 tarefas (`LST-T1`, `LST-T7`, `LST-T3`, `LST-T8`, `LST-T9`, `LST-T5`, `LST-T6`), `DLS-1..DLS-15`, 3 marcos. A `LST-T6` reaplica o conceito ao modelo do `P-0745` para nova medição do dono. **Modelo na versão 3** (2026-09-21), depois de duas rodadas de Marco 1: a versão 1 foi reprovada — quatro propriedades escritas como objetos — e reautorada sob a leitura do dono (um objeto, as restrições; tudo o mais é propriedade dele); a versão 2 foi aceita com uma correção — a restrição de atualização não tem lastro e saiu do modelo (`DLS-11`), levando a `LST-T2` e a `LST-T4` para o `TK-70`. Efeitos medidos: `modelo.py check` sobre o plano saiu de `1` para `0` **sem tocar o instrumento** (a `V9` era sintoma de modelo mal decomposto, não defeito da gramática), a `LST-T0` foi dissolvida (`DLS-10`) e a exceção de gate da `DLS-8` revogada; a `LST-T7` nasceu para a restrição de decomposição. **Marco 1 fechado em 2026-09-21** com o `go` do dono sobre a versão 3: o modelo vigora e o plano está publicado. Execução em janela própria, por decisão do dono. Origem: `TK-69`. **Aceito pelo dono em 2026-09-24** (Marcos 2 e 3): modelo na versão 4 vigente; documento de validação `docs/OPERACOES_AS_IS_P-0746.md`; `AE-18` segue no `TK-73` Pacote 2. | done 7/7 | docs/plans/P-0746-lastro-do-modelo.md |
+| P-0747-CON | O consultor de plano: a figura, a triagem de toda parada e a fronteira com o planejador | done 19/19 | docs/plans/P-0747-consultor-de-plano.md |
+| P-0748-TLG | A tela do gerente: o fluxo da execução em linguagem humana | done 17/17 | docs/plans/P-0748-tela-do-gerente.md |
+| P-0749-SAN | Saneamento de artefatos: pasta por plano, máquina em TSV, humano mínimo | done 10/10 | docs/plans/P-0749-saneamento-artefatos.md |
+| P-0750-CAH | Comunicação agente↔humano: a mensagem ao dono se entende sozinha | done 6/6 | docs/plans/P-0750-comunicacao-agente-humano.md |
+| P-0751-EBK | Esgotar o backlog antes da publicação do kit | done 16/16 | docs/plans/P-0751-esgotar-backlog.md |
+| P-0752-FPU | Fato no ponto de uso: os mecanismos contra o esquecimento e a assunção | done 17/17 | docs/plans/P-0752-fato-no-ponto-de-uso.md |
+| P-0742-LF | O loop sai do LLM | cancelled | docs/plans/P-0742-loop-fora-do-llm.md |
+| P-0753-AF | Auditoria de encerramento do estágio 1: as dezoito recomendações e os dois tíquetes do consultor | done 21/21 | docs/plans/P-0753-auditoria-estagio-1/plano.md |
 
 ---
 
-## P-0737 — Loop autônomo
-
-> **Índice (texto integral do campo Título, migrado da tabela ativa em 2026-08-23):** Loop autônomo — o plano que consolida a `EXECUCAO-AUTONOMA`: 10 tarefas (`AUT-T1..T10`), decisões `DU-1..DU-13`, absorve as 8 tarefas abertas do `P-0734` e 11 tíquetes, poda 10 e encaminha 2; `AUT-T5` partida em `T5a`/`T5b`/`T5c` por orçamento no gate de delegação (3/12). **`blocked` em 2026-08-22 — paralisado por decisão do dono** enquanto o `P-0738` não fecha; a razão é o custo fixo de contexto, não defeito do plano
->
-> *(Âncora original do índice, preservada:* `docs/plans/P-0737-loop-autonomo.md` *)*
-
-**Objetivo (herdado verbatim da diretiva do dono, 2026-08-22):** transformar o trabalho de
-`proximo-passo` num agente autônomo, capaz de rodar sozinho todas as delegações e ajustes de modelo e
-entregar ao cliente o entregável do plano, sem delegar ao humano tarefa rotineira e mecânica. O plano
-existe para desfazer o drift medido — instrumento, papel e doutrina em volume, e o loop nunca rodando.
-
-**Plano:** `docs/plans/P-0737-loop-autonomo.md` — **10 tarefas** (`AUT-T1..T10`), decisões
-`DU-1..DU-13` fechadas no ato do planejamento (cinco do dono, oito de planejamento). Absorve as **8**
-tarefas abertas do `P-0734` e **11** tíquetes; **10** tíquetes são podados e **2** encaminhados ao
-plano de contexto recomendado; `TK-38` e `TK-48` seguem vivos, sem toque. Sem bump e sem tag
-(`DE-7`). **Checagem de versão do kit:** modo hub — congelada em `0.0.0`, nada a comparar.
-
-**Ordem de execução (§7 do plano, e não a numeração):** `AUT-T1` → `AUT-T5` → `AUT-T4` → `AUT-T2` →
-`AUT-T3` → **[ratificação em lote do dono, `DU-12`]** → `AUT-T6` → `AUT-T7` → `AUT-T8` → `AUT-T9` →
-`AUT-T10`.
-
-**Próxima tarefa:** **nenhuma — plano `blocked`**. A razão vigente até 2026-08-24 (esperar o `TK-51`
-devolver a medida) foi **satisfeita e fechada com ressalva** — `TK-51` mediu o número, mas a linha de
-fecho não discriminava ruído de deslocamento (laudo `docs/RDO/laudos/DIARIO-TK-51.md`, Achado 3).
-**Decisão do dono (2026-08-24): deslocamento real** — as 6 janelas pós-corte formam um padrão, não
-ruído isolado. **Razão do `blocked` substituída de novo em 2026-08-31, por decisão do dono:** a `TK-53` fechou com
-desfecho negativo (não houve mudança no corte — os dois regimes de custo coexistem dos dois lados
-dele), o que **não** destrava este plano: a premissa que o loop constrói continua contradita, agora
-por um motivo melhor definido — o custo de abrir janela **não é fixo, é bimodal**, com ~11,7k tok de
-diferença entre os dois regimes e nenhuma explicação de qual fonte alterna. Não sai tarefa deste
-plano até a `TK-54` publicar o extrato do custo e o dono ratificar a classificação. O custo fixo de abrir janela
-é premissa direta do loop que este plano constrói; destravar sobre uma premissa já contradita
-repetiria o erro que reprovou o critério (a) do `P-0738` — agir sem entender a causa. **Não destravar
-por heurística:** as razões anteriores (`P-0738`, `TK-52`, `TK-51`) não valem mais como gatilho. A
-razão do `blocked` segue externa ao plano: nenhum defeito do `P-0737` foi apontado, e nada aqui é
-reaberto ou reescrito.
-**Ao destravar, a fila retoma exatamente em `AUT-T5c`** — frente (c) do dossiê `### AUT-T5` (mede o
-`TK-27`: se o `tools:` do frontmatter de agente aceita especificador de `Bash` escopado; **para**
-para a ratificação em lote da `DU-12`; nenhuma edição em `pantonic-reviewer.md`), e depois segue a
-ordem do §7 (`AUT-T4` → `AUT-T2` → `AUT-T3` → [ratificação `DU-12`] → `T6`..`T10`).
-
-- **Paralisação por decisão do dono — 2026-08-22.** Registrada no ato da análise crítica do pickup da
-  `AUT-T5b`. Fato medido que a originou: a tarefa consumiu **três janelas de orquestração** — (A)
-  pickup pago, teto cruzado no gate de delegação **sem delegar**; (B) pickup pago, delegação
-  despachada e teto cruzado **antes do retorno**, deixando o ato de fechamento órfão; (C) pickup pago
-  integralmente para verificar entrega já pronta e escrever 2 edits. O trabalho real coube num único
-  subagente em background. Cada janela repagou os **77.457 chars (~19.364 tokens)** que a `CPK-T2`
-  mediu como pickup típico, dos quais **43,8% são custo fixo de entrada**. Diagnóstico preliminar
-  levado à linha do `_INBOX.md` **sem ratificar rota**: o gate de delegação orça o teto do executor e
-  não o saldo do orquestrador; o custo fixo não amortiza entre tarefas; e a verificação foi feita à
-  mão, no contexto mais caro, existindo `review_evidence.py` e `pantonic-reviewer` para isso. A
-  **Diretiva** deste diário foi condensada de 20 para 15 linhas no mesmo ato — o conteúdo retirado
-  (drift da `EXECUCAO-AUTONOMA`, reconciliação `P-0734`/`P-0733`, recomendações do §8) não foi
-  apagado: vive na linha `P-0737-loop-autonomo` do `_INBOX.md` e nesta seção.
-
-**`AUT-T5` partida em `T5a`/`T5b`/`T5c` por orçamento — 2026-08-22, no gate de delegação.** Medidos
-~12-14 write-clusters contra o limite de 8, com duas das três frentes comportamentais (mudam
-contrato de CLI e assinatura de renderização). **Sem mudança de rota ou de escopo**: a partição segue
-as três frentes já publicadas no dossiê, que permanece intocado, e o corte é o mesmo precedente da
-`RPC-T7` do `P-0735`. Fatias: **`T5a`** = frente (a), sentinela de métrica ausente
-(`.claude/tools/telemetria.py`, `docs/telemetria.tsv:50`, `tests/test_telemetria.py`), classe
-`implementacao`, Sonnet, teto 40; **`T5b`** = frente (b), escopo do dossiê de evidência
-(`.claude/tools/review_evidence.py`, `tests/test_review_evidence.py` e a conciliação de
-`.claude/skills/scrum-master/SKILL.md:143`, que o *Conteúdo* do dossiê manda tocar e o campo
-*Arquivos-alvo* omitiu), classe `implementacao`, Sonnet, teto 40; **`T5c`** = frente (c), medição do
-`TK-27` e o achado no §9 do plano, **tarefa-investigação** que mede e **para** para a ratificação em
-lote da `DU-12`, teto 15. O denominador do plano passa de 10 para 12.
-
-**Notas de execução:**
-
-- **`AUT-T5b` — done, confirmado em contexto novo — 2026-08-22.** Achado no pickup: o trabalho já
-  estava materializado no working tree (agente em background da rodada anterior concluiu antes do
-  retorno chegar a esta sessão — contexto anterior encerrado por capacidade sem consumir a
-  notificação). Verificado, não redelegado: diff de `review_evidence.py`/`test_review_evidence.py`/
-  `scrum-master/SKILL.md:143` bate exatamente com as duas frentes do dossiê (alvo-diretório por
-  prefixo, `--desde <ref>`); suíte **83 passed** (piso `AUT-T5a` era 80, +3 testes novos da `T5b`).
-  Consumo: ver `docs/telemetria.tsv` (`nao_medido` — notificação da sessão anterior perdida no
-  `<usage>`, mesmo padrão da `RPC-T11`).
-- **Checkpoint de janela — `AUT-T5b` delegada, aguardando retorno — 2026-08-22.** Dossiê montado com
-  design já resolvido (alvo-diretório por prefixo, `--desde <ref>` sem tocar `DP-S`/`tarefa-corrente.json`)
-  e despachado ao `pantonic-executor` em background (agentId `adb71e11660fbf127`). Contexto encerrado
-  por capacidade antes do retorno. **Próximo passo:** aguardar a notificação de conclusão, fechar o
-  registro (bullet + `docs/telemetria.tsv`) e seguir a ordem do §7 (`AUT-T4` depois).
-
-- **Checkpoint de janela — pickup da `AUT-T5b` encerrado por capacidade, sem delegação — 2026-08-22.**
-  Janela cruzou o teto no gate de delegação, depois do levantamento das âncoras. **Âncoras
-  re-derivadas nesta rodada, para o contexto novo não repagar:** `review_evidence.py` 413 linhas —
-  comparação literal de escopo em `confrontar_escopo:129-138` (`t not in alvo_set`), fallback
-  "arquivo ausente na árvore de trabalho" em `_diff_para_arquivo:141-151`, recorte da árvore inteira
-  em `coletar_arquivos_tocados:111-126` (`git status --porcelain=v1 --untracked-files=all`), bloco
-  `argparse` em `main:362-384` (sem `--desde`), seção `## Escopo` do render em `_renderizar:272-285`
-  (onde entra a declaração de recorte), chamada em `montar_documento:336`;
-  `tests/test_review_evidence.py` 277 linhas; conciliação da skill em
-  `.claude/skills/scrum-master/SKILL.md:143-145` (comando) — o `.claude/estado/tarefa-corrente.json`
-  do passo 4 (`:88-94`) **não** tem campo de ref de git, então de onde sai o `<ref>` do `--desde` é
-  ponto a fechar no dossiê. Piso da suíte (80 passed, `AUT-T5a`) **não** re-medido — a suíte não
-  chegou a rodar.
-
-- **`AUT-T5a` — done em 2026-08-22.** A célula vazia passou a ser a sentinela única de métrica
-  ausente: `_validar_inteiro_nao_negativo` e `_validar_numero_nao_negativo` ganharam `permite_vazio`,
-  e `build_row` valida `fonte` primeiro para propagá-lo às três colunas numéricas — com
-  `fonte = usage` o vazio continua falha ruidosa, porque ali a medida é perdida, não ausente. A
-  única linha histórica com traço literal (`docs/telemetria.tsv` L50, `V2I-T3`) foi normalizada, com
-  o Grep de reconferência medindo 1 match antes e 0 depois e o resto do arquivo preservado. Ordem TDD
-  demonstrada por `git stash` do fix: os dois testes de aceitação falharam sem ele e passaram com
-  ele; o de recusa por `fonte = usage` já passava. Bateria do §3 inteira em exit 0; suíte em **80
-  passed** (piso era 77 — subiu). **Reconciliação de série feita pelo orquestrador no fechamento:** a
-  prova ponta a ponta exigida pela *Verificação* apende uma linha real pelo instrumento, e essa
-  linha nasce auto-relatada (`fonte = contado`), o que colidiria com a linha medida da mesma tarefa;
-  a célula `tarefa` da linha de prova passou a `AUT-T5a-prova-instrumento` — correção de
-  identificador, não de número — e a linha canônica da tarefa foi apendada do bloco `<usage>` com
-  `fonte = usage`. Nenhum achado fora de escopo. Consumo: ver `docs/telemetria.tsv`.
-
-- **Registro do plano — 2026-08-22.** Plano autorado em contexto novo, a partir do inventário e das
-  decisões que a rodada de consolidação do mesmo dia deixou na linha `P-0737-loop-autonomo` do
-  `docs/plans/_INBOX.md` (agora `[drenado]`). Reconciliação de planos derivados aplicada no mesmo
-  ato: `P-0734` → `superseded` (classificação B), `P-0733` → `cancelled` (`DU-1`) — a iniciativa
-  volta a ter **um** plano vivo. Nenhuma questão precisou subir ao dono na autoria: as duas que
-  ameaçavam abrir ramo — o portador do checkpoint de contexto (`TK-37`) e a fronteira de ferramenta
-  do `pantonic-reviewer` (`TK-27`) — foram fechadas, a primeira por derivação do já ratificado
-  (`DU-8`) e a segunda como medição que **para** para a ratificação em lote (`DU-12`). O agente de
-  planejamento caiu por **limite de sessão da API** depois de publicar o plano e antes de fechar o
-  registro no diário; retomado pelo mesmo `agentId` com o delta, sem re-delegação a frio. Consumo:
-  ver `docs/telemetria.tsv` — a fatia anterior à queda não traz bloco `<usage>` e está **PARCIAL,
-  não medida**.
-- **Acréscimo de escopo por decisão do dono — 2026-08-22.** Achado de fronteira levantado no
-  fechamento da autoria: o `P-0737` nasceu com 574 linhas, acima do gatilho de 500 do
-  `docs/DOC_MAP.md`, que hoje indexa três planos grandes e não este. O dono decidiu acrescentar a
-  entrada ao dossiê da `AUT-T1` (frente **(e)**) em vez de abrir tíquete ou ignorar — a `T1` já
-  edita o kanban, o custo marginal é zero, e plano desse porte fora do mapa reintroduz o custo de
-  navegação que o `P-0736` mediu. Único ponto do plano publicado alterado depois da publicação;
-  `Arquivos-alvo`, `Invariantes`, `Verificação` e `Pronto quando` da `AUT-T1` atualizados no mesmo
-  ato. Teto da tarefa mantido em 20.
-- **`AUT-T1` — done em 2026-08-22.** O kanban passou a dizer a verdade do dia: as 23 células de
-  tíquete do índice receberam rota única — 10 `cancelled` por poda, 11 com a nota de absorção e a
-  `AUT-T<n>` que as fecha, 2 encaminhadas ao plano de contexto recomendado —, e `TK-38`/`TK-48`
-  ficaram intocados. O `TK-18` teve a razão do `blocked` amarrada à `AUT-T9`. O
-  `P-0734-execucao-autonoma.md` ganhou a seção `## 24. Rebase pelo P-0737` como acréscimo no fim do
-  arquivo, com a tabela das 8 absorvidas e a `T16` cancelada por absorção; nenhum dossiê, bullet ou
-  decision record anterior foi tocado. A frente **(e)** indexou o plano no `docs/DOC_MAP.md` com o
-  porte re-derivado no ato (**586 linhas**, e não as 574 que o dossiê supunha) e padrão de acesso
-  `^### AUT-T5 ` conferido por execução. As 23 anotações foram aplicadas num único passo
-  programático, com guarda de 6 campos por linha da tabela — 23 edições linha a linha estourariam o
-  teto da classe `mecanica`. Bateria do §3 inteira em exit 0; suíte em **77 passed**. Nenhum achado
-  fora de escopo. Consumo: ver `docs/telemetria.tsv`.
-
-- **2026-08-23 (`CTX-T6a`, item 4):** os 11 tíquetes absorvidos por este plano fecham `cancelled` no índice (preservando o ponteiro `fecha na AUT-T<n>` de cada célula) e migram para `docs/DIARIO_HISTORICO.md`: `TK-04` (fecha na `AUT-T9`), `TK-18` (fecha na `AUT-T10`), `TK-26` (fecha na `AUT-T5`), `TK-27` (fecha na `AUT-T5`), `TK-30` (fecha na `AUT-T8`), `TK-44` (fecha na `AUT-T5`), `TK-36` (fecha na `AUT-T6`), `TK-37` (fecha na `AUT-T6`), `TK-42` (fecha na `AUT-T9`), `TK-46` (fecha na `AUT-T10`), `TK-50` (fecha na `AUT-T5`).
 ## P-0738 — Contexto esgotado na partida
 
 **Objetivo:** parar de repagar, a cada janela, o custo fixo que faz um contexto nascer esgotado. A
@@ -832,7 +785,7 @@ A variante (b) do proxy de ocupação de contexto — contador de tarefas por ja
 
 ## TK-38 — Comunicação entre agente e humano — skill própria e requisitos mínimos
 
-- **Status:** `ready` · 2026-08-13
+- **Status:** `cancelled` · 2026-09-25
 
 **Comunicação entre agente e humano — skill própria e requisitos mínimos.** Aberto por decisão do dono em 2026-08-13. O framework nomeia objetos de projeto por prefixo abreviado (`DP-`, `DR-`, `DE-`, `DI-`, `DH-`, `DA-`, `TK-`, `EXA-T<n>`, `G-*`) e os agentes carregam esses tokens **crus** para dentro da conversa com o humano, que não participou do ato que os criou. **Fato medido nesta mesma rodada:** o relatório de handover da `EXA-T25` citou `DP-F`, `DP-I`, `DP-J` e `DP-L` sem expandir nenhum, o dono precisou gastar **um prompt inteiro** perguntando onde essas descrições moravam, e a expansão que ele inferiu (*"Decisão Pendente"*) **está errada** — `README.md:172` define o prefixo como *decision record* (decisão já ratificada) e **não expande as letras `D` e `P` em lugar nenhum do repositório**, de modo que a sigla é ilegível a partir do artefato até para quem a usa. Agravante declarado pelo dono: o framework almeja público de **outros idiomas**, para quem uma abreviação em português nunca fará sentido. **Recorte:** a nomenclatura abreviada **permanece** nos artefatos (é compacta e greppável); o que muda é a **superfície de conversa** — toda ocorrência em texto dirigido ao humano vem acompanhada do significado inline, na forma `DP-7 (<expansão> #7)`. **Golden rule a trabalhar no tíquete, enunciada pelo dono:** *"toda comunicação que demandar que o humano leia um documento extra, ou crie um novo prompt, é comunicação ineficiente, e deve ser registrada como lição aprendida para melhoria da skill de comunicação"*. **Escopo a cobrir:** (a) skill de comunicação agente↔humano, com os requisitos mínimos do corpo da mensagem para acelerar a tomada de decisão; (b) proibição de exigir leitura de artefato extra ou prompt de esclarecimento como caminho normal — o token gasto em pergunta de esclarecimento é desperdício mensurável; (c) tabela de expansão dos prefixos e termos intrínsecos do framework, **incluindo o que `DP-` e os demais de fato significam**, hoje inexistente; (d) alcance multilíngue; (e) o registro das falhas de comunicação como lição aprendida, ligando ao portador de metainformação de tarefa da `TK-32`. Área de superfície ampla — atinge kit executável, doutrina e espelho, e por isso nasce como tíquete, não como correção de rodada. **Fronteira declarada contra o `TK-36`** (dono, 2026-08-13, `P-0734` §19): este tíquete governa **exclusivamente** a superfície **agente↔humano**; a unificação `handover` + `proximo-passo` é maquinário **agente↔agente**, transparente ao gerente, e **não** recebe requisito de comunicação humana — arrastá-lo para lá acrescentaria custo a toda iteração do loop autônomo. Os dois eixos não se misturam e nenhum planejamento derivado pode tratá-los como a mesma matéria
 
@@ -850,10 +803,12 @@ critério novo, mas cruza o tema do plano e `DM-4` proíbe a absorção oportuni
 - 2026-09-19 — *(decisão do dono, 2026-08-13; evidência medida no handover da `EXA-T25`)*
 
 ---
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0750 (comunicação agente↔humano)
 
 ## TK-48 — `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**
 
-- **Status:** `ready` · 2026-09-19
+- **Status:** `cancelled` · 2026-09-24
 
 `~/.claude/settings.json` **perdeu a chave `hooks` inteira silenciosamente**, sem ação intencional do dono, entre a `RPC-T4` e a escolha da `RPC-T5` — os 4 hooks registrados (premissa da `T5`) somem sem rastro. Causa não investigada por decisão do dono (foco em proteção, não em achar culpado); a `T5` não depende do estado atual do arquivo (reconstrói o registro pela tabela já transcrita no dossiê) e segue delegável. Vulnerabilidade a considerar: `settings.json` global pode perder chave inteira sem sinal
 
@@ -862,6 +817,8 @@ critério novo, mas cruza o tema do plano e `DM-4` proíbe a absorção oportuni
 - 2026-09-19 — *(**dono mandou resolver em 2026-09-19**. Estado medido no mesmo dia: a chave `hooks` **existe** — global com `PreToolUse` e `UserPromptSubmit`, projeto com `PreToolUse` e `SubagentStop` —, portanto **não há perda ativa a reparar**; o que falta é a **proteção**, que era o foco declarado do dono desde a abertura (proteger, não achar culpado). Não entra no `P-0740` por `DM-30` — cruza o tema; entra na fila logo depois do marco)*
 
 ---
+- **Notas de execução:**
+  - 2026-09-24 `cancelled` — caducou (revisão de pertinência de 2026-09-24): a proteção pedida existe — o alvo usuario de .claude/projecoes.json declara as chaves hooks do settings.json global, e python .claude/tools/materializar.py drift --alvo usuario acusa a entrada ausente ou divergente (apply a restaura). Disparo automático do drift é a classe do TK-55
 
 ## TK-51 — Composição do 1º usage de uma janela de orquestração
 
@@ -1005,7 +962,7 @@ janela tratada. Decisão do dono sobre causa/rota é pré-requisito, ver "Direti
 
 **Decisão do dono (2026-08-24):** causa é **deslocamento real**, não ruído — o padrão das 6 janelas
 pós-corte pesa mais que "dentro do intervalo [mín,máx]" da baseline (Achado 3). Consequência
-registrada em `## P-0737` (nova razão do `blocked`) e no tíquete novo `TK-53` (investigação do que
+registrada em `docs/DIARIO_HISTORICO.md` › `## P-0737` (nova razão do `blocked`) e no tíquete novo `TK-53` (investigação do que
 mudou no corte). Ressalva resolvida; `TK-51` permanece `done`, sem reabertura.
 Consumo: ver `docs/telemetria.tsv`.
 
@@ -1023,7 +980,7 @@ tratada isolada.
 1º `usage` (achado da `TK-51`, `docs/CUSTO_DO_PICKUP.md` `## 11`) para as 6 janelas pós-corte
 inteiras — não decidir corte nem rota, só a causa.
 
-**Bloqueia:** `P-0737` (ver seção `## P-0737` — a premissa de custo fixo de abrir janela que o loop
+**Bloqueia:** `P-0737` (ver seção `docs/DIARIO_HISTORICO.md` › `## P-0737` — a premissa de custo fixo de abrir janela que o loop
 constrói está contradita, não confirmada como estável).
 
 **Escopamento (planejador, 2026-08-24):** o que faltava não era a rota, era o **método de
@@ -1305,7 +1262,7 @@ A pergunta viva deixa de ser *o que mudou* e passa a ser *do que o custo é feit
 
 ## TK-54 — Extrato do custo de abertura de uma janela principal
 
-- **Status:** `ready` · 2026-08-31
+- **Status:** `cancelled` · 2026-09-21 · obsoleto por decisão do dono, 2026-09-21
 
 **Origem:** diretiva do dono, 2026-08-31 (citada acima), no ato de fechar a `TK-53`.
 
@@ -1323,7 +1280,7 @@ linha por fonte carregada**, com tamanho medido, estrato de origem e **classific
 *válido / necessário / dispensável / economizável*. A tarefa mede, ranqueia e propõe; **a
 ratificação da classificação é do dono** e nenhum corte acontece nesta rodada.
 
-**Bloqueia:** `P-0737` (razão vigente na seção `## P-0737`).
+**Bloqueia:** `P-0737` (razão vigente na seção `docs/DIARIO_HISTORICO.md` › `## P-0737`).
 
 **Fato que torna a tarefa viável (verificado no escopamento, 2026-08-31 — o executor não
 redescobre):** o obstáculo da `TK-51` — *"o componente opaco só se mede por diferença"* — era sobre
@@ -1367,6 +1324,8 @@ Distinguir *carregado sempre* de *carregado sob demanda* é parte do entregável
    bimodalidade (`TK-54b`) são perguntas separadas e nenhuma é insumo da outra; separá-las evita o
    alvo duplo que o gate de delegação proíbe. `TK-54a` primeiro, por ser a que o dono pediu.
 7. **Não abre plano** (`P-0739` segue livre) — mesma razão da decisão 11 da `TK-53`.
+- **Notas de execução:**
+  - 2026-09-21 `cancelled` — ENCERRADO POR OBSOLESCÊNCIA, NÃO POR DESCARTE. As duas sub-tarefas entregaram e ficam done: o extrato (## 13 de docs/CUSTO_DO_PICKUP.md, ratificado pelo dono em 2026-09-19) e o descarte medido do candidato da bimodalidade (## 16, TK-54b aprovada com ressalva 92%). O que o cancelamento mata é só a pergunta residual da bimodalidade, rota (c) do AE-4. Razão do dono: tíquete exclusivo de custo, e custo deixou de ser critério (DM-30 do P-0740, 2026-09-19); o foco passou a ser incrementar o framework. O estado é cancelled e não done porque de ready a tabela de transições de §2.7 só admite cancelled; não houve review do tíquete como um todo. Reabre por tíquete novo, e só pela rota (a), instrumento fora de banda, se o custo voltar a ser critério.
 
 ### TK-54a — O extrato [Sonnet · classe investigacao]
 
@@ -1380,7 +1339,7 @@ tabela `B` abaixo, não avalia e não propõe classificação própria.
   carregada, com `chars` medidos, estrato, regime, participação nos três regimes de `usage_1` e a
   classificação já fixada — e registrar a seção em `docs/DOC_MAP.md`. **Não corta nada e não propõe
   rota de corte.**
-- **Depende de:** decisões 1..7 de `## TK-54` (copiadas inline no que vinculam), a
+- **Fundamento:** decisões 1..7 de `## TK-54` (copiadas inline no que vinculam), a
   `### Medição de 2026-09-18` da mesma seção e a rodada `RP-TK54-1` (`AE-1`).
 
 **Vocabulário fechado (termos usados nas células, com a definição que vale aqui):**
@@ -1565,7 +1524,7 @@ processo registrado na `### Medição de 2026-09-18`).
 
 ### TK-54b — A fonte da bimodalidade [Sonnet · classe investigacao]
 
-- **Status:** `ready` · 2026-08-31
+- **Status:** `done` · 2026-09-21
 - **Objetivo:** identificar **qual fonte liga e desliga** entre os dois regimes que a `## 12` mediu
   — `cache_read` exatamente 18.084 vs 26.695 (Δ **8.611 tok**), `cache_creation` ~16,5k vs ~19,4k,
   **preâmbulo visível idêntico** (~11.684 chars) nos dois.
@@ -1573,8 +1532,29 @@ processo registrado na `### Medição de 2026-09-18`).
   *deferred tools* — em algumas janelas um conjunto de ferramentas chega só como nome, em outras
   com o schema completo, e a ordem de grandeza bate. Descartado o candidato, publica-se o que foi
   descartado e como.
-- **Critério de pronto:** `## 14` nomeia a fonte com evidência, ou publica `não identificada` com a
-  lista do que foi descartado e por quê.
+- **Arquivos-alvo:** `docs/CUSTO_DO_PICKUP.md` (a seção nova, ao fim do portador),
+  `docs/DOC_MAP.md` (contagem de linhas do portador + bullet da seção nova) e
+  `docs/DIARIO_DE_OBRAS.md` (este card: `Status` e bullet de fechamento). A sonda é de scratchpad,
+  descartável e **fora do repo** — decisão 4 de `## TK-54`, não mexer no que se mede.
+- **Verificação:** `Select-String -Path docs\CUSTO_DO_PICKUP.md -Pattern '^## 16 ' -List` imprime
+  uma linha (a seção começa em 520) · `(Get-Content docs\CUSTO_DO_PICKUP.md).Count` imprime 631,
+  igual à contagem que o `DOC_MAP` publica para o portador ·
+  `Select-String -Path docs\CUSTO_DO_PICKUP.md -Pattern 'As quatro can','Veredito: não identificada'`
+  imprime duas linhas (527, o gate das quatro canônicas da `## 12`; 620, o veredito) ·
+  `Select-String -Path docs\DOC_MAP.md -Pattern '^## docs/CUSTO_DO_PICKUP.md','## 16 A fonte'`
+  imprime duas linhas (104 e 137). Os quatro rodam a partir de `D:\workspaces\PantonicApp` e
+  foram medidos nesta forma em 2026-09-21.
+- **Pronto quando:** a seção do `docs/CUSTO_DO_PICKUP.md` nomeia a fonte com evidência, ou publica
+  `não identificada` com a lista do que foi descartado e por quê; e `docs/DOC_MAP.md` registra a
+  seção com a contagem de linhas do portador atualizada.
+- **Reparo de forma (2026-09-21, `AE-3`):** o card nasceu em 2026-08-31, antes do `rdo.py` atual, e
+  não declarava `Verificação`, `Pronto quando` nem `Arquivos-alvo` — o gerador de evidência recusava
+  a tarefa **depois** de ela estar entregue. Os três campos acima são **transcrição** do que foi
+  despachado e medido, não escopo novo: `Pronto quando` é o texto literal do antigo *Critério de
+  pronto*, com o número da seção substituído por *a seção do portador* — `## 14` e `## 15` foram
+  ocupadas em 2026-09-20 por outra frente, depois de este card ser escrito, e a entrega saiu na
+  `## 16`; o portador é único (`DX-3`), então a identidade do entregável não mudou.
+- **Fecha apontando para:** `## 16` publicada em `docs/CUSTO_DO_PICKUP.md:520-631`.
 
 ### Medição de 2026-09-18 (orquestração, apensada à `TK-54` — insumo da `TK-54a`, não a substitui)
 
@@ -1682,6 +1662,102 @@ por teto de ocupação sem executar tarefa). **A `TK-54a` não os redescobre; re
   - **Consumo:** ver `docs/telemetria.tsv` (linhas `TK-54a-triagem-blocked` e `RP-TK54-1`,
     2026-09-18 — telemetria medida por notificação, `fonte: usage`).
 
+- **`AE-3` (2026-09-21) — card anterior ao `rdo.py` atual é um `B3` silencioso: o defeito de forma
+  só aparece depois do despacho, com a entrega já feita.** Fato medido nesta execução, com a
+  `TK-54b` já em `review`:
+  `python .claude/tools/review_evidence.py --plano docs/DIARIO_DE_OBRAS.md --tarefa TK-54b --desde d75e7a6 --out ...`
+  → `review_evidence: FALHOU - campo obrigatório ausente em 'TK-54b': 'verificacao'` (exit 1). Causa
+  em `.claude/tools/rdo.py:309-320`: todo dossiê exige `objetivo`, `verificacao` e `pronto-quando`,
+  mais **exatamente um** entre `arquivos-alvo` e `entregavel`; e `_CAMPO_RE` (`rdo.py:97`) só
+  reconhece campo em **bullet de topo** (`- **Rótulo:**`). O card foi escrito em 2026-08-31, antes
+  desses instrumentos, e trazia `Critério de pronto` — rótulo que o parser não mapeia — sem
+  `Verificação` e sem `Arquivos-alvo`. Como `rdo.py close` usa o mesmo parser, o defeito trava
+  **julgamento e arquivamento** da mesma entrega.
+  - **O defeito é de classe, não deste card.** `extrair_dossie` sobre a irmã `TK-54a` falha com a
+    **mesma** mensagem, e por motivo pior: ela **tem** `Verificação` e `Pronto quando`, mas como
+    **parágrafo em negrito** (`docs/DIARIO_DE_OBRAS.md:1546,1556`), não como bullet — o parser não
+    os enxerga, e falta-lhe também `Arquivos-alvo`. Escapou só porque foi executada inline pela
+    orquestração, sem passar pelo gerador. Todo card do acervo anterior ao `rdo.py` atual está
+    nessa condição.
+  - **Efeito de segunda ordem, medido na leitura do código.**
+    `review_evidence.mapear_alvos_de_outras_tarefas` engole `RdoValidationError` e **pula** o card
+    defeituoso: um card mal-formado desaparece em silêncio do balde *alvo de outra tarefa* da
+    `confrontar_escopo`, e a atribuição de escopo de toda tarefa irmã degrada sem aviso. Nesta
+    execução o efeito foi **nulo** — os alvos da `TK-54a` são os mesmos da `TK-54b`, cobertos com
+    precedência maior pelos alvos do próprio card.
+  - **Por que os gates do passo 3 não pegaram.** `G-PLANREADY`, o gate de delegação e
+    `modelo.py check` **não exercitam o parser de dossiê**; nenhum deles lê os campos obrigatórios.
+    O `B3` era detectável antes do despacho por um único comando — `extrair_dossie` sobre o card —
+    que o loop não roda em lugar nenhum.
+  - **Consequência para o kit (insumo do planejador, não ato desta rodada).** Duas matérias, nesta
+    ordem: (i) **gate ausente** — falta rodar `extrair_dossie` no card **antes** do despacho, seja
+    dentro do `G-PLANREADY`, seja como subcomando `rdo.py check <tarefa>`; (ii) **gramática do
+    acervo** — decidir se o parser aprende o rótulo em parágrafo negrito e o alias
+    `Critério de pronto` → `pronto-quando`, ou se o acervo antigo é migrado; alargar a gramática é
+    ato de plano, não de rodada de desbloqueio.
+  - **Rota escolhida (A) e o que ela editou.** Card `TK-54b` reparado **no lugar**, por
+    transcrição do que foi despachado e medido: `Arquivos-alvo` (os três arquivos que a entrega
+    tocou), `Verificação` (quatro comandos rodados em 2026-09-21, saídas conferidas) e
+    `Pronto quando` (texto literal do antigo *Critério de pronto*). Reparo de **forma**, declarado
+    como tal no próprio card. **`TK-54a` foi deixada como está**: é `done`, não volta a passar pelo
+    gerador e o efeito vivo do seu defeito foi medido como nulo — reescrever campo de card aceito
+    seria retro-justificação sem contrapartida. Classificação da mudança: **técnica/tática**; nada
+    escalado ao dono.
+
+- **`AE-4` (2026-09-21) — a pergunta da `TK-54` é não observável pelo instrumento que a `TK-54`
+  usa; decisão de rota pendente, classificada ESTRATÉGICA e escalada ao dono.** Fato medido duas
+  vezes, de forma independente: a entrega da `TK-54b` (`## 16`, `docs/CUSTO_DO_PICKUP.md:520-631`)
+  descartou o candidato *deferred tools* por identidade byte-a-byte no par 18.084/26.695, e a
+  revisão reproduziu de fora, por **enumeração exaustiva de chaves sobre 299 transcripts de raiz**,
+  que **nenhuma versão do formato loga `system` nem `tools` do request**. Continuar sondando
+  transcript não pode responder à pergunta — não é falta de esforço, é ausência de referente no
+  corpus. **Três rotas, e o que cada uma implica:** (a) **instrumentar fora de banda** (proxy/OTEL
+  sobre o request real) — é a única que observa o objeto, custa instrumento novo, fora do que
+  qualquer tarefa desta fila financia, e mexe no que se mede (tensiona a decisão 4 de `## TK-54`);
+  (b) **experimento pareado controlado** — mais barato, mas só mede *correlação* entre configuração
+  e `cache_read`, nunca o conteúdo do `system`/`tools`, então responde "o que alterna" e não "do que
+  é feito"; (c) **encerrar a pergunta como não observável** e fechar o `TK-54` com o extrato que já
+  tem, mais esta linha de base. **`registrar e não agir` é a forma mínima de (c)** e é a
+  **recomendação**, pelo motivo medido: o gatilho que dava urgência à pergunta caiu — `DM-30` do
+  `P-0740` tirou o custo do posto de critério (dono, 2026-09-19), e a condição de destravamento do
+  `P-0737` escrita na sua própria seção (*"até a `TK-54` publicar o extrato do custo e o dono
+  ratificar a classificação"*) está **satisfeita** desde 2026-09-19 — a bimodalidade **não** é
+  condição de liberação. **O que fica bloqueado sem resposta: nada nesta fila.** O que se perde em
+  (c) é a explicação de um Δ de 8.611 tok que hoje não decide nada; se o custo voltar a ser
+  critério, a pergunta reabre por tíquete novo, com (a) como única rota que a responde.
+  - **Rota do achado de processo (i) do laudo — `sem ação` na `## 16`.** O reviewer apontou que o
+    achado de método sai em prosa, sem rota e sem dizer o que *seria* preciso. A lacuna é real e
+    está preenchida **aqui**, não lá: a seção é entrega **aceita** de tarefa `done`, e o que falta
+    é decisão de rota, que não mora no portador de medição. Residência única do que seria preciso:
+    este `AE-4`.
+  - **DECISÃO DO DONO (2026-09-21) — rota (c), `registrar e não agir`.** Literal: *"Se for a
+    questão de custo, essa já está vencida a algumas sprints. No momento, o foco é em incrementar o
+    framework. Se o plano for exclusivo de custo, pode encerrá-lo por ser obsoleto."* O `TK-54` é
+    exclusivo de custo, então **fecha `done` por obsolescência do que restava**, não por
+    esgotamento da pergunta: as duas sub-tarefas entregaram (2/2) e o extrato foi ratificado em
+    2026-09-19; o que morre aqui é só a pergunta da bimodalidade. Reabertura, se o custo voltar a
+    ser critério, é por **tíquete novo** e só pela rota (a) — nenhuma outra observa o objeto.
+
+- **`AE-5` (2026-09-21) — `B0` do laudo: a `pendencia=` do executor era da orquestração, não da
+  entrega.** A linha de retorno da `TK-54b` apontava `docs/plans/_INBOX.md`,
+  `docs/plans/_INBOX_HISTORICO.md` e `docs/telemetria.tsv` como tocados fora dos `Arquivos-alvo`.
+  Atribuição medida e conferida: `_INBOX.md`/`_INBOX_HISTORICO.md` vêm da **drenagem do inbox** que
+  o próprio `backlog.py check` executa (rodado pela orquestração antes do despacho) e
+  `telemetria.tsv` da apensação de consumo no fechamento — **nenhum dos três foi tocado pelo
+  executor**. Confirmado mecanicamente pelo gerador depois do reparo do `AE-3`: os três caem no
+  balde *registro da orquestração (não atribuível a tarefa)* e o veredito de escopo sai `conforme`
+  (`docs/RDO/evidencia/TK-54-TK-54b.md`). Sem efeito sobre a entrega. **Consequência de classe,
+  sem ação aqui:** um comando de **verificação** do loop (`backlog.py check`) tem efeito colateral
+  de **escrita** versionada — quem confere não deveria escrever; insumo para a rodada que revisar
+  os instrumentos do loop.
+
+- **Rota do achado de processo (ii) do laudo — encaminhado ao `TK-55`, sem tíquete novo.** O
+  reviewer reproduziu o método descrito pela `## 16` e obteve `cache_read=18.084` com **n=116**
+  (corpus 299) contra os **n=120** publicados (corpus 303), sem regra de enumeração publicada que
+  permita reconciliar. Não altera conclusão nenhuma — o veredito repousa na identidade byte-a-byte
+  do blob, não no `n`. É exatamente a classe do `TK-55` (derivado publicado que nada confronta com
+  a fonte), e abrir tíquete próprio fragmentaria o acumulador que o dono criou para isso.
+
 ### Resultado da `TK-54` (parcial — `TK-54a`)
 
 - **`TK-54a` `done` em 2026-09-18.** `## 13 Extrato do custo de abertura de uma janela principal`
@@ -1725,7 +1801,7 @@ ressalva do `TK-51`
 46.070 (grupo `depois`) contra 34.347 (grupo `antes`, n=233), e o teste "dentro do intervalo
 [mín,máx]" não discrimina isso. **Consequência:** `P-0737` segue `blocked` — a premissa de custo
 fixo de abrir janela que o loop constrói está contradita, não confirmada como estável (nova razão
-na seção `## P-0737`); investigação do que mudou no corte aberta como `TK-53`, **já desenhada**
+na seção `docs/DIARIO_HISTORICO.md` › `## P-0737`); investigação do que mudou no corte aberta como `TK-53`, **já desenhada**
 (2026-08-24) em duas tarefas de medição na própria seção — **`TK-53a` é a próxima tarefa
 delegável**, sem pré-condição; `TK-53b` só é despachada com a linha `Janela temporal do degrau:`
 que a `TK-53a` publica. Não abre plano formal: `P-0739` segue livre. Os 2 achados de processo do
@@ -1790,7 +1866,8 @@ A regra escalonada de 2026-08-21 e o `G-PLANREADY` continuam valendo.
 
 ## TK-55 — Confiabilidade de agente e de instrumento
 
-- **Status:** `ready` · 2026-09-19 — gated pelo encerramento do `P-0740` (ato do dono, 2026-09-19).
+- **Status:** `cancelled` · 2026-09-25 — gated pelo encerramento do `P-0740` (ato do dono, 2026-09-19).
+- **Casos do `P-0748` (2026-09-24), ponteiro:** `AE-4`, `AE-5` e `AE-11` de `docs/plans/P-0748-tela-do-gerente.md` `## 9` — o `review_evidence.py` com `--desde <ref>` lista como tocados os não rastreados que já existiam antes do despacho, e mostra alvo não rastreado como arquivo inteiro truncado, sem diff; recorreu em todos os laudos da janela (`TLG-T3b`..`TLG-T3h`, `TLG-T5`, `TLG-T5a`), sempre reconciliado à mão por mtime.
 
 **Aberto por ato do dono em 2026-09-19**, sobre o relatório de encerramento da janela do `P-0740`:
 *"vejo alguns casos de erros de agente com alguma frequência. No futuro (após terminar esse plano)
@@ -2044,6 +2121,289 @@ rodada carrega dossiê de plano de **outra janela**, e ainda assim foi auditado 
 contexto: mediram-se **apenas estrutura, chaves e comprimentos**, com sonda booleana para confirmar
 a presença dos marcadores, sem nunca extrair valores. A contenção entre janelas não obriga a
 renunciar à evidência — obriga a extrair dela apenas a **forma**.
+
+**Caso novo (2026-09-21, `TK-54b`) — o `n` publicado que nada reconcilia com o corpus.** A `## 16`
+do `docs/CUSTO_DO_PICKUP.md` publica `cache_read=18.084` com `n=120` sobre 303 janelas; a revisão,
+reproduzindo o método **descrito pela própria seção**, obteve `n=116` sobre 299. A seção não publica
+a **regra de enumeração** do corpus (o que conta como janela principal, o que descarta), então a
+diferença não é reconciliável de fora e nenhuma das duas contagens é verificável. Conclusão
+intacta — o veredito repousa em identidade byte-a-byte, não no `n`. Mesma classe dos cinco acima:
+derivado publicado sem confronto com a fonte. Encaminhado por rota do consultor (`AE-4`/`AE-5` de
+`## TK-54`), sem tíquete próprio.
+
+**Rodada de planejamento (2026-09-25), por ato do dono ao instituir *Tíquete nasce executável*.**
+O acumulador deixa de acumular: cada caso acima foi re-medido e saiu com rota, e casos novos da
+classe abrem tíquete próprio, já com card. O tíquete fecha quando os cards abaixo fecharem.
+
+| caso | medido em 2026-09-25 | rota |
+|---|---|---|
+| comando de aceite que não discrimina (`AE-19`), aceite que conta a si mesmo, aceite inatingível (`AE-23`) | regra publicada: `pantonic-planner` Fase 4, itens 11 e 12 (v) | sem ação |
+| número de aceite que nasce vencido (`AE-18`), número citado de outra data | regra publicada: `pantonic-planner` Fase 4, item 12 (iv) | sem ação; a extensão à premissa vai ao `TK-72a` |
+| hook de telemetria inflado e sem disparo na retomada (`AE-3`) | primeira metade corrigida (`LM-T2b`); a segunda é conduta do loop, `scrum-master` passo 9 | sem ação |
+| `check` casa toda tabela como índice (`AE-1`) | corrigido: `_parse_indice` lê só a tabela sob `## Índice` | sem ação |
+| projeção do índice que não se regenera | corrigido: `backlog.py status` regenera a célula | sem ação |
+| `check` varrendo planos fechados, `next` mudo com fila cheia, `status` apagando a fila, citação de seção sem resolução, contador de id | corrigidos no `P-0739` e no `TK-60a` (`C-10`, `C-11`) | sem ação |
+| três entrypoints lendo `stdin` sem UTF-8 (`AE-36`) | corrigidos: `ocupacao.py:142`, `telemetria_hook.py:214`, `modelo_por_fase_userpromptsubmit.py:104` | sem ação |
+| teste de executável que herda o ambiente (`ESC-10`, `DB-53` cláusula 3) | os testes usam `env=_ambiente_hostil()`; a regra corrigida não tem residência na doutrina | `TK-55g` |
+| fixture com nome de descoberta do harness | 0 arquivos hoje sob `tests/fixtures/`; nada impede a volta | `TK-55f` |
+| piso de `C-11` como esconderijo de defeito | `_PISO_C11` tem 2 entradas; nada acusa entrada que não casa ocorrência | `TK-55a` |
+| `check` aprova card que o `rdo.py` recusa | persiste; caso novo no `TK-68a` — literal com `### ` na coluna 0 cortou o card para o `rdo.py`, e o `check` saiu OK | `TK-55a` |
+| `rdo.py close` não confere o estado da tarefa | persiste: `rdo.py:14` declara que o `close` não lê `status` | `TK-55b` |
+| ` + dono` descartado na projeção do `next` | persiste, e o esforço também cai: `backlog.py:1250` monta `[<modelo> · classe <classe>]` | `TK-55c` |
+| relatório do `kit_check` que corrompe o console | acentuação corrigida (`É` e `—` chegam íntegros); a contagem ainda soma cabeçalho e detalhe: uma divergência de README com 2 linhas contou 3 problemas | `TK-55d` |
+| menção vira uso; número que o instrumento calcula; premissa medida; o card fixa a propriedade | regra sem residência | `TK-72a` |
+| asserção de magnitude; teste que lê estado vivo | regra sem residência | `TK-55g` |
+| rótulo errado; efeito abaixo do ruído do controle; `n` sem regra de enumeração | regra sem residência | `TK-55g` |
+| `review_evidence.py --desde` lista não rastreado anterior ao despacho | na evidência do `TK-68a`, 3 arquivos, todos com atribuição `alheio`, sem rebaixar a entrega (regra `B0`) | sem ação — ruído sem efeito no veredito |
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 — Esgotar o backlog antes da publicação do kit (DEB-2)
+
+### TK-55a — O `check` confronta o card com o `rdo.py` e o piso com o corpus [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** `python .claude/tools/backlog.py check` passa a emitir `C-16` para toda tarefa de
+  plano e toda subtarefa de tíquete com status `ready`, `in-progress` ou `review` que a leitura de
+  dossiê do `rdo.py` recusa, com a mensagem dessa leitura no texto da violação; e `C-17` para toda
+  entrada de `_PISO_C11` que não casa nenhuma ocorrência de citação quebrada no corpus corrente.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+  - `.claude/skills/diario-de-obras/SKILL.md`
+- **Propriedades:**
+  1. A leitura que decide `C-16` é a mesma que `rdo.py close` usa para o dossiê — um card que o
+     `close` recusaria sai acusado, e um que ele aceita não sai. A gramática não é reimplementada
+     no `backlog.py`.
+  2. Card `done`, `cancelled` ou `blocked` não é lido para `C-16`.
+  3. `C-17` nomeia a entrada órfã; entrada órfã no corpus vivo sai de `_PISO_C11` neste card.
+  4. As menções `C-1..C-14` do módulo e da skill passam a `C-1..C-17`.
+- **Texto atual 1** (`.claude/skills/diario-de-obras/SKILL.md`, uma ocorrência):
+
+  ~~~~
+  mesmo ato do card corretivo que ele já escreve.
+  ~~~~
+
+- **Texto novo 1** (sem quebra nova):
+
+  ~~~~
+  mesmo ato do card corretivo que ele já escreve. Card vivo que o `rdo.py` não lê é `C-16` no `backlog.py check`.
+  ~~~~
+
+- **Casos medidos que motivaram (2026-09-20 e 2026-09-25):** seis cards de tíquete sem
+  `Arquivos-alvo`, `Verificação` e `Pronto quando` passaram no `check` e só falharam no
+  `rdo.py close`; o `TK-68a` passou no `check` e o `review_evidence.py` recusou com `campo
+  obrigatório ausente em 'TK-68a': 'verificacao'`, porque o literal do card tinha uma linha
+  `### Controle 1.1 — …` na coluna 0.
+- **Testes (novos, em `tests/test_backlog.py`):**
+  - TF par sobre cópia da fixture `verde`: card `ready` íntegro → nenhum `C-16`; o mesmo card sem
+    a linha `- **Verificação:**` → um `C-16` com o id; o mesmo card com uma linha `### X` na coluna
+    0 antes da `Verificação` → um `C-16` com o id.
+  - TF: o mesmo card defeituoso com status `done` → nenhum `C-16`.
+  - TF par para `C-17`: piso com uma entrada que casa ocorrência da fixture → nenhum `C-17`;
+    acrescida uma entrada que não casa nada → um `C-17` que a nomeia.
+- **Verificação:**
+  1. `python -m pytest tests/test_backlog.py -q` → verde, com os testes acima.
+  2. `python .claude/tools/backlog.py check` na árvore → `check: OK — nenhuma violação.`
+  3. `(Select-String -Path .claude/skills/diario-de-obras/SKILL.md -SimpleMatch 'Card vivo que o').Count` — antes `0`, depois `1`.
+  4. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais os testes novos
+     (referência medida na autoria: `360 passed`, 2026-09-25).
+- **Pronto quando:** o `check` acusa card vivo que o `rdo.py` recusa e entrada de piso órfã, cada
+  um com par em teste, e sai `OK` sobre a árvore.
+- **Não fazer:** não mudar a gramática aceita pelo `rdo.py`; não corrigir card de plano fechado;
+  não tocar `rdo.py`.
+- **Contingências:**
+  - se o Verificação 2 acusar `C-16` em card vivo da árvore → parar e sinalizar `blocked`
+    razão `premissa`, colando as violações (o card acusado é defeito de autoria, de outro dono).
+  - se `C-17` acusar entrada órfã no corpus vivo → remover a entrada de `_PISO_C11` e seguir
+    (propriedade 3).
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T2 (DEB-2)
+
+### TK-55b — `rdo.py close` recusa tarefa que não está `done` [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** `rdo.py close` sai com código diferente de `0`, sem escrever arquivo, quando o
+  status corrente da tarefa não é `done` — lido na mesma fonte que o `backlog.py status` escreve:
+  bullet `- **Status:**` no plano legado e no diário, linha da tarefa em `estado.tsv` no plano em
+  pasta. A mensagem nomeia a tarefa, o status encontrado e o exigido.
+- **Arquivos-alvo:**
+  - `.claude/tools/rdo.py`
+  - `tests/test_rdo.py`
+  - fixtures sob `tests/fixtures/` usadas por testes de `close` — só a linha de status da tarefa
+    fechada, e só quando o teste existente passar a falhar por causa desta regra
+- **Caso medido que motivou (2026-09-20):** o `close` escreveu RDO para uma tarefa `in-progress`
+  um comando depois de o `backlog.py status` ter recusado `in-progress → done`. Hoje `rdo.py:14`
+  declara: *"`close` não tem `--status` e não lê `status` de lugar nenhum"*.
+- **Testes:** TF par — tarefa `in-progress` → exit diferente de `0` e nenhum RDO no destino; a
+  mesma tarefa `done` → exit `0` e o RDO escrito. Um par no plano legado e um no plano em pasta.
+- **Verificação:**
+  1. `python -m pytest tests/test_rdo.py -q` → verde, com os pares acima.
+  2. `(Select-String -Path .claude/tools/rdo.py -SimpleMatch 'de lugar nenhum').Count` — antes `1`, depois `0`.
+  3. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais os testes novos.
+- **Pronto quando:** o `close` só escreve RDO de tarefa `done`, provado pelos dois pares, e a
+  docstring do módulo diz que ele lê o status.
+- **Não fazer:** não acrescentar flag `--status`; não mudar o pacote de campos do `close`; não
+  tocar `backlog.py`.
+- **Contingências:**
+  - se um teste existente de `close` falhar porque a tarefa da fixture não está `done` → mudar
+    só a linha de status dessa tarefa na fixture para `done`; se outra asserção do teste mudar de
+    resultado com isso → parar e sinalizar `blocked` razão `premissa`, nomeando o teste.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T4 (DEB-2)
+
+### TK-55c — O `next` projeta o colchete do cabeçalho inteiro [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** a primeira linha de `backlog.py next` reproduz o colchete do cabeçalho do card como
+  ele está no plano — com ` + dono` e ` · esforço <e>` quando o cabeçalho os tem.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+- **Caso medido (2026-09-25):** o card `TK-68a` tinha o cabeçalho `[Sonnet · esforço low · classe
+  redacao]` e o `next` imprimiu `[Sonnet · classe redacao]`; em 2026-09-20 o `TK-58a` perdeu o
+  ` + dono`, que é a marca de tarefa não delegável. A linha é montada em `backlog.py:1250` como
+  `[{item.modelo} · classe {item.classe}]`.
+- **Testes:** TF par sobre cópia da fixture `verde` — card `[Sonnet · classe mecanica]` → primeira
+  linha termina em `[Sonnet · classe mecanica]`; card `[Opus + dono · esforço high · classe
+  investigacao]` → termina em `[Opus + dono · esforço high · classe investigacao]`.
+- **Verificação:**
+  1. `python -m pytest tests/test_backlog.py -q` → verde, com o par acima.
+  2. `python -m pytest tests/test_progresso_hook.py -q` → verde (o gancho do painel lê essa linha).
+  3. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais os testes novos.
+- **Pronto quando:** o colchete do `next` é o do cabeçalho, provado pelo par.
+- **Não fazer:** não mudar o formato do resto da saída de `next`; não tocar `progresso_hook.py`.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T3 (DEB-2)
+
+### TK-55d — O `kit_check` conta defeito, não linha [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** o número em `kit_check: check-drift FALHOU (<n> problema(s))` e em
+  `kit_check: FALHOU (<n> problema(s))` passa a ser o número de defeitos: uma divergência de
+  README conta `1`, e as linhas `[regenerado]`/`[versionado]` que a detalham continuam impressas
+  sem entrar na contagem.
+- **Arquivos-alvo:**
+  - `.claude/checks/kit_check.ps1`
+  - `tests/test_kit_check.py` (novo, ou o arquivo de teste do `kit_check` que já existir)
+- **Caso medido (2026-09-25):** cópia de `.claude/` em diretório temporário, com uma frase
+  acrescentada a uma linha da região gerada de `.claude/README.md` → a saída listou
+  `README.md diverge do regenerado (2 linha(s) diferente(s)):` mais as duas linhas de detalhe
+  como três itens `- ` da mesma lista, todos contados.
+- **Testes:** TF sobre cópia do kit sob `tmp_path` (pular se `pwsh` não estiver no `PATH`): uma
+  divergência de README com duas linhas diferentes → a contagem de problemas atribuída ao README
+  é `1` e as duas linhas de detalhe aparecem na saída.
+- **Verificação:**
+  1. `python -m pytest <arquivo de teste do kit_check> -q` → verde, com o teste acima.
+  2. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift` na árvore → exit `0`.
+  3. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais os testes novos.
+- **Pronto quando:** uma divergência conta um problema, provado pelo teste, e o check segue verde
+  na árvore.
+- **Não fazer:** não mudar o que o `kit_check` considera divergência; não mexer na codificação do
+  console (já correta).
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T5 (DEB-2)
+
+### TK-55f — Nenhuma fixture carrega nome que o harness descobre [Sonnet · esforço low · classe mecanica]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** um teste falha, nomeando o arquivo, quando existe sob `tests/fixtures/` um arquivo
+  chamado `SKILL.md`, `CLAUDE.md`, `AGENTS.md`, `settings.json` ou `settings.local.json`.
+- **Arquivos-alvo:**
+  - `tests/test_fixtures_higiene.py` (novo)
+- **Caso medido (2026-09-20):** uma fixture do `TK-60a` continha `SKILL.md`, e o harness passou a
+  listá-la como skill invocável real. Hoje há `0` arquivos com esses nomes sob `tests/fixtures/`
+  (medido em 2026-09-25).
+- **Testes:** função pura `nomes_de_descoberta(raiz: Path) -> list[Path]`; TF par — diretório sob
+  `tmp_path` com `a/SKILL.md` → 1 caminho; sem ele → 0; TR — `tests/fixtures/` real → 0.
+- **Verificação:**
+  1. `python -m pytest tests/test_fixtures_higiene.py -q` → verde.
+  2. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais os testes novos.
+- **Pronto quando:** o TR acusa fixture com nome de descoberta, provado pelo par.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T6 (DEB-2)
+
+### TK-55g — A doutrina do teste que discrimina e da medida publicada [Sonnet · esforço low · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** `GOVERNANCA.md` §4.4 passa a carregar as quatro regras do teste que discrimina, e a
+  *Disciplina de instrumento* de §3 passa de cinco para oito regras, com as três da medida
+  publicada. A regra corrigida da `DB-53` do `P-0739` ganha residência aqui, e o plano fechado não
+  é editado.
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+- **Passos:** substituir cada **Texto atual** pelo **Texto novo** de mesmo número; rodar as
+  Verificações.
+- **Texto atual 1** (§4.4, uma ocorrência):
+
+  ~~~~
+  nunca a cada micro-edição; tier superior só no fechamento (`.claude/global/CLAUDE.md` Regra 7;
+  skill `test-tiers`).
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco):
+
+  ~~~~
+  nunca a cada micro-edição; tier superior só no fechamento (`.claude/global/CLAUDE.md` Regra 7;
+  skill `test-tiers`).
+
+  **Teste que discrimina.** Teste verde só prova algo se ficaria vermelho sem o que ele protege.
+  Quatro regras, cada uma com caso medido de teste que passou pelo motivo errado:
+
+  1. **Asserção afirma relação, nunca magnitude.** O teste compara mundos: o produto certo dá a
+     mesma saída nos dois, o produto revertido dá saídas diferentes, e a saída do mundo hostil não
+     é vazia. A magnitude medida vai para o docstring, com a data e o mundo da medida.
+  2. **Executável que lê `stdin` se testa em mundo hostil construído, não herdado.** Os mundos são
+     ambiente mínimo com `PYTHONIOENCODING` de byte único e ambiente mínimo com `PYTHONUTF8=1`. O
+     payload acentuado tem de chegar a um canal observável — a saída, ou o efeito colateral do
+     executável silencioso —; sem canal que o carregue, o fato se declara e o teste não se escreve.
+     O par negativo é o próprio produto revertido por substituição textual da fonte, nunca um stub.
+  3. **Teste de instrumento roda sobre fixture copiada, nunca sobre o diário ou os planos vivos** —
+     o estado vivo torna o teste instável e leva conteúdo alheio ao contexto de quem roda a suíte.
+  4. **Fixture não carrega nome que o harness descobre** — `SKILL.md`, `CLAUDE.md`, `AGENTS.md`,
+     `settings.json`, `settings.local.json` —, porque o harness passa a tratá-la como artefato real.
+  ~~~~
+
+- **Texto atual 2** (§3, uma ocorrência):
+
+  ~~~~
+  - **Disciplina de instrumento** — cinco regras de método, medidas na janela de 2026-09-16
+  ~~~~
+
+- **Texto novo 2** (sem quebra nova):
+
+  ~~~~
+  - **Disciplina de instrumento** — oito regras de método, as cinco primeiras medidas na janela de 2026-09-16
+  ~~~~
+
+- **Texto atual 3** (§3, uma ocorrência):
+
+  ~~~~
+    só se ele produzir; protocolo lido antes de evidência que não veio é leitura paga sem uso.
+  ~~~~
+
+- **Texto novo 3** (as quebras são as do bloco):
+
+  ~~~~
+    só se ele produzir; protocolo lido antes de evidência que não veio é leitura paga sem uso.
+    **(f)** Medida publicada nomeia o objeto medido — registro, texto renderizado e texto-fonte do
+    mesmo artefato têm comprimentos diferentes, e o rótulo errado sobrevive à recontagem. **(g)**
+    Contagem publicada traz a regra de enumeração do corpus — o que conta e o que se descarta —,
+    sem a qual o `n` não se reconcilia por quem refaz a medida. **(h)** Efeito publicado vem com a
+    dispersão do controle pareado — sessão gêmea, mesmo dia, mesma árvore —, e efeito dentro da
+    faixa do controle não é efeito.
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25.
+  1. `(Select-String -Path GOVERNANCA.md -SimpleMatch '**Teste que discrimina.**').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'cinco regras de método').Count` — antes `1`, depois `0`
+  3. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'efeito dentro da').Count` — antes `0`, depois `1`
+  4. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as três contagens saem nos valores de depois.
+- **Não fazer:** não editar `docs/plans/P-0739-backlog-instrumento.md`; não tocar outro parágrafo de §4.4.
+- **Contingências:**
+  - se um **Texto atual** não for encontrado exatamente uma vez → parar e sinalizar `blocked`
+    razão `premissa`, citando o número do bloco.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T7 (DEB-2)
 
 ## TK-56 — Propagar o reparo de codificação de `stdin` aos três pontos de carga restantes
 
@@ -2712,7 +3072,7 @@ sem dono no recorte de evidência de toda revisão seguinte — falso positivo d
   não reabrir o `TK-51a`.
 ## TK-65 — Três defeitos medidos de `backlog.py` na abertura da janela do `P-0741`
 
-- **Status:** `ready` · 2026-09-20 — aberto pelo consultor de plano do `P-0741` no escalonamento
+- **Status:** `done` · 2026-09-25 — aberto pelo consultor de plano do `P-0741` no escalonamento
   `ESC-1`; os três achados são `AE-2`, `AE-3` e `AE-4` de `docs/plans/P-0741-modelo-conceitual.md`
   (seção `## Achados da execução`), atribuídos a `.claude/tools/backlog.py` e vedados ao plano
   pelo invariante `I-3` dele.
@@ -2724,10 +3084,12 @@ novo `Fundamento`) — o instrumento continua aceitando calado a forma que trava
 
 **Ordem sugerida:** `TK-65b` (o mais barato e o que mais atrapalha o diagnóstico dos outros dois),
 depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
+- **Notas de execução:**
+  - 2026-09-25 `done` — 5/5 cards done (TK-65a..e); fechado na apuracao da fila de 2026-09-25
 
 ### TK-65a — `check` recusa id de `Depende de:` que não é item [Sonnet · classe implementacao]
 
-- **Status:** `ready` · 2026-09-20
+- **Status:** `done` · 2026-09-24
 - **Objetivo:** acrescentar ao `check` uma violação de vocabulário fechado (`C-*`, como as demais)
   que acuse `- **Depende de:**` citando id sem item correspondente na árvore, e prosa no campo.
 - **Arquivos-alvo:**
@@ -2745,10 +3107,12 @@ depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
 - **Não fazer:** não mexer em `_eh_elegivel` nem na semântica de `next` — o campo é lista de ids
   de item por gramática publicada (skill `diario-de-obras`, *Item e residência*); o que falta é o
   lint recusar quem desvia, não o seletor tolerar.
+- **Notas de execução:**
+  - 2026-09-24 `review` — C-12 no check (_depende_checks); 4 TF/TR em tests/test_backlog.py, 84 verdes. Arvore viva: 3 C-12 em itens done (TK-54a:1310 prosa + id "## TK-54"; TK-78c:3882 prosa) - fora dos alvos do card, reportados ao dono
 
 ### TK-65b — O ponto de carga escreve em utf-8 antes de argparse abrir a boca [Sonnet · classe implementacao]
 
-- **Status:** `ready` · 2026-09-20
+- **Status:** `done` · 2026-09-24
 - **Objetivo:** mover a reconfiguração de encoding de `main()` para antes de `parse_args`, de modo
   que `--help` e toda mensagem de erro de argparse — que imprimem o `usage` com `→` — saiam sem
   `UnicodeEncodeError` em console cp1252.
@@ -2758,6 +3122,11 @@ depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
 - **Verificação:** par presença-ausência por subprocesso com o ambiente hostil explícito
   (`PYTHONIOENCODING` vazio, `-X utf8=0`): `backlog.py --help` sai **exit 0** e imprime o `usage`;
   hoje o mesmo comando sai em traceback. `python -m pytest tests/test_backlog.py` verde.
+- **Pronto quando:** em `main()` a reconfiguração de encoding precede `parse_args`; sob o ambiente
+  hostil explícito, `backlog.py --help` sai exit 0 com o `usage` inteiro, `→` incluído; o teste é
+  par presença-ausência por subprocesso, falhando sobre o `main()` anterior e passando sobre o novo.
+  (Campo acrescido pelo consultor, acionamento 1 do `TK-65`, `CT65-1`: o `review_evidence.py`
+  recusava o card sem ele; o critério é o da Verificação, sem escopo novo.)
 - **Caso medido que motivou (2026-09-20):**
   `PYTHONIOENCODING= python -X utf8=0 .claude/tools/backlog.py --help` →
   `UnicodeEncodeError: 'charmap' codec can't encode character '→' in position 611`.
@@ -2767,15 +3136,30 @@ depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
 
 ### TK-65c — O verbo `diretiva` não descarta id em silêncio [Sonnet · classe implementacao]
 
-- **Status:** `ready` · 2026-09-20
-- **Objetivo:** `diretiva` passa a reportar quantos ids reconheceu e a recusar (ou a acusar) o
-  texto em que há id entre crases **depois** do ` — `, que hoje é cortado e perdido.
+- **Status:** `done` · 2026-09-24 — ramo acusar/recusar fechado em **acusar** pelo consultor
+  (acionamento 2 do `TK-65`, `CT65-2`).
+- **Objetivo:** `diretiva` passa a **acusar** — escreve a linha e avisa, exit 0 — o texto em que há
+  id de item entre crases **depois** do ` — `, que o `next` não lê; o aviso diz quantos ids reconheceu
+  antes do ` — ` e nomeia cada id descartado. Recusar a escrita está fora: a diretiva viva do dono
+  (linha 2 do diário, 2026-09-24) usa a cauda de propósito para a sequência completa, e medida em
+  2026-09-24 ela tem 3 ids reconhecidos e 19 ids de item na cauda — recusar a tornaria ingravável.
 - **Arquivos-alvo:**
-  - `.claude/tools/backlog.py` (`_parse_diretiva`, `:326`)
+  - `.claude/tools/backlog.py` (`transacionar_diretiva`, `:1474`; `_parse_diretiva`, `:351`, só leitura)
   - `tests/test_backlog.py`
-- **Verificação:** par presença-ausência — a escrita de uma diretiva com ids depois do travessão
-  produz saída que nomeia os ids descartados (ou recusa a escrita), e a escrita de uma diretiva
-  bem-formada segue silenciosa; `python -m pytest tests/test_backlog.py` verde.
+- **Id descartado, definição única:** texto entre crases na cauda (depois do primeiro ` — `) que está
+  em `_ids_da_arvore(modelo)` (`:518`) e **não** está entre os ids que `_parse_diretiva` devolve; sem
+  repetição, na ordem em que aparece. Crase que não é id de item (`done`, `next`, nome de arquivo)
+  não é descartado e não entra no aviso.
+- **Verificação:** par presença-ausência por `transacionar_diretiva` sobre fixture cuja árvore tem os
+  ids citados — diretiva ``Priorize `A` — e depois `B`, `C` `` (os três ids de item): `exit_code == 0`,
+  a linha é escrita, e `mensagem` contém `B` e `C` e a contagem 1 de reconhecidos; diretiva
+  ``Priorize `A` — texto com `done` `` : `mensagem` idêntica à de hoje para a mesma árvore (nenhum
+  aviso de descarte). `python -m pytest tests/test_backlog.py` verde (86 passed em 2026-09-24).
+- **Pronto quando:** `transacionar_diretiva` segue escrevendo e saindo `exit_code 0` em toda forma; com
+  id descartado, o aviso nomeia cada um e a contagem de reconhecidos, e chega ao console pela via que
+  `main()` já usa (`print(resultado.mensagem)`, `:1706`), concatenado por quebra de linha ao aviso de
+  `_regenerar_bloco_fila` quando os dois existem; sem id descartado, `mensagem` é a de hoje; o conjunto
+  que `_parse_diretiva` devolve não muda; o teste é par presença-ausência sobre as duas formas.
 - **Caso medido que motivou (2026-09-20):** `_parse_diretiva` sobre
   ``**Diretiva de priorização:** Priorize `P-0741` — e depois `TK-57`, `TK-56` `` devolve
   `['P-0741']`: os tíquetes que a própria diretiva do dono manda priorizar saem da fila sem aviso.
@@ -2785,9 +3169,52 @@ depois `TK-65a`, depois `TK-65c`. Nenhum depende do outro.
   publicada (skill `diario-de-obras`, *Cabeçalho do diário*); o reparo é tornar o descarte
   **audível**, não mudar o que o campo significa.
 
+### TK-65d — Os dois `Depende de` do diário voltam à gramática [Sonnet · classe mecanica]
+
+- **Status:** `done` · 2026-09-24 — aberto pelo loop no fechamento do `TK-65a` (laudo ressalva 94%,
+  achado de processo roteado a subitem do `TK-65`).
+- **Objetivo:** devolver `python .claude/tools/backlog.py check` a exit 0 saneando os dois campos
+  `- **Depende de:**` do diário que a violação `C-12` do `TK-65a` acusa, sem perder texto.
+- **Arquivos-alvo:**
+  - `docs/DIARIO_DE_OBRAS.md` (só as duas linhas abaixo, localizadas por conteúdo)
+- **Reparo, por linha:**
+  1. No `### TK-54a`, o bullet `- **Depende de:** decisões 1..7 de `` `## TK-54` `` (copiadas inline
+     no que vinculam), a` e a continuação recuada logo abaixo: trocar só o rótulo
+     `**Depende de:**` por `**Fundamento:**`, texto e continuação verbatim — é proveniência, não
+     dependência de item (mesma convenção do `DMC-19` do `P-0741`).
+  2. No `### TK-78c`, o bullet `` - **Depende de:** `TK-78a` (as duas editam a skill scrum-master, em
+     trechos distintos) ``: reduzir a `` - **Depende de:** `TK-78a` `` e apensar ao fim do bullet
+     `- **Fundamento:**` do mesmo card a frase
+     `` Depende do `TK-78a` porque as duas editam a skill scrum-master, em trechos distintos. ``
+- **Verificação:** antes, `python .claude/tools/backlog.py check` sai exit 1 com exatamente as três
+  `C-12` (`TK-54a` ×2, `TK-78c` ×1); depois, exit 0 com `check: OK — nenhuma violação.`
+- **Pronto quando:** os dois bullets estão na forma do Reparo, sem palavra perdida (a proveniência
+  mora em `Fundamento`, e o `Depende de` do `TK-78c` lista só `` `TK-78a` ``); `backlog.py check`
+  sai exit 0 com `check: OK — nenhuma violação.`
+- **Não fazer:** não tocar `.claude/tools/backlog.py` — piso de dívida ou isenção de item terminal
+  para `C-12` não foram adotados; o reparo é do corpus, não do lint.
+
+### TK-65e — O ramo concatenado do aviso de `diretiva` ganha teste [Sonnet · classe mecanica]
+
+- **Status:** `done` · 2026-09-24 — aberto pelo loop no fechamento do `TK-65c` (laudo aprovado
+  100%, achado de processo: o `Pronto quando` do `TK-65c` exige a concatenação e nenhum teste a tranca).
+- **Objetivo:** trancar por teste o ramo em que `transacionar_diretiva` devolve, na mesma `mensagem`,
+  o aviso de id descartado **e** o aviso de `_regenerar_bloco_fila`, unidos por quebra de linha.
+- **Arquivos-alvo:**
+  - `tests/test_backlog.py` (junto de `test_tf_diretiva_acusa_id_descartado_na_cauda`)
+- **Verificação:** um teste sobre cópia da fixture `next_tk90` **sem** `_inserir_bloco_gerado` (sem o
+  marcador `<!-- fila:gerada -->`, o que faz `_regenerar_bloco_fila` avisar), com a diretiva
+  ``Priorize `TK-90a` — e depois `TK-90b`, `FFO-T1` ``: `exit_code == 0` e `mensagem` com duas linhas —
+  a 1ª nomeia `TK-90b` e `FFO-T1`, a 2ª é o aviso do bloco gerado. `python -m pytest tests/test_backlog.py`
+  verde.
+- **Pronto quando:** o teste existe, passa sobre o `backlog.py` vigente e falharia se a concatenação
+  deixasse cair qualquer um dos dois avisos.
+- **Não fazer:** não tocar `.claude/tools/backlog.py` — a entrega do `TK-65c` já produz as duas
+  linhas (exercitado ponta a ponta na revisão dele); falta só a trava.
+
 ## TK-66 — O atribuidor de `review_evidence.py` fabrica autoria com tarefa nunca despachada
 
-- **Status:** `ready` · 2026-09-20 — aberto pela janela de orquestração do `P-0743` ao fechar a
+- **Status:** `done` · 2026-09-25 — aberto pela janela de orquestração do `P-0743` ao fechar a
   `DOM-T2`; o achado é o `AE-3` de `docs/plans/P-0743-modelo-de-dominio.md` (seção
   `## Achados da execução`), atribuído a `.claude/tools/review_evidence.py` e vedado ao plano pelo
   invariante `I-1` dele, que proíbe qualquer card de editar o instrumento.
@@ -2825,9 +3252,98 @@ zero autoria; o instrumento trata as duas coisas como a mesma.
 **Não é escopo deste tíquete:** o `--desde` em si, nem a decisão de commitar por tarefa — essa é
 ato do dono e está fechada na diretiva do `P-0740`.
 
+**Decisão do planejamento (2026-09-25).**
+
+- **`DT-1` — rota 1.** Só casa tarefa com `status` `in-progress`, `review` ou `done`. A rota 1 ataca
+  a causa medida (o casamento não consulta `status`). A rota 2 mantém a previsão dentro do mapa de
+  autoria, só que com outro nome. A rota 3 depende do `--desde`, que este tíquete declara fora de
+  escopo, e o recorte por instantâneo do despacho já é do `TK-78c`. Arquivo que deixa de casar cai
+  em `sem-atribuicao`, que é o balde honesto: o instrumento não sabe o autor, e quem decide a rota é
+  a `B0`. `blocked` e `cancelled` também não casam: não dá para distinguir `blocked` vindo de
+  `ready` de `blocked` vindo de `in-progress`, e atribuir sem saber é o defeito que se corrige aqui.
+- **`DT-2` — o `status` vem do dossiê que o `rdo.py` já extrai.** A linha `- **Status:**` do card
+  cai em `dossie.extras` (rótulo fora de `_CAMPOS_CANONICOS`); o estado é o primeiro literal entre
+  crases do conteúdo. Não se carrega `backlog.py` (seria carregador novo e cópia nova no ajudante
+  `_init_repo_com_baseline`, âncora da `SAN-T1` do `P-0749`). Tarefa sem linha de status não casa.
+- **Achado roteado ao `P-0749`, não reparado aqui:** plano em pasta (`SAN-T2`) guarda o estado em
+  `estado.tsv` e não tem linha `**Status:**` — nele nenhuma outra tarefa casará, e todo arquivo
+  alheio sairá `sem-atribuicao`. É o lado seguro, mas a `SAN-T3` (evidência na pasta do plano) é o
+  lugar de ensinar o atribuidor a ler o `estado.tsv`.
+
+### TK-66a — O atribuidor só casa tarefa já despachada [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `done` · 2026-09-25
+- **Depende de:** `TK-74a`
+- **Objetivo:** `mapear_alvos_de_outras_tarefas` passa a pular toda tarefa cujo `status` não seja
+  `in-progress`, `review` ou `done`; alvo de tarefa não despachada deixa de virar
+  `alvo-de-outra-tarefa`.
+- **Fundamento:** `AE-3` do `P-0743` (14 arquivos de janela paralela rotulados
+  `alvo-de-outra-tarefa (DOM-T3/T4/T5)`, tarefas em `ready`); `DT-1` e `DT-2` acima. Depende da
+  `TK-74a` porque as duas editam a atribuição a outra tarefa em `review_evidence.py`, e o TF dela usa
+  o ajudante que este card altera.
+- **Arquivos-alvo:**
+  - `.claude/tools/review_evidence.py`
+  - `tests/test_review_evidence.py`
+- **Contratos/classes:**
+  - constante nova, junto de `_BACKTICK_RE`: `_STATUS_DESPACHADO = frozenset({"in-progress", "review", "done"})`.
+  - função nova `_status_do_dossie(dossie) -> str | None`, logo antes de
+    `mapear_alvos_de_outras_tarefas`: percorre `dossie.extras` (lista de pares `[rotulo, conteudo]`);
+    no primeiro par cujo `rotulo.strip().lower() == "status"`, devolve o primeiro literal entre
+    crases de `conteudo` (`_BACKTICK_RE.search`), sem espaços em volta, ou `None` se não houver
+    literal; sem o par → `None`.
+  - em `mapear_alvos_de_outras_tarefas`, logo depois do `try/except` que extrai o dossiê:
+    `if _status_do_dossie(dossie) not in _STATUS_DESPACHADO:` → `continue`. Assinatura e retorno
+    inalterados. A docstring ganha uma frase: tarefa não despachada (`status` fora de
+    `in-progress`/`review`/`done`, ou ausente) é pulada, porque alvo declarado sem despacho é
+    previsão, não autoria (`TK-66`).
+  - em `tests/test_review_evidence.py`, `_escrever_plano_duas_tarefas` ganha o parâmetro
+    `status_t2: str | None = "done"`: não sendo `None`, escreve
+    ``f"- **Status:** `{status_t2}` · 2026-09-25\n"`` como primeira linha depois do heading de T2;
+    `None` omite a linha. O default `"done"` mantém verdes os nove usos existentes.
+- **Passos:**
+  1. Altere o ajudante e escreva o TF abaixo; rode-o e veja falharem os casos `ready`, `blocked`,
+     `cancelled` e `None`.
+  2. Implemente os contratos; rode o arquivo de teste inteiro.
+  3. Rode as Verificações.
+- **Testes:**
+  - TF `test_tf_atribuir_so_tarefa_despachada_casa` parametrizado em `status_t2` com os sete casos
+    `in-progress`, `review`, `done` (esperado `atribuicao: src/a.py -> alvo-de-outra-tarefa (T2)`) e
+    `ready`, `blocked`, `cancelled`, `None` (esperado `atribuicao: src/a.py -> sem-atribuicao`):
+    repositório de `_init_repo_com_baseline`; plano de
+    `` _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `src/a.py`.", status_t2=<caso>) ``;
+    `src/a.py` criado no repositório; `main([... "--atribuir"])` devolve `0` e a saída contém a linha
+    esperada.
+  - TR: `tests/test_review_evidence.py` inteiro verde, inclusive os dois TF da `TK-74a`.
+- **Restrições desta tarefa:**
+  - Não renomear nem mudar a assinatura de `mapear_alvos_de_outras_tarefas`, `confrontar_escopo`,
+    `formatar_atribuicoes` e `_init_repo_com_baseline` (âncoras da `SAN-T1` do `P-0749`).
+  - Não carregar `backlog.py` nem criar carregador novo.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho
+    sobe em exatamente `7`.
+- **Não fazer:** não criar balde novo de atribuição; não usar `--desde` na decisão; não ler
+  `estado.tsv`.
+- **Contingências:**
+  - se `dossie.extras` não trouxer o par de rótulo `Status` para um card que tem a linha
+    `- **Status:**` → parar e sinalizar `blocked` razão `premissa`, colando o `extras` impresso
+  - se algum teste preexistente de `tests/test_review_evidence.py` ficar vermelho com o default
+    `"done"` → parar e sinalizar `blocked` razão `premissa`, colando o nome do teste
+- **Verificação:** no PowerShell, na raiz do repositório.
+  1. `python -m pytest tests/test_review_evidence.py -q` — depois, o medido no despacho `+ 7`,
+     `0 failed`
+  2. `python -m pytest -q` — total de `passed` = o medido no despacho `+ 7`, `0 failed`
+  3. `(Select-String -Path .claude/tools/review_evidence.py -SimpleMatch '_STATUS_DESPACHADO').Count`
+     — antes `0`, depois `2`
+- **Pronto quando:** tarefa em `ready`, `blocked`, `cancelled` ou sem status não recebe atribuição, e
+  tarefa em `in-progress`, `review` ou `done` segue recebendo — Verificações 1 a 3.
+- **Fora do escopo desta tarefa:** a leitura do `estado.tsv` de plano em pasta (`SAN-T3` do
+  `P-0749`, achado acima); o alvo-diretório (`TK-74a`).
+- **Notas de execução:**
+  - 2026-09-25 `review` — V1 51 passed (44+7); V2 333 passed (326+7); V3 2
+
 ## TK-67 — A rodada de revisão de guardrails está pendente desde 2026-08-08
 
-- **Status:** `ready` · 2026-09-21 — aberto pela sessão de planejamento do `P-0745`, quando a skill
+- **Status:** `cancelled` · 2026-09-25 — aberto pela sessão de planejamento do `P-0745`, quando a skill
   `checar-versao-kit` armou o gatilho de `GOVERNANCA.md` §7.1 na criação do plano.
 
 **Fato medido (2026-09-21).** O **registro das rodadas** de `GOVERNANCA.md` §7.1 tem duas entradas:
@@ -2866,9 +3382,220 @@ mudou algum comportamento desde a penúltima rodada registrada? Cite o caso."* �
 
 **Não é escopo deste tíquete:** criar guardrail novo. A porta de §7.1 é de **saída**.
 
+**Insumo do veredito dos procedimentos, roteado pelo consultor do `P-0747` em 2026-09-23.** Fonte:
+`docs/plans/_VEREDITO-procedimentos-2026-09-22.md`, roteado por `DCS-25` do `P-0747`. Três
+matérias de doutrina que não são guardrail novo — são ajuste de regra existente, saída legítima da
+rodada:
+
+1. **A forma da devolução do `pantonic-model-designer` está errada em dois pontos** (veredito
+   §3.5). A regra manda devolver *"a seção inteira e literal … nenhuma prosa fora da seção"*;
+   medido no `P-0747`, o modelador desviou duas vezes e acertou as duas: não recopiou 94 linhas já
+   na árvore (devolveu ponteiro, cabeçalho de estado, linha da versão e saída do `check`) e
+   devolveu **fora da seção** o achado mais útil da primeira autoria (quatro linhas de
+   `GOVERNANCA.md` e do próprio arquivo dele fora da `F-4`). Texto a publicar no agente: a
+   devolução é ponteiro + cabeçalho de estado + linha da versão + saída literal do `check` + um
+   campo nomeado `Achados fora da seção`, que quem conduz roteia ao planejador.
+2. **O enunciado composto de atos registrados é forma legítima e frequente** (veredito §3.6).
+   `GOVERNANCA.md` §3.2 fala em *"enunciado do problema ou prompt de origem"*; no `P-0747` o
+   enunciado foi uma frase do dono mais oito atos registrados em datas diferentes, transcritos
+   pelo condutor na `## 0`, e o lastro funcionou. Texto a publicar em §3.2 (*Lastro no enunciado*):
+   o enunciado pode ser composto de atos do dono registrados, cada um com **data e ponteiro**,
+   transcritos na `## 0`.
+3. **Ruído do harness** (veredito §5): o hook `UserPromptSubmit` injetou a *PRÓXIMA TAREFA* de
+   outra iniciativa numa sessão de planejamento (Regra 2, coesão), e o gate `modelo-por-fase`
+   pediu Opus numa sessão que o dono abriu em Fable — a matriz admite Fable *"só sob solicitação
+   explícita do dono"*, e a escolha do modelo na sessão é essa solicitação. Os dois são de
+   `modelo-por-fase` e do hook; a rodada os avalia pela pergunta única e ajusta, sem guardrail
+   novo.
+
+**Cards (2026-09-25, *Tíquete nasce executável*).** A rodada é o `TK-67a`; os três ajustes de regra
+existente, com o texto já dado acima, são o `TK-67b`. Do item 3, só o aviso de modelo entra: o
+`backlog_hook.py` injeta a próxima tarefa apenas quando o prompt contém a expressão literal
+*próximo passo* (`_GATILHO`, `backlog_hook.py:33`), o que é o contrato dele — sem ação.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 — Esgotar o backlog antes da publicação do kit (DEB-2)
+
+### TK-67a — A rodada de revisão de guardrails pendente desde 2026-08-08 [Opus · esforço high · classe investigacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** registrar em `GOVERNANCA.md` §7.1, *Registro das rodadas*, a rodada disparada
+  pelos planos fechados depois da rodada `P-0731`, aplicando o procedimento de §7.1 às guardrails
+  em escopo, e marcar `OBSOLETA desde <rodada>` a que ficar sem caso citável.
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+- **Método de sondagem:**
+  1. **Rótulo e gatilho.** A rodada se rotula pelo plano fechado mais recente, `P-0750`, e pela data
+     da execução: `P-0750 — <AAAA-MM-DD>`. Os planos que a disparam são os `done` do índice de
+     `docs/DIARIO_DE_OBRAS.md` fechados depois de 2026-08-08: `P-0732`, `P-0735`, `P-0736`,
+     `P-0738`, `P-0739`, `P-0740`, `P-0741`, `P-0743`, `P-0745`, `P-0746`, `P-0747`, `P-0748`,
+     `P-0749` e `P-0750` (medido em 2026-09-25).
+  2. **Escopo.** O registro ainda não tem duas rodadas do regime por plano, então a `1.4.0` segue
+     como penúltima e o escopo é o mesmo da rodada `P-0731`: treze guardrails, por nome — regra de
+     dependência, ACL, egress G6, namespace de estado, gate de conformance, allowlist de
+     subcomandos destrutivos, piso de regressão, disciplina de contexto, `G-DEADCODE`,
+     `G-PLANFIDELITY`, `G-PREMISE`, `G-PLANREADY` e `G-EXECREADY`. Fora por idade: `G-README`,
+     `G-SCOPE`, `G-SURFACE`, `G-REPLAN`, `G-NOASK`, `G-MODULO` e `G-TOOLDENY`.
+  3. **Isenção, re-confirmada e não herdada.** Para cada uma das seis isentas na rodada `P-0731`,
+     rodar hoje o check que a isentou e registrar a linha de sumário: em
+     `D:\workspaces\PantonicVideo`, `python -m pytest tests/conformance/test_layer_imports.py
+     tests/conformance/test_acl_no_external_in_plugins.py tests/conformance/test_filesystem_egress.py
+     tests/boundary/test_state_writer_namespacing.py -q -rs`; no hub, `python -m pytest -q`; e a
+     contagem de `permissions.deny` em `.claude/settings.json`. Check que não roda, que sai com
+     `skip`/`xfail` no alvo ou cuja lista cobre tudo **não isenta**: a guardrail vai para o passo 4
+     e o check morto entra na entrada como achado.
+  4. **Pergunta única**, para cada guardrail em escopo e não isenta: *"Esta regra mudou algum
+     comportamento desde a penúltima rodada registrada? Cite o caso."* Caso citável é ocorrência
+     **registrada** entre 2026-08-08 e a data da execução — em `docs/DIARIO_DE_OBRAS.md`,
+     `docs/DIARIO_HISTORICO.md`, `docs/plans/`, `docs/RDO/`, `docs/Entregas Aceitas/` ou no diário de
+     `D:\workspaces\PantonicVideo` — em que a regra bloqueou algo, forçou correção ou embasou
+     decisão. Suíte verde não é caso; lembrança sem registro não é caso. O caso se cita por
+     arquivo e identificador (`AE-`, `DB-`, id de tarefa).
+  5. **Resultado.** Guardrail sem caso citável recebe, no próprio item de §7, a marca
+     `OBSOLETA desde P-0750` — permanece em vigor por uma rodada, e a remoção é tarefa da rodada
+     seguinte. Zero marcações é resultado legítimo.
+- **Pronto quando (o fato que tem de existir ao final):** a entrada `P-0750 — <data>` no *Registro
+  das rodadas* de §7.1, com os planos que a dispararam, as treze em escopo, as sete fora por
+  idade, cada isenta com o check e a linha de sumário de hoje, e cada uma das demais com o caso
+  citável (arquivo e identificador) ou com a marca aplicada no item de §7.
+- **Verificação:**
+  1. Contagem da entrada nova:
+
+     ```
+     (Select-String -Path GOVERNANCA.md -Pattern '^- \*\*.P-0750. — 2026-').Count
+     ```
+
+     antes `0` (medido em 2026-09-25), depois `1`.
+  2. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Não fazer:** não criar guardrail; não remover guardrail (remoção é da rodada seguinte); não
+  editar plano fechado; não tocar as matérias do `TK-67b`.
+- **Contingências:**
+  - se `D:\workspaces\PantonicVideo` ou um dos quatro arquivos de teste não existir → a guardrail
+    daquele check vai para o passo 4, e a entrada registra `check ausente: <caminho>`.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T14 (DEB-2)
+
+### TK-67b — Três ajustes de regra existente: a devolução do modelador, o enunciado composto e o aviso de modelo [Sonnet · esforço medium · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** o `pantonic-model-designer` passa a devolver ponteiro, cabeçalho, linha da versão,
+  saída do `check` e o campo `Achados fora da seção` — em vez de recopiar a seção —, com
+  `GOVERNANCA.md` §3 e §3.2 dizendo o mesmo; §3.2 reconhece o enunciado composto de atos do dono
+  registrados; e o aviso da fase intelectual do hook de modelo deixa de mandar parar quem está em
+  Fable.
+- **Fundamento:** itens 1, 2 e 3 do insumo do veredito dos procedimentos, acima, com os casos
+  medidos no `P-0747`.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-model-designer.md`
+  - `GOVERNANCA.md`
+  - `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`
+- **Passos:** substituir cada **Texto atual** pelo **Texto novo** de mesmo número, no arquivo
+  indicado; rodar `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate`; rodar as
+  Verificações.
+- **Texto atual 1** (`.claude/agents/pantonic-model-designer.md`, uma ocorrência):
+
+  ~~~~
+  Todo ato devolve exatamente duas coisas, e nada além delas:
+
+  1. A seção **inteira e literal** — a `## 1. Modelo conceitual` na autoria; a
+     `## 1A. Modelo conceitual — versão pendente de validação` em todo ato que versiona. Não um
+     trecho, não um resumo do que mudou.
+  2. A linha da versão do ato, registrada em `### 1.4 Registro de versões` dentro da própria seção,
+     com a situação que o ato produz.
+
+  Nenhuma prosa fora da seção, nenhum comentário sobre a qualidade do plano, nenhuma recomendação.
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco):
+
+  ~~~~
+  Todo ato devolve quatro coisas, e nada além delas:
+
+  1. O **ponteiro** para a seção que o ato escreveu na árvore — a `## 1. Modelo conceitual` na
+     autoria; a `## 1A. Modelo conceitual — versão pendente de validação` em todo ato que
+     versiona —, com a linha `**Estado do modelo:**` copiada. A seção já está no arquivo: não a
+     recopie.
+  2. A linha da versão do ato, registrada em `### 1.4 Registro de versões` dentro da própria seção,
+     com a situação que o ato produz.
+  3. A saída literal de `python .claude/tools/modelo.py check --plano <plano>` depois do ato.
+  4. O campo `Achados fora da seção:` — o que você viu fora da seção e que afeta o plano, um por
+     linha, com arquivo, linha e fato —, ou `nenhum`. Quem conduz a sessão o roteia ao planejador.
+
+  Nenhum comentário sobre a qualidade do plano e nenhuma recomendação fora do campo 4.
+  ~~~~
+
+- **Texto atual 2** (`GOVERNANCA.md` §3, matriz, linha *Modelagem*; sem quebra nova):
+
+  ~~~~
+  devolve a seção literal e a linha do registro de versões que registra o ato (`pantonic-model-designer`)
+  ~~~~
+
+- **Texto novo 2:**
+
+  ~~~~
+  devolve o ponteiro da seção, a linha do registro de versões que registra o ato, a saída do `check` e os achados fora da seção (`pantonic-model-designer`)
+  ~~~~
+
+- **Texto atual 3** (`GOVERNANCA.md` §3.2, tabela de papéis, linha *modelador*; sem quebra nova):
+
+  ~~~~
+  devolve a seção literal e a linha do ato em `### 1.4 Registro de versões`;
+  ~~~~
+
+- **Texto novo 3:**
+
+  ~~~~
+  devolve o ponteiro da seção, a linha do ato em `### 1.4 Registro de versões`, a saída do `check` e os achados fora da seção;
+  ~~~~
+
+- **Texto atual 4** (`GOVERNANCA.md` §3.2, *Lastro no enunciado*; sem quebra nova e sem refluxo):
+
+  ~~~~
+  o que o modelador imaginou. E o
+  ~~~~
+
+- **Texto novo 4:**
+
+  ~~~~
+  o que o modelador imaginou. O enunciado pode ser composto — uma frase do dono mais atos dele registrados em datas diferentes, transcritos na `## 0`, cada ato com a data e o ponteiro ao registro —, e o lastro vale igual para cada parte. E o
+  ~~~~
+
+- **Texto atual 5** (`.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`, uma ocorrência):
+
+  ~~~~
+          "Se o modelo ativo NAO for Opus, PARE e peca ao dono `/model opus` antes de "
+          "prosseguir (anuncie a troca — Regra 5). Se ja estiver em Opus, ignore.",
+  ~~~~
+
+- **Texto novo 5:**
+
+  ~~~~
+          "Se o modelo ativo for Sonnet ou Haiku, PARE e peca ao dono `/model opus` antes de "
+          "prosseguir (anuncie a troca — Regra 5). Em Opus ou Fable, ignore: o modelo "
+          "da sessao e escolha do dono.",
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25.
+  1. `(Select-String -Path .claude/agents/pantonic-model-designer.md -SimpleMatch 'Achados fora da seção:').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'devolve a seção literal').Count` — antes `2`, depois `0`
+  3. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'O enunciado pode ser composto').Count` — antes `0`, depois `1`
+  4. `(Select-String -Path .claude/global/hooks/modelo_por_fase_userpromptsubmit.py -SimpleMatch 'Em Opus ou Fable, ignore').Count` — antes `0`, depois `1`
+  5. `python -m py_compile .claude/global/hooks/modelo_por_fase_userpromptsubmit.py` → exit `0`
+  6. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` e `-Mode check-drift` → exit `0`
+  7. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as quatro contagens saem nos valores de depois, o hook compila e o kit segue
+  sem drift interno.
+- **Não fazer:** não rodar `materializar.py apply` nem escrever em `C:\Users\panta\.claude\` — a
+  cópia do hook no ponto de carga é do dono, e o relatório de encerramento a pede; não tocar o
+  aviso da fase de execução nem o `systemMessage` da fase intelectual.
+- **Contingências:**
+  - se um **Texto atual** não for encontrado exatamente uma vez → parar e sinalizar `blocked`
+    razão `premissa`, citando o número do bloco.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T12 (DEB-2)
+
 ## TK-68 — A cópia do kit das regras globais divergiu do arquivo que o dono carrega
 
-- **Status:** `ready` · 2026-09-21 — aberto pela sessão de planejamento do `P-0745`, ao confrontar
+- **Status:** `done` · 2026-09-25 — aberto pela sessão de planejamento do `P-0745`, ao confrontar
   as duas cópias antes de decidir quem edita o quê na `PLN-T2`.
 
 **Fato medido (2026-09-21).** `C:/Users/panta/.claude/CLAUDE.md` (12.752 bytes, 2026-09-04) e
@@ -2897,3 +3624,2703 @@ gravado.
 
 **Não é escopo deste tíquete:** o percentual de ocupação e a tabela de tetos, que as duas cópias
 carregam hoje e que a `PLN-T2` do `P-0745` reescreve **nas duas** (`DPN-12`).
+
+**Estado medido na revisão de pertinência (2026-09-24).** A segunda metade do defeito ("nada afere
+a diferença") caiu: `.claude/projecoes.json` declara `global/CLAUDE.md` no alvo `usuario`, e
+`python .claude/tools/materializar.py drift --alvo usuario` sai **1** acusando três arquivos com
+conteúdo diferente no destino — `~/.claude/CLAUDE.md` (a cópia do kit segue sem os Controles 1.1
+e 1.2: `grep -c "Controle 1.1"` → **0** no kit, **2** no global), `~/.claude/docs/GOVERNANCA_MEMORIAS.md`
+e `~/.claude/hooks/modelo_por_fase_userpromptsubmit.py`. Resta a reconciliação do conteúdo, arquivo
+a arquivo, e só então o `apply` — que escreve em `~/.claude/` e por isso é ato do dono.
+
+**Autorização do dono (2026-09-25), verbatim:** *"pode aplicar no fim do TK-68"*. O `apply` deixa de
+ser ato do dono e passa a ser o **último passo do fechamento deste tíquete**, executado pelo
+condutor, nesta ordem e só com todas as condições satisfeitas:
+1. `Select-String -Path .claude/global/CLAUDE.md -Pattern "Controle 1.1","Controle 1.2"` acha os dois
+   — sem isso o `apply` apaga os Controles do arquivo do dono; falhou, **não aplica** e reporta.
+2. Cópia de segurança dos três destinos em `~/.claude/` com sufixo `.bak` (`CLAUDE.md`,
+   `docs/GOVERNANCA_MEMORIAS.md`, `hooks/modelo_por_fase_userpromptsubmit.py`).
+3. `python .claude/tools/materializar.py apply --alvo usuario`.
+4. `python .claude/tools/materializar.py drift --alvo usuario` sem `FALHOU`; falhou, restaura os `.bak`
+   e reporta.
+5. O relatório ao dono diz que foi aplicado e que a regra nova só vale depois de fechar e reabrir o
+   Claude Code.
+
+**Reconciliação arquivo a arquivo (2026-09-25, medida na autoria do card).** A rota já está
+decidida: `docs/RESIDENCIA_DOUTRINA.md` (linha da classe `global`) e `GOVERNANCA.md` (tabela de
+residência) fazem de `.claude/global/` o canônico e de `~/.claude/` a projeção. Diff de
+`~/.claude/<arquivo>` contra `.claude/global/<arquivo>`, ignorando `\r`:
+
+| Arquivo | Diferença | Quem é mais novo | Destino |
+|---|---|---|---|
+| `CLAUDE.md` | (a) Controles 1.1 e 1.2 da Regra 1, 28 linhas só no do dono; (b) Regra 8 com *"devolve `blocked` à triagem do plano"* e Regra 9 inteira (*"A mensagem ao dono se entende sozinha"*, `P-0750`) só no kit | (a) dono, (b) kit | (a) entra no kit pelo `TK-68a`; (b) chega ao dono pelo `apply` |
+| `docs/GOVERNANCA_MEMORIAS.md` | 1 linha: *"a skill `proximo-passo` drena"* no dono × *"a skill `scrum-master` drena"* no kit | kit (`proximo-passo` não existe mais no hub) | chega ao dono pelo `apply`; nenhuma edição |
+| `hooks/modelo_por_fase_userpromptsubmit.py` | nudge de execução *"Gate … recomende `/model sonnet`"* no dono × *"Nota … NAO pare"* no kit (`TK-78a`); leitura do `stdin` em UTF-8 só no kit | kit | chega ao dono pelo `apply`; nenhuma edição |
+
+Fechado o `TK-68a`, o kit é superconjunto do arquivo do dono nos três arquivos, e o `apply` da
+autorização acima não apaga nada que só o dono tenha.
+
+**Estado em 2026-09-25, depois do `TK-68a` `done` (aprovado 100%).** A condição 1 da autorização
+está satisfeita, mas o `apply` **não rodou**: o classificador de permissão do modo automático do
+Claude Code recusou o comando (cópia `.bak` + `apply`) como *Self-Modification*, antes de qualquer
+escrita — `~/.claude/` está intocado e o `drift --alvo usuario` segue saindo `1` nos três arquivos.
+O tíquete fica aberto só por esse passo; ele fecha quando o dono rodar os passos 2–4 da autorização
+(ou liberar a regra de permissão e mandar o condutor rodá-los).
+
+**Fechamento (2026-09-25).** O dono rodou os passos 2–4 (cópias `.bak` + `apply`), sem falha; o
+condutor re-mediu `python .claude/tools/materializar.py drift --alvo usuario` → `OK - sem drift`,
+exit `0`. Tíquete `done` 1/1. As regras novas (Controles 1.1/1.2 já vigentes; Regra 8 revisada e
+Regra 9 novas no arquivo do dono) valem a partir da próxima abertura do Claude Code.
+
+### TK-68a — Os Controles 1.1 e 1.2 da Regra 1 entram na cópia canônica do kit [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-25
+- **Objetivo:** `.claude/global/CLAUDE.md` passa a carregar, sob a Regra 1 e antes da Regra 2, os
+  Controles 1.1 e 1.2 com o texto exato do arquivo do dono. É o que torna seguro o `apply` do
+  fechamento do tíquete: sem os controles no kit, o `apply` os apaga de `~/.claude/CLAUDE.md`.
+- **Fundamento:** tabela de reconciliação acima, linha `CLAUDE.md` (a).
+- **Arquivos-alvo:**
+  - `.claude/global/CLAUDE.md`
+  - `tests/test_global_claude.py` (novo)
+- **Passos:**
+  1. Em `.claude/global/CLAUDE.md`, substitua o **Texto atual 1** pelo **Texto novo 1**.
+  2. Crie `tests/test_global_claude.py` com o teste descrito em **Testes**.
+  3. Rode as Verificações.
+- **Texto atual 1** (uma ocorrência, linhas 16–18 hoje):
+
+  ~~~~
+  prossiga com a implementação em uma nova mensagem/turno iniciada pelo usuário.
+
+  ## Regra 2 — Integridade do contexto
+  ~~~~
+
+- **Texto novo 1:**
+
+  ~~~~
+  prossiga com a implementação em uma nova mensagem/turno iniciada pelo usuário.
+
+  ### Controle 1.1 — Persistir o plano **é** encerramento do planejamento, não execução
+
+  Ao sair do Plan Mode com plano aprovado, **grave o plano no repositório antes de encerrar o
+  turno**: em projeto Pantonic*, `docs/plans/P-<MMDD>-<slug>.md` + uma linha apensada a
+  `docs/plans/_INBOX.md`. Isso **não** é execução e a Regra 1 **não** o proíbe — o que a Regra 1
+  proíbe é começar a implementar. Só depois de gravado o turno encerra.
+
+  **Motivo:** em Plan Mode o agente não pode escrever arquivo; depois da aprovação a Regra 1 manda
+  parar. Lido literalmente, o arquivamento não tem onde morar, e o plano só existe no contexto da
+  sessão — que o `/clear` seguinte destrói. Defeito medido em 2026-09-04 (PantonicVideo): dois
+  planos aprovados no mesmo dia, nenhum gravado em `docs/plans/`, nenhum no `_INBOX.md`; a retomada
+  seguinte de backlog encontrou fila vazia e reportou "nada a fazer" com dois planos aprovados
+  pendurados. O harness salva uma cópia em `~/.claude/plans/<slug-aleatório>.md`, mas esse nome não
+  é rastreável a partir do backlog — não substitui o arquivamento canônico.
+
+  ### Controle 1.2 — Não abrir sessão de planejamento sobre alvo que já tem plano aprovado
+
+  Antes de entrar em Plan Mode para um tíquete/iniciativa, verifique se ele já tem plano vivo
+  (`docs/plans/`, `_INBOX.md`, índice do diário). Se já tiver, **não replaneje**: ou executa o que
+  está aprovado, ou emenda o plano existente por decisão explícita do dono. Planejar duas vezes o
+  mesmo alvo produz dois planos vivos disputando a mesma rota — que é exatamente o que a regra de
+  convergência de uma iniciativa proíbe (skill `diario-de-obras`, "Planos derivados").
+
+  **Motivo:** mesmo incidente de 2026-09-04 — a segunda sessão custou um contexto inteiro de Opus e
+  produziu um artefato descartado pelo dono. A causa dela foi o Controle 1.1: como o primeiro plano
+  não estava gravado em lugar nenhum rastreável, a sessão seguinte não tinha como saber que ele
+  existia.
+
+  ## Regra 2 — Integridade do contexto
+  ~~~~
+
+- **Restrições desta tarefa:**
+  - A edição é substituição literal; o texto novo entra exatamente como está no bloco, sem
+    reescrita editorial (o arquivo do dono é a fonte do literal, e o `apply` o sobrescreve com
+    esta cópia). O arquivo tem final de linha LF: preserve.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho
+    não diminui.
+- **Não fazer:** não rodar `materializar.py apply` nem escrever em `C:\Users\panta\.claude\` — o
+  `apply` é o último passo do fechamento do tíquete, do condutor, nas condições da autorização
+  acima; não tocar a Regra 8 nem a Regra 9 do kit (são a versão mais nova); não editar
+  `.claude/global/docs/GOVERNANCA_MEMORIAS.md` nem `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`
+  (a versão do kit prevalece, tabela acima); não tocar `.claude/sync-kit.ps1`.
+- **Contingências:**
+  - se o **Texto atual 1** não for encontrado **exatamente uma vez** → parar e sinalizar `blocked`
+    razão `premissa`, colando a contagem
+  - se `python -m pytest -q` sair com total de `passed` menor que o medido no despacho, ou com
+    qualquer `failed` → parar e sinalizar `blocked` razão `premissa`, colando a linha de sumário
+- **Testes:** TR novo em `tests/test_global_claude.py`, lendo `.claude/global/CLAUDE.md` em UTF-8:
+  `### Controle 1.1 —` e `### Controle 1.2 —` aparecem uma vez cada, nessa ordem, depois de
+  `## Regra 1 —` e antes de `## Regra 2 —`. Falha sobre o arquivo anterior, passa sobre o novo — é
+  a guarda de que o canônico não volta a perder os controles, que o `apply` apagaria do dono.
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-25.
+  1. `(Select-String -Path .claude/global/CLAUDE.md -Pattern "^### Controle 1\.[12] ").Count` —
+     antes `0`, depois `2`
+  2. `(Get-Content .claude/global/CLAUDE.md -Encoding utf8).Count` — antes `182`, depois `210`
+  3. `git diff --no-index --ignore-cr-at-eol --numstat "$env:USERPROFILE/.claude/CLAUDE.md" .claude/global/CLAUDE.md` —
+     antes `17	29`, depois `17	1` (sobra só a Regra 8/9, que é do kit)
+  4. `python -m pytest tests/test_global_claude.py -q` → verde
+  5. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais o teste novo
+- **Pronto quando:** o canônico do kit carrega os Controles 1.1 e 1.2 com o literal do arquivo do
+  dono, o diff contra `~/.claude/CLAUDE.md` se reduz às linhas em que o kit é o mais novo, e o TR
+  guarda a presença dos dois controles.
+
+## TK-69 — O lastro obrigatório do modelo conceitual, e o modelo como contrato bilateral
+
+- **Status:** `cancelled` · 2026-09-24 — aberto por ato do dono na validação prática do `P-0741`,
+  medindo o modelo do `P-0745` como primeiro caso real da forma publicada.
+
+**Origem.** O dono validou o mecanismo do modelo conceitual **na prática**, e não pela leitura da
+documentação: leu o modelo do `P-0745` — o primeiro plano nascido inteiro sob a forma publicada pelo
+`P-0741`/`P-0743` — e o reprovou. A reprovação não é do plano nem de quem o escreveu: é do
+**conceito de modelo**, que admite elemento sem lastro no enunciado. Os casos citados pelo dono são
+**exemplos, não avaliação exaustiva**.
+
+### 1. A restrição de lastro (doutrina)
+
+**Todo objeto, operação e propriedade do modelo tem lastro direto no enunciado do problema e no
+prompt de origem do plano.** Elemento sem esse lastro é **requisito secundário** e **não participa
+do modelo**.
+
+Não é proibição de executar. O elemento sem lastro pode existir e ser entregue — mas é
+**responsabilidade inteira do agente** ideá-lo, executá-lo e garantir que não prejudique o modelo.
+Nas palavras do dono: *"Qualquer entrega que não tiver lastro nesses textos são entregas que o
+agente supôs que o cliente quer."* O modelo é o contrato com o dono; o resto é meio, e meio é
+transparente para o cliente/gerente.
+
+### 2. O modelo é contrato bilateral (doutrina)
+
+**O modelo sempre precisa ser validado pelo cliente/gerente antes de vigorar.** Ato do dono,
+2026-09-21: *"Um contrato onde só um dos atores estabelece as condições não é contrato, é
+imposição."* Consequência sobre a rota do loop autônomo: a **autoria do modelo não é etapa
+desassistida**, e o dono declarou que não acredita ser calibrável agenticamente. É exceção
+declarada ao objetivo de execução sem round-trip humano, e a única — vale para o ato de modelo,
+não para a execução das tarefas que dele derivam.
+
+### 3. As classes de defeito medidas no modelo do `P-0745`
+
+Tipificação dos exemplos dados pelo dono. Servem de base para violações de `modelo.py check`, e
+**não esgotam** a matéria.
+
+| classe | exemplos citados pelo dono |
+|---|---|
+| sem lastro no enunciado | `guarda da forma antiga`, `documentação pública do kit`, `agregado medido do planejador`, `citações históricas de medida` |
+| propriedade promovida a objeto | `norma da unidade de trabalho` (é propriedade de *tarefa*), `gramática do card` (de *card*), `protocolo do planejador` e `especificação do planejador` (de *planejador*) |
+| resultado de operação promovido a objeto | `corpus medido da atuação do planejador` |
+| conceito promovido a objeto | `modelo de domínio e o papel que o escreve` |
+| ator inédito na operação | o fluxo 1.2 faz agir *investigador*, *mantenedor*, *redator da norma*, *autor de papéis* e *redator da especificação* — **nenhum dos cinco existe em 1.1** |
+| dosimetria de estado final | 21 estados finais para um enunciado que especificou poucos: *"são os agentes tentarem estipular uma entrega que o cliente nunca pediu"* |
+
+A classe **ator inédito** é integralmente mecânica: todo ator citado em 1.2 tem de existir em 1.1.
+Medição de 2026-09-21 sobre o `P-0745`: **zero de cinco**.
+
+### 4. A leitura correta do enunciado do `P-0745` (dono, 2026-09-21)
+
+Registro de uma interpretação que o agente errou nesta sessão, e que o dono corrigiu. O trecho do
+prompt de origem — *"agora com o conceito de modelo e do agente model designer estabelecido, assim
+como a revisão dos limites de janela e a mudança da orientação de granularidade de tarefa, que não
+mais serão atividades atômicas, mas atividades de escopo maior, mantendo a coesão e coerência do
+objeto trabalhado"* — **é tudo propriedade**, e descreve **estado**, não pedido de trabalho.
+
+| eixo | estado inicial do framework (antes dos planos citados) | estado final do framework (hoje) |
+|---|---|---|
+| modelo | sem assistência do model designer e sem o conceito de modelo | existe modelo e existe um model designer |
+| janela | restrição de 200k por janela | janela de 1M tokens; tanta restrição deixou de ser relevante |
+| granularidade | tarefas atômicas | tarefas maiores, desde que coesas e coerentes |
+
+**O que o plano responde:** como as instruções contidas nesses agentes/skills respondem a essa
+mudança de estados — que **já ocorreu**. O plano não produz a mudança; ele faz os instrumentos
+alcançá-la.
+
+- **Critério de sucesso:** os instrumentos se utilizam do novo aparato construído.
+- **Critério de fracasso:** os instrumentos ainda utilizam os conceitos obsoletos.
+
+Nota de coerência: a *guarda da forma antiga*, rejeitada como objeto por falta de lastro, tem
+residência legítima como **aceite** — é a aferição do critério de fracasso, não uma coisa que o
+plano trabalha. A regra do dono não perde a guarda; apenas a tira do modelo.
+
+### 5. Consequências a rotear (não decididas aqui)
+
+1. **Revisar o conceito de modelo** e reaplicá-lo ao modelo do `P-0745`, para nova medição do dono.
+   Ordem fixada por ele: revisar primeiro, reaplicar depois.
+2. **Residências afetadas pela revisão:** `GOVERNANCA.md` §3.2 (norma), a subseção *Modelo de
+   domínio (seção do plano)* da skill `diario-de-obras` (gramática), `.claude/tools/modelo.py`
+   (violações novas), `.claude/agents/pantonic-model-designer.md` (gate de autoria) e `README.md`
+   §8.1 (descrição pública do mecanismo).
+3. **Defeito de gate medido no `P-0745`.** O Marco 1 do plano prevê dois desfechos — `go` (sai de
+   `blocked`) e `no-go` (`cancelled`, e o `P-0744` volta a `blocked`). O desfecho real foi um
+   **terceiro**: modelo reprovado, plano **não** cancelado, modelo a ser reautorado. O gate não
+   tem esse ramo; o plano segue `blocked` e o ramo não se inventa na execução (Regra 8).
+
+**Não é escopo deste tíquete:** reescrever o modelo do `P-0745` — todo ato sobre a seção *Modelo
+conceitual* é exclusivo do `pantonic-model-designer`.
+- **Notas de execução:**
+  - 2026-09-24 `cancelled` — absorvido pelo P-0746 (done 7/7, aceito pelo dono em 2026-09-24): lastro obrigatório (LST-T1, LST-T8, LST-T9), decomposição objeto × propriedade (LST-T7), requisitos secundários (LST-T3), V21 no check (LST-T5) e reautoria do P-0745 com o ramo no-go do Marco 1 (LST-T6). O modelo como contrato bilateral segue no TK-70. Resíduo medido: README.md §8.1 tem 0 menções a lastro — roteado ao TK-70
+
+## TK-70 — A vigência bilateral do modelo e a conduta de drift do loop
+
+- **Status:** `cancelled` · 2026-09-25 — aberto no recorte do `P-0746` na versão 3 do modelo dele
+  (`F-13`, `DLS-11`).
+
+**Origem:** recorte do `P-0746` na versão 3 do modelo dele (`F-13`, `DLS-11`) · **Decisões que o
+vinculam:** `DLS-3` e `DLS-4` do `P-0746`, que deixaram de vincular aquele plano e passaram a
+vincular este tíquete.
+
+### 1. Por que está aqui e não no `P-0746`
+
+Ao aceitar a versão 2 do modelo do `P-0746`, o dono fez uma correção: a restrição de atualização
+*"foge um pouco do escopo de lastro (…) foi mencionado do enunciado, mas a título de conversação"*,
+e o conteúdo dela *"já deve estar abrangido por outra ferramenta"*. O trecho da `## 0` daquele plano
+que a sustentava descreve **como a coisa funciona**, não pede trabalho — e portanto não é lastro,
+pelo critério que o próprio plano institui.
+
+Pela `DLS-2` do `P-0746`, elemento sem lastro não fica proibido de existir: fica proibido de
+participar **daquele** contrato. Pelo invariante `I-4`, achado fora de escopo vira tíquete, nunca
+tarefa do plano. Daí este tíquete, com os dois dossiês preservados inteiros.
+
+### 2. A suposição a confirmar antes de executar
+
+O dono supôs que o conteúdo já está abrangido por outra ferramenta. **A medição de 2026-09-21 diz
+que não está**, e quem pegar este tíquete confirma antes de escrever qualquer linha:
+
+- `drift` tem **0** ocorrências em `.claude/skills/scrum-master/SKILL.md` (`F-7` do `P-0746`).
+- `GOVERNANCA.md:372-375` **define** drift como a variação do modelo em si, distinta de medição, mas
+  nenhum texto diz o que acontece com o drift acumulado quando o marco chega.
+- `lastro`, `só vigora` e `vigora validado` têm **0** ocorrências em `GOVERNANCA.md` (`F-9`).
+
+Se a confirmação mostrar que outra ferramenta já cobre um dos dois pacotes, **esse pacote fecha por
+obsolescência** em vez de entrar na fila — é o desfecho que o dono previu.
+
+### 3. Pacote A — a vigência bilateral do modelo (dossiê da ex-`LST-T2`)
+
+- **Objetivo:** a norma passa a declarar que o modelo só vigora validado pelo cliente ou gerente, e
+  que antes do primeiro aceite ele é rascunho substituível no lugar; o `TK-69` §2 é corrigido pela
+  `DLS-3`, que revoga a leitura de *"exceção declarada ao objetivo da `EXECUCAO-AUTONOMA`"*.
+- **Fundamento:** `DLS-3`; fatos `F-8`, `F-9` do `P-0746`.
+- **Camada e fronteira:** doutrina, mais uma correção de registro no diário. Nenhum instrumento,
+  nenhum agente.
+- **Domínio:** *vigência* — a condição a partir da qual o texto do modelo obriga as partes.
+  *Rascunho* — o modelo antes do primeiro aceite: substitui-se no lugar, sem bloco irmão e sem linha
+  nova em `### 1.4`.
+- **Caso medido acrescentado em 2026-09-22 (`AE-21` do `P-0746`, roteado pelo revisor e confirmado
+  pelo consultor):** a norma não tem ramo para **primeira versão recusada e reautorada**, e a
+  divergência apareceu **dentro de uma janela, no mesmo papel e no mesmo dia** — a `## 1A` do
+  `P-0746` está `pendente` aguardando o Marco 2, e a `## 1` do `P-0745`, reautorada da versão 1
+  recusada, está `vigente` aguardando o Marco 3. Mesmo estado de fato, valores opostos no
+  cabeçalho. O pacote fecha os dois: o que é rascunho substituível, o que é pendente com bloco
+  irmão, e qual valor de `situação` cada um carrega antes do primeiro aceite.
+- **Arquivos-alvo:** `GOVERNANCA.md` §3.2 — parágrafo novo antes de **Versão vigente, pendente e
+  obsoleta**; `docs/DIARIO_DE_OBRAS.md` › `## TK-69` §2 (correção pela `DLS-3`).
+- **Verificação:**
+  1. ```
+     grep -ci 'só vigora\|vigora validado' GOVERNANCA.md
+     ```
+     → **≥ 1**. **Medido antes: 0**.
+  2. ```
+     grep -c 'exceção declarada ao objetivo' docs/DIARIO_DE_OBRAS.md
+     ```
+     → **0**. **Medido antes: 1** (texto do `TK-69` §2, a revogar).
+  3. ```
+     python -m pytest tests -q
+     ```
+     → **≥ 262 passed**.
+- **Pronto quando:** as três verificações saem nos valores declarados.
+
+### 4. Pacote B — o drift, o loop e o marco (dossiê da ex-`LST-T4`)
+
+- **Objetivo:** a skill `scrum-master` declara que o loop **carrega** o drift até o marco em vez de
+  parar nele ou decidir sobre ele; `GOVERNANCA.md` §4.5 declara que o marco revisa o modelo e
+  adjudica o drift — validado, o plano segue; recusado, as tarefas retroagem ao ponto do drift.
+- **Fundamento:** `DLS-4`; fatos `F-7`, `F-9` do `P-0746`.
+- **Camada e fronteira:** doutrina de marco e skill de orquestração. **Não** redefine o conceito de
+  drift, que já existe em `GOVERNANCA.md:372-375` — acrescenta conduta e desfecho.
+- **Domínio:** *drift* — a variação do modelo em si, distinta de medição (norma vigente).
+  *Retroagir* — as tarefas posteriores ao ponto do drift voltam a `ready`; o plano **não** é
+  cancelado.
+- **Arquivos-alvo:** `.claude/skills/scrum-master/SKILL.md` — conduta do loop diante de drift;
+  `GOVERNANCA.md` §4.5 — o que o marco revisa e os dois desfechos do drift.
+- **Verificação:**
+  1. ```
+     grep -ci 'drift' .claude/skills/scrum-master/SKILL.md
+     ```
+     → **≥ 2**. **Medido antes: 0**.
+  2. ```
+     grep -ci 'retroage\|retroagem' GOVERNANCA.md
+     ```
+     → **≥ 1**. **Medido antes: 0**.
+  3. Par presença-ausência: a skill diz que o loop **não** para no drift e **não** decide sobre ele,
+     e o texto do marco nomeia os **dois** desfechos.
+  4. ```
+     python -m pytest tests -q
+     ```
+     → **≥ 262 passed**.
+- **Pronto quando:** as quatro verificações saem nos valores declarados.
+
+### 5. O que este tíquete não faz
+
+- Não toca o modelo do `P-0746` nem o do `P-0745` — a matéria de lastro é daquele plano.
+- Não redefine o conceito de drift, que já é norma vigente.
+- Não entra na fila do `P-0746`: quem o executa é uma janela própria, depois da confirmação da §2.
+
+**Resíduo recebido do `TK-69` (revisão de pertinência, 2026-09-24).** O `TK-69` fechou absorvido pelo
+`P-0746`; a descrição pública do mecanismo em `README.md` §8.1 ficou sem a regra de lastro
+(`grep -ci lastro README.md` → **0**). Entra aqui porque este tíquete já reescreve a descrição do
+contrato do modelo; a redação pública passa pela skill `redacao-doc`.
+
+**Confirmação da §2, medida em 2026-09-25 na autoria do card.** Metade do tíquete já está coberta
+por planos posteriores e fecha por obsolescência, como a §2 previa:
+
+- **Pacote A** — `GOVERNANCA.md` §3.2 já tem *Rascunho antes do Marco 1* (substituição no lugar,
+  sem bloco irmão). Falta dizer que o modelo só vigora validado e qual `situação` o rascunho
+  carrega (caso `AE-21`). A correção do `TK-69` §2 caiu: o literal *exceção declarada ao
+  objetivo* não existe mais fora desta seção.
+- **Pacote B** — a conduta do loop já está publicada: `scrum-master` passo 8, rota `modelador` — a
+  versão pendente coexiste com a vigente até o marco, sem parar a janela. Falta o desfecho da
+  recusa: `retroag` tem `0` ocorrências em `GOVERNANCA.md`.
+- **Resíduo do `TK-69`** — `lastro` tem `0` ocorrências em `README.md`.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 — Esgotar o backlog antes da publicação do kit (DEB-2)
+
+### TK-70a — A vigência do modelo, o desfecho do drift recusado e o lastro na descrição pública [Sonnet · esforço low · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** `GOVERNANCA.md` §3.2 passa a dizer que o modelo só vigora depois de validado pelo
+  dono — o rascunho carrega `situação: vigente` por forma, não por vigência — e o que acontece com o
+  que foi entregue sob uma versão pendente recusada; `README.md` §8.1 passa a dizer ao leitor que
+  todo elemento do modelo tem lastro no pedido.
+- **Fundamento:** `DLS-3` e `DLS-4` do `P-0746`; `AE-21` daquele plano; confirmação acima.
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+  - `README.md`
+- **Passos:** substituir cada **Texto atual** pelo **Texto novo** de mesmo número; rodar as
+  Verificações.
+- **Texto atual 1** (`GOVERNANCA.md` §3.2, *Rascunho antes do Marco 1*, uma ocorrência):
+
+  ~~~~
+  a versão 1 **no lugar**, sem bloco irmão e sem linha nova no registro. Versionar só começa no
+  Marco 1.
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco):
+
+  ~~~~
+  a versão 1 **no lugar**, sem bloco irmão e sem linha nova no registro. Versionar só começa no
+  Marco 1. O rascunho carrega `situação: vigente` porque essa é a forma da `## 1`, não porque
+  vigore: **o modelo só vigora depois de validado pelo dono**, e antes disso não obriga nenhuma das
+  partes. Rascunho recusado e reescrito continua rascunho — substitui-se no lugar —, e
+  `situação: pendente` só existe na `## 1A`, depois do Marco 1.
+  ~~~~
+
+- **Texto atual 2** (`GOVERNANCA.md` §3.2, *Versão vigente, pendente e obsoleta*, uma ocorrência):
+
+  ~~~~
+  registra qual versão ficou obsoleta, quando e por aceite de qual versão. Recusada, a pendente é
+  **eliminada** e a vigente permanece, sem marca.
+  ~~~~
+
+- **Texto novo 2** (as quebras são as do bloco):
+
+  ~~~~
+  registra qual versão ficou obsoleta, quando e por aceite de qual versão. Recusada, a pendente é
+  **eliminada** e a vigente permanece, sem marca — e o plano **retroage ao ponto do drift**: o que
+  foi entregue sob a versão recusada é refeito, sob a vigente, por card corretivo da operação
+  afetada, porque `done` é terminal e não se reabre. O plano não é cancelado.
+  ~~~~
+
+- **Texto atual 3** (`README.md` §8.1, uma ocorrência):
+
+  ~~~~
+  O modelo **versiona, não se reescreve**: quando uma decisão muda o que o plano entrega, a versão
+  ~~~~
+
+- **Texto novo 3** (as quebras são as do bloco; a linha em branco separa parágrafos):
+
+  ~~~~
+  Todo elemento do modelo tem **lastro** no pedido: um trecho do enunciado que o justifica. O que o
+  pedido não traz não entra no modelo — se o agente o julga necessário, entrega-o como requisito
+  secundário, declarado numa seção à parte e sob a responsabilidade inteira dele.
+
+  O modelo **versiona, não se reescreve**: quando uma decisão muda o que o plano entrega, a versão
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25.
+  1. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'o modelo só vigora depois de validado pelo dono').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'retroage ao ponto do drift').Count` — antes `0`, depois `1`
+  3. `(Select-String -Path README.md -SimpleMatch 'Todo elemento do modelo tem **lastro** no pedido').Count` — antes `0`, depois `1`
+  4. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as três contagens saem nos valores de depois e a suíte segue verde.
+- **Não fazer:** não tocar `.claude/skills/scrum-master/SKILL.md` (o Pacote B já está lá); não
+  editar modelo de plano nenhum; não editar a seção do `TK-69`.
+- **Contingências:**
+  - se um **Texto atual** não for encontrado exatamente uma vez → parar e sinalizar `blocked`
+    razão `premissa`, citando o número do bloco.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T8 (DEB-2)
+
+## TK-71 — A `V2` e a tarefa que não materializa operação
+
+- **Status:** `cancelled` · 2026-09-25 — aberto pelo consultor de plano do `P-0746` no quinto
+  escalonamento da janela (`AE-15`, `DLS-18`), para que a rota do recorte não fique órfã.
+
+**Origem:** recorte do `P-0746` em 2026-09-22 · **Decisão que o vincula:** `DLS-18` do `P-0746`.
+
+### 1. Por que está aqui e não no `P-0746`
+
+O modelo do `P-0746` pedia, na `OP-5`, que a conferência automática *"reconheça a tarefa que declara
+não materializar operação por ser requisito não fundamental"*. Dois executores frios independentes
+pararam na `LST-T5` sob `G-NOASK` — o segundo exatamente aqui — porque **o referente não existe**:
+a gramática publicada define uma única forma para o campo `Operação do modelo` do card, e nenhuma
+forma alternativa de declaração. Medido em 2026-09-22: `requisito não fundamental` tem **0**
+ocorrências em `.claude/skills/diario-de-obras/SKILL.md` e **0** em `GOVERNANCA.md`.
+
+Pela regra que o próprio `P-0746` institui, a cláusula não podia estar no modelo: o enunciado
+(`## 0` daquele plano) fala de **elemento** sem lastro — *"podem entrar como requisitos
+não-fundamentais, mas são de responsabilidade inteira do agente idear, executar e garantir"* —, que
+é o lastro da `OP-4` e se materializou na seção nomeada do plano (`LST-T3`). A metade `V2` desce do
+`F-10`, que é **medição do instrumento**, e medição de instrumento não é âncora. Saiu do modelo por
+emenda acumulada na versão 4 pendente, que o Marco 2 adjudica.
+
+### 2. Pacote 1 — a categoria existe?
+
+Antes de construir qualquer coisa, decidir: **uma tarefa pode entregar requisito secundário sem
+materializar operação do modelo?** Hoje nenhum plano vivo tem o caso — a `LST-T0` do `P-0746`, que
+o teria, foi dissolvida (`DLS-10` daquele plano), e a seção `## 2` dele lista quatro requisitos
+secundários, nenhum deles um card. **Pacote sem caso fecha por obsolescência**, como o `TK-70`
+prevê para si.
+
+### 3. Pacote 2 — se existir, a ordem é gramática, depois parser
+
+Publicar a forma do campo na subseção *Modelo de domínio (seção do plano)* da skill
+`diario-de-obras` — o rótulo pelo qual um card se declara não fundamental — e **só então** ensinar
+a `V2` a reconhecê-la, com par presença-ausência sobre fixture: acusa quem omite o campo, não acusa
+quem o declara. A ordem inversa é o defeito que o `F-17` do `P-0746` mediu: forma nova antes de o
+parser aprender passa em silêncio.
+
+### 4. O que este tíquete não faz
+
+- Não reabre a `LST-T5` do `P-0746`, que entrega a `V21` e nada mais.
+- Não toca o modelo do `P-0746` — a emenda que retira a cláusula já foi devolvida ao modelador.
+- Não altera a `V2` existente, que segue acusando tarefa sem o campo `Operação do modelo`.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — cancelado por obsolescência, pelo critério do próprio tíquete (§2): nenhum plano vivo tem o caso — medido em 2026-09-25, todos os planos do índice em estado terminal
+
+## TK-72 — A régua de autoria de card do kit
+
+- **Status:** `cancelled` · 2026-09-25 — aberto pelo consultor de plano do `P-0746` no escalonamento de
+  consolidação da janela, com quatro achados medidos da mesma família.
+
+**Origem:** janela do `P-0746` (2026-09-21/22) · **Achados:** `AE-2`/`DLS-14`, `AE-11`, `AE-19`,
+`AE-20` daquele plano.
+
+### 1. O que este tíquete decide
+
+Como se escreve um card para um executor frio que **não decide, não pergunta e não muda a rota**.
+Quatro pacotes, todos com caso medido na mesma janela, e todos na mesma residência: `GOVERNANCA.md`
+§3 (planejamento) e a gramática do card na skill `diario-de-obras`.
+
+### 2. Pacote 1 — aceite de card de `redacao` é recorte de literal, não contagem
+
+`DLS-14` do `P-0746`. Caso medido: a linha de aceite da `LST-T1` era `grep -ci 'lastro' ≥ 3` e
+sairia **verde com três menções decorativas**; o laudo aprovou com ressalva 88% e apontou o defeito
+de régua, não de texto. A forma que funcionou nas quatro tarefas seguintes: o card **fixa o literal
+verbatim**, a verificação é `grep -cF`, e onde há texto a substituir, o par presença-ausência mede
+o desaparecimento do literal antigo.
+
+### 3. Pacote 2 — card que recebe rota de achado declara-a no próprio dossiê
+
+`AE-11` do `P-0746`. Caso medido: o `AE-9` roteava para a `LST-T8`, cujo card declarava a matéria
+**fora do escopo**; a tarefa fechou sem fechar a rota, e o vão só apareceu no laudo seguinte. Regra
+a publicar: rota de achado só se declara para card que a aceite no dossiê — e rota que sai do plano
+precisa de tíquete aberto no mesmo ato, não de promessa no relatório.
+
+### 4. Pacote 3 — `Arquivos-alvo` fecha o efeito colateral obrigatório
+
+`AE-19` do `P-0746`. Caso medido: a `LST-T6` mandava reautorar o modelo do `P-0745` e listava só o
+arquivo do plano; reautorar obriga a reescrever o campo `Operação do modelo` dos **sete** cards, ou
+a `V4`/`V14` disparam. O executor absorveu e declarou — mas o card obrigava a decidir. Regra:
+entrega cujo efeito colateral é mecânico e previsível tem esse efeito **no `Arquivos-alvo`**.
+
+### 5. Pacote 4 — verificação sem valor esperado não é verificação
+
+`AE-20` do `P-0746`, mesma família do `DM-12` do `P-0740` (*comando de aceite não se deduz, se
+roda*). Caso medido: a Verificação 4 da `LST-T6` era `grep -c 'cancelled'` **sem número**; a única
+leitura inequívoca era `0`, e o executor teve de inferi-la. Regra: toda verificação carrega o valor
+esperado **e** o medido antes.
+
+### 6. O que este tíquete não faz
+
+- Não reabre card algum do `P-0746`, que fechou `7/7`.
+- Não muda a rubrica de revisão: o que se corrige é a autoria, não o julgamento.
+
+### 7. Insumo do veredito dos procedimentos, roteado pelo consultor do `P-0747` em 2026-09-23
+
+Fonte: `docs/plans/_VEREDITO-procedimentos-2026-09-22.md`, roteado por `DCS-25` do `P-0747`. Quatro
+pacotes novos, todos com caso medido na sessão de planejamento do `P-0747`; nenhum abre card
+naquele plano (capacidade, não término — spec do consultor §2).
+
+- **Pacote 5 — o contrato copiado no card se limita ao que este card precisa** (veredito §3.4).
+  Caso medido: o contrato do objeto de escopo do `P-0747` tem ~600 palavras — a partição de 47
+  residências entre oito operações, as exclusões e os intocados — e foi copiado em sete cards ao
+  lado dos contratos dos outros quatro objetos: 3.761 caracteres por card, e a `CON-T3` com 259
+  linhas para 11 substituições literais. Regra a publicar em `GOVERNANCA.md` §3.2 (*O contrato
+  chega ao card*) e na gramática do card: `precisa de:` copia o contrato do objeto **sem a
+  partição alheia** — só o que a operação do card usa —, e toda lista de residências vive por
+  **ponteiro** ao fato da `## 2` que é a residência única dela. Medido em 2026-09-23:
+  `modelo.py check` afere em `V14` só a presença do sub-bullet do contrato, não o texto — a regra
+  não exige mudança de instrumento.
+- **Pacote 6 — censo de superfície é grep literal com padrão e contagem, e o planejador pode
+  re-rodá-lo** (veredito §3.1). Caso medido: a pergunta semântica aos scouts devolveu 22
+  residências; o grep do próprio planejador achou 43; a partição por linha, 47 — duas das três
+  reautorias do modelo nasceram desse buraco. Regra a publicar no `pantonic-planner`: (i) para
+  toda lista de residências, o scout devolve o **padrão de grep e a contagem** que rodou, e o fato
+  da `## 2` publica os dois; (ii) a regra de uso único do `Bash` ganha a exceção nomeada *grep de
+  verificação de superfície, com o padrão publicado no fato* — foi esse grep que salvou o plano.
+- **Pacote 7 — o ensaio dos cards em árvore temporária é o modo normal da Fase 4** (veredito
+  §3.8). Caso medido: primeira sessão em que todo literal de aceite publicado foi rodado antes e
+  depois, inclusive o gate de drift ficando vermelho no meio da `CON-T8` e verde depois; 333k
+  tokens e 38 min. Regra a publicar no `pantonic-planner`: a Fase 4 aplica os cards em sequência
+  numa cópia da árvore e mede cada linha de `Verificação` antes e depois; o número publicado é o
+  medido. É o `DM-12` do `P-0740` levado à autoria, não só à execução.
+- **Pacote 8 — medida a fazer antes de a doutrina escolher entre retomada por mensagem e
+  invocação fria** (veredito §3.7). O planejador foi retomado quatro vezes por mensagem com o
+  contexto intacto, mas os intervalos passaram de 5 minutos e o cache de subagente expirou — o
+  custo em dólares não foi medido. A sonda da `CON-T7` do `P-0747` (`%TEMP%\claude\sonda_p0747.py`,
+  filtro por `argv[1]`) serve à medida trocando o `agentType` e o filtro da primeira linha.
+
+### 8. Pacotes 9 e 10 — absorvidos do `TK-80` (revisão de pertinência, 2026-09-24)
+
+Mesma família (régua de autoria de card), residência vizinha (`.claude/agents/pantonic-planner.md`
+e a rubrica de criação de tarefa). O enunciado e os casos medidos ficam na seção `## TK-80`, que
+segue como registro: **Pacote 9** — valor medido de aceite nunca viaja em `pendencia=` (`AE-13` do
+`P-0748`); **Pacote 10** — o rótulo do card de investigação é um que o parser conhece (`AE-1` do
+`P-0748`, parte de doutrina).
+
+### 9. Pacotes 11 e 12 — roteados pelo consultor do `P-0749` (acionamento 4, 2026-09-25)
+
+Fonte: `AE-5` (a) e (c) do `P-0749`, laudo da `SAN-T6` (ressalva 88).
+
+- **Pacote 11 — o veredito do dono é gate do marco, não critério de pronto.** Caso medido: o
+  *Pronto quando* da `SAN-T6` citava a Verificação 4 (veredito do dono, aferição manual), que o
+  revisor não pode aferir no ato; a revisão saiu `criterio-de-pronto=parcial` com a entrega fiel.
+  Regra: card que precisa do veredito do dono o devolve no passo final e o leva ao relatório de
+  encerramento; o *Pronto quando* só cita verificação que o revisor roda.
+- **Pacote 12 — troca literal de redação declara a quebra de linha do texto novo.** Caso medido: a
+  `M1` da `SAN-T6` publicou ~200 colunas numa linha sem dizer se o parágrafo reflui, e o executor
+  refluiu três linhas por conta própria. Regra: o literal marca a quebra (`↵`) ou declara "sem
+  quebra nova e sem refluxo".
+
+### 10. Reconciliação e cards (2026-09-25, *Tíquete nasce executável*)
+
+A residência que funciona para as regras de autoria é a Fase 4 do `pantonic-planner`, itens 1 a 12,
+que já carrega parte dos pacotes; o que falta entra ali como item 13, e o consultor passa a
+aplicá-la. Medido na autoria:
+
+| pacote | estado em 2026-09-25 | card |
+|---|---|---|
+| 1, 3, 9, 11, 12, e as regras de autoria do `TK-55` (premissa medida, propriedade e não técnica, instrumento calcula, menção não colhível) | sem residência | `TK-72a` |
+| 2 | metade publicada: rota que sai do plano abre tíquete com card (skill `diario-de-obras`, "Tíquete nasce executável"); falta a metade do card que aceita a rota | `TK-72a` |
+| 4 | publicado: `pantonic-planner` Fase 4, item 12 (v) — os dois valores, antes e depois | sem ação |
+| 5 | sem residência (`GOVERNANCA.md` §3.2, *O contrato chega ao card*) | `TK-72a` |
+| 6, 7 | sem residência | `TK-72b` |
+| 8 | medida não feita; a sonda existe (`%TEMP%\claude\sonda_p0747.py`, medido em 2026-09-25) | `TK-72c` |
+| 10 | publicado: `pantonic-planner`, rótulo `Pronto quando (o fato que tem de existir ao final)` do card de investigação | sem ação |
+| caso do `TK-68a`: literal com `### ` na coluna 0 cortou o card | sem residência | `TK-72a` |
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 — Esgotar o backlog antes da publicação do kit (DEB-2)
+
+### TK-72a — A régua de autoria do card, segunda leva [Sonnet · esforço medium · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** a Fase 4 do `pantonic-planner` ganha o item 13 com os dez critérios de autoria que
+  faltam; o `pantonic-consultant` passa a aplicar os itens 11 a 13 a todo card que escreve; e
+  `GOVERNANCA.md` §3.2 limita o contrato copiado no card ao que a operação dele usa.
+- **Fundamento:** pacotes 1, 2, 3, 5, 9, 11 e 12 deste tíquete; itens nomeados do `TK-55`
+  (escalonamentos 3 a 6 de 2026-09-20); caso do `TK-68a` (2026-09-25).
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-planner.md`
+  - `.claude/agents/pantonic-consultant.md`
+  - `GOVERNANCA.md`
+- **Passos:** substituir cada **Texto atual** pelo **Texto novo** de mesmo número, no arquivo
+  indicado; rodar as Verificações.
+- **Texto atual 1** (`.claude/agents/pantonic-planner.md`, fim do item 12 da Fase 4, uma ocorrência):
+
+  ~~~~
+     construção (2026-09-19, `AE-19`).
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco; a linha em branco separa os itens):
+
+  ~~~~
+     construção (2026-09-19, `AE-19`).
+
+  13. **Régua de autoria, segunda leva** — dez critérios medidos em janelas de execução de
+     2026-09-20 a 2026-09-25; valem para todo card, de plano ou de tíquete, e para o
+     `pantonic-consultant` quando ele escreve card:
+     (i) **O card fixa a propriedade e a medida; a técnica é do executor** — o card diz o que tem de
+     ser verdade ao final e o comando que o prova, e só prescreve o *como* quando o como é a própria
+     propriedade.
+     (ii) **Premissa citada se mede, e pelo instrumento quando ele sabe medir** — gramática,
+     domínio, população e contagem citados no card se medem antes de publicar; número que um
+     instrumento do kit calcula vem do instrumento, nunca de varredura que conte outra coisa
+     (`grep -c` conta linha, não ocorrência).
+     (iii) **Aceite de redação é recorte de literal** — o card fixa o texto verbatim e a verificação
+     conta o literal (`Select-String -SimpleMatch`); onde há texto a substituir, conta também o
+     literal antigo sumir. Contar palavra solta aprova menção decorativa.
+     (iv) **O literal declara a quebra de linha** — cada bloco diz "as quebras são as do bloco" ou
+     "sem quebra nova e sem refluxo".
+     (v) **Literal com cabeçalho markdown entra recuado** — linha que começa com `## ` ou `### ` na
+     coluna 0 encerra o card para o `rdo.py` e o `review_evidence.py`; todo bloco literal do card
+     vai recuado dois espaços.
+     (vi) **`Arquivos-alvo` fecha o efeito colateral mecânico** — entrega cujo efeito em outro
+     arquivo é obrigatório e previsível lista esse arquivo; o executor não decide absorvê-lo.
+     (vii) **Rota de achado só vai para card que a aceita** — o achado roteado a um card está no
+     dossiê dele; rota que sai do plano abre tíquete no mesmo ato, já com o card (skill
+     `diario-de-obras`, "Tíquete nasce executável").
+     (viii) **Valor medido de aceite nunca viaja na linha de retorno** — `pendencia=` é só para
+     pendência; a medida vai para a evidência que o revisor gera.
+     (ix) **O veredito do dono é gate do marco, não critério de pronto** — `Pronto quando` só cita
+     verificação que o revisor roda; card que precisa do veredito do dono o leva ao relatório de
+     encerramento.
+     (x) **Menção de referência quebrada vai em forma que o lint não colhe** — reproduzir a citação
+     quebrada na forma colhível, para falar dela, cria mais uma ocorrência.
+  ~~~~
+
+- **Texto atual 2** (`.claude/agents/pantonic-consultant.md`, uma ocorrência; sem quebra nova):
+
+  ~~~~
+  no caso que a skill `diario-de-obras` determina em "Tíquete nasce executável".
+  ~~~~
+
+- **Texto novo 2:**
+
+  ~~~~
+  no caso que a skill `diario-de-obras` determina em "Tíquete nasce executável". Todo card que você escreve passa pelos itens 11 a 13 da Fase 4 do `pantonic-planner` (`.claude/agents/pantonic-planner.md`).
+  ~~~~
+
+- **Texto atual 3** (`GOVERNANCA.md` §3.2, *O contrato chega ao card*, uma ocorrência):
+
+  ~~~~
+  estágio está e do que precisa.
+  ~~~~
+
+- **Texto novo 3** (as quebras são as do bloco):
+
+  ~~~~
+  estágio está e do que precisa. O contrato copiado se limita ao que **esta** operação usa: a
+  partição que é de outra operação fica fora, e lista de residências entra por ponteiro ao fato da
+  `## 2` que é a residência única dela, nunca copiada card a card.
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25.
+  1. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'Régua de autoria, segunda leva').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'Literal com cabeçalho markdown entra recuado').Count` — antes `0`, depois `1`
+  3. `(Select-String -Path .claude/agents/pantonic-consultant.md -SimpleMatch 'itens 11 a 13 da Fase 4').Count` — antes `0`, depois `1`
+  4. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'O contrato copiado se limita ao que').Count` — antes `0`, depois `1`
+  5. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` e `-Mode check-drift` → exit `0`
+  6. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as quatro contagens saem nos valores de depois e o kit segue válido e sem drift.
+- **Não fazer:** não renumerar nem reescrever os itens 1 a 12 da Fase 4; não tocar
+  `docs/RUBRICA_DE_REVISAO.md`.
+- **Contingências:**
+  - se um **Texto atual** não for encontrado exatamente uma vez → parar e sinalizar `blocked`
+    razão `premissa`, citando o número do bloco.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T10 (DEB-2)
+
+### TK-72b — O planejador publica o grep da superfície e ensaia os cards antes de gravar [Sonnet · esforço low · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Depende de:** `TK-72a`
+- **Objetivo:** o `pantonic-planner` passa a ter dois usos para o `Bash` — o comando de aceite e o
+  grep de verificação de superfície, publicado com padrão e contagem —, e a Fase 4 ganha o item 14,
+  o ensaio dos cards numa cópia da árvore.
+- **Fundamento:** pacotes 6 e 7 deste tíquete.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-planner.md`
+- **Passos:** substituir cada **Texto atual** pelo **Texto novo** de mesmo número; rodar as
+  Verificações.
+- **Texto atual 1** (uma ocorrência):
+
+  ~~~~
+  única matéria-prima é decisão; seu único produto é plano fechado. Você **tem `Bash`**, e ele
+  serve a **um** uso: rodar o comando de aceite que você mesmo vai publicar num card, antes de
+  publicá-lo — não é licença para levantamento próprio.
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco):
+
+  ~~~~
+  única matéria-prima é decisão; seu único produto é plano fechado. Você **tem `Bash`**, e ele
+  serve a **dois** usos: rodar o comando de aceite que você mesmo vai publicar num card, antes de
+  publicá-lo, e re-rodar o **grep de verificação de superfície** que um fato da `## 2` publica — não
+  é licença para levantamento próprio. Toda lista de residências que um fato publica traz o padrão
+  de grep que a produziu e a contagem que ele deu: peça ao `pantonic-scout` o padrão e a contagem,
+  não só a lista, e re-rode o padrão antes de gravar.
+  ~~~~
+
+- **Texto atual 2** (fim do item 13 da Fase 4, escrito pelo `TK-72a`; uma ocorrência):
+
+  ~~~~
+     quebrada na forma colhível, para falar dela, cria mais uma ocorrência.
+  ~~~~
+
+- **Texto novo 2** (as quebras são as do bloco; a linha em branco separa os itens):
+
+  ~~~~
+     quebrada na forma colhível, para falar dela, cria mais uma ocorrência.
+
+  14. **Ensaio dos cards em árvore temporária** — antes de gravar, aplique os cards em sequência
+     numa cópia da árvore fora do repositório e rode cada linha de `Verificação` antes e depois de
+     cada card; o valor publicado é o medido no ensaio. Linha que dá o mesmo valor antes e depois
+     não discrimina e volta à autoria.
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25 (itens 1 e 2) e depois do
+  `TK-72a` (item 3).
+  1. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'serve a **dois** usos').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'serve a **um** uso').Count` — antes `1`, depois `0`
+  3. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'Ensaio dos cards em árvore temporária').Count` — antes `0`, depois `1`
+  4. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` → exit `0`
+  5. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as três contagens saem nos valores de depois e o kit segue válido.
+- **Não fazer:** não tocar `.claude/agents/pantonic-scout.md`; não renumerar itens da Fase 4.
+- **Contingências:**
+  - se um **Texto atual** não for encontrado exatamente uma vez → parar e sinalizar `blocked`
+    razão `premissa`, citando o número do bloco.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T11 (DEB-2)
+
+### TK-72c — Quanto custa retomar o planejador por mensagem [Sonnet · esforço high · classe investigacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** medir, nos transcripts do `pantonic-planner` da sessão de planejamento do `P-0747`,
+  o custo de cada retomada por mensagem e o de cada invocação fria do mesmo papel; publicar a
+  medida em `docs/CUSTO_DO_PICKUP.md` e aplicar a `GOVERNANCA.md` a regra que o resultado determina.
+- **Fundamento:** pacote 8 deste tíquete.
+- **Arquivos-alvo:**
+  - `docs/CUSTO_DO_PICKUP.md`
+  - `GOVERNANCA.md`
+- **Método de sondagem:**
+  1. **Corpus fechado:** os arquivos `agent-*.meta.json` sob
+     `C:\Users\panta\.claude\projects\d--workspaces-PantonicApp\*\subagents\` com `agentType` igual
+     a `pantonic-planner` e cujo `.jsonl` irmão cita `P-0747` na primeira linha.
+  2. **Segmento:** cada trecho do `.jsonl` que começa numa mensagem do tipo `user` vinda de fora do
+     agente (a invocação ou uma retomada por mensagem) e vai até a próxima. O primeiro segmento de
+     cada agente é a **invocação fria**; os seguintes são **retomadas**.
+  3. **Métrica por segmento:** soma de `input_tokens`, `output_tokens`, `cache_read_input_tokens` e
+     `cache_creation_input_tokens` das mensagens `assistant` com `message.id` distinto, e o custo
+     com os preços da sonda `%TEMP%\claude\sonda_p0747.py` (5, 25, 0,5 e 6,25 dólares por milhão, na
+     ordem); mais o intervalo, em minutos, desde o fim do segmento anterior. Adaptar a sonda
+     trocando `pantonic-consultant` por `pantonic-planner`, o filtro por `P-0747` e somando por
+     segmento. Nenhum texto de mensagem entra no contexto: só chaves, contagens e datas.
+  4. **Agregado que volta:** no máximo 20 linhas — por grupo (fria, retomada): `n`, média, mínimo e
+     máximo do custo, e o intervalo de cada retomada.
+  5. **O que cada resultado dispara:** média das retomadas **menor** que a das invocações frias →
+     entra em `GOVERNANCA.md` o **Texto novo A**; **igual ou maior** → o **Texto novo B**; nenhuma
+     retomada no corpus → nenhum dos dois, e a seção publica "não mensurável neste corpus".
+- **Texto atual 1** (`GOVERNANCA.md` §3, uma ocorrência):
+
+  ~~~~
+    execução inline a abrir um subagente.
+  ~~~~
+
+- **Texto novo A** (as quebras são as do bloco):
+
+  ~~~~
+    execução inline a abrir um subagente.
+  - **Rodada de replanejamento retoma o mesmo planejador por mensagem**, sem abrir instância fria:
+    a retomada custou menos que a invocação fria do mesmo papel (`docs/CUSTO_DO_PICKUP.md`, seção
+    *Retomada do planejador por mensagem*).
+  ~~~~
+
+- **Texto novo B** (as quebras são as do bloco):
+
+  ~~~~
+    execução inline a abrir um subagente.
+  - **Rodada de replanejamento abre instância fria do planejador**, sem retomá-lo por mensagem: a
+    retomada custou o mesmo ou mais que a invocação fria do mesmo papel, porque o cache do
+    subagente expira entre as rodadas (`docs/CUSTO_DO_PICKUP.md`, seção *Retomada do planejador
+    por mensagem*).
+  ~~~~
+
+- **Pronto quando (o fato que tem de existir ao final):** `docs/CUSTO_DO_PICKUP.md` tem uma seção
+  nova, com o próximo número da sequência, titulada `Retomada do planejador por mensagem × invocação
+  fria`, com a data, o corpus, a regra de enumeração dos segmentos, o agregado do passo 4 e o
+  desfecho do passo 5; e `GOVERNANCA.md` carrega exatamente o texto que o desfecho determinou.
+- **Verificação:**
+  1. `(Select-String -Path docs/CUSTO_DO_PICKUP.md -SimpleMatch 'Retomada do planejador por mensagem × invocação fria').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path GOVERNANCA.md -Pattern 'Rodada de replanejamento (retoma|abre instância fria)').Count` — antes `0`, depois `1` (ou `0`, com o desfecho "não mensurável" publicado)
+  3. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Não fazer:** não ler conteúdo de mensagem dos transcripts; não medir outro papel; não mudar o
+  `pantonic-planner`.
+- **Contingências:**
+  - se a sonda não existir no despacho → escrever a soma direto sobre o corpus do passo 1, com as
+    mesmas chaves e preços.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T13 (DEB-2)
+
+## TK-73 — A oração da operação: recorte e sujeito
+
+- **Status:** `cancelled` · 2026-09-25 — aberto pelo consultor de plano do `P-0746`. **O Pacote 2 não se
+  executa sem a resposta do dono à pendência `AE-18`**, que vai ao relatório de encerramento
+  daquela janela.
+
+**Origem:** janela do `P-0746` (2026-09-21/22) · **Achados:** `AE-4`, `AE-15`, `AE-18`; fatos `F-14`,
+`F-19`, decisões `DLS-13`, `DLS-18` daquele plano.
+
+### 1. Por que existe
+
+A `OP-5` do `P-0746` foi escrita com **três orações** e cada uma tinha lastro próprio: acusar
+elemento sem lastro (tem), acusar ator inédito (inexequível, `F-14`), reconhecer tarefa não
+fundamental (sem lastro, `F-19`). As duas defeituosas **só apareceram na implementação** — a dois
+executores frios e cinco escalonamentos de distância do Marco 1, que é onde deveriam ter sido
+apanhadas. Custo medido da janela: cinco escalonamentos `B1`, dois `blocked motivo=premissa` no
+mesmo card.
+
+### 2. Pacote 1 — uma oração por operação
+
+Publicar em `GOVERNANCA.md` §3.2 e na gramática: **operação com mais de uma oração é operação mal
+recortada** — cada oração tem lastro próprio e, portanto, é operação própria, com a sua propriedade
+e o seu card. Guarda: o Marco 1 lê operação a operação contra a `## 0`; e avaliar se o `check` pode
+acusar mecanicamente a oração composta (conjunção coordenada no texto da operação) sem produzir
+falso positivo.
+
+### 3. Pacote 2 — o sujeito da operação, e o critério de ator inédito
+
+**Bloqueado na decisão do dono (`AE-18`).** O dono tipificou *"ator inédito na operação"* no
+`TK-69` §3 como classe **integralmente mecânica** e mediu 0 de 5 no `P-0745`. Medido depois, no
+`P-0746`: a regra ao pé da letra acusa **6 dos 7** atores do `P-0743` — modelo que ele **aceitou** —
+e **4 dos 4** do `P-0746`; o modelo reautorado do `P-0745` tem **5 de 5**. Ou seja, ela reprova todo
+o acervo, inclusive o que passou. Caminhos a avaliar quando a decisão vier:
+**(a)** manter a dispensa — o vínculo entre fluxo e tabela já é aferido pela `V5`/`V16` (objeto e
+propriedade citados em `precisa de:`/`altera:` existem) e pelo lastro por elemento;
+**(b)** proibir **sujeito-ator** no texto da operação — a operação passa a dizer o que muda, não
+quem age, o que é mecanicamente aferível e vale para o acervo inteiro, ao custo de reescrever os
+modelos vivos;
+**(c)** outra formulação que discrimine, se a medição mostrar uma.
+
+### 4. O que este tíquete não faz
+
+- Não reabre o modelo do `P-0745` nem o do `P-0746` antes dos Marcos 2 e 3.
+- Não decide sozinho o Pacote 2: a classe é do dono, e foi ele quem a nomeou.
+
+### 5. Medido na autoria dos cards (2026-09-25)
+
+- **Guarda mecânica do Pacote 1:** das **52** operações `- **OP-<n>** — …` do acervo
+  (`docs/plans/*.md` e `docs/plans/*/plano.md`), **50** contêm ` e `. Uma guarda por conjunção
+  acusaria quase todas: fica o Marco 1 como guarda, e o `check` não muda.
+- **Custo da opção (b) do Pacote 2:** nenhum plano do índice está vivo — todos terminais —, e a
+  doutrina não migra plano terminal (`GOVERNANCA.md` §3.2, *Retroatividade*). Proibir sujeito-ator
+  já não obriga a reescrever modelo nenhum: vale para os planos que nascerem.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 — Esgotar o backlog antes da publicação do kit (DEB-2)
+
+### TK-73a — Uma operação, uma oração [Sonnet · esforço low · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** `GOVERNANCA.md` §3.2 e a skill `diario-de-obras` passam a dizer que operação escrita
+  com mais de uma oração é operação mal recortada, que cada oração vira operação própria, e que a
+  guarda é o marco.
+- **Fundamento:** Pacote 1 deste tíquete; medição da §5.
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+  - `.claude/skills/diario-de-obras/SKILL.md`
+- **Passos:** substituir cada **Texto atual** pelo **Texto novo** de mesmo número; rodar as
+  Verificações.
+- **Texto atual 1** (`GOVERNANCA.md` §3.2, *Objeto, operação e propriedade*, uma ocorrência):
+
+  ~~~~
+  identificam-se as propriedades, e deles caem por decomposição — não por intuição.
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco):
+
+  ~~~~
+  identificam-se as propriedades, e deles caem por decomposição — não por intuição.
+  **Uma operação, uma oração.** Operação escrita com mais de uma oração — cada uma com o seu verbo
+  e o seu lastro — é operação mal recortada: cada oração vira operação própria, com a sua
+  propriedade e o seu card. A guarda é o Marco 1, que lê operação a operação contra a `## 0`;
+  nenhuma validação a apanha, porque a conjunção também aparece dentro de uma oração só.
+  ~~~~
+
+- **Texto atual 2** (`.claude/skills/diario-de-obras/SKILL.md`, *Objeto e propriedade, na
+  decomposição*, uma ocorrência; sem quebra nova):
+
+  ~~~~
+  marco.
+  ~~~~
+
+- **Texto novo 2:**
+
+  ~~~~
+  marco. Operação escrita com mais de uma oração é operação mal recortada: cada oração vira operação própria, e a guarda também é o marco.
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25.
+  1. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'Uma operação, uma oração.').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path .claude/skills/diario-de-obras/SKILL.md -SimpleMatch 'Operação escrita com mais de uma oração').Count` — antes `0`, depois `1`
+  3. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` → exit `0`
+  4. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as duas contagens saem nos valores de depois.
+- **Não fazer:** não mudar `modelo.py` nem o `check`; não editar modelo de plano nenhum.
+- **Contingências:**
+  - se um **Texto atual** não for encontrado exatamente uma vez → parar e sinalizar `blocked`
+    razão `premissa`, citando o número do bloco (o **Texto atual 2** é a linha que termina o
+    parágrafo *Objeto e propriedade, na decomposição*, que hoje é exatamente `marco.`).
+
+### 6. Ato do dono (2026-09-25) — o Pacote 2 não existe
+
+Verbatim: *"Essa regra não existe. É uma regra inferida de exemplo. Não é uma regra geral. Eu não
+tenho nada a decidir sobre uma regra mal interpretada."* Os casos da §3 do `TK-69` são **exemplos**
+do que o dono leu no modelo do `P-0745` em 2026-09-21 — a própria §3 diz que *"não esgotam a
+matéria"* —; o nome *ator inédito na operação* e a afirmação de que a classe é *"integralmente
+mecânica"* foram generalização de quem registrou, atribuída ao dono. Não há critério a manter nem
+a dispensar, e a pendência `AE-18` do `P-0746` se encerra por este ato. O `TK-73b` é cancelado.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T9 (DEB-2)
+
+### TK-73b — O sujeito da operação e o critério de ator inédito [Sonnet · esforço low · classe redacao]
+
+- **Status:** `cancelled` · 2026-09-25 — decisão do dono sobre o `AE-18` do `P-0746`
+- **Objetivo:** fixar na doutrina o que o texto de uma operação pode dizer sobre quem age, na forma
+  que o dono escolher.
+- **A decisão pendente (vai ao dono no relatório):** o critério *ator inédito na operação*, que o
+  dono tipificou como mecânico, acusa 6 de 7 atores do `P-0743` (aceito), 4 de 4 do `P-0746` e 5 de
+  5 do `P-0745` reautorado — reprova o acervo inteiro ao pé da letra.
+  - **(a) Manter a dispensa** — quem age não é aferido; o vínculo entre fluxo e tabela se afere
+    pelos objetos e propriedades citados (`V5`, `V16`) e pelo lastro. Implica: uma frase em
+    `GOVERNANCA.md` §3.2, nada mais.
+  - **(b) Proibir sujeito-ator** — a operação diz o que muda, não quem age. Implica: reescrever a
+    descrição da operação em `GOVERNANCA.md` §3.2 e `README.md` §8.1 (hoje *"nomeando quem age"* e
+    *"dizem quem age"*); nenhum modelo vivo a reescrever (§5).
+  - **(c) Outra formulação** — exige nova medição e volta ao planejamento.
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+  - `README.md` — só na opção (b)
+- **Texto atual 1** (`GOVERNANCA.md` §3.2, *O que é*, uma ocorrência; sem quebra nova):
+
+  ~~~~
+  (`### 1.2 Fluxo de operações`), numeradas `OP-<n>`, cada uma nomeando quem age, o que faz, de que
+  ~~~~
+
+- **Texto novo 1(a):**
+
+  ~~~~
+  (`### 1.2 Fluxo de operações`), numeradas `OP-<n>`, cada uma nomeando quem age — o que não se afere: o vínculo entre fluxo e tabela é o dos objetos e propriedades citados —, o que faz, de que
+  ~~~~
+
+- **Texto novo 1(b):**
+
+  ~~~~
+  (`### 1.2 Fluxo de operações`), numeradas `OP-<n>`, cada uma dizendo o que muda — nunca quem age —, de que
+  ~~~~
+
+- **Texto atual 2** (`README.md` §8.1, uma ocorrência; só na opção (b); sem quebra nova):
+
+  ~~~~
+  operações** encadeadas, que dizem quem age, o que faz, de que objetos precisa e que propriedades
+  ~~~~
+
+- **Texto novo 2(b):**
+
+  ~~~~
+  operações** encadeadas, que dizem o que muda, de que objetos precisa e que propriedades
+  ~~~~
+
+- **Verificação:** no PowerShell, na raiz; **antes** medido em 2026-09-25.
+  1. opção (a): `(Select-String -Path GOVERNANCA.md -SimpleMatch 'o que não se afere: o vínculo entre fluxo e tabela').Count` — antes `0`, depois `1`
+  2. opção (b): `(Select-String -Path GOVERNANCA.md -SimpleMatch 'nunca quem age').Count` — antes `0`, depois `1`; `(Select-String -Path README.md -SimpleMatch 'que dizem quem age').Count` — antes `1`, depois `0`
+  3. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho.
+- **Pronto quando:** as contagens da opção decidida saem nos valores de depois.
+- **Ao destravar:** quem registrar a decisão do dono apaga do card a opção não escolhida e a
+  palavra "opção" das verificações, e passa o card a `ready`; a opção (c) devolve o card ao
+  planejamento.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — ato do dono de 2026-09-25: a regra não existe, foi inferida de exemplo; nada a decidir (§6 do tíquete)
+
+## TK-74 — `review_evidence.py` não expande alvo terminado em barra
+
+- **Status:** `done` · 2026-09-25 — aberto pelo consultor de plano do `P-0746` por `I-4` (achado
+  fora de escopo vira tíquete).
+
+**Origem:** `AE-22` do `P-0746`, medido no laudo da `LST-T6`.
+
+### 1. Defeito medido
+
+`Arquivos-alvo` que termina em barra — `tests/fixtures/modelo/`, prescrito pelo consultor no reparo
+da `LST-T5` (`DLS-17`) — não é expandido pelo instrumento: as **10** fixtures tocadas chegaram ao
+revisor da tarefa seguinte como falso `sem-atribuicao`. O laudo não foi rebaixado porque o revisor
+reconciliou à mão, mas a reconciliação manual é exatamente o que o instrumento existe para evitar.
+
+### 2. O que decide
+
+Se o alvo de diretório se expande no instrumento (todo arquivo sob o prefixo é atribuído à tarefa)
+ou se a gramática do card passa a proibir alvo de diretório, exigindo enumeração. Par
+presença-ausência sobre fixture nos dois casos: alvo com barra atribui, alvo inexistente não.
+
+### 3. O que este tíquete não faz
+
+- Não altera laudo algum já emitido.
+- Não toca `backlog.py`, cujos defeitos medidos são o `TK-65`.
+
+### 4. Decisão do planejamento (2026-09-25)
+
+- **`DT-1` — expande no instrumento; a gramática não muda.** A gramática já aceita alvo de
+  diretório (`DB-27`: `_eh_caminho` aceita barra final, e `tests/fixtures/backlog/` é o exemplo
+  da docstring), e o alvo-diretório **do próprio card** já casa por prefixo (`AUT-T5b`, em
+  `confrontar_escopo`). O defeito é a assimetria: o mapa de **outra** tarefa casa só por caminho
+  exato. Proibir alvo de diretório invalidaria cards já aceitos e o ajudante que já o reconhece.
+- **`DT-2` — precedência:** caminho exato vence; sem caminho exato, vence o alvo-diretório de
+  prefixo mais longo. Arquivo sob nenhum alvo continua `sem-atribuicao`.
+- **`DT-3` — o `AE-2` do `TK-78` entra aqui como `TK-74b`.** Ele foi roteado a `TK-66`/`TK-74`
+  (*facetas de instrumento*) e segue vivo em 2026-09-25: `python .claude/tools/modelo.py check
+  --plano TK-74` termina em `FileNotFoundError` com traceback. O loop roda esse comando no passo 3
+  de todo despacho, inclusive o da `TK-74a`.
+- **Âncoras do `P-0749` preservadas (`DSA-16`):** os cards não renomeiam `mapear_alvos_de_outras_tarefas`,
+  `confrontar_escopo`, `formatar_atribuicoes`, `_init_repo_com_baseline` nem as linhas
+  `plano_id_match` — a `SAN-T1` depende deste tíquete e ancora nesses nomes.
+
+### TK-74a — O alvo-diretório de outra tarefa casa por prefixo [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `done` · 2026-09-25
+- **Objetivo:** arquivo tocado sob um alvo-diretório declarado por **outra** tarefa do mesmo plano
+  sai `alvo-de-outra-tarefa (<ID>)`, como já sai `alvo-do-card` o arquivo sob o alvo-diretório do
+  próprio card.
+- **Fundamento:** `AE-22` do `P-0746` (10 fixtures sob `tests/fixtures/modelo/`, alvo da
+  `LST-T5`, chegaram à revisão da `LST-T6` como `sem-atribuicao`); `DT-1` e `DT-2` acima.
+- **Arquivos-alvo:**
+  - `.claude/tools/review_evidence.py`
+  - `tests/test_review_evidence.py`
+- **Contratos/classes:**
+  - função nova `_tarefa_dona(tocado_norm: str, outros: dict[str, str], root: Path) -> str | None`,
+    logo antes de `confrontar_escopo`: se `tocado_norm` é chave de `outros` → devolve o valor;
+    senão, entre as chaves `chave` de `outros` com `_eh_alvo_diretorio(root, chave)` verdadeiro e
+    `tocado_norm.startswith(_normalizar_separador(chave).rstrip("/") + "/")`, devolve o valor da de
+    prefixo mais longo; nenhuma → `None`.
+  - em `confrontar_escopo`, o ramo `if tocado_norm in outros:` / `de_outra_tarefa[tocado] =
+    outros[tocado_norm]` passa a ser `dona = _tarefa_dona(tocado_norm, outros, root)` /
+    `if dona is not None:` / `de_outra_tarefa[tocado] = dona`. Os demais ramos e a ordem de
+    precedência dos baldes não mudam.
+  - na docstring de `confrontar_escopo`, o trecho `a atribuição a outra tarefa casa por caminho
+    exato, depois de normalizar` passa a dizer que ela casa por caminho exato e, sem ele, pelo
+    alvo-diretório de prefixo mais longo (`TK-74`), depois de normalizar.
+- **Passos:**
+  1. Escreva os dois TF abaixo em `tests/test_review_evidence.py`, reusando `_load_review_evidence`,
+     `_init_repo_com_baseline` e `_escrever_plano_duas_tarefas`; rode-os e veja-os falhar.
+  2. Implemente os contratos; rode o arquivo de teste inteiro.
+  3. Rode as Verificações.
+- **Testes:**
+  - TF `test_tf_atribuir_alvo_diretorio_de_outra_tarefa_casa_por_prefixo(tmp_path, capsys)` — par
+    presença-ausência: repositório de `_init_repo_com_baseline`; plano de
+    `` _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `tests/fixtures/modelo/`.") ``;
+    cria `tests/fixtures/modelo/a.md` e `tests/fixtures/outro/b.md` no repositório;
+    `main(["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--atribuir"])` devolve `0`
+    e a saída contém `atribuicao: tests/fixtures/modelo/a.md -> alvo-de-outra-tarefa (T2)` **e**
+    `atribuicao: tests/fixtures/outro/b.md -> sem-atribuicao`.
+  - TF `test_tf_tarefa_dona_exato_vence_e_prefixo_mais_longo_desempata(tmp_path)` —
+    `confrontar_escopo(["tests/fixtures/modelo/a.md", "tests/fixtures/modelo/c.md", "tests/x.md"],
+    [], tmp_path, {"tests/": "T2", "tests/fixtures/modelo/": "T3", "tests/fixtures/modelo/a.md": "T4"})["de_outra_tarefa"]`
+    é igual a `{"tests/fixtures/modelo/a.md": "T4", "tests/fixtures/modelo/c.md": "T3", "tests/x.md": "T2"}`.
+  - TR: `tests/test_review_evidence.py` inteiro verde, inclusive
+    `test_tf_arquivo_alvo_de_outra_tarefa_sai_atribuido_e_nao_pesa_no_veredito` e
+    `test_tf_atribuir_alvo_diretorio_casa_por_prefixo`.
+- **Restrições desta tarefa:**
+  - Não renomear nem mudar a assinatura de `mapear_alvos_de_outras_tarefas`, `confrontar_escopo`,
+    `formatar_atribuicoes` e `_init_repo_com_baseline` (âncoras da `SAN-T1` do `P-0749`).
+  - Não filtrar por `status` — é a `TK-66a`.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho
+    sobe em exatamente `2`.
+- **Não fazer:** não mudar a gramática de caminho da `DB-27`; não mudar os baldes
+  `registro-da-orquestracao` e `ato-do-dono`.
+- **Contingências:**
+  - se `confrontar_escopo` não tiver exatamente uma ocorrência de `if tocado_norm in outros:` →
+    parar e sinalizar `blocked` razão `premissa`, colando a linha encontrada
+  - se algum teste preexistente de `tests/test_review_evidence.py` ficar vermelho → parar e
+    sinalizar `blocked` razão `premissa`, colando o nome do teste
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-25.
+  1. `python -m pytest tests/test_review_evidence.py -q` — antes `42 passed`; depois `44 passed`,
+     `0 failed`
+  2. `python -m pytest -q` — total de `passed` = o medido no despacho `+ 2`, `0 failed`
+  3. `(Select-String -Path .claude/tools/review_evidence.py -SimpleMatch '_tarefa_dona(').Count` —
+     antes `0`, depois `2`
+  4. `(Select-String -Path .claude/tools/review_evidence.py -SimpleMatch 'if tocado_norm in outros:').Count`
+     — antes `1`, depois `0`
+- **Pronto quando:** arquivo sob alvo-diretório de outra tarefa sai atribuído a ela e arquivo sob
+  nenhum alvo segue `sem-atribuicao` — Verificações 1 a 4.
+- **Fora do escopo desta tarefa:** o filtro por `status` (`TK-66a`); o `modelo.py` (`TK-74b`).
+- **Notas de execução:**
+  - 2026-09-25 `review` — V1 44 passed; V2 324 passed (322+2); V3 2; V4 0
+
+### TK-74b — `modelo.py` recusa limpo o alvo que não é arquivo de plano [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-25
+- **Objetivo:** `modelo.py check` e `modelo.py show` com `--plano` que não é arquivo saem com uma
+  linha e exit `2`, sem traceback.
+- **Fundamento:** `AE-2` do `TK-78` e `DT-3` acima. Exit `2` porque é o código que o passo 9 da
+  skill `scrum-master` já lê como *sem modelo a julgar — materializa e fecha*, o mesmo que
+  `_checar_forma` devolve a plano sem a seção do modelo; o tíquete do diário é esse caso.
+- **Arquivos-alvo:**
+  - `.claude/tools/modelo.py`
+  - `tests/test_modelo.py`
+- **Contratos/classes:**
+  - constante nova, junto das demais `_MSG_*`: `_MSG_PLANO_AUSENTE = "modelo: plano não encontrado
+    '{}' — sem modelo a julgar"`.
+  - em `verbo_check` e em `verbo_show`, logo depois de `plano_path = _resolver_plano(args)`:
+    `if not plano_path.is_file():` → `print(_MSG_PLANO_AUSENTE.format(args.plano))` e `return 2`.
+    Mesmo canal (`print` em stdout) das mensagens de `_checar_forma`.
+- **Passos:**
+  1. Escreva os dois TF abaixo em `tests/test_modelo.py`, reusando `_load_modelo`; rode-os e
+     veja-os falhar.
+  2. Implemente os contratos; rode o arquivo de teste inteiro.
+  3. Rode as Verificações.
+- **Testes:**
+  - TF `test_tf_check_plano_inexistente_sai_2_sem_traceback(tmp_path, capsys)`:
+    `_load_modelo().main(["check", "--plano", "TK-74", "--root", str(tmp_path)])` devolve `2` e a
+    saída padrão contém `modelo: plano não encontrado 'TK-74'`.
+  - TF `test_tf_show_plano_inexistente_sai_2_sem_traceback(tmp_path, capsys)`: o mesmo com
+    `["show", "--plano", "TK-74", "--root", str(tmp_path)]`.
+  - TR: `tests/test_modelo.py` inteiro verde.
+- **Restrições desta tarefa:**
+  - Não mudar exit nem mensagem de nenhum caminho em que o plano existe.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho
+    sobe em exatamente `2`.
+- **Não fazer:** não ensinar o `modelo.py` a ler tíquete do diário; não tocar `backlog.py`.
+- **Contingências:**
+  - se `verbo_check` ou `verbo_show` não tiver exatamente uma linha `plano_path = _resolver_plano(args)`
+    → parar e sinalizar `blocked` razão `premissa`, colando o que encontrou
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-25.
+  1. `python .claude/tools/modelo.py check --plano TK-74; $LASTEXITCODE` — antes traceback
+     `FileNotFoundError`; depois a linha `modelo: plano não encontrado 'TK-74' — sem modelo a julgar`
+     e `2`
+  2. `python -m pytest tests/test_modelo.py -q` — os dois TF novos verdes, `0 failed`
+  3. `python -m pytest -q` — total de `passed` = o medido no despacho `+ 2`, `0 failed`
+- **Pronto quando:** alvo que não é arquivo sai em uma linha com exit `2` nos dois verbos —
+  Verificações 1 a 3.
+- **Fora do escopo desta tarefa:** o `review_evidence.py` (`TK-74a`, `TK-66a`).
+- **Notas de execução:**
+  - 2026-09-25 `review` — V1 linha + exit 2 (check e show); V2 32 passed; V3 326 passed (324+2)
+
+## TK-76 — As tabelas do modelo se escrevem para o dono
+
+- **Status:** `done` · 2026-09-23 — aberto por ato do dono, ao ler o modelo do `P-0747`.
+
+**Ato do dono, 2026-09-23, verbatim:**
+
+> A definição de objetos no modelo ficou bom, mas gostaria que fizesse um tíquete avulso para ajustar
+> na matéria de modelo que, pelo menos no que será apresentado ao cliente/dono/domain expert, evite ter
+> tanta especificidade nos campos descritivos. Por exemplo, na coluna "Contratos", aparecem muitas
+> indireções que é difícil de compreender.
+> Não faça nade neste plano, mas nos próximos acionamentos do model-designer, que a tabela inteira dos
+> elementos de modelo seja "human-friendly", com frases curtas e ilustrativas do conteudo real.
+> Nas demais seções, que são "machine-friendly", pode ser feito o descritivo adequado.
+
+**Caso medido:** o contrato do objeto de escopo do `P-0747` (`consultor`) passou de 600 palavras,
+feitas de caminhos, números de linha, itens de `F-4` e ids de decisão; o veredito de 2026-09-22 (§3.4)
+já registrava que essa especificidade, copiada nos oito cards, não serve ao executor.
+
+**Fronteira:** o `P-0747` não se toca (ato do dono). O instrumento não se estende: a `V12` continua
+aferindo só crase e barra no texto da operação — estender a aferição às três tabelas reprovaria os
+modelos vigentes do acervo, e gramática nova vem antes do parser (`F-17` do `P-0746`). O pacote 5 do
+`TK-72` §7 (contrato sem a partição alheia) fica absorvido por este card, que resolve a mesma matéria
+na origem.
+
+### TK-76a — As tabelas do modelo em frases curtas para o dono [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-23
+- **Objetivo:** fixar, na norma e nas duas definições de conduta, que as três tabelas do modelo
+  conceitual — objetos, texto das operações, estados — são escritas para o dono em frases curtas e
+  ilustrativas, e que a especificidade que o executor precisa mora nas seções do plano escritas para
+  a máquina.
+- **Fundamento:** ato do dono de 2026-09-23 (acima); veredito `docs/plans/_VEREDITO-procedimentos-2026-09-22.md` §3.4.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-model-designer.md`
+  - `GOVERNANCA.md`
+  - `.claude/agents/pantonic-planner.md`
+- **Passos:**
+  1. Em `.claude/agents/pantonic-model-designer.md`, insira o bloco **Texto novo 1** imediatamente
+     antes da linha `## Os quatro atos`, separado por uma linha em branco antes e depois.
+  2. Em `GOVERNANCA.md`, substitua o bloco **Texto atual 2** pelo bloco **Texto novo 2**.
+  3. Em `.claude/agents/pantonic-planner.md`, substitua o bloco **Texto atual 3** pelo bloco
+     **Texto novo 3**.
+
+- **Restrições desta tarefa:**
+  - Toda edição é substituição ou inserção literal: o texto novo entra exatamente como está no bloco.
+  - Não tocar `docs/plans/P-0747-consultor-de-plano.md` nem nenhum outro plano (ato do dono).
+  - Não tocar `.claude/tools/modelo.py`, seus testes nem suas fixtures.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho não diminui (medido em 2026-09-23: `277 passed`, referência histórica).
+- **Não fazer:** não alterar a `description` do frontmatter de nenhum agente (mudaria a região gerada
+  de `.claude/README.md` e deixaria o check-drift vermelho); não reescrever as tabelas de plano
+  nenhum para a forma nova.
+- **Contingências:**
+  - se um bloco **Texto atual** não for encontrado **exatamente uma vez** no arquivo indicado → parar e sinalizar `blocked` razão `premissa`, citando o número do bloco
+  - se a linha `## Os quatro atos` não existir exatamente uma vez em `.claude/agents/pantonic-model-designer.md` → parar e sinalizar `blocked` razão `premissa`
+  - se o valor **antes** de qualquer linha de `Verificação` diferir do publicado → parar e sinalizar `blocked` razão `premissa`, citando a linha e o valor medido
+  - se `python -m pytest -q` sair com total de `passed` menor que o medido no despacho, ou com qualquer `failed` → parar e sinalizar `blocked` razão `premissa`, colando a linha de sumário
+- **Testes:** nenhum TF novo — o card edita doutrina. A guarda é a suíte inteira, que inclui `tests/test_doutrina_unidade.py` (prende literais de `GOVERNANCA.md` e de `.claude/agents/pantonic-planner.md`).
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-23.
+  1. `(Select-String -Path .claude/agents/pantonic-model-designer.md -SimpleMatch 'As tabelas do modelo se escrevem para o dono').Count` — antes `0`, depois `1`
+  2. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'human-friendly').Count` — antes `0`, depois `1`
+  3. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'escrito para o dono').Count` — antes `0`, depois `1`
+  4. `python .claude/tools/modelo.py check --plano docs/plans/P-0747-consultor-de-plano.md` — antes e depois `modelo: OK — 8 operações, 5 objetos, 12 propriedades, 8 tarefas, versão 1`, exit `0`
+  5. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift` — antes e depois exit `0`
+  6. `python -m pytest -q` — total de `passed` igual ao medido no despacho, `0 failed`
+- **Pronto quando:** a regra *tabelas do modelo human-friendly, especificidade nas seções machine-friendly* está escrita nas três residências — Verificações 1, 2 e 3 —, o `P-0747` segue intocado e verde — Verificação 4 —, e nenhum gate regrediu — Verificações 5 e 6.
+- **Fora do escopo desta tarefa:** estender a `V12` às tabelas; reescrever modelo de plano existente; o restante do `TK-72` §7.
+
+### Achados da execução (TK-76)
+
+- **`AE-1` (2026-09-23, laudo da `TK-76a`, alvo `dossiê`)** — os blocos literais foram autorados no meio do card e o gerador de evidência deixou de achar `Verificação`; o loop os moveu para o fim. Regra: bloco cercado de card vai depois do último campo. **Rota:** `TK-72`.
+- **`AE-2` (idem)** — o `Pronto quando` exige o `P-0747` intocado, mas a verificação só afere que o modelo segue válido; arquivo não rastreado não tem diff. Regra: card que prende arquivo não rastreado publica hash antes e depois. **Rota:** `TK-72`.
+- **`AE-3` (idem)** — atribuição de evidência por arquivo sobre árvore com WIP de outras frentes exigiu reconciliação manual. **Rota:** sem ação nova — já roteado à atribuição por hunk (`TK-66`).
+
+**Texto novo 1** — `.claude/agents/pantonic-model-designer.md`:
+
+~~~~
+## As tabelas do modelo se escrevem para o dono
+
+As três tabelas da seção — `### 1.1 Objetos`, o texto de cada operação em `### 1.2 Fluxo de
+operações` e `### 1.3 Estado inicial e estado final` — são o que o dono, o cliente e o domain expert
+leem no Marco 1. Escreva-as **human-friendly**: frases curtas, em linguagem corrente, que ilustram o
+conteúdo real — o que a coisa é, o que muda nela e como se vê que mudou. Nas células descritivas
+(`o que é`, `propriedades`, `contrato`, os dois estados) não entram caminho de arquivo, número de
+linha, identificador de decisão, fato ou item, nome de instrumento nem remissão a outra seção. O
+contrato de um objeto diz, em uma ou duas frases, o que quem implementa recebe nas mãos — não
+enumera onde isso mora. A especificidade que o executor precisa — residências, partição de arquivos
+entre operações, exclusões, comandos — pertence às seções **machine-friendly** do plano, que são do
+planejador: `## 2. Fatos estabelecidos`, `## 3. Decisões` e os campos do card. As linhas entre
+crases do fluxo (`precisa de:`, `altera:`, `tarefas:`, `lastro:`) e a coluna de lastro continuam na
+forma que o instrumento lê. Caso medido: o contrato do objeto de escopo do `P-0747` passou de 600
+palavras de indireções, e o dono o achou difícil de compreender (`TK-76`, 2026-09-23).
+~~~~
+
+**Texto atual 2** — `GOVERNANCA.md`:
+
+~~~~
+instrumento recusa crase e barra (`V12`); o resto é dever de autoria. Máximo de 40 operações por
+plano.
+~~~~
+
+**Texto novo 2** — `GOVERNANCA.md`:
+
+~~~~
+instrumento recusa crase e barra (`V12`); o resto é dever de autoria. Máximo de 40 operações por
+plano. O mesmo vale para as células descritivas das três tabelas — objetos, estados e o contrato de
+cada objeto: são escritas **human-friendly**, em frases curtas e ilustrativas do conteúdo real, e a
+especificidade que o executor precisa (residências, arquivos, exclusões, comandos) mora nas seções
+do plano escritas para a máquina — fatos, decisões e os campos do card (`TK-76`, ato do dono de
+2026-09-23). A aferição é do marco, não do instrumento.
+~~~~
+
+**Texto atual 3** — `.claude/agents/pantonic-planner.md`:
+
+~~~~
+a `Camada e fronteira` transcreve o contrato dos objetos de que ela precisa.
+~~~~
+
+**Texto novo 3** — `.claude/agents/pantonic-planner.md`:
+
+~~~~
+a `Camada e fronteira` transcreve o contrato dos objetos de que ela precisa e acrescenta, da `## 2`,
+as residências e os arquivos que o contrato — escrito para o dono — não enumera.
+~~~~
+
+## TK-77 — `kit_check` não recusa frontmatter de agente que não é YAML válido
+
+- **Status:** `done` · 2026-09-25 — aberto pela orquestração do `P-0747`, rota do `AE-20` (iii) daquele plano.
+
+**Caso medido (2026-09-23):** a `CON-T8` do `P-0747` gravou na `description` de `.claude/agents/pantonic-consultant.md` a sequência `Efêmero: cada acionamento`; o `: ` num valor sem aspas faz `yaml.safe_load` falhar (*"mapping values are not allowed here"*), e o harness pode deixar de carregar o agente. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` saiu `0` com o arquivo nesse estado, o check-drift também, e a revisão só pegou o defeito por leitura. O corretivo `CON-T8a` reparou o arquivo; a guarda continua sem pegar a classe.
+
+**O que decide:** o `validate` passa a recusar todo `.claude/agents/*.md` cujo frontmatter um parser YAML estrito recusa, com a mensagem nomeando o arquivo. Par presença-ausência sobre fixture: `description` com `: ` sem aspas → exit diferente de 0; a mesma com ` - ` → exit 0.
+- **Notas de execução:**
+  - 2026-09-25 `done` — 1/1 card done (TK-77a); o validate recusa frontmatter que o yaml.safe_load recusa
+
+### TK-77a — O `validate` recusa frontmatter de agente ou skill que o YAML estrito recusa [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `done` · 2026-09-25
+- **Objetivo:** o `kit_check.ps1 -Mode validate` passa a falhar, nomeando o arquivo, quando o frontmatter de um `.claude/agents/*.md` ou de um `.claude/skills/*/SKILL.md` não é YAML válido para `yaml.safe_load` ou não carrega um mapeamento. A classe é a mesma nas duas famílias (o harness lê as duas pelo frontmatter), e o leitor de frontmatter do script já é um só (`Get-Frontmatter`).
+- **Arquivos-alvo:**
+  - `.claude/checks/frontmatter_yaml.py` (novo)
+  - `.claude/checks/kit_check.ps1`
+  - `tests/test_frontmatter_yaml.py` (novo)
+- **Desenho:**
+  1. `frontmatter_yaml.py` — função pura `problemas(caminhos: list[Path]) -> list[str]`: para cada arquivo, lê em UTF-8, recorta o bloco entre a primeira linha `---` e a seguinte `---` (arquivo sem o bloco não é problema deste script: o `validate` já o acusa), aplica `yaml.safe_load` e devolve `"<caminho>: <primeira linha da mensagem do erro YAML>"` quando o parser levanta, ou `"<caminho>: frontmatter não é mapeamento"` quando o resultado não é `dict`. CLI: `python .claude/checks/frontmatter_yaml.py <arquivo>...` imprime um problema por linha e sai `1` se houver algum, `0` se nenhum; sem PyYAML importável imprime `frontmatter_yaml: PyYAML ausente` e sai `2`. Força UTF-8 em `stdout`/`stderr` antes de imprimir (mesma forma do `_forcar_utf8` de `.claude/tools/review_evidence.py`).
+  2. `kit_check.ps1`, bloco `validate` — logo antes da linha `# --- 3. Paridade de versão: VERSION (raiz) == .claude/KIT_VERSION --------`, uma seção `# --- 2b. Frontmatter é YAML válido` que chama o script com os caminhos de `$agentFiles` e dos `SKILL.md` existentes de `$skillDirs`, no mesmo padrão da chamada do `materializar.py` (seção 4): exit `1` → cada linha vira `$errors.Add("frontmatter YAML: $line")`; exit diferente de `0` e `1` → `$errors.Add("frontmatter YAML: saida nao interpretavel (exit N): ...")`.
+- **Caso medido que motivou (2026-09-25, re-medido no ato da autoria):** cópia de `.claude/` + `VERSION` num diretório temporário, com `Efêmero - cada acionamento` trocado por `Efêmero: cada acionamento` na `description` de `agents/pantonic-consultant.md` → `kit_check.ps1 -Mode validate -KitRoot <cópia>/.claude` sai `kit_check: OK - 10 agente(s), 12 skill(s) …` exit `0`. `yaml.safe_load('description: Efêmero: cada acionamento')` levanta `ScannerError`; com ` - ` devolve o mapeamento. Hoje os 10 agentes e as 12 skills da árvore passam no `safe_load`.
+- **Testes (novos, em `tests/test_frontmatter_yaml.py`):**
+  - TF par presença-ausência sobre a função: arquivo com `description: A: b` → 1 problema com o nome do arquivo; o mesmo com `description: A - b` → 0 problemas.
+  - TF: frontmatter que carrega lista ou escalar (não mapeamento) → 1 problema.
+  - TF par presença-ausência ponta a ponta: cópia de `.claude/` + `VERSION` sob `tmp_path` (`shutil.copytree`, ignorando `__pycache__`), `pwsh -NoProfile -File <cópia>/.claude/checks/kit_check.ps1 -Mode validate -KitRoot <cópia>/.claude` → exit `0`; com a troca acima no `pantonic-consultant.md` da cópia → exit diferente de `0` e a saída contém `pantonic-consultant.md`. Pular (`pytest.skip`) se `pwsh` não estiver no `PATH`.
+- **Verificação:**
+  1. `python -m pytest tests/test_frontmatter_yaml.py -q` → verde, com os três testes acima.
+  2. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` na árvore → exit `0` (os 22 frontmatters atuais passam).
+  3. `python -m pytest tests -q` → nenhuma falha; total = o da referência do despacho mais os testes novos (referência medida na autoria: `353 passed`, re-derivada no despacho).
+- **Pronto quando:** o `validate` recusa, com o nome do arquivo na saída, o frontmatter de agente ou skill que o `yaml.safe_load` recusa, e aceita o mesmo arquivo com ` - ` no lugar de `: `; o par está em teste ponta a ponta sobre cópia do kit, falhando sobre o `kit_check.ps1` anterior e passando sobre o novo.
+- **Não fazer:** não reescrever `Get-Frontmatter`/`Get-FieldValue` nem as checagens de campo existentes; não tocar os agentes e skills da árvore (todos passam); não acrescentar PyYAML a arquivo de dependências.
+- **Contingências:**
+  1. se algum frontmatter da árvore falhar no `safe_load` no ato da execução → parar e sinalizar `blocked motivo=premissa` com o arquivo e a mensagem do parser, sem consertá-lo.
+
+## TK-78 — As pendências da janela de 2026-09-24 do `P-0748`
+
+- **Status:** `done` · 2026-09-24 — aberto pela orquestração do `P-0748` por ordem do dono, com prioridade sobre o plano: *"Queria resolver essas pendências primeiro logo na próxima janela, então crie um card extra prioritário para o próximo contexto, e depois desse card, volte a esse plano."*
+
+**Origem:** janela de 2026-09-24 do `P-0748` (`TLG-T1`, `TLG-T2`) · **Achados:** `AE-1`, `AE-2` (ii, iii) e `AE-3` do `P-0748`, mais a ordem do dono na abertura da mesma janela: *"Não dá para você ficar interrompendo a execução para isso. [...] Continue com Opus e páre de interromper o trabalho para isso"* (candidato `nao-interromper-por-troca-de-modelo` na fila de memória, cujo lar é a doutrina, não a memória).
+
+**Caso medido:** na abertura da janela o loop parou duas vezes seguidas em sentidos opostos — o hook `UserPromptSubmit` mandou pedir `/model opus`, o passo 1 da `scrum-master` mandou pedir `/model sonnet` — sem nenhum trabalho entre as duas paradas. Depois, o gerador de evidência recusou o card de investigação (`AE-1`), recolheu a árvore suja inteira como diff da entrega e truncou o trecho do alvo antes de chegar à seção entregue (`AE-3` ii), e a verificação por `numstat` da `TLG-T2` só foi aferível relida como delta (`AE-3` i).
+
+**O que decide:** três cards, em sequência, cada um numa superfície: o loop deixa de parar para rebaixar o modelo e só para para subir a um melhor (`TK-78a`, emendado pelo adendo do dono abaixo); a régua de autoria do card aprende as três lições da janela (`TK-78b`); o gerador de evidência passa a medir só o que mudou desde o despacho (`TK-78c`). Fechado o `TK-78`, a diretiva volta ao `P-0748`.
+
+**Adendo do dono na abertura da execução (2026-09-24), verbatim:** *"como a tela principal é só o orquestrado, nunca parar para rebaixar o modelo, apenas para escolher um melhor"*. Materializado como emenda do `TK-78a` antes do despacho: modelo ativo **acima** do indicado segue e anota uma linha; modelo ativo **abaixo** do indicado para e pede ao dono o `/model` do melhor. O Texto 8 (nudge da fase intelectual, que já só manda subir a Opus) saiu do card.
+
+**Relação:** o `TK-72` (régua de autoria, quatro pacotes do `P-0746`) e o `TK-66` (atribuidor que ignora `status`) seguem abertos e não são absorvidos — o `TK-78b` escreve na mesma família de regra, em residência vizinha, sem tocar os pacotes deles.
+
+### TK-78a — O loop não para para rebaixar o modelo [Sonnet · esforço medium · classe redacao]
+
+- **Status:** `done` · 2026-09-24
+- **Objetivo:** tirar da skill do loop, da skill `modelo-por-fase`, da matriz de `GOVERNANCA.md` §3 e do hook de nudge a instrução de parar para **rebaixar** o modelo: o contexto principal só orquestra, o modelo de cada tarefa viaja no despacho, e modelo ativo acima do indicado vira uma linha de nota, nunca parada. A única parada que sobra é a de subir: modelo ativo abaixo do que a fase exige para e pede ao dono o `/model` do melhor.
+- **Fundamento:** ordem do dono de 2026-09-24 e adendo do dono na abertura da execução (acima); caso medido acima.
+- **Arquivos-alvo:**
+  - `.claude/skills/scrum-master/SKILL.md`
+  - `.claude/skills/modelo-por-fase/SKILL.md`
+  - `GOVERNANCA.md`
+  - `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`
+  - `README.md`
+  - `.claude/README.md` (regenerado pelo gerador do kit, nunca à mão)
+- **Passos:**
+  1. Em `.claude/skills/scrum-master/SKILL.md`, substitua o **Texto atual 1** pelo **Texto novo 1** e o **Texto atual 2** pelo **Texto novo 2**.
+  2. Em `.claude/skills/modelo-por-fase/SKILL.md`, substitua os **Textos atuais 3, 4 e 5** pelos **Textos novos 3, 4 e 5**.
+  3. Em `GOVERNANCA.md`, substitua o **Texto atual 6** pelo **Texto novo 6**.
+  4. Em `README.md`, substitua o **Texto atual 7** pelo **Texto novo 7**.
+  5. Em `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py`, substitua o **Texto atual 9** pelo **Texto novo 9** (não há Texto 8: o nudge da fase intelectual fica intacto).
+  6. Rode `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` (a `description` da `modelo-por-fase` muda a região gerada de `.claude/README.md`).
+  7. Rode as Verificações.
+- **Restrições desta tarefa:**
+  - Toda edição é substituição literal; o texto novo entra exatamente como está no bloco. Os arquivos `.md` da skill têm final de linha CRLF na cópia de trabalho: compare ignorando `\r` e preserve o final de linha existente.
+  - Não editar nada fora do repositório: a projeção do hook para `~/.claude/hooks/` é ato do dono (Fora do escopo).
+  - Não tocar a Regra 5 (anúncio de troca efetivada) nem a seção `## Convenção de anúncio` da `modelo-por-fase`.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho não diminui (referência histórica: `277 passed`, 2026-09-24).
+- **Não fazer:** não mudar a tabela de modelo por fase (quem roda em que modelo); não remover a skill `modelo-por-fase`; não tocar `_NUDGE["intellectual"]` nem as `systemMessage` do hook (a parada para subir é a que o adendo preserva); não editar `C:\Users\panta\.claude\`.
+- **Contingências:**
+  - se um bloco **Texto atual** não for encontrado **exatamente uma vez** no arquivo indicado → parar e sinalizar `blocked` razão `premissa`, citando o número do bloco
+  - se `kit_check.ps1 -Mode generate` ou `-Mode check-drift` sair diferente de `0` → parar e sinalizar `blocked` razão `ferramenta`, colando a última linha da saída
+  - se `python -m pytest -q` sair com total de `passed` menor que o medido no despacho, ou com qualquer `failed` → parar e sinalizar `blocked` razão `premissa`, colando a linha de sumário
+- **Testes:** nenhum TF novo — o card edita doutrina e texto de nudge. TR: a suíte inteira; `py_compile` do hook.
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-24.
+  1. `(Select-String -Path .claude/skills/scrum-master/SKILL.md -SimpleMatch 'PARA e pede `/model` ao dono').Count` — antes `1`, depois `0`
+  2. `(Select-String -Path .claude/skills/scrum-master/SKILL.md -SimpleMatch 'O loop nunca para para rebaixar o modelo').Count` — antes `0`, depois `1`
+  3. `(Select-String -Path .claude/skills/scrum-master/SKILL.md -SimpleMatch '--desde <data de abertura da janela>').Count` — antes `1`, depois `0`
+  4. `(Select-String -Path .claude/skills/modelo-por-fase/SKILL.md -SimpleMatch 'Gate de parada').Count` — antes `2`, depois `0`; `(Select-String -Path .claude/skills/modelo-por-fase/SKILL.md -SimpleMatch '## Gate de subida').Count` — antes `0`, depois `1`
+  5. `(Select-String -Path GOVERNANCA.md -SimpleMatch '**para para pedir `/model`**').Count` — antes `1`, depois `0`; `(Select-String -Path GOVERNANCA.md -SimpleMatch '**nunca para para rebaixar o modelo**').Count` — antes `0`, depois `1`
+  6. `(Select-String -Path README.md -SimpleMatch 'e para para pedir o correto').Count` — antes `1`, depois `0`
+  7. `(Select-String -Path .claude/global/hooks/modelo_por_fase_userpromptsubmit.py -SimpleMatch 'recomende ao dono `/model sonnet`').Count` — antes `1`, depois `0`; `(Select-String -Path .claude/global/hooks/modelo_por_fase_userpromptsubmit.py -SimpleMatch 'NAO pare e NAO peca').Count` — antes `0`, depois `1`; `(Select-String -Path .claude/global/hooks/modelo_por_fase_userpromptsubmit.py -SimpleMatch 'PARE e peca').Count` — antes e depois `1`
+  8. `python -m py_compile .claude/global/hooks/modelo_por_fase_userpromptsubmit.py; $LASTEXITCODE` — `0`
+  9. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift; $LASTEXITCODE` — depois `0`
+  10. `python -m pytest -q` — total de `passed` ≥ o medido no despacho, `0 failed`
+- **Pronto quando:** nenhuma das quatro superfícies manda parar para rebaixar o modelo, e as quatro dizem a mesma coisa — acima do indicado segue no modelo ativo e anota a divergência, abaixo do indicado para e pede o `/model` do melhor, o modelo da tarefa viaja no despacho — Verificações 1 a 7; o relatório de encerramento chama `modelo.py show` na forma que a ferramenta aceita — Verificação 3; nenhum gate regrediu — Verificações 8 a 10.
+- **Fora do escopo desta tarefa:** projetar o hook no ponto de carga — ato do dono, depois do fechamento: `Copy-Item .claude/global/hooks/modelo_por_fase_userpromptsubmit.py $HOME/.claude/hooks/ -Force` (a cópia do kit é superconjunto da carregada: a única diferença medida em 2026-09-24 é a leitura de stdin em UTF-8, que o kit já tem); a Regra 7 do `~/.claude/CLAUDE.md` do dono.
+
+**Texto atual 1** — `.claude/skills/scrum-master/SKILL.md` (passo 1):
+
+~~~~
+- **Ação:** rodar `.claude/skills/modelo-por-fase/SKILL.md` (fase **orquestração**, matriz
+  `GOVERNANCA.md` §3). Modelo diferente do exigido: **PARA e pede `/model` ao dono**.
+- **Saída:** modelo conferido, ou parada com o `/model` pedido.
+~~~~
+
+**Texto novo 1:**
+
+~~~~
+- **Ação:** rodar `.claude/skills/modelo-por-fase/SKILL.md` (fase **orquestração**, matriz
+  `GOVERNANCA.md` §3). Modelo ativo **acima** do exigido: **segue** nele — o contexto principal
+  só orquestra, e o modelo de cada tarefa viaja no despacho (passo 4) — e anota a divergência em
+  uma linha do relatório de encerramento. O loop nunca para para rebaixar o modelo. Modelo ativo
+  **abaixo** do exigido: **PARA e pede ao dono o `/model` do modelo melhor** — a única parada do
+  gate.
+- **Saída:** modelo conferido, com a divergência anotada quando houver, ou parada com o `/model`
+  do modelo melhor pedido.
+~~~~
+
+**Texto atual 2** — `.claude/skills/scrum-master/SKILL.md` (relatório de encerramento):
+
+~~~~
+.claude/tools/modelo.py show --plano <plano> --desde <data de abertura da janela>` — a
+~~~~
+
+**Texto novo 2:**
+
+~~~~
+.claude/tools/modelo.py show --plano <plano>` — a
+~~~~
+
+**Texto atual 3** — `.claude/skills/modelo-por-fase/SKILL.md` (frontmatter, trecho da `description`):
+
+~~~~
+confere o modelo ativo contra a tabela vinculante e para para pedir o /model correto ao dono.
+~~~~
+
+**Texto novo 3:**
+
+~~~~
+confere o modelo ativo contra a tabela vinculante; acima do exigido segue e anota a divergência, e só abaixo do exigido para para pedir o /model melhor ao dono.
+~~~~
+
+**Texto atual 4** — `.claude/skills/modelo-por-fase/SKILL.md` (linha 35, trecho):
+
+~~~~
+(passo "Gate de parada" abaixo)
+~~~~
+
+**Texto novo 4:**
+
+~~~~
+(passo "Gate de subida" abaixo)
+~~~~
+
+**Texto atual 5** — `.claude/skills/modelo-por-fase/SKILL.md`:
+
+~~~~
+## Gate de parada
+
+Se o modelo ativo **não bate** com a fase:
+
+- **Pare** — não prossiga a fase com o modelo errado (não decida sozinho, não assuma que "dessa
+  vez tanto faz").
+- **Peça** ao dono, de forma explícita, o comando `/model <opus|sonnet|haiku>` correspondente.
+- Só o dono decide inverter a tabela para um agente de **execução** (custo caro em execução
+  exige OK explícito e registrado — `GOVERNANCA.md` §3, penúltimo bullet). Para as demais fases
+  não há inversão silenciosa possível: preferência genérica de memória não decide isso.
+- Se o modelo já bate com a fase, siga sem ruído — o gate não é anúncio a cada turno.
+~~~~
+
+**Texto novo 5:**
+
+~~~~
+## Gate de subida
+
+Se o modelo ativo **não bate** com a fase (ordem: Haiku < Sonnet < Opus):
+
+- **Acima do indicado** (ex.: Opus numa fase de Sonnet): **não pare** e não peça `/model` ao
+  dono — siga no modelo ativo. O contexto principal só orquestra: o modelo de cada tarefa
+  delegada viaja no despacho (`model` do cabeçalho do card), e rebaixar a tela principal nunca
+  justifica interromper o trabalho. **Anote** a divergência em uma linha, no fim da resposta —
+  uma vez por fase, não a cada turno; no loop de execução a nota vai ao relatório de
+  encerramento (`scrum-master`, passo 1).
+- **Abaixo do indicado** (ex.: Sonnet numa fase de Opus): **pare** e peça ao dono, de forma
+  explícita, o `/model <opus|sonnet>` do modelo melhor — a única parada do gate. Não prossiga a
+  fase com o modelo mais fraco nem assuma que "dessa vez tanto faz".
+- Só o dono decide inverter a tabela para um agente de **execução** (custo caro em execução
+  exige OK explícito e registrado — `GOVERNANCA.md` §3, penúltimo bullet); a inversão se
+  materializa no `model` do despacho, nunca numa parada do contexto principal.
+- Se o modelo já bate com a fase, siga sem ruído — o gate não é anúncio a cada turno.
+~~~~
+
+**Texto atual 6** — `GOVERNANCA.md` (§3, linha *Orquestração*, trecho):
+
+~~~~
+e **para para pedir `/model`** quando a fase exige outro modelo
+~~~~
+
+**Texto novo 6:**
+
+~~~~
+e **nunca para para rebaixar o modelo**, porque só orquestra e o modelo de cada tarefa viaja no despacho; para para pedir `/model` só quando o modelo ativo está abaixo do que a fase exige
+~~~~
+
+**Texto atual 7** — `README.md` (tabela de skills, linha `modelo-por-fase`, trecho):
+
+~~~~
+confere o modelo ativo contra a tabela vinculante e para para pedir o correto.
+~~~~
+
+**Texto novo 7:**
+
+~~~~
+confere o modelo ativo contra a tabela vinculante; acima do exigido segue e anota, e só abaixo do exigido para para pedir o melhor.
+~~~~
+
+**Texto 8** — suprimido pelo adendo do dono: `_NUDGE["intellectual"]` só manda parar para subir a Opus, que é a parada que o adendo preserva.
+
+**Texto atual 9** — `.claude/global/hooks/modelo_por_fase_userpromptsubmit.py` (`_NUDGE["execution"]`, segunda string):
+
+~~~~
+        "Gate modelo-por-fase: este prompt e execucao mecanica (Regra 7). Se o modelo "
+        "ativo for Opus, recomende ao dono `/model sonnet` antes de implementar "
+        "(anuncie — Regra 5), salvo tarefa de alto risco com racional registrado.",
+~~~~
+
+**Texto novo 9:**
+
+~~~~
+        "Nota modelo-por-fase: este prompt e execucao mecanica (Regra 7); o modelo "
+        "indicado e Sonnet. Se o ativo for Opus, NAO pare e NAO peca `/model` ao dono "
+        "(rebaixar a tela principal nunca interrompe o trabalho): siga e anote a "
+        "divergencia em uma linha no fim da resposta. So pare para pedir "
+        "`/model sonnet` se o ativo for Haiku.",
+~~~~
+
+### TK-78d — A doutrina e o README deixam de mandar parar para rebaixar o modelo [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-24
+- **Depende de:** `TK-78a`
+- **Objetivo:** corretivo da `TK-78a` (`AE-1` abaixo): os dois trechos que os Textos 1-9 da `TK-78a` não cobriram — `GOVERNANCA.md` §3, bullet *Gatilho operacional do modelo por fase*, e `README.md` §4, frase do gatilho e parágrafo *Onde o gerente intervém* — passam a dizer o mesmo que a skill do loop, a `modelo-por-fase` e o hook já dizem: modelo ativo **acima** do indicado segue e anota a divergência em uma linha; **abaixo** do indicado para e pede ao dono o `/model` do modelo melhor.
+- **Fundamento:** adendo do dono de 2026-09-24 (cabeçalho do `## TK-78`); `AE-1`; triagem do consultor de 2026-09-24 (`docs/plans/_CENARIO-TK-78.md`, `CT-1`).
+- **Arquivos-alvo:**
+  - `GOVERNANCA.md`
+  - `README.md`
+- **Passos:**
+  1. Em `GOVERNANCA.md`, substitua o **Texto atual 1** pelo **Texto novo 1**.
+  2. Em `README.md`, substitua o **Texto atual 2** pelo **Texto novo 2** e o **Texto atual 3** pelo **Texto novo 3**.
+  3. Rode as Verificações.
+- **Restrições desta tarefa:**
+  - Toda edição é substituição literal de linhas inteiras; o texto novo entra exatamente como está no bloco. Os dois arquivos têm final de linha LF.
+  - Não tocar as outras superfícies já conformes (`.claude/skills/scrum-master/SKILL.md`, `.claude/skills/modelo-por-fase/SKILL.md`, o hook), nem a linha *Orquestração* da matriz de `GOVERNANCA.md` §3, nem o parágrafo *Por quê* do `README.md` §4.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho não diminui (medido pelo consultor em 2026-09-24: `277 passed`).
+- **Não fazer:** não mudar a tabela de modelo por fase; não editar `CHANGELOG.md` (registro histórico); não editar `C:\Users\panta\.claude\`.
+- **Contingências:**
+  - se um bloco **Texto atual** não for encontrado **exatamente uma vez** no arquivo indicado → parar e sinalizar `blocked` razão `premissa`, citando o número do bloco
+  - se `kit_check.ps1 -Mode check-drift` ou `check-readme.ps1` sair diferente de `0` → parar e sinalizar `blocked` razão `ferramenta`, colando a última linha da saída
+  - se `python -m pytest -q` sair com total de `passed` menor que o medido no despacho, ou com qualquer `failed` → parar e sinalizar `blocked` razão `premissa`, colando a linha de sumário
+- **Testes:** nenhum TF novo — o card edita doutrina e espelho; nenhum teste prende os literais trocados (medido em 2026-09-24). TR: a suíte inteira.
+- **Verificação:** no PowerShell 7 (`pwsh`), na raiz do repositório; **antes** medido em 2026-09-24, **depois** medido pelo consultor sobre cópia com as três substituições aplicadas.
+  1. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'e o modelo ativo, **para** e pede o `/model` correto ao dono').Count` — antes `1`, depois `0`
+  2. `(Select-String -Path GOVERNANCA.md -SimpleMatch 'exige, **para** e pede ao dono o `/model` do modelo melhor').Count` — antes `0`, depois `1`
+  3. `(Select-String -Path GOVERNANCA.md -SimpleMatch '**nunca para para rebaixar o modelo**').Count` — antes `1`, depois `2`
+  4. `(Select-String -Path README.md -SimpleMatch 'confere contra o modelo ativo e **para** para pedir o `/model` correto').Count` — antes `1`, depois `0`; `(Select-String -Path README.md -SimpleMatch '**abaixo** do exigido **para** para pedir o `/model` do modelo melhor').Count` — antes `0`, depois `1`
+  5. `(Select-String -Path README.md -SimpleMatch 'Quando o gate dispara, ele para e pede uma').Count` — antes `1`, depois `0`; `(Select-String -Path README.md -SimpleMatch 'decidir sozinho e seguir').Count` — antes `1`, depois `0`
+  6. `(Select-String -Path README.md -SimpleMatch 'agente seguir sozinho num modelo mais fraco').Count` — antes `0`, depois `1`; `(Select-String -Path README.md -SimpleMatch 'orquestra, nunca interrompe o trabalho').Count` — antes `0`, depois `1`
+  7. Discriminante das cinco superfícies: `(Select-String -Path GOVERNANCA.md,README.md,.claude/skills/scrum-master/SKILL.md,.claude/skills/modelo-por-fase/SKILL.md,.claude/global/hooks/modelo_por_fase_userpromptsubmit.py -SimpleMatch '`/model` correto').Count` — antes `2`, depois `0`
+  8. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift; $LASTEXITCODE` — antes e depois `0`
+  9. `pwsh -NoProfile -File .claude/checks/check-readme.ps1; $LASTEXITCODE` — antes e depois `0`
+  10. `python -m pytest -q` — total de `passed` ≥ o medido no despacho, `0 failed`
+- **Pronto quando:** nenhuma superfície do kit manda parar para rebaixar o modelo nem pede o `/model` "correto" em qualquer divergência, e `GOVERNANCA.md` e `README.md` dizem o mesmo que a skill do loop, a `modelo-por-fase` e o hook — acima do indicado segue e anota, abaixo do indicado para e pede o melhor — Verificações 1 a 7; nenhum gate regrediu — Verificações 8 a 10. Fechada esta tarefa, o `Pronto quando` da `TK-78a` fica verdadeiro.
+- **Fora do escopo desta tarefa:** as `systemMessage` do hook (`considere /model sonnet|haiku`), que sugerem ao dono sem mandar parar e que a `TK-78a` proibiu tocar; o `CHANGELOG.md`, que registra o gate de parada como história.
+
+**Texto atual 1** — `GOVERNANCA.md` (§3, bullet *Gatilho operacional do modelo por fase*, linha única):
+
+~~~~
+  detecta a fase da tarefa e o modelo ativo, **para** e pede o `/model` correto ao dono (fato
+~~~~
+
+**Texto novo 1:**
+
+~~~~
+  detecta a fase da tarefa e o modelo ativo e, só quando o ativo está **abaixo** do que a fase
+  exige, **para** e pede ao dono o `/model` do modelo melhor — acima do exigido segue e anota a
+  divergência em uma linha, porque o contexto principal só orquestra e o modelo de cada tarefa
+  viaja no despacho (linha *Orquestração* acima); o gate **nunca para para rebaixar o modelo** (fato
+~~~~
+
+**Texto atual 2** — `README.md` (§4, frase do gatilho operacional, linha única):
+
+~~~~
+da tarefa, confere contra o modelo ativo e **para** para pedir o `/model` correto. A correção fica com
+~~~~
+
+**Texto novo 2:**
+
+~~~~
+da tarefa e confere contra o modelo ativo: **acima** do exigido segue e anota a divergência em uma
+linha — o contexto principal só orquestra, e o modelo de cada tarefa viaja no despacho —, e só
+**abaixo** do exigido **para** para pedir o `/model` do modelo melhor. A correção fica com
+~~~~
+
+**Texto atual 3** — `README.md` (§4, parágrafo *Onde o gerente intervém* do modelo por fase, cinco linhas):
+
+~~~~
+**Onde o gerente intervém.** Quando o gate dispara, ele para e pede uma ação humana: trocar o modelo
+com `/model` e confirmar. Três respostas são legítimas — trocar (o caso normal), autorizar
+explicitamente a exceção (que fica registrada, com motivo, no plano ou no diário), ou reclassificar a
+fase se o gate errou a classificação. O que **não** é legítimo é o agente decidir sozinho e seguir:
+uma exceção não registrada vira precedente silencioso e a tabela deixa de valer na prática.
+~~~~
+
+**Texto novo 3:**
+
+~~~~
+**Onde o gerente intervém.** Só quando o modelo ativo está **abaixo** do que a fase exige: aí o gate
+para e pede uma ação humana — subir o modelo com `/model` e confirmar. Três respostas são
+legítimas — trocar (o caso normal), autorizar explicitamente a exceção (que fica registrada, com
+motivo, no plano ou no diário), ou reclassificar a fase se o gate errou a classificação. O que
+**não** é legítimo é o agente seguir sozinho num modelo mais fraco que o exigido: uma exceção não
+registrada vira precedente silencioso e a tabela deixa de valer na prática. Modelo ativo **acima**
+do exigido não dispara intervenção: o agente segue e anota a divergência em uma linha — rebaixar a
+tela principal, que só orquestra, nunca interrompe o trabalho (ordem do dono de 2026-09-24).
+~~~~
+
+### TK-78b — A régua do card aprende as três lições da janela [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-24
+- **Depende de:** `TK-78a`, `TK-78d`
+- **Objetivo:** fixar na definição do planejador que card de investigação mantém o rótulo `Pronto quando`, que card que edita a configuração do harness declara a contingência de permissão recusada, e que verificação por total de diff sobre arquivo com alteração alheia mede delta contra a base do despacho.
+- **Fundamento:** `AE-1`, `AE-2` (ii) e `AE-3` (i) do `P-0748`.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-planner.md`
+- **Passos:**
+  1. Em `.claude/agents/pantonic-planner.md`, substitua o **Texto atual 1** pelo **Texto novo 1**.
+  2. Rode as Verificações.
+- **Restrições desta tarefa:**
+  - Substituição literal; o texto novo entra exatamente como está no bloco.
+  - Não alterar a `description` do frontmatter (mudaria a região gerada de `.claude/README.md`).
+  - Não tocar `.claude/tools/rdo.py` nem `review_evidence.py` — o rótulo se acerta na doutrina, não no parser.
+  - Não reescrever card de plano nenhum para a forma nova.
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho não diminui.
+- **Não fazer:** não tocar os pacotes do `TK-72` nem `GOVERNANCA.md`.
+- **Contingências:**
+  - se o **Texto atual 1** não for encontrado **exatamente uma vez** → parar e sinalizar `blocked` razão `premissa`
+  - se `python -m pytest -q` sair com total de `passed` menor que o medido no despacho, ou com qualquer `failed` → parar e sinalizar `blocked` razão `premissa`, colando a linha de sumário
+- **Testes:** nenhum TF novo — o card edita doutrina. A guarda é a suíte inteira, que inclui `tests/test_doutrina_unidade.py` (prende literais de `.claude/agents/pantonic-planner.md`).
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-24.
+  1. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'por **o número ou fato que tem de existir ao final**').Count` — antes `1`, depois `0`
+  2. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'Pronto quando (o fato que tem de existir ao final)').Count` — antes `0`, depois `1`
+  3. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'o dono cola o bloco literal do card').Count` — antes `0`, depois `1`
+  4. `(Select-String -Path .claude/agents/pantonic-planner.md -SimpleMatch 'contra a base re-medida no despacho').Count` — antes `0`, depois `1`
+  5. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift; $LASTEXITCODE` — antes e depois `0`
+  6. `python -m pytest -q` — total de `passed` ≥ o medido no despacho, `0 failed`
+- **Pronto quando:** as três regras estão escritas na definição do planejador — Verificações 1 a 4 —, e nenhum gate regrediu — Verificações 5 e 6.
+- **Fora do escopo desta tarefa:** os pacotes do `TK-72`; ensinar ao parser um rótulo novo.
+
+**Texto atual 1** — `.claude/agents/pantonic-planner.md`:
+
+~~~~
+Tarefa de `classe investigacao` troca "Passos" por **Método de sondagem** (corpus fechado, métricas,
+formato e teto de linhas do agregado que volta — nenhum dado bruto entra em contexto) e "Pronto
+quando" por **o número ou fato que tem de existir ao final**.
+~~~~
+
+**Texto novo 1:**
+
+~~~~
+Tarefa de `classe investigacao` troca "Passos" por **Método de sondagem** (corpus fechado, métricas,
+formato e teto de linhas do agregado que volta — nenhum dado bruto entra em contexto) e mantém o
+rótulo **Pronto quando**, escrito `- **Pronto quando (o fato que tem de existir ao final):**`: o
+critério é o número ou fato que tem de existir ao final, e o rótulo é o que `rdo.py` e
+`review_evidence.py` leem — rótulo trocado faz o gerador de evidência recusar o card.
+
+Card que edita a configuração do harness (`.claude/settings*.json`, hooks) declara a contingência
+de permissão: *se o modo de permissão recusar a edição → o dono cola o bloco literal do card e o
+agente confere `json ok`*. O agente não contorna a recusa.
+
+Verificação por total de diff (`git diff --numstat` ou equivalente) sobre arquivo que pode ter
+alteração não commitada de outra frente mede o **delta** contra a base re-medida no despacho —
+nunca o total contra `HEAD`, que outras entregas movem. Forma: base medida no despacho `<a> <r>`;
+depois, removidas `= <r>` e adicionadas `≥ <a> + <n>`.
+~~~~
+
+### TK-78c — A evidência mede só o que mudou desde o despacho [Sonnet · esforço high · classe implementacao]
+
+- **Status:** `done` · 2026-09-24
+- **Depende de:** `TK-78a`
+- **Objetivo:** o dossiê de evidência passa a mostrar, para cada arquivo-alvo, só o diff desde um instantâneo da árvore tirado no despacho — sem os hunks que outras frentes já tinham deixado —, e reconhece como caminho o alvo declarado com sufixo de seção (`<arquivo> §<n>`).
+- **Fundamento:** `AE-1` (inconclusivo: `--desde` recolhe a árvore suja), `AE-2` (iii) e `AE-3` (ii) do `P-0748`. Medido em 2026-09-24: com `--desde d75e7a6` sobre árvore com 40+ arquivos modificados de outros planos, o trecho da skill-alvo da `TLG-T2` truncou em 4000 caracteres dentro de hunks do `P-0747` sem chegar à seção entregue; e `docs/plans/P-0748-tela-do-gerente.md §2.1` saiu como literal descartado, não como alvo. Depende do `TK-78a` porque as duas editam a skill scrum-master, em trechos distintos.
+- **Arquivos-alvo:**
+  - `.claude/tools/review_evidence.py`
+  - `tests/test_review_evidence.py`
+  - `.claude/skills/scrum-master/SKILL.md`
+- **Contratos/classes:**
+  - `review_evidence.py`: constante nova `_SECAO_REF_RE = re.compile(r"\s+§\S*$")`, aplicada em `_classificar_campo_alvos` **antes** de `_LINHA_REF_RE`: `candidato = _LINHA_REF_RE.sub("", _SECAO_REF_RE.sub("", bruto))`.
+  - `_diff_para_arquivo(root: Path, caminho_rel: str, desde: str | None = None) -> str`: sem `desde`, comportamento atual intacto. Com `desde`: texto = `git diff <desde> -- <caminho_rel>`; não vazio → devolve; vazio e o caminho existe na árvore do `<desde>` (`git cat-file -e <desde>:<caminho_rel>` com exit `0`) → devolve a linha `(sem alteração desde <desde>)`, com `<desde>` entre crases; vazio e não existe no `<desde>` → o fallback atual (conteúdo integral do arquivo novo, ou a mensagem de ausente).
+  - `montar_trechos(root, arquivos_alvo, teto_chars, tocados=None, desde=None)`: repassa `desde` às duas chamadas de `_diff_para_arquivo`; `montar_documento` passa o seu `desde` a `montar_trechos`.
+  - `scrum-master` passo 4: a `<ref>` passa a ser a saída de `git stash create` (instantâneo dos arquivos rastreados, que não altera árvore, índice nem a lista de stash), ou `git rev-parse HEAD` quando a saída vem vazia (árvore limpa) — **Texto atual 1** → **Texto novo 1**.
+- **Passos:**
+  1. Escreva os três TF abaixo em `tests/test_review_evidence.py`, reusando os ajudantes do arquivo (`_load_review_evidence`, `_init_repo_com_baseline`, `_run_git`); rode-os e veja-os falhar.
+  2. Implemente os contratos em `.claude/tools/review_evidence.py`; rode o arquivo de teste inteiro.
+  3. Em `.claude/skills/scrum-master/SKILL.md`, substitua o **Texto atual 1** pelo **Texto novo 1**.
+  4. Rode as Verificações.
+- **Testes:**
+  - TF `test_tf_alvo_com_sufixo_de_secao_e_caminho`: `extrair_arquivos_alvo` sobre um campo `arquivos-alvo` cujo único literal entre crases é `docs/x.md §2.1` devolve `["docs/x.md"]`.
+  - TF `test_tf_trecho_desde_instantaneo_mostra_so_o_delta`: repositório com `a.md` commitado; edita `a.md` acrescentando a linha `linha-velha`; `snap = git stash create`; edita de novo acrescentando `linha-nova`; `montar_trechos(repo, ["a.md"], 4000, desde=snap)["a.md"]["texto"]` contém `+linha-nova` e não contém `+linha-velha`.
+  - TF `test_tf_trecho_desde_sem_alteracao_nao_despeja_o_arquivo`: mesmo arranjo, sem a segunda edição; o texto é exatamente a linha `(sem alteração desde <snap>)`, com `<snap>` entre crases.
+  - TR: o arquivo inteiro `tests/test_review_evidence.py` verde, inclusive `test_tr_sem_desde_nada_muda`; a suíte inteira.
+- **Restrições desta tarefa:**
+  - Sem `--desde`, a saída do gerador é byte a byte a de antes (TR `test_tr_sem_desde_nada_muda`).
+  - `git stash create` só lê: nenhum passo roda `git stash push`, `git stash apply` nem altera a lista de stash.
+  - Não tocar `coletar_arquivos_tocados` nem `coletar_estado_git` (já aceitam `desde`), nem o atribuidor `--atribuir` (`TK-66`).
+  - Não commitar.
+  - Piso de regressão é relação: o total de `passed` de `python -m pytest -q` medido no despacho sobe em exatamente `3`.
+- **Não fazer:** não mudar o teto de 4000 caracteres; não mudar a gramática de caminho da `DB-27` além do sufixo de seção.
+- **Contingências:**
+  - se o **Texto atual 1** não for encontrado **exatamente uma vez** → parar e sinalizar `blocked` razão `premissa`
+  - se `git stash create` sair diferente de `0` numa árvore suja → parar e sinalizar `blocked` razão `ferramenta`, colando a linha de erro
+  - se algum teste preexistente de `tests/test_review_evidence.py` ficar vermelho → parar e sinalizar `blocked` razão `premissa`, colando o nome do teste
+- **Verificação:** no PowerShell, na raiz do repositório; **antes** medido em 2026-09-24.
+  1. `python -m pytest tests/test_review_evidence.py -q` — depois, os três TF novos verdes e `0 failed`
+  2. `python -m pytest -q` — total de `passed` = o medido no despacho `+ 3`, `0 failed`
+  3. `(Select-String -Path .claude/skills/scrum-master/SKILL.md -SimpleMatch 'git stash create').Count` — antes `0`, depois `1`
+  4. `(Select-String -Path .claude/skills/scrum-master/SKILL.md -SimpleMatch 'Capturar `git rev-parse HEAD` como `<ref>`').Count` — antes `1`, depois `0`
+- **Pronto quando:** o trecho de diff de um arquivo-alvo mostra só o que mudou desde o instantâneo do despacho, e alvo com sufixo de seção é caminho — Verificações 1 e 2; o loop captura o instantâneo no passo 4 — Verificações 3 e 4.
+- **Fora do escopo desta tarefa:** a atribuição por `status` do `--atribuir` (`TK-66`); a atribuição por hunk.
+
+**Texto atual 1** — `.claude/skills/scrum-master/SKILL.md` (passo 4):
+
+~~~~
+  `docs/telemetria.tsv`. Capturar `git rev-parse HEAD` como `<ref>` (schema `DP-S`), usada no
+  passo 6 (`AUT-T5b`).
+~~~~
+
+**Texto novo 1:**
+
+~~~~
+  `docs/telemetria.tsv`. Capturar como `<ref>` (schema `DP-S`) a saída de `git stash create` —
+  instantâneo dos arquivos rastreados no despacho, que não altera árvore, índice nem a lista de
+  stash —, ou `git rev-parse HEAD` quando ela vier vazia (árvore limpa); usada no passo 6
+  (`AUT-T5b`), onde o trecho de cada alvo passa a mostrar só o que mudou desde o despacho.
+~~~~
+
+### Achados da execução (TK-78)
+
+- **`AE-1` (2026-09-24, laudo da `TK-78a`, `ressalva` 91, recomendação `escalar`, alvo `dossiê`)** — o `Pronto quando` da `TK-78a` segue falso: `GOVERNANCA.md` §3, bullet *Gatilho operacional do modelo por fase* (~linha 121, "para e pede o `/model` correto ao dono"), e `README.md` §4 (~linha 343, "**para** para pedir o `/model` correto"; e o parágrafo *Onde o gerente intervém*, ~linhas 353-358, que declara ilegítimo "o agente decidir sozinho e seguir") ainda mandam parar em qualquer divergência, inclusive para rebaixar. Os blocos Texto atual 1-9 não cobriram esses trechos, e as Verificações 5 e 6 contam só o literal substituído. **Rota:** `B1` → triagem do consultor. **Absorvido** (consultor, 2026-09-24, `rota=resolve`): card corretivo `TK-78d`, antes da `TK-78b` (`docs/plans/_CENARIO-TK-78.md`, `CT-1`).
+- **`AE-2` (2026-09-24, orquestração, passo 3)** — `python .claude/tools/modelo.py check --plano TK-78` termina em `FileNotFoundError` com traceback, em vez de recusa limpa com exit `2`, quando o alvo é tíquete do diário (sem arquivo de plano nem modelo de domínio). O loop registrou a nota "sem modelo". **Rota:** `TK-66`/`TK-74` (facetas de instrumento).
+- **`AE-3` (2026-09-24, orquestração, passo 2)** — `backlog.py next` devolveu *nada delegável* com a `TK-78c` `ready` e a dependência `done`: `_extrair_depende` lê todo literal entre crases do bullet **Depende de**, e o parêntese da `TK-78c` citava o caminho da skill `scrum-master` entre crases, que virou dependência inexistente. Reparo de forma pelo loop (crases tiradas do parêntese, conteúdo intacto). **Rota:** `TK-72` (regra de autoria: o bullet **Depende de** leva só ids entre crases) e `TK-66`/`TK-74` (o instrumento deveria aceitar só ids de tarefa, ou o `check` recusar dependência que não resolve).
+
+## TK-79 — O executor devolve a linha de retorno seguida de prosa
+
+- **Status:** `done` · 2026-09-25 — aberto no fechamento do `P-0748`, rota do `AE-23` daquele plano.
+
+**Caso medido (2026-09-24):** os executores de `TLG-T5`, `TLG-T3e` e `TLG-T3f` devolveram a linha de retorno válida (`<ID> review`) seguida de parágrafos de relatório; o de `TLG-T3f` o fez com o despacho dizendo, por escrito, *"sem nenhuma prosa depois da linha"*. O loop leu a primeira linha e seguiu; o gancho do painel (`progresso_hook.py`) lê só a primeira linha não vazia do hand-back, então o painel não foi afetado. O que vier depois se perde sem registro.
+
+**O que decide:** a forma do retorno do executor deixa de depender de o agente obedecer ao texto do despacho — ou a `A2` da `scrum-master` tipifica prosa depois da linha (reenvio de formato, ou descarte declarado), ou a definição do `pantonic-executor` fecha o retorno com guarda verificável. Par presença-ausência sobre a linha de retorno com e sem prosa.
+- **Notas de execução:**
+  - 2026-09-25 `done` — 1/1 card done (TK-79a); prosa depois da linha de retorno vira descarte declarado
+
+### TK-79a — A prosa depois da linha de retorno é descartada por regra, não por sorte [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-25
+- **Objetivo:** o retorno do executor com a linha válida seguida de prosa passa a ter tratamento escrito nas duas pontas: a definição do `pantonic-executor` diz que a última mensagem é só a linha, e que o que precisa chegar ao loop vai em `pendencia=`; a `scrum-master` tipifica, no passo 5 e na `A2`, que a linha válida seguida de prosa vale pela primeira linha não vazia (a mesma que o gancho do painel lê), com a prosa descartada sem reenvio e o descarte anotado no relatório — o resto deixa de se perder calado.
+- **Arquivos-alvo:**
+  - `.claude/skills/scrum-master/SKILL.md`
+  - `.claude/agents/pantonic-executor.md`
+- **Texto novo, literal** (antigo → novo):
+
+  ```text
+  [S1] .claude/skills/scrum-master/SKILL.md
+  ou prosa no lugar da linha: **retorno inválido**, regra `A2`.
+  → ou prosa no lugar da linha: **retorno inválido**, regra `A2`. Linha válida seguida de prosa **não** é retorno inválido: vale a primeira linha não vazia — a mesma que o gancho do painel lê —, a prosa depois dela é descartada sem reenvio de formato, e o descarte se anota numa linha do relatório de encerramento.
+
+  [S2] .claude/skills/scrum-master/SKILL.md
+  | `A2` | retorno ausente ou inválido (campo faltando, teto de campo estourado, linha fora da gramática) |
+  → | `A2` | retorno ausente ou inválido (campo faltando, teto de campo estourado, linha fora da gramática, prosa no lugar da linha); prosa **depois** de linha válida não casa aqui — o passo 5 a descarta |
+
+  [E1] .claude/agents/pantonic-executor.md
+  6. **Encerramento**: sinalize `review` e encerre.
+  → 6. **Encerramento**: sinalize `review` e encerre. A sua última mensagem é **só** a linha de retorno do despacho, sem nada antes nem depois: o loop lê a primeira linha não vazia e descarta o resto sem ler; o que precisa chegar a ele vai em `pendencia=`, numa linha.
+  ```
+- **Caso medido que motivou (2026-09-24 e 2026-09-25):** os retornos de `TLG-T5`, `TLG-T3e` e `TLG-T3f` do `P-0748`, e o da `CAH-T2` do `P-0750` (`AE-4`, anexo), trouxeram a linha válida seguida de parágrafos; o de `TLG-T3f` com a proibição escrita no despacho.
+- **Passos:**
+  1. Rodar a Verificação 1 e conferir os valores "antes".
+  2. Aplicar `S1`, `S2`, `E1` com `Edit`.
+  3. Rodar a Verificação 1 e 2.
+- **Não fazer:** não tocar as demais linhas das tabelas dos blocos A e B, a gramática do passo 4, o `progresso_hook.py` nem o repertório `M-*`.
+- **Contingências:**
+  1. se algum texto antigo não aparecer exatamente uma vez no arquivo → parar e sinalizar `blocked motivo=dependencia`, devolvendo o código da troca.
+- **Testes:** nenhum novo (redação); a suíte inteira roda como TR.
+- **Verificação:**
+  1. ```
+     pwsh -NoProfile -Command '$s = ".claude/skills/scrum-master/SKILL.md"; $e = ".claude/agents/pantonic-executor.md"; "S1=" + @(Select-String -LiteralPath $s -SimpleMatch -Pattern "Linha válida seguida de prosa").Count + " S2=" + @(Select-String -LiteralPath $s -SimpleMatch -Pattern "prosa **depois** de linha válida").Count + " E1=" + @(Select-String -LiteralPath $e -SimpleMatch -Pattern "**só** a linha de retorno").Count'
+     ```
+     → **S1=1 S2=1 E1=1**. **Medido na autoria: S1=0 S2=0 E1=0**.
+  2. `python -m pytest tests -q` → nenhuma falha, total igual ao da referência do despacho.
+- **Pronto quando:** o passo 5 e a `A2` da `scrum-master` distinguem prosa **no lugar** da linha (inválido, reenvio) de prosa **depois** dela (descarte declarado), e a definição do executor fecha a última mensagem na linha — Verificação 1.
+
+## TK-80 — A régua de autoria do card: valor de aceite fora de `pendencia=` e rótulo de investigação que o parser conhece
+
+- **Status:** `cancelled` · 2026-09-24 — aberto no fechamento do `P-0748`, rota do `AE-13` e da parte de doutrina do `AE-1` daquele plano (o `TK-78`, destino previsto, fechou `done` sem elas).
+
+**Casos medidos (2026-09-24):** (i) `AE-13` — a Verificação 5 da `TLG-T4a` mandou colar os valores medidos na linha de retorno, cujo único campo livre é `pendencia=`; a regra `B1` da `scrum-master` leu isso como pendência substantiva e escalou ao consultor, que recusou a escalada como improcedente (`DTG-40`). (ii) `AE-1` — `.claude/agents/pantonic-planner.md` manda o card de `classe investigacao` trocar *Pronto quando* por *"o número ou fato que tem de existir ao final"*, e o `rdo.py`/`review_evidence.py` exigem `pronto-quando`: todo card de investigação escrito ao pé da letra é recusado pelo gerador de evidência.
+
+**O que decide:** a régua de autoria do card (residência do `pantonic-planner` e a rubrica de criação de tarefa) passa a dizer que valor medido de aceite nunca viaja em `pendencia=`, e o rótulo do card de investigação passa a ser um que o parser aceita (ou o parser passa a aceitar o rótulo da doutrina) — uma residência, sem duas redações do mesmo fato. Relação: vizinho do `TK-72` (régua de autoria, pacotes do `P-0746`), sem absorvê-lo.
+- **Notas de execução:**
+  - 2026-09-24 `cancelled` — absorvido pelo TK-72 (revisão de pertinência de 2026-09-24): mesma família — régua de autoria de card — e residência vizinha; os dois casos (AE-13 e AE-1 do P-0748) viram os Pacotes 9 e 10 do TK-72
+
+## TK-81 — Propagar o painel do gerente aos cinco kits derivados
+
+- **Status:** `cancelled` · 2026-09-26 — aberto no fechamento do `P-0748` (`DTG-8`: a propagação é ato de sincronização próprio, fora do plano).
+
+**O que o hub tem e os derivados não:** o gancho `.claude/tools/progresso_hook.py` (eventos `PreToolUse`, `PostToolUse`, `UserPromptSubmit` e `Stop`) com `tests/test_progresso_hook.py`; a declaração dele em `.claude/projecoes.json`, materializada em `.claude/settings.json`; na `scrum-master`, a seção *Repertório de mensagens ao gerente* (24 frases) e o guardrail do painel; o trecho do `README.md` que ensina a abrir o painel (`Get-Content -Path .claude/estado/progresso.txt -Wait -Tail 30 -Encoding utf8`). Documento de validação: `docs/OPERACOES_AS_IS_P-0748.md`.
+
+**O que decide:** cada derivado passa a gerar o painel nas próprias janelas de execução, preservando as divergências por linha que cada kit já carrega (a linha container tem divergências de transporte a preservar). Aceite por derivado: o painel mostra a abertura de janela e o ciclo de uma tarefa real com o título no lugar da sigla.
+
+**Premissa medida na autoria do card (2026-09-25) — caiu.** Os cinco derivados (`PantonicContainerForAWS`, `PantonicContainer`, `PantonicMonitor`, `PantonicScanlator`, `PantonicPatom`, em `D:\workspaces\`) não têm o loop de execução em que o painel se apoia: nenhum tem `.claude/tools/`, `.claude/settings.json`, `.claude/KIT_VERSION` nem `.claude/sync-kit.ps1`; quatro têm só as skills `audit-sweep`, `bootstrap-pantonic`, `diario-de-obras`, `guardrails-check`, `handover`, `integrar-poc` e `proximo-passo` — sem `scrum-master` —, e o `PantonicMonitor` não tem skill nenhuma; só o `PantonicScanlator` é repositório git. O painel é gerado pelos eventos do loop (`backlog.py next`/`status`, despacho de agente); levar só o gancho produz painel vazio. A rota é decisão do dono.
+- **Notas de execução:**
+  - 2026-09-25 `blocked` — o card TK-81a espera a decisão do dono sobre como os derivados recebem o kit (premissa medida em 2026-09-25)
+  - 2026-09-26 `cancelled` — dono, 2026-09-26: a publicação do kit aos derivados será feita por plano, não por tarefa; subtarefa TK-81a cancelada
+
+### TK-81a — Levar o kit atual, e com ele o painel, aos derivados [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `cancelled` · 2026-09-26 — parte do plano de publicação do kit; o dono o pauta no momento apropriado
+- **Objetivo:** cada derivado passa a gerar o painel do gerente nas próprias janelas de execução,
+  pela rota que o dono escolher.
+- **A decisão pendente (vai ao dono no relatório):**
+  - **(a) Atualizar cada derivado ao kit atual inteiro** — skills, agentes, `tools/`, projeções e
+    `settings.json` —, preservando as divergências de cada linha (a linha container não tem
+    PySide6 e fala em fronteira de transporte). O painel vem junto. Implica um card por derivado,
+    escrito no ato da decisão, cada um com aceite pelo painel de uma tarefa real.
+  - **(b) Adotar nos derivados o consumo por `git subtree` e `sync-kit.ps1`** (`GOVERNANCA.md`
+    §10). Implica tornar repositório git os quatro que não são, antes de qualquer sincronização.
+  - **(c) Cancelar** — os derivados ficam no kit antigo até um teste em projeto real pedir a
+    atualização.
+- **Arquivos-alvo:**
+  - `.claude/` de cada derivado escolhido — na opção (a) ou (b)
+- **Verificação:** por derivado, depois da rota escolhida:
+  1. `Test-Path <derivado>\.claude\tools\progresso_hook.py` — antes `False`, depois `True`
+  2. `python -m pytest tests/test_progresso_hook.py -q`, na raiz do derivado → verde
+- **Pronto quando:** cada derivado da rota escolhida tem o loop e o gancho do painel, com a suíte
+  do gancho verde nele.
+- **Ao destravar:** a opção (a) abre um card por derivado neste tíquete, na forma de *Formato de
+  uma tarefa*; a (b), um card de preparação git por derivado antes; a (c) cancela o tíquete.
+- **Notas de execução:**
+  - 2026-09-26 `cancelled` — dono, 2026-09-26: a publicação do kit aos derivados será feita por plano, não por tarefa
+
+## TK-82 — `rdo.py` imprime em cp1252 no pipe do Windows
+
+- **Status:** `done` · 2026-09-25 — aberto pelo `scrum-master` na janela do `P-0749`, rota do achado de processo do laudo da `SAN-T3a` (regra `A9`, sem reabrir a tarefa).
+
+**Caso medido (2026-09-25):** a Verificação 4 da `SAN-T3a` mede só o exit 0 do `--help`; o texto reescrito sai, no pipe do Windows, em cp1252 (`Diret\xf3rio`, `t\xedquete`). O `review_evidence.py` reconfigura `stdout` para UTF-8 (`.claude/tools/review_evidence.py`, linhas 158-161); o `rdo.py` não. Defeito anterior à `SAN-T3a`, fora dos alvos dela.
+
+**O que decide:** o `rdo.py` força UTF-8 na saída como o `review_evidence.py`, uma forma só entre os instrumentos do kit. Par presença-ausência: `python .claude/tools/rdo.py close --help` redirecionado a arquivo contém `Diretório` em UTF-8 com a mudança e não contém sem ela.
+- **Notas de execução:**
+  - 2026-09-25 `done` — 1/1 card done (TK-82a); rdo.py escreve em UTF-8 antes do argparse
+
+### TK-82a — `rdo.py` escreve em UTF-8 antes de argparse abrir a boca [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-25
+- **Objetivo:** `main()` de `.claude/tools/rdo.py` reconfigura `sys.stdout` e `sys.stderr` para UTF-8 antes de `parser.parse_args(argv)`, pela mesma forma de `.claude/tools/review_evidence.py` (`_forcar_utf8`: `reconfigure(encoding="utf-8", errors="replace")` quando o stream tem `reconfigure`), de modo que `--help`, mensagens de erro e as linhas `rdo: …` saiam em UTF-8 no pipe do Windows.
+- **Arquivos-alvo:**
+  - `.claude/tools/rdo.py`
+  - `tests/test_rdo.py`
+- **Caso medido que motivou (2026-09-25, re-medido no ato da autoria):** `PYTHONIOENCODING= python -X utf8=0 .claude/tools/rdo.py close --help > h.tmp` → exit `0`, e os bytes de `h.tmp` contêm `Diretório` em cp1252 (`b"Diret\xf3rio"`) e **não** em UTF-8.
+- **Testes (novo, em `tests/test_rdo.py`):** TF par presença-ausência por subprocesso com ambiente hostil explícito (`PYTHONIOENCODING` vazio no `env`, `-X utf8=0`, `stdout=subprocess.PIPE`): `rdo.py close --help` sai exit `0` e os bytes da saída contêm `"Diretório".encode("utf-8")` e não contêm `"Diretório".encode("cp1252")`. Sobre o `main()` anterior o teste falha no Windows (medido acima).
+- **Verificação:**
+  1. `python -m pytest tests/test_rdo.py -q` → verde, com o teste novo.
+  2. `python -m pytest tests -q` → nenhuma falha; total = o da referência do despacho mais 1.
+- **Pronto quando:** em `main()` a reconfiguração precede `parse_args`; sob o ambiente hostil explícito, `rdo.py close --help` redirecionado sai em UTF-8; o teste é par presença-ausência por subprocesso.
+- **Não fazer:** não importar `review_evidence.py` de dentro do `rdo.py` (copiar a função de 4 linhas, como os demais pontos de carga); não trocar acentos do texto de ajuda por ASCII.
+
+## TK-83 — O tíquete nasce executável
+
+- **Status:** `cancelled` · 2026-09-25 — aberto por ato do dono.
+
+**Ato do dono (2026-09-25), verbatim:** *"Eu acho que não deveria haver a separação, e na hora em
+que for identifcado o problema, ele já deveria ser de algum modo inserido no fluxo de trabalho.
+Tenho tentado esgotar o backglo, a prioridade é essa, mas esses tíquetes tem frustrado esse
+objetivo, sendo trabalho a ser realizado, mas não podendo ser realizado. Ajuste essa governança,
+não vejo ganho, só perdas nessa sistemática."*
+
+**Caso medido (2026-09-25):** oito tíquetes `ready` no índice e `backlog.py next` respondendo
+`nada delegável — 0 elegível(is)` — nenhum tinha card.
+
+**Doutrina publicada na mesma sessão, fora de card:** skill `diario-de-obras` — seção nova
+*Tíquete nasce executável*, significado de `ready`, estados do tíquete (sem `triage`), a linha do
+tíquete na tabela de residência e a operação 6, *Abrir tíquete*; `GOVERNANCA.md` §4.2; regra `A8`
+da `scrum-master`; passo 3 do `pantonic-consultant`. No mesmo ato, os tíquetes abertos ganharam
+card: `TK-55`, `TK-67`, `TK-70`, `TK-72`, `TK-73` e `TK-81`; o `TK-71` fechou por obsolescência.
+
+**O que falta:** a guarda — nada no kit acusa tíquete vivo sem card.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 — Esgotar o backlog antes da publicação do kit (DEB-2)
+
+### TK-83a — O `check` acusa tíquete vivo sem card [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `cancelled` · 2026-09-25
+- **Objetivo:** `python .claude/tools/backlog.py check` passa a emitir a violação `C-15` para todo
+  tíquete `## TK-<n>` cujo status não é `done`, `cancelled` nem `superseded` e que não tem nenhuma
+  subtarefa `### TK-<n><letra>`; a skill `diario-de-obras` nomeia o código.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+  - `.claude/skills/diario-de-obras/SKILL.md`
+  - `tests/fixtures/backlog/candidato_a_fechamento/docs/DIARIO_DE_OBRAS.md`,
+    `tests/fixtures/backlog/contador_inbox/docs/DIARIO_DE_OBRAS.md`,
+    `tests/fixtures/backlog/corpus/docs/DIARIO_DE_OBRAS.md` e
+    `tests/fixtures/backlog/vermelho/docs/DIARIO_DE_OBRAS.md` — só pela contingência abaixo
+- **Propriedades:**
+  1. O `C-15` sai uma vez por tíquete vivo sem subtarefa, nomeando o tíquete.
+  2. Tíquete terminal sem subtarefa não é acusado.
+  3. As menções `C-1..C-14` do módulo passam a `C-1..C-15` (ou ao maior código vigente, se o
+     `TK-55a` já tiver fechado).
+- **Texto atual 1** (`.claude/skills/diario-de-obras/SKILL.md`, uma ocorrência):
+
+  ~~~~
+  aberto. No loop, achado com rota `tíquete` vai ao consultor, que abre o tíquete já com o card — o
+  ~~~~
+
+- **Texto novo 1** (as quebras são as do bloco):
+
+  ~~~~
+  aberto — o `backlog.py check` o acusa como `C-15`. No loop, achado com rota `tíquete` vai ao
+  consultor, que abre o tíquete já com o card — o
+  ~~~~
+
+- **Medido na autoria (2026-09-25):** quatro fixtures têm tíquete vivo sem subtarefa —
+  `candidato_a_fechamento` (`TK-4`), `contador_inbox` (`TK-1`), `corpus` (`TK-1`) e `vermelho`
+  (`TK-2`); a fixture `verde` tem `TK-1` com `TK-1a`.
+- **Testes (novos, em `tests/test_backlog.py`):**
+  - TF par sobre cópia da fixture `verde`: como está → nenhum `C-15`; com a subtarefa `TK-1a`
+    removida → um `C-15` que nomeia `TK-1`.
+  - TF: a mesma cópia sem `TK-1a` e com `TK-1` em `cancelled` (seção e índice) → nenhum `C-15`.
+- **Verificação:**
+  1. `python -m pytest tests/test_backlog.py -q` → verde, com os testes acima.
+  2. `python .claude/tools/backlog.py check` na árvore → `check: OK — nenhuma violação.`
+  3. `(Select-String -Path .claude/skills/diario-de-obras/SKILL.md -SimpleMatch 'o acusa como').Count` — antes `0`, depois `1`.
+  4. `python -m pytest -q` → nenhuma falha; `passed` ≥ o do despacho mais os testes novos
+     (referência medida na autoria: `360 passed`, 2026-09-25).
+- **Pronto quando:** o `check` acusa tíquete vivo sem card, com par em teste, e sai `OK` sobre a
+  árvore.
+- **Não fazer:** não mudar outro código de violação; não tocar `next`.
+- **Contingências:**
+  - se um teste existente ficar vermelho só por causa do `C-15` numa das quatro fixtures → acrescentar
+    ao tíquete acusado dessa fixture uma subtarefa mínima `### TK-<n>a — Card de fixture [Sonnet ·
+    classe mecanica]` com o mesmo status do tíquete; se, com isso, outra asserção do mesmo teste
+    mudar de resultado → parar e sinalizar `blocked` razão `premissa`, nomeando o teste.
+  - se a Verificação 2 acusar `C-15` na árvore → parar e sinalizar `blocked` razão `premissa`,
+    colando as violações.
+- **Notas de execução:**
+  - 2026-09-25 `cancelled` — absorvido pelo P-0751 como EBK-T1 (DEB-2)
+
+## TK-84 — `review_evidence.py --desde` lista não rastreado anterior ao despacho
+
+- **Status:** `done` · 2026-09-26 — aberto pelo consultor do `P-0751` (acionamento 4, `DEB-9`), rota do achado (3) do laudo da `EBK-T5` (`AE-2` do plano).
+
+**Caso medido (2026-09-26):** a evidência da `EBK-T5` (`--desde 671e4b1`, commit de 2026-09-25 23:41:37) listou 19 arquivos não rastreados como "fora dos alvos e sem atribuição", todos anteriores ao commit; o reviewer os reconciliou à mão pela data de modificação. Na árvore, 228 não rastreados: 223 com data de modificação anterior ao `671e4b1` e 5 posteriores, todos da janela da `EBK-T5`. O `coletar_arquivos_tocados` põe todo `??` do `git status` na lista, com ou sem `desde`. Mesmo defeito recorreu em todos os laudos do `P-0748` (`## TK-55`, ponteiro para `AE-4`/`AE-5`/`AE-11`); a rodada de planejamento de 2026-09-25 do `TK-55` o deu por "sem ação" com 3 arquivos no `TK-68a`, e o caso de 19 com reconciliação refeita em cada laudo o supera.
+
+**O que decide:** com `desde`, não rastreado cuja data de modificação é anterior à data do commit de `desde` sai da lista de tocados; o posterior fica. Correção conhecida, card `ready`.
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-84a (consultor P-0751, acionamento 4)
+- **AE-82** (`TK-84a`, fechamento, 2026-09-26) — execução inline pelo condutor sem ref capturada nem medida do executor; a doutrina não previa o caminho **Rota:** TK-88b (fechado: --nao-medido e captura de ref fora do loop em GOVERNANCA.md §4.2)
+- **AE-83** (`TK-84a`, fechamento, 2026-09-26) — card do TK-84a promete o ramo de caminho ausente com escape octal sem Verificação nem teste que o exercite (RUBRICA 8 (xvii)); exercitado pelo revisor e conforme **Rota:** auditoria final
+
+
+
+### TK-84a — Com `--desde`, o não rastreado anterior ao ref sai dos tocados [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** em `coletar_arquivos_tocados` de `.claude/tools/review_evidence.py`, com `desde`
+  informado, cada entrada `??` do `git status` cujo arquivo tem data de modificação (`st_mtime`)
+  menor que a data de commit de `desde` (`git show -s --format=%ct <desde>`, em segundos) deixa de
+  entrar na lista; a de data igual ou maior entra como hoje. Caminho que não existe no disco como
+  veio do `git status` (nome entre aspas com escape octal, por exemplo) entra como hoje, sem erro.
+  Sem `desde`, nada muda. A docstring da função deixa de dizer que o não rastreado "entra sempre".
+- **Arquivos-alvo:**
+  - `.claude/tools/review_evidence.py`
+  - `tests/test_review_evidence.py`
+- **Caso medido que motivou:** ver `## TK-84`.
+- **Reparo medido (protótipo do consultor, 2026-09-26, cópia da árvore já apagada):** ler `%ct` de
+  `desde` uma vez com o `_git` do módulo e, no laço das entradas `??`, pular a que tem
+  `(root / caminho).stat().st_mtime < corte`. Com ele, `tests/test_review_evidence.py` inteiro
+  verde e suíte sem falha; o teste abaixo falha sobre o `review_evidence.py` de hoje.
+- **Testes (novo, em `tests/test_review_evidence.py`, nome começado por `test_coletar_nao_rastreado_anterior_ao_desde`):** TF par sobre `_init_repo_com_baseline`:
+  `ref` = `HEAD`, `ct` = `%ct` de `ref`; `src/velho.py` criado com `os.utime` em `ct - 60` e
+  `src/novo.py` com `os.utime` em `ct + 60` → `coletar_arquivos_tocados(repo, desde=ref)` contém
+  `src/novo.py` e não contém `src/velho.py`; `coletar_arquivos_tocados(repo)` (sem `desde`) contém
+  `src/velho.py`.
+- **Verificação:**
+  1. `python -m pytest tests/test_review_evidence.py -q -k nao_rastreado_anterior_ao_desde` → o teste novo verde — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  2. `python -m pytest tests/test_review_evidence.py -q` → verde — antes `exit 0`, depois `exit 0`.
+  3. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** com `desde`, não rastreado anterior ao commit de `desde` não aparece entre os
+  tocados, provado pelo par, e sem `desde` a lista não muda.
+- **Não fazer:** não mudar `coletar_estado_git` nem os baldes de `confrontar_escopo`; não trocar a
+  data de commit pela data de autor; não ler data de modificação de arquivo rastreado.
+- **Contingências:**
+  - se um teste existente de `desde` cair com o reparo → parar e sinalizar `blocked` razão
+    `premissa`, nomeando o teste (medido no protótipo: nenhum cai).
+- **Notas de execução:**
+  - 2026-09-26 `review` — corte por %ct de desde no laço ?? de coletar_arquivos_tocados; TF novo verde (vermelho sem o reparo); test_review_evidence 55 passed; suíte 421 passed
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-84a-com-desde-o-nao-rastreado-anterior-ao-ref-sai-dos-tocados.md`, veredito ressalva 94%
+
+## TK-85 — O `rdo.py laudo` não tem onde pôr o motivo da dimensão, e recusa o alvo `dossiê`
+
+- **Status:** `done` · 2026-09-27 — aberto pelo consultor do `P-0751` (acionamento 4, `DEB-9`), rota do achado (4) do laudo da `EBK-T5` (`AE-2` do plano).
+
+**Caso medido (2026-09-26):** o `pantonic-reviewer` manda que o motivo de cada dimensão fora de `conforme` fique no laudo, e o `rdo.py laudo` não tem campo para ele; na revisão da `EBK-T5` o motivo de `criterio-de-pronto parcial` foi para o card *Lições aprendidas na tarefa*, que a rubrica reserva ao registro qualitativo de consumo. De passagem: a definição do agente grafa o alvo de achado `dossiê`, e o `--achado-processo` só aceita `dossie` (`_ALVOS_ACHADO` do `rdo.py`), embora imprima `dossiê` na tabela.
+
+**O que decide:** o `rdo.py laudo` ganha `--motivo <dimensão> "<uma linha>"`, e o laudo, uma seção própria para ele; o `--achado-processo` aceita `dossiê` como sinônimo de `dossie`; a definição do reviewer nomeia a flag. Descartado nomear o card de lições como residência (mistura o motivo com o registro de consumo que a rubrica pôs ali). Correção conhecida, card `ready`.
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-85a (consultor P-0751, acionamento 4)
+- **AE-90** (`TK-85a`, fechamento, 2026-09-27) — execução fora do loop sem ref de despacho nem medida do executor: evidência sem recorte e sem consumo medido **Rota:** TK-88b (fechado: --nao-medido e captura de ref fora do loop em GOVERNANCA.md §4.2)
+
+
+### TK-85a — `rdo.py laudo --motivo` e o alvo `dossiê` [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-27
+- **Objetivo:** em `.claude/tools/rdo.py`, subcomando `laudo`:
+  1. flag nova `--motivo DIMENSAO LINHA`, repetível (`nargs=2`, `action="append"`), com recusa
+     (`RdoValidationError`, exit diferente de `0`, nenhum laudo escrito) quando a dimensão não é
+     uma das sete, quando o nível dela é `conforme`, ou quando a linha é vazia, tem `|` ou quebra de
+     linha;
+  2. o documento do laudo ganha, entre a tabela de níveis e `## Achado de processo`, a seção
+     `## Motivo das dimensões fora de conforme`, com a tabela `| dimensão | nível | motivo |` (uma
+     linha por `--motivo`, na ordem dada) ou o corpo `nenhum` sem a flag — a seção existe sempre,
+     como a de achado;
+  3. `--achado-processo` aceita `dossiê` como sinônimo de `dossie` (normalizado antes da
+     validação; a tabela segue imprimindo `dossiê`).
+  Em `.claude/agents/pantonic-reviewer.md`, a frase que começa por `O motivo de cada dimensão fora
+  de` passa a nomear a flag `--motivo` do `rdo.py laudo` como o lugar do motivo, e diz que ele não
+  vai ao card *Lições aprendidas na tarefa*.
+- **Arquivos-alvo:**
+  - `.claude/tools/rdo.py`
+  - `tests/test_rdo.py`
+  - `.claude/agents/pantonic-reviewer.md`
+- **Caso medido que motivou:** ver `## TK-85`.
+- **Reparo medido (protótipo do consultor, 2026-09-26, cópia da árvore já apagada):** os três itens
+  acima em `cmd_laudo` e no `laudo_parser`; com eles, `tests/test_rdo.py` inteiro verde (nenhuma
+  asserção existente depende da ordem das seções do laudo) e suíte sem falha; os dois testes abaixo
+  falham sobre o `rdo.py` de hoje. Âncora no agente medida: a frase aparece uma vez no arquivo.
+- **Testes (novos, em `tests/test_rdo.py`, com `_argv_laudo` e `rdo.main`; os do item 1 com nome começado por `test_laudo_motivo_`, o do item 2 `test_laudo_achado_dossie_acentuado`):**
+  1. TF: `_argv_laudo(d, **{"criterio-de-pronto": "parcial"})` mais
+     `--motivo criterio-de-pronto "falta o modo validate"` → exit `0` e o laudo contém
+     `## Motivo das dimensões fora de conforme` e
+     `| criterio-de-pronto | parcial | falta o modo validate |`; TR: `--motivo escopo "x"` com
+     `escopo` `conforme` → exit diferente de `0`; sem `--motivo`, o laudo contém a seção com o corpo
+     `nenhum`.
+  2. TF: `--achado-processo dossiê "linha do achado"` → exit `0` e o laudo contém
+     `| dossiê | linha do achado |`.
+- **Verificação:**
+  1. `python -m pytest tests/test_rdo.py -q -k "laudo_motivo or laudo_achado_dossie_acentuado"` → os testes novos verdes — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  2. `python -c "from pathlib import Path;print(Path('.claude/agents/pantonic-reviewer.md').read_text(encoding='utf-8').count('--motivo')>=1)"` → `True` — antes `False`, depois `True`.
+  3. `python -m pytest tests/test_rdo.py -q` → verde — antes `exit 0`, depois `exit 0`.
+  4. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** o motivo de dimensão tem campo e seção própria no laudo, com recusa para
+  dimensão `conforme`; `dossiê` é aceito como alvo; a definição do reviewer nomeia a flag.
+- **Não fazer:** não mudar `calcular_laudo` nem o `close`; não tornar `--motivo` obrigatório; não
+  mudar a tabela de níveis nem o card *Lições aprendidas na tarefa*.
+- **Notas de execução:**
+  - 2026-09-26 `review` — rdo.py laudo --motivo + alvo dossiê + reviewer nomeia a flag; 5 testes novos; test_rdo 66 verdes; suíte 426 verdes
+  - 2026-09-27 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-85a-rdo-py-laudo-motivo-e-o-alvo-dossie.md`, veredito ressalva 94%
+
+## TK-86 — O piso do `C-11` mora no código do `backlog.py` e acusa `C-17` em todo outro repositório
+
+- **Status:** `done` · 2026-09-26 — aberto pelo consultor do `P-0751` (acionamento 8, `DEB-13`), rota do achado (1) do fechamento do plano (`AE-6` do plano).
+
+**Caso medido (2026-09-26):** numa cópia de `tests/fixtures/backlog/verde`, sem alteração, `python .claude/tools/backlog.py check --repo <cópia>` sai `1` com `C-17 GOVERNANCA.md:1 — piso_c11 nomeia entrada órfã` (além do `C-16` do `TK-1a`, esperado: os cards da fixture não têm campos). O subcomando `check` passa a constante `_PISO_C11` do módulo para qualquer `--repo`, e a única entrada dela (`GOVERNANCA.md`, seção `1.1`, dívida medida neste repositório no `TK-60a`) não casa citação quebrada em outro corpus. O `backlog.py` vai aos derivados com a publicação do kit (`TK-81a`): lá o `check` nasceria vermelho sem defeito do derivado. Na árvore do hub, sem o piso, o `check` acusa 10 `C-11` dessa dívida.
+
+**O que decide:** o piso é dado do corpus, não regra do instrumento — sai da constante e vai para `docs/PISO_C11.tsv`, versionado no repositório que tem a dívida; arquivo ausente é o estado normal de repositório sem dívida (nenhum piso, `C-11` julga tudo, nenhum `C-17`), no mesmo desenho do `tests/piso_comportamental.txt` do `ratchet_piso.py`. `docs/` não é projetado pelo `.claude/projecoes.json`, então o piso do hub não viaja. Supera, no `DEB-7` do `P-0751`, a parte "só o `main` liga o piso": o `main` liga o piso lido do `--repo`, e o `fechar_plano` do `.claude/tools/encerrar.py` (segundo consumidor, nascido no `TK-88`) liga o piso lido do repositório que fecha (`PC-1`, triagem do consultor, acionamento 1, `docs/plans/_CENARIO-TK-86.md`). Correção conhecida, card `ready`.
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-86a (consultor P-0751, acionamento 8)
+  - 2026-09-26 triagem do consultor (acionamento 1, `rota=resolve`, `PC-1`): o `TK-86a` parou `blocked` `premissa` porque o card omitiu o consumidor `encerrar.py:681` da constante; card emendado com o item 4 e devolvido a `ready`.
+  - 2026-09-26 `done` — tíquete fechado pelo condutor: TK-86a done (aprovado com ressalva 94%); achados AE-77/AE-78 roteados a TK-92/TK-93
+- **AE-77** (`TK-86a`, fechamento, 2026-09-26) — Doutrina: pantonic-executor.md item 5a e scrum-master Passo 5 fixam <P-n> = id do plano, forma que não cobre card de tíquete do diário; o executor gravou a medida como docs/RDO/evidencia/P-0751-TK-86a-medida.json e o review_evidence.py (id = stem DIARIO_DE_OBRAS, :787) não a achou (registro parcial no laudo). **Rota:** tíquete `TK-92` (card `TK-92a`: destino da medida numa função de `caminhos.py`, gravado pelo `card_check --gravar` sem caminho), aberto pelo consultor do `TK-86`, acionamento 2 (`PC-2`); o arquivo `P-0751-TK-86a-medida.json` fica com o nome que tem, citado pelos registros fechados do `TK-86a`
+- **AE-78** (`TK-86a`, fechamento, 2026-09-26) — Dossiê de evidência: review_evidence.py não mostra hunk de arquivo untracked (.claude/tools/encerrar.py, trecho truncado em 4000 caracteres sem as linhas 680-683), e o --desde do redespacho deixa os itens da primeira execução fora da evidência. **Rota:** tíquete `TK-93` (card `TK-93a`: `<ref>` do despacho com os não rastreados e diff por conteúdo; o redespacho reusa o `<ref>` do primeiro despacho), aberto pelo consultor do `TK-86`, acionamento 2 (`PC-3`); descartado o recorte pelas âncoras do card
+
+
+
+### TK-86a — O piso do `C-11` vem de `docs/PISO_C11.tsv` do repositório checado [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** em `.claude/tools/backlog.py`:
+  1. a constante `_PISO_C11` sai; entram `_PISO_C11_ARQUIVO = "docs/PISO_C11.tsv"`,
+     `_PISO_C11_CABECALHO = "arquivo\tsecao\torigem"` e a função pública
+     `ler_piso_c11(repo: Path) -> tuple[set[tuple[str, str]] | None, list[Violacao]]`: arquivo
+     ausente → `(None, [])`; primeira linha diferente do cabeçalho → `(set(), [Violacao("C-17",
+     "docs/PISO_C11.tsv", 1, "cabeçalho fora do esquema")])`; linha não vazia com número de campos
+     (separados por tabulação) diferente de 3, `arquivo` vazio ou `secao` fora de
+     `^\d+(?:\.\d+)*$` → `Violacao("C-17", "docs/PISO_C11.tsv", <n>, "linha fora do esquema")` e a
+     linha não entra no piso; as demais linhas entram como `(arquivo, secao)`;
+  2. no `main`, subcomando `check`, as violações de `ler_piso_c11(repo)` vêm primeiro, seguidas das
+     de `check(...)` com `piso_c11=` o conjunto lido (e não mais a constante); `check()` não muda
+     de assinatura nem de comportamento;
+  3. o comentário de origem da constante (medida de 2026-09-20, `TK-60a`) vai para a docstring de
+     `ler_piso_c11`, e o comentário do `C-17` em `check` passa a dizer que o piso vem do arquivo do
+     repositório checado;
+  4. em `.claude/tools/encerrar.py`, `fechar_plano`: a chamada `_backlog.check(...)` do gate deixa
+     de ler `_backlog._PISO_C11`; antes dela, `piso_c11, violacoes = _backlog.ler_piso_c11(repo)`, e
+     as violações de `check(...)`, com `piso_c11=piso_c11`, somam-se a essas (`violacoes += ...`),
+     na mesma ordem do `main`.
+  Na raiz, o arquivo novo `docs/PISO_C11.tsv`, em UTF-8 com fim de linha LF, com o cabeçalho e a
+  linha `GOVERNANCA.md<TAB>1.1<TAB>TK-60a, medido em 2026-09-20`.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+  - `docs/PISO_C11.tsv` (novo; `git check-ignore` sai `1`, medido: não é ignorado)
+  - `.claude/tools/encerrar.py` (só a chamada do item 4, linhas 680-682 de hoje; o arquivo é do `TK-88`, cujos cards `TK-88b`..`TK-88d` também o tocam)
+- **Caso medido que motivou:** ver `## TK-86`.
+- **Reparo medido (protótipo do consultor, 2026-09-26, cópia da árvore já apagada):** os itens 1 e 2
+  acima e o arquivo novo. Com eles: `check` da árvore OK exit `0`; cópia da `verde` só com o
+  `C-16` do `TK-1a`; arquivo removido da árvore → 10 `C-11` e nenhum `C-17`; arquivo com uma
+  entrada `GOVERNANCA.md`/`3.2` e uma linha `lixo` → `C-17 docs/PISO_C11.tsv:4 — linha fora do
+  esquema` e o `C-17` da entrada órfã; suíte `376 passed`. Os dois testes abaixo falham sobre o
+  `backlog.py` de hoje e passam com o protótipo.
+- **Estado da árvore na retomada (medido pelo consultor, 2026-09-26, acionamento 1 do `TK-86`):**
+  os itens 1 a 3, o arquivo novo e os dois testes já estão aplicados pela primeira execução
+  (Verificação 1 exit `0`, 2 → `0`, 3 → `2 passed`, 4 → `114 passed`); falta só o item 4. Suíte
+  com eles e sem o item 4: `427 passed, 1 failed`
+  (`tests/test_encerrar.py::test_tf_plano_fecha_status_entrega_tres_secoes_e_linha_do_diario`,
+  `AttributeError` em `_backlog._PISO_C11`). Item 4 ensaiado na árvore e revertido:
+  `tests/test_encerrar.py` `15 passed`, suíte `428 passed`. Varredura de consumidores
+  (`_PISO_C11` sem sufixo em `.claude`, `tests`, `docs`, `*.py`): só `encerrar.py:681`.
+- **Testes (novos, em `tests/test_backlog.py`, com `_load_backlog`, `_copiar_fixture` e `capsys`; nome de cada um começado por `test_piso_c11_tsv_`):**
+  1. TF: cópia de `_FIXTURE_VERDE` em `tmp_path / "repo"`; `backlog.main(["check", "--repo",
+     str(repo)])` → a saída padrão não contém `C-17`.
+  2. TR: na mesma montagem, `docs/PISO_C11.tsv` escrito com o cabeçalho, a linha
+     `GOVERNANCA.md\t9.9\tteste` e a linha `lixo` → `main` devolve `1`; a saída contém
+     `piso_c11 nomeia entrada órfã` com `9.9`, e `C-17 docs/PISO_C11.tsv:3 — linha fora do esquema`.
+- **Verificação:**
+  1. `python .claude/tools/backlog.py check` → `check: OK — nenhuma violação.` — antes `exit 0`, depois `exit 0`.
+  2. `python -c "from pathlib import Path;t=Path('.claude/tools/backlog.py').read_text(encoding='utf-8');print(t.count('_PISO_C11')-t.count('_PISO_C11_'))"` → `0` (a constante `_PISO_C11` sem sufixo) — antes `0`, depois `0` (o antes é a árvore de hoje, com o item 1 já aplicado; antes da primeira execução era `2`).
+  3. `python -m pytest tests/test_backlog.py -q -k piso_c11_tsv` → os testes novos verdes — antes `exit 0`, depois `exit 0` (o antes é a árvore de hoje, com os testes já aplicados; antes da primeira execução era `exit 5`).
+  4. `python -m pytest tests/test_backlog.py -q` → verde — antes `exit 0`, depois `exit 0`.
+  5. `python -m pytest -q` → nenhuma falha — antes `exit 1`, depois `exit 0` (antes `427 passed, 1 failed`, o teste do `encerrar.py`; depois `428 passed`).
+  6. `python -c "from pathlib import Path;t=Path('.claude/tools/encerrar.py').read_text(encoding='utf-8');print(t.count('_PISO_C11')-t.count('_PISO_C11_'))"` → `0` (o `encerrar.py` não lê mais a constante) — antes `1`, depois `0`.
+- **Pronto quando:** o `check` de um repositório sem `docs/PISO_C11.tsv` não acusa `C-17`, o do hub
+  segue OK com o piso lido do arquivo, e linha malformada do arquivo sai `C-17` com a linha dela.
+- **Não fazer:** não quitar a dívida do piso (tíquete próprio); não mudar `check()`, o `C-11` nem o
+  `C-16`; não declarar o arquivo em `.claude/projecoes.json`; no `encerrar.py`, não tocar nada além
+  da chamada do item 4 (o resto do arquivo é dos cards do `TK-88`); não desfazer os itens 1 a 3 já
+  aplicados.
+- **Contingências:**
+  - se a Verificação 1 acusar `C-11` ou `C-17` na árvore → parar e sinalizar `blocked` razão
+    `premissa`, colando as violações (medido no protótipo: nenhuma).
+  - se `_PISO_C11` sem sufixo aparecer num arquivo fora dos Arquivos-alvo → parar e sinalizar
+    `blocked` razão `premissa`, nomeando arquivo e linha (medido na retomada: nenhum além do
+    `encerrar.py`).
+- **Handover:** 2026-09-26 · para quem vier depois
+  - **Entregue:** ler_piso_c11(repo) em .claude/tools/backlog.py:906 lê docs/PISO_C11.tsv do repo checado; main do check (backlog.py:2049) e gate de fechar_plano (.claude/tools/encerrar.py:680) usam o piso lido; a constante _PISO_C11 não existe mais
+  - **Contrato:** repo sem docs/PISO_C11.tsv = sem piso e sem C-17; linha malformada do TSV sai C-17 com o número dela; check() inalterado de assinatura e comportamento
+  - **Não refazer:** migração do piso para o TSV e os testes test_piso_c11_tsv_* (tests/test_backlog.py)
+  - **Pendente:** quitar a dívida do piso (entrada GOVERNANCA.md 1.1) é tíquete próprio
+- **Notas de execução:**
+  - 2026-09-26 `blocked` — Verificação 5 vermelha: .claude/tools/encerrar.py:681 lê _backlog._PISO_C11 (consumidor fora dos Arquivos-alvo; a suíte do protótipo era 376, hoje 428) → AttributeError em tests/test_encerrar.py::test_tf_plano_fecha_status_entrega_tres_secoes_e_linha_do_diario. V1-V4 verdes. Diff do card aplicado e mantido na árvore (backlog.py, tests/test_backlog.py, docs/PISO_C11.tsv).
+  - 2026-09-26 `ready` — consultor (acionamento 1 do `TK-86`, `PC-1`, `rota=resolve`): premissa procedente, defeito de autoria do card (consumidor da constante fora dos Arquivos-alvo; protótipo medido sobre a suíte de 376, antes do `encerrar.py`). Card emendado: item 4, `encerrar.py` nos Arquivos-alvo, estado da árvore na retomada, Verificações 2/3/5 com o antes de hoje e Verificação 6 nova. Resta só o item 4.
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-86a-o-piso-do-c-11-vem-de-docs-piso-c11-tsv-do-repositorio-checa.md`, veredito ressalva 94%
+
+## TK-87 — O dossiê do último card de um plano leva as seções seguintes do plano
+
+- **Status:** `done` · 2026-09-26 — aberto pelo consultor do `P-0751` (acionamento 8, `DEB-13`), rota do achado (2) do fechamento do plano (`AE-6` do plano).
+
+**Caso medido (2026-09-26):** `python .claude/tools/backlog.py show EBK-T14` imprime, depois do card, as seções `## 6. Ordem de execução`, `## 7. Fora de escopo` e `## 8. Achados da execução` do `P-0751` (3 cabeçalhos `## ` no dossiê); o `next` imprimiu o mesmo no despacho. Em `_scan_items`, o item termina só no próximo cabeçalho de item (`HEADING_RE`, que exige ` — `), e `## 6. Ordem de execução` não é um. O `rdo.py` já corta no cabeçalho seguinte (`_SECTION_BREAK_RE`). No corpus de hoje (diário e todo `docs/plans/P-*.md`), 492 itens: 29 mudam de fim com o reparo, nenhum muda status, `Depende de` ou `Tipo`; dois vivos entre eles (`LF-T8` do `P-0742` e `PLS-T3` do `P-0744`), ambos com o mesmo defeito. Remedido pelo consultor do `P-0752` (acionamento 10): o dossiê de `show FPU-T10`, último card do `P-0752`, traz 3 linhas `## ` (as seções 6 a 8 do plano) — o mesmo defeito, e o `TK-87a` o cobre.
+
+**O que decide:** o item termina também na primeira linha de cabeçalho de nível 1 ou 2 (`NIVEL_1_OU_2_RE`, já no módulo) fora de cerca de código. Descartado usar a fronteira do `rdo.py` (`^#{2,3} `): cortaria mais itens nas subseções `### ` dos tíquetes do diário (`TK-69`..`TK-74`, por exemplo), mudando o `show` e a posição das notas deles. A cerca importa: `TK-76a` e `TK-78a` citam, dentro de `~~~~`, textos que começam por `## `. Correção conhecida, card `ready`.
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-87a (consultor P-0751, acionamento 8)
+
+### TK-87a — O item do `backlog.py` termina no cabeçalho de nível 1 ou 2 seguinte [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** em `_scan_items` de `.claude/tools/backlog.py`, o fim do item (`fim_idx`) passa a
+  ser o menor entre o de hoje (linha antes do próximo cabeçalho de item, ou a última do arquivo) e
+  a linha antes da primeira linha, depois do cabeçalho do item, que casa `NIVEL_1_OU_2_RE` fora de
+  cerca de código. Uma linha que começa por três crases ou por `~~~` abre ou fecha a cerca. O
+  `texto`, o `linha_fim` e as extrações de status, `Depende de` e `Tipo` do item passam a ler só
+  essa faixa. A regra vive numa função auxiliar, chamada uma vez em `_scan_items`.
+- **Arquivos-alvo:**
+  - `.claude/tools/backlog.py`
+  - `tests/test_backlog.py`
+- **Caso medido que motivou:** ver `## TK-87`.
+- **Reparo medido (protótipo do consultor, 2026-09-26, cópia da árvore já apagada):** a auxiliar
+  `_fim_na_secao(linhas, inicio_idx, fim_idx)` percorre de `inicio_idx + 1` a `fim_idx`,
+  alternando a cerca, e devolve `j - 1` na primeira `NIVEL_1_OU_2_RE` fora dela. Com ela:
+  `show EBK-T14` sem nenhuma linha `## `, `show TK-76a` ainda com o texto cercado, `check` da
+  árvore OK, suíte `376 passed`. O teste abaixo falha sobre o `backlog.py` de hoje.
+- **Testes (novo, em `tests/test_backlog.py`, com `_load_backlog`, nome começado por `test_scan_items_corta_no_nivel_2`):** TF sobre
+  `backlog._scan_items(linhas, "p.md")`, com `linhas` = `# P-0999 — Plano`, vazia, `## 5. Tarefas`,
+  vazia, `### X-T1 — Um [Sonnet · esforço low · classe implementacao]`, vazia,
+  ``- **Status:** `ready` ``, vazia, `~~~~`, `## Dentro da cerca`, `~~~~`, vazia,
+  `## 6. Ordem de execução`, vazia, `` `X-T1` ``, vazia, `## 8. Achados`, vazia, `- achado` → o
+  item `X-T1` tem `linha_fim == 12`, o `texto` dele contém `## Dentro da cerca` e não contém
+  `## 6. Ordem de execução`.
+- **Verificação:**
+  1. `python -c "import subprocess,sys;o=subprocess.run([sys.executable,'.claude/tools/backlog.py','show','EBK-T14'],capture_output=True,text=True,encoding='utf-8').stdout;print(sum(1 for l in o.splitlines() if l.startswith('## ')))"` → `0` (linhas `## ` no dossiê do último card do `P-0751`) — antes `3`, depois `0`.
+  2. `python .claude/tools/backlog.py check` → `check: OK — nenhuma violação.` — antes `exit 0`, depois `exit 0`.
+  3. `python -m pytest tests/test_backlog.py -q -k scan_items_corta_no_nivel_2` → o teste novo verde — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  4. `python -m pytest tests/test_backlog.py -q` → verde — antes `exit 0`, depois `exit 0`.
+  5. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** o dossiê do último card de um plano para no cabeçalho de nível 1 ou 2
+  seguinte, e cabeçalho dentro de cerca não corta o item.
+- **Não fazer:** não mudar `HEADING_RE` nem o `rdo.py`; não cortar em `### ` (tíquetes do diário têm
+  subseções `### ` que são corpo); não mudar o teto `DB-7` de `_truncar`.
+- **Contingências:**
+  - se um teste existente cair com o reparo → parar e sinalizar `blocked` razão `premissa`,
+    nomeando o teste (medido no protótipo: nenhum cai).
+- **Handover:** 2026-09-26 · para quem vier depois
+  - **Entregue:** _fim_na_secao em .claude/tools/backlog.py:303, chamada uma vez em _scan_items (.claude/tools/backlog.py:350); teste test_scan_items_corta_no_nivel_2 em tests/test_backlog.py:145
+  - **Contrato:** o item de _scan_items termina antes do primeiro cabeçalho # ou ## fora de cerca de código (três crases ou ~~~); texto, linha_fim, status, Depende de e Tipo leem só essa faixa; ### continua sendo corpo
+  - **Não refazer:** o corte em nível 1/2 com respeito à cerca já está coberto por teste; show EBK-T14 sai sem linhas ##
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-87a-o-item-do-backlog-py-termina-no-cabecalho-de-nivel-1-ou-2-se.md`, veredito aprovado 100%
+
+## TK-88 — O encerramento de tarefa e de plano vira um comando, com relatório em três seções e handover no card
+
+- **Status:** `done` · 2026-09-26 — aberto pelo dono ("Torne mecânicos os encerramentos de tarefas e planos"), entregue na mesma sessão; aguarda a revisão.
+
+**Caso medido (2026-09-26, fechamentos de `P-0745`..`P-0751`):** fechar uma tarefa eram quatro comandos em turnos separados — `modelo.py check`, `backlog.py status <ID> done`, `rdo.py close` com o pacote do laudo **redigitado** a partir do arquivo que `rdo.py laudo` já tinha gravado, e `telemetria.py append` conferindo a linha do hook — mais o achado `AE-<n>` editado no plano à mão. Fechar um plano era inteiramente manual: o instrumento recusava `ready → done` para plano (registrado no cabeçalho do diário em 2026-09-25, no fechamento do `P-0749`), e o parágrafo de fechamento, a linha do índice e a triagem dos achados eram escritos pelo condutor. O RDO só tinha a leitura de máquina; o que o dono lia era prosa redigida no cabeçalho do diário, sem forma fixa.
+
+**O que decide:** um instrumento, `.claude/tools/encerrar.py`, com três verbos que compõem os instrumentos existentes sem reimplementar regra: `tarefa` (status → RDO → telemetria → achados, tudo depois de todas as checagens) e `plano` (status → relatório de entrega → linha do diário) **reportam** resultado e histórico; `handover` **entrega** — registra no próprio card, como campo `- **Handover:**` de máquina (`Entregue`, `Contrato`, `Não refazer`, `Pendente`, `para`), o que quem vem depois espera da tarefa, e o `backlog.py next` devolve esse campo à sucessora sob `=== HANDOVER DE <ID>`, junto com o dossiê dela (pedido do dono na mesma sessão). O RDO e o relatório de entrega ganham três seções de nível 1: `# Humano` (linguagem corrente, título no lugar da sigla, ≤ 8 linhas), `# Máquina` (dossiê verbatim, pacote transcrito do laudo, consumo, desdobramento) e `# Histórico` (as linhas do painel do gerente para a tarefa ou o plano). O `backlog.py` aceita `done` de plano quando toda tarefa é terminal. O gancho do painel reconhece o comando novo (`M-10` pela detecção de `encerrar.py tarefa`; `M-18` nova para o plano).
+
+**Triagem do consultor (acionamento 1, 2026-09-26; laudo da `TK-88a` `ressalva 85`, bloqueante nenhuma, cenário em `docs/plans/_CENARIO-TK-88.md`):**
+- **CT-1** — A pendência do laudo é defeito desta entrega e mais velho que ela: o gancho do painel lê `--tarefa`/`--plano`/`--atribuir` na linha de comando inteira e casa `encerrar.py`, `review_evidence.py` e `backlog.py status` em texto de argumento; com `telemetria.py append --tarefa <ID>-revisao` encadeado antes do `encerrar.py`, 14 frases `M-10` e 13 `M-11` saíram com o id `-revisao` no lugar do título, e as `M-11` foram copiadas ao `# Histórico` de 12 RDO; o `rdo.py close` grava o caminho do plano como o recebe, e o `encerrar.py` o passa com barra invertida (16 RDO). Corretivo `TK-88c`, que também conserta as RDO publicadas. A linha `M-10` que o defeito rotulou errado não se reconstrói nas RDO (omissão, não afirmação falsa), e `.claude/estado/progresso.txt` (estado local, fora do git) não se reescreve. Até o `TK-88c` fechar, o condutor roda `encerrar.py` sozinho na linha de comando, sem outro comando encadeado, e sem citar os nomes dos instrumentos em texto de `--achado`/`--resumo`.
+- **CT-2** — A `TK-88a` não fecha agora. A linha de `docs/telemetria.tsv` com tarefa `TK-88a` e fonte `usage` (60 tool uses, 186.4 k tokens, 464.1 s) é a rodada do **revisor**: o hook `SubagentStop` a gravou porque `.claude/estado/tarefa-corrente.json` nomeava `TK-88a` no despacho do revisor, e ela repete a linha `TK-88a-revisao` logo abaixo (60, 186.4, 464.3). O `encerrar.py tarefa` de hoje a leria como consumo do executor — número de outra execução, que não fecha tarefa. Desfecho: tarefa sem `<usage>` fecha com `nao_medido` declarado e razão, pelo corretivo `TK-88b` (`--nao-medido`), que também tira da série a linha do revisor, restringe o hook ao executor e escreve a doutrina. Depois do `done` da `TK-88b`, o condutor fecha a `TK-88a` pelo comando registrado na nota dela.
+- **CT-3** — Achado de processo "evidência sem `--desde`" (tarefa executada fora do loop): a doutrina da `TK-88b` manda capturar a ref do ponto de partida antes da primeira edição e gravar a medida do executor (`card_check --gravar`), e grava `tarefa-corrente.json` só no despacho do executor.
+- **CT-4** — Achado de processo "pré-checagens duplicadas": `rdo.py` e `backlog.py` expõem a checagem sem escrita e o `encerrar.py` a chama — corretivo `TK-88d`, com a linha `FECHADO` contando como o índice e o stdout concordando em gênero. Descartado: declarar a duplicação na doutrina — a linha `FECHADO` (1/2 com uma `cancelled`) já diverge do índice (1/1), que é a cópia da regra divergindo.
+- **Fila:** `TK-88b` → fechamento da `TK-88a` pelo condutor → `TK-88c` → `TK-88d`. A `FPU-T7` do `P-0752` segue dependendo só da `TK-88a`: não toca `encerrar.py` nem os alvos dos corretivos, e a `TK-88a` só fecha depois da `TK-88b`. A diretiva passa a incluir o `TK-88`.
+
+- **Notas de execução:**
+  - 2026-09-26 `review` — entregue: `encerrar.py` (2 verbos), template do RDO em 3 seções, regra de plano no `backlog.py`, `M-18` no gancho, doutrina em `GOVERNANCA.md` §4.2, skills `diario-de-obras`/`passagem-de-bastao`/`scrum-master`, README §9 e §11; testes `tests/test_encerrar.py` + 4 novos nas suítes tocadas; verbo `handover` e bloco `=== HANDOVER DE` do `next` acrescentados no mesmo dia, a pedido do dono.
+  - 2026-09-26 `in-progress` — triagem do consultor (acionamento 1): corretivos TK-88b, TK-88c e TK-88d abertos; a TK-88a fecha depois do done da TK-88b (CT-1..CT-4)
+- **AE-79** (`TK-88a`, fechamento, 2026-09-26) — painel do gerente: o gancho lê o argumento de tarefa e de plano na linha de comando inteira, e o RDO grava o caminho do plano com barra invertida **Rota:** TK-88c
+- **AE-80** (`TK-88a`, fechamento, 2026-09-26) — tarefa executada fora do loop: evidência sem ponto de partida e fechamento sem medida **Rota:** TK-88b
+- **AE-81** (`TK-88a`, fechamento, 2026-09-26) — pré-checagens de rdo e backlog copiadas no instrumento de fechamento **Rota:** TK-88d
+- **AE-84** (`TK-88c`, fechamento, 2026-09-26) — review_evidence.py não expande glob dos Arquivos-alvo nem marca alvo não rastreado sem antes; a evidência da TK-88c saiu sem diff das 21 RDO **Rota:** auditoria final
+- **AE-85** (`TK-88c`, fechamento, 2026-09-26) — variante publicada do painel com o id do tíquete no lugar do título do card fechado (RDO de TK-84a e TK-87a: 'concluiu a tarefa "TK-91"' e '"TK-86"') **Rota:** auditoria final
+- **AE-86** (`TK-88d`, fechamento, 2026-09-26) — stdout do encerrar.py tarefa ainda diz 'tarefa fechado' (encerrar.py:958, 'encerrar: OK - {args.comando} fechado'); o item do Objetivo do TK-88d não entrou em Pronto quando nem em teste **Rota:** auditoria final
+- **AE-87** (`TK-88d`, fechamento, 2026-09-26) — o card delegou à execução a escolha da recusa exercitada pelo TR (colisão de destino); escolha coerente, a regra de autoria já cobre o caso **Rota:** sem ação
+
+
+
+
+
+
+
+
+### TK-88a — O fechamento de tarefa e de plano é um comando cada, com RDO e entrega em três seções e handover no card [Opus · esforço high · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** `python .claude/tools/encerrar.py tarefa --plano <plano> --tarefa <ID> [--resumo] [--pendencia] [--achado TEXTO ROTA]... [--tool-uses --tokens-k --duracao-s]` leva a tarefa de `review` a `done` num ato só — gate do modelo, `backlog.transacionar_status` com a nota de fechamento, `rdo.cmd_close` com o pacote **transcrito do laudo** e as seções `# Humano`/`# Histórico` preenchidas, linha de telemetria (da série ou do trio do `<usage>`), `AE-<n>` com `**Rota:**` por achado —, e `python .claude/tools/encerrar.py plano --plano <plano> --veredito "<frase do dono>"` leva o plano a `done` — só sem tarefa aberta, com RDO de toda tarefa `done`, achado sem rota nenhum e documento de validação presente —, escreve `entrega.md`/`docs/plans/_ENTREGA-<id>.md` nas três seções e uma linha no cabeçalho do diário. Ambos recusam sem escrever quando falta insumo. O terceiro verbo, `python .claude/tools/encerrar.py handover --plano <plano> --tarefa <ID> --entregue "…" --contrato "…" [--nao-refazer] [--pendente] [--para <ID>]...`, escreve ou substitui o campo `- **Handover:**` no card (status `in-progress`/`review`/`done`/`blocked`), e `backlog.py next` imprime, sob `=== HANDOVER DE <ID>`, o handover de todo irmão que nomeia a próxima tarefa em `para` ou, sem nenhum, o da antecessora imediata.
+- **Arquivos-alvo:**
+  - `.claude/tools/encerrar.py` (novo)
+  - `.claude/tools/rdo.py` — `cmd_close` ganha `HUMANO`/`HISTORICO` (`--humano`, `--historico`)
+  - `.claude/tools/rdo_template.md` — as três seções `# Humano` / `# Máquina` / `# Histórico`
+  - `.claude/tools/backlog.py` — `transacionar_status`: plano → `done` com toda tarefa terminal; `extrair_handover`/`handovers_para` e o bloco `=== HANDOVER DE` em `renderizar_next`
+  - `.claude/tools/caminhos.py` — `destino_operacoes`, `destino_entrega`
+  - `.claude/tools/progresso_hook.py` — detecção de `encerrar.py tarefa` (`M-10`) e `M-18`
+  - `GOVERNANCA.md` §4.2 (*Fronteira de registro*, *Fechamento enxuto*); `README.md` §9 e §11
+  - `.claude/skills/diario-de-obras/SKILL.md` (transição de plano, operação 7); `.claude/skills/passagem-de-bastao/SKILL.md` (Parte 3, itens 2-3); `.claude/skills/scrum-master/SKILL.md` (Passo 9, fechamento do plano, repertório `M-10`/`M-18`)
+  - `tests/test_encerrar.py` (novo); `tests/test_rdo.py`, `tests/test_backlog.py`, `tests/test_progresso_hook.py`
+- **Testes:** TF `tests/test_encerrar.py` — fechamento de tarefa escreve status, RDO em três seções (humano com título e revisão em palavras; máquina com pacote do laudo e consumo da série; histórico só com as linhas do título) e achado com rota; consumo por argumento apensa a série; fechamento de plano escreve status, entrega em três seções e linha do diário. TR — cada checagem recusa sem escrever (status ≠ `review`, laudo ausente, `reprovado`, consumo ausente; tarefa aberta, sem documento de validação, achado sem rota, `done` sem RDO). TF handover em `test_encerrar.py` (campo no card antes de `Notas`, substituição, transcrição no RDO; recusa em `ready`) e em `test_backlog.py` (`next` devolve o da antecessora; o endereçado em `para` vence). TF/TR em `test_backlog.py` (plano `ready → done`), `test_rdo.py` (três seções e mínimo honesto), `test_progresso_hook.py` (`M-10` pelo instrumento, `M-18`).
+- **Verificação:**
+  1. `python -m pytest tests/test_encerrar.py tests/test_rdo.py tests/test_backlog.py tests/test_progresso_hook.py tests/test_caminhos.py -q` → verde.
+  2. `python .claude/tools/backlog.py check` → `check: OK — nenhuma violação.`, exit `0`.
+  3. `python -m pytest -q` → nenhuma falha; `passed` ≥ 376 + os testes novos.
+- **Pronto quando:** os dois verbos fecham tarefa e plano num comando cada, com as três seções, recusando sem escrever quando falta insumo, e as residências da doutrina (GOVERNANCA §4.2, as três skills, README) descrevem o instrumento como a forma canônica.
+- **Não fazer:** não reimplementar regra de `backlog.py`/`rdo.py`/`telemetria.py` dentro do `encerrar.py`; não inventar número de consumo; não apagar o laudo.
+- **Notas de execução:**
+  - 2026-09-26 `review` — entrega na árvore; o próprio card se fecha por `python .claude/tools/encerrar.py tarefa --plano docs/DIARIO_DE_OBRAS.md --tarefa TK-88a --laudo <laudo>` depois do laudo do revisor.
+  - 2026-09-26 `review` — laudo `ressalva 85`, bloqueante nenhuma, recomendação `escalar` (`docs/RDO/laudos/DIARIO_DE_OBRAS-TK-88a.md`); triagem do consultor em `CT-1`..`CT-4` do `## TK-88`. **Não fechar antes do `done` da `TK-88b`:** a única linha medida desta tarefa na série é a rodada do revisor (`CT-2`), e o `encerrar.py` de hoje a tomaria como consumo do executor. Depois dela, o condutor fecha esta tarefa com o comando abaixo, sozinho na linha de comando (`CT-1`); o laudo é o padrão (`docs/RDO/laudos/DIARIO_DE_OBRAS-TK-88a.md`):
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-88a-o-fechamento-de-tarefa-e-de-plano-e-um-comando-cada-com-rdo.md`, veredito ressalva 85%
+
+    ```
+    python .claude/tools/encerrar.py tarefa --plano docs/DIARIO_DE_OBRAS.md --tarefa TK-88a --nao-medido "executada na sessão principal, fora do loop: sem SubagentStop nem bloco de uso" --achado "painel do gerente: o gancho lê o argumento de tarefa e de plano na linha de comando inteira, e o RDO grava o caminho do plano com barra invertida" "TK-88c" --achado "tarefa executada fora do loop: evidência sem ponto de partida e fechamento sem medida" "TK-88b" --achado "pré-checagens de rdo e backlog copiadas no instrumento de fechamento" "TK-88d"
+    ```
+
+### TK-88b — A tarefa sem medida fecha declarando a ausência, e a rodada do revisor deixa de valer pela do executor [Sonnet · esforço high · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** `python .claude/tools/encerrar.py tarefa --plano <plano> --tarefa <ID> --nao-medido "<razão>"` fecha a tarefa em `review` sem consumo medido: não procura linha na série, apensa a `docs/telemetria.tsv` a linha da tarefa com `fonte` `nao_medido` e as três células de consumo vazias, e o RDO traz `**Consumo:** não medido — <razão>` no lugar dos números. Recusa sem escrever quando vem junto do trio `--tool-uses/--tokens-k/--duracao-s`, quando a razão é vazia ou tem mais de uma linha, e quando a série já tem linha medida da tarefa (medida existente não se descarta). `rdo.py close` aceita o mesmo `--nao-medido "<razão>"` no lugar do trio, e exige exatamente um dos dois. O hook `SubagentStop` (`telemetria_hook.processar`) só grava e consome o estado quando o `agent_type` é `pantonic-executor` — o estado `tarefa-corrente.json` é do despacho do executor (skill `scrum-master`, Passo 4); outro papel do kit é silêncio, com o estado preservado. A série perde a linha com tarefa `TK-88a` e fonte `usage` (60 tool uses, 186.4 k tokens, 464.1 s), a rodada do revisor gravada sob o id do executor (`CT-2` do `## TK-88`); as demais linhas ficam intactas. A doutrina diz o desfecho (texto abaixo).
+- **Arquivos-alvo:**
+  - `.claude/tools/encerrar.py` — `fechar_tarefa`, `main` (flag `--nao-medido` do verbo `tarefa`)
+  - `.claude/tools/rdo.py` — `cmd_close` e o parser do `close` (o trio deixa de ser obrigatório no argparse e passa a ser exigido por `cmd_close` quando falta `--nao-medido`)
+  - `.claude/tools/rdo_template.md` — a linha `**Consumo:**`
+  - `.claude/tools/telemetria_hook.py` — `processar` e a docstring do módulo (parágrafo *Filtro*)
+  - `docs/telemetria.tsv` — só a linha da rodada do revisor sob `TK-88a`
+  - `GOVERNANCA.md` §4.2 — fim do bullet *Fonte única da série*
+  - `.claude/skills/scrum-master/SKILL.md` — Passo 9: o bloco do comando `encerrar.py tarefa` e o item (4) da telemetria
+  - `.claude/skills/passagem-de-bastao/SKILL.md` — Parte 3, item 3 (*Telemetria pós-notificação*)
+  - `tests/test_encerrar.py`, `tests/test_rdo.py`, `tests/test_telemetria_hook.py`
+- **Contratos/classes:** `fechar_tarefa(..., nao_medido: str | None = None)`, recusa com o prefixo `consumo:` do módulo; `cmd_close` lê `args.nao_medido` (`str | None`); com medida, a linha `**Consumo:**` do RDO sai idêntica à de hoje.
+- **Texto da doutrina** (sem quebra obrigatória: o executor reflui no parágrafo, na largura do arquivo):
+  - `GOVERNANCA.md` §4.2, ao fim do bullet *Fonte única da série*: `**Tarefa sem medida fecha declarando a ausência:** tarefa sem <usage> — executada na sessão principal, fora do loop — fecha com encerrar.py tarefa --nao-medido "<razão>", que apensa à série a linha nao_medido com as células de consumo vazias e escreve no RDO "não medido — <razão>"; número estimado nunca entra, e medida existente não se descarta (o instrumento recusa --nao-medido quando a série já mede a tarefa). Quem executa fora do loop captura a ref do ponto de partida (git stash create, ou git rev-parse HEAD com a árvore limpa) antes da primeira edição e grava a medida do executor (card_check --gravar), para a evidência do revisor sair com --desde. O .claude/estado/tarefa-corrente.json se grava só no despacho do executor, e o hook SubagentStop só grava a linha do pantonic-executor; a rodada de outro papel gravada sob o id da tarefa (caso medido, 2026-09-26: a do revisor da TK-88a) sai da série por card corretivo que a cita.` — com crases nos nomes de flag, arquivo e instrumento, como no resto do parágrafo.
+  - `scrum-master`, Passo 9: no bloco do comando, a linha `[--tool-uses <N> --tokens-k <tokens_k> --duracao-s <N> | --nao-medido "<razão>"]` no lugar da linha do trio; no item (4), logo depois de "número inventado não fecha tarefa.": `Tarefa sem <usage> — executada fora do loop — fecha com --nao-medido "<razão>" (GOVERNANCA.md §4.2): a série registra a ausência, nunca um número.`
+  - `passagem-de-bastao`, Parte 3, item 3, logo depois de "sem contagem, `nao_medido`)": `; no fechamento, encerrar.py tarefa --nao-medido "<razão>"`.
+- **Testes (novos):** TF `test_tf_tarefa_nao_medido_fecha_com_linha_nao_medido` (`test_encerrar.py`) — tarefa em `review` sem linha na série, `--nao-medido "x"` → `done`, RDO com `**Consumo:** não medido — x`, uma linha nova `nao_medido` com as três células vazias; TR `test_tr_nao_medido_com_medida_na_serie_recusa` — série com linha `usage` da tarefa → recusa, status `review`, sem RDO, série byte a byte igual; TR `test_tr_nao_medido_com_trio_recusa`; TF/TR `test_tf_close_nao_medido_sem_trio` e `test_tr_close_sem_trio_nem_nao_medido_recusa` (`test_rdo.py`); TR `test_tr_hook_so_executor_consome_estado` (`test_telemetria_hook.py`) — `agent_type` `pantonic-reviewer` com estado e transcript presentes → `False`, estado preservado, nada apensado.
+- **Verificação:**
+  1. `python -m pytest tests/test_encerrar.py tests/test_rdo.py tests/test_telemetria_hook.py -q -k "nao_medido or so_executor"` → verde — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  2. `python -c "from pathlib import Path;print(sum(1 for l in Path('docs/telemetria.tsv').read_text(encoding='utf-8').splitlines() if l.split(chr(9))[2:3]==['TK-88a'] and l.endswith(chr(9)+'usage')))"` → `0` — antes `1`, depois `0`.
+  3. `python -c "from pathlib import Path;print(all('--nao-medido' in Path(f).read_text(encoding='utf-8') for f in ('GOVERNANCA.md','.claude/skills/scrum-master/SKILL.md','.claude/tools/encerrar.py','.claude/tools/rdo.py')))"` → `True` — antes `False`, depois `True`.
+  4. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0` (piso re-medido no despacho; referência: `420 passed` em 2026-09-26, antes deste card).
+- **Pronto quando:** a tarefa sem `<usage>` fecha com a ausência declarada e recusa quando há medida (Verificação 1), a rodada do revisor sumiu da série sob o id do executor (Verificação 2) e a doutrina diz o desfecho (Verificação 3).
+- **Não fazer:** não inventar, estimar nem copiar número de consumo; não tocar outra linha de `docs/telemetria.tsv` nem reordenar a série; não fechar a `TK-88a` (é ato do condutor, depois do `done` deste card); não tocar `telemetria.py` (a `FPU-T7` do `P-0752` é dona dele); não mudar o texto de `**Consumo:**` com medida.
+- **Contingências:**
+  - se teste existente de `test_rdo.py` ou `test_encerrar.py` fixar o trio como obrigatório no argparse ou o texto do template → o teste que fixa o comportamento antigo é alvo da tarefa (`DM-33` do `P-0740`): ajustar e nomear no retorno.
+  - se teste existente de `test_telemetria_hook.py` fizer papel do kit diferente de `pantonic-executor` gravar linha → idem, nomeando o teste.
+- **Handover:** 2026-09-26 · para `TK-88a`
+  - **Entregue:** encerrar.py tarefa --nao-medido (.claude/tools/encerrar.py:328,380); rdo.py close --nao-medido (.claude/tools/rdo.py:768); hook grava só pantonic-executor (.claude/tools/telemetria_hook.py:51); linha TK-88a usage removida de docs/telemetria.tsv
+  - **Contrato:** Tarefa sem <usage> fecha com encerrar.py tarefa --nao-medido "<razão>"; recusa se a série já mede a tarefa ou se vier com o trio
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-88b-a-tarefa-sem-medida-fecha-declarando-a-ausencia-e-a-rodada-d.md`, veredito aprovado 100%
+
+### TK-88c — O painel lê cada argumento da própria invocação, e o RDO publicado diz o plano e a tarefa certos [Sonnet · esforço high · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Depende de:** `TK-88b`
+- **Objetivo:** no ramo `PreToolUse` · `Bash` de `evento` em `.claude/tools/progresso_hook.py`, a linha de comando se lê por invocação: as frases de `backlog.py status` (`M-2`, `M-10`, `M-10b`), de `encerrar.py tarefa` (`M-10`), de `encerrar.py plano` (`M-18`) e de `review_evidence.py` (`M-5`, `M-13`) só saem quando o script é o programa de uma invocação — `python` (ou `python3`/`py`, com ou sem caminho e opções) seguido do caminho que termina no script e, onde há verbo, do verbo —, e `--tarefa`, `--plano` e `--atribuir` se leem só nos argumentos dessa invocação. Invocações se separam por `&&`, `||`, `;`, `|` e quebra de linha fora de aspas. Texto de argumento que cite o script (mensagem de commit, `--resumo`, `--achado`) não gera frase. `rdo.py close` grava a linha `**Plano:**` com barra normal, venha o caminho como vier. As RDO publicadas se corrigem: em todo `docs/**/*.md`, a frase do painel com `a tarefa "<ID>-revisao"` passa a `a tarefa "<título do card <ID>>"` (título do backlog), e a linha `**Plano:**` com barra invertida passa a barra normal (`CT-1` do `## TK-88`).
+- **Arquivos-alvo:**
+  - `.claude/tools/progresso_hook.py` — `evento`, ramo `PreToolUse` · `Bash`
+  - `.claude/tools/rdo.py` — `cmd_close`, valor de `PLANO_PATH`
+  - `.claude/skills/scrum-master/SKILL.md` — repertório do painel, linhas `M-2`, `M-5`, `M-10`, `M-13` e `M-18`: o gatilho passa a dizer que o script e os argumentos se leem na própria invocação
+  - `docs/RDO/P-0752-FPU-*.md`, `docs/RDO/DIARIO_DE_OBRAS-TK-91a-*.md` e toda RDO que a regra acima achar em `docs/**/*.md` quando a tarefa rodar
+  - `tests/test_progresso_hook.py`, `tests/test_rdo.py`
+- **Testes (novos):** TF `test_tf_m10_da_propria_invocacao_em_comando_encadeado` — `evento` sobre `python .claude/tools/telemetria.py append --tarefa X-revisao …; python .claude/tools/encerrar.py tarefa --plano <p> --tarefa X` → `M-10` com o título de `X` e `tarefa_fechada` = `X` (hoje sai o título `X-revisao`, reproduzido pelo revisor com `FPU-T8`); TR `test_tr_literal_em_argumento_nao_e_propria_invocacao` — `git commit -m "… encerrar.py plano …"` não gera `M-18`, e um `--resumo "encerrar.py tarefa --tarefa Y"` noutro comando não gera `M-10`; TF `test_tf_review_evidence_da_propria_invocacao` — o `--tarefa` de um comando anterior na linha não muda o título da `M-5`; TF `test_tf_close_grava_plano_em_barra` (`test_rdo.py`) — `cmd_close` com o caminho do plano em barra invertida grava a linha `**Plano:**` sem barra invertida.
+- **Verificação:**
+  1. `python -m pytest tests/test_progresso_hook.py tests/test_rdo.py -q -k "propria_invocacao or plano_em_barra"` → verde — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  2. `python -c "import re;from pathlib import Path;print(sum(len(re.findall('a tarefa '+chr(34)+'[A-Z][A-Za-z0-9-]*-revisao'+chr(34),p.read_text(encoding='utf-8'))) for p in Path('docs').rglob('*.md'))>0)"` → `False` — antes `True`, depois `False`.
+  3. `python -c "from pathlib import Path;print(sum(1 for p in Path('docs').rglob('*.md') for l in p.read_text(encoding='utf-8').splitlines() if l.startswith(chr(42)*2+'Plano:') and chr(92) in l)>0)"` → `False` — antes `True`, depois `False`.
+  4. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0` (piso re-medido no despacho).
+- **Pronto quando:** comando encadeado e script citado em argumento não trocam o título nem inventam frase no painel (Verificação 1), e nenhuma RDO publicada traz o id `-revisao` em frase do painel nem o caminho do plano com barra invertida (Verificações 2 e 3).
+- **Não fazer:** não tocar `encerrar.py` (o `**Plano:**` se corrige no `rdo.py`, que serve também o `rdo.py close` direto); não reescrever `.claude/estado/progresso.txt`; não reconstruir nas RDO a linha `M-10` que o defeito rotulou com o id `-revisao` (`CT-1`); não mudar o texto de `FRASES`; nas RDO, não tocar nada além das duas correções.
+- **Contingências:**
+  - se teste existente de `test_progresso_hook.py` fixar a detecção por substring (script citado em argumento gerando frase) → o teste que fixa o comportamento antigo é alvo da tarefa (`DM-33` do `P-0740`): ajustar e nomear no retorno.
+  - se uma RDO trouxer `<ID>-revisao` cujo `<ID>` o backlog não conhece → parar e sinalizar `blocked` razão `premissa`, nomeando o arquivo.
+- **Handover:** 2026-09-26 · para `TK-88d`
+  - **Entregue:** progresso_hook.py lê script e argumentos por invocação (_dividir_invocacoes :248, _programa :293); rdo.py cmd_close grava **Plano:** em barra normal; 21 RDO corrigidas (-revisao → título; Plano: barra normal)
+  - **Contrato:** comando encadeado ou script citado em argumento não troca o título nem gera frase no painel
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-88c-o-painel-le-cada-argumento-da-propria-invocacao-e-o-rdo-publ.md`, veredito aprovado 100%
+
+### TK-88d — O fechamento pergunta ao `rdo.py` e ao `backlog.py` se pode escrever, em vez de copiar a regra deles [Sonnet · esforço high · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Depende de:** `TK-88b`, `TK-88c`
+- **Objetivo:** `rdo.py` expõe a checagem do `close` sem escrita e `backlog.py` a regra de transição de `transacionar_status` sem escrita; `encerrar.py tarefa` e `encerrar.py plano` chamam as duas antes da primeira escrita e deixam de ter cópia própria delas (destino e existência do RDO; regra de plano `done`). Toda recusa que hoje só o `rdo.py close` faz sai antes do `done`, e a janela "status `done` sem RDO" fica só para falha de E/S. A linha `FECHADO` que o `encerrar.py plano` escreve no diário conta as tarefas como o índice (`_done_total`, que tira as `cancelled` do total), e o stdout do fechamento diz `tarefa fechada` e `plano fechado` (`CT-4` do `## TK-88`).
+- **Arquivos-alvo:**
+  - `.claude/tools/rdo.py` — `cmd_close`
+  - `.claude/tools/backlog.py` — `transacionar_status`
+  - `.claude/tools/encerrar.py` — `fechar_tarefa`, `fechar_plano`, `main`
+  - `tests/test_rdo.py`, `tests/test_backlog.py`, `tests/test_encerrar.py`
+- **Contratos/classes:** `rdo.checar_close(args, status_exigido: str = "done") -> Path` — as checagens do `cmd_close`, sem escrita, devolvendo o destino; `cmd_close` a chama com `"done"`. `backlog.checar_transicao(modelo, id_, estado, razao=None) -> ResultadoStatus | None` — `None` quando a transição pode; `transacionar_status` a chama antes de escrever. As mensagens de recusa não mudam.
+- **Testes (novos):** TR `test_tr_checar_close_recusa_antes_do_done` (`test_encerrar.py`) — uma recusa que hoje só o `rdo.py close` faz (o executor escolhe qual e a nomeia no retorno) sai do `encerrar.py tarefa` com a tarefa ainda em `review` e sem RDO; TF `test_tf_checar_transicao_sem_escrita` (`test_backlog.py`) — mesmo resultado de `transacionar_status` para plano com tarefa aberta, arquivos intactos; TF `test_tf_fechado_conta_como_o_indice` (`test_encerrar.py`) — plano com uma `done` e uma `cancelled` → linha `FECHADO` com `1/1` e stdout `plano fechado`.
+- **Verificação:**
+  1. `python -m pytest tests/test_encerrar.py tests/test_rdo.py tests/test_backlog.py -q -k "checar_close or checar_transicao or fechado_conta"` → verde — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  2. `python -c "from pathlib import Path;t=Path('.claude/tools/encerrar.py').read_text(encoding='utf-8');print(t.count('tarefa já fechada'),t.count('não terminal(is)'))"` → `0 0` — antes `1 1`, depois `0 0`.
+  3. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0` (piso re-medido no despacho).
+- **Pronto quando:** a recusa do `rdo.py` sai antes do `done` (Verificação 1), o `encerrar.py` não guarda cópia das duas regras (Verificação 2) e a linha `FECHADO` diz o que o índice diz (Verificação 1).
+- **Não fazer:** não mudar mensagem de recusa de `rdo.py` nem de `backlog.py`; não mudar a ordem das escritas do `encerrar.py` (status → RDO → telemetria → achados); não tocar `progresso_hook.py`; não reescrever a linha `FECHADO` já publicada no diário.
+- **Contingências:**
+  - se alguma checagem do `close` depender do status já `done` por outra razão que não a própria exigência de status → parar e sinalizar `blocked` razão `premissa`, nomeando a checagem.
+- **Handover:** 2026-09-26 · para quem vier depois
+  - **Entregue:** rdo.checar_close (rdo.py) e backlog.checar_transicao (backlog.py) sem escrita; encerrar.py chama as duas antes da primeira escrita e não copia mais as regras; linha FECHADO conta por _done_total
+  - **Contrato:** recusa do rdo.py close sai do encerrar.py tarefa antes do done; FECHADO diz o que o índice diz
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-88d-o-fechamento-pergunta-ao-rdo-py-e-ao-backlog-py-se-pode-escr.md`, veredito ressalva 91%
+
+## TK-89 — O gate do card religado deixou atrás o leitor de alvos e a doutrina
+
+- **Status:** `done` · 2026-09-26 — aberto pelo consultor do `P-0752` (acionamento 6, `DFP-18`), rota dos achados `AE-38`, `AE-40` e `AE-41` do laudo da `FPU-T2`.
+
+**Caso medido (2026-09-26):** (1) `review_evidence._classificar_campo_alvos` varre o campo `Arquivos-alvo` achatado por pares de crases; a entrada `` `<caminho>:<linha>` — `<literal>` `` da `DFP-16` traz crase escapada (`\``) dentro do literal, o par se desalinha e só o primeiro caminho sobrevive: sobre a `FPU-T2`, 1 alvo de 5, e 8 literais descartados. Protótipo do consultor (em memória, sem tocar o módulo): cortar o literal logo depois da âncora antes da varredura dá os 5 alvos e 0 descartados na `FPU-T2`, e muda o resultado de 5 dos 314 cards do acervo (`docs/plans/**` e o diário), todos do `P-0752`. (2) `.claude/skills/scrum-master/SKILL.md:62` diz "sete itens" do Gate de delegação da `passagem-de-bastao`, que tem oito desde a `FPU-T2` (o 8º é `card_check` exit 0), e a linha `B3` do bloco B não cita o `card_check` como gatilho, embora o Passo 3 mande o exit 1 dele para `B3`. (3) `docs/RUBRICA_DE_REVISAO.md` `### 8.1` diz que o literal da âncora é "comparado por `strip()` contra a linha citada"; a `DFP-16` do `P-0752` e o instrumento conferem o literal **contido** em alguma linha (`strip()`) da faixa `linha..fim`.
+
+**O que decide:** correção conhecida nos três; dois cards `ready`, um por natureza (instrumento; redação). Descartado: um card só (mistura classe `implementacao` e `redacao`).
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com os cards TK-89a e TK-89b (consultor P-0752, acionamento 6)
+
+### TK-89a — O leitor de alvos da evidência corta o literal da âncora antes de varrer as crases [Sonnet · esforço low · classe implementacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** em `_classificar_campo_alvos` de `.claude/tools/review_evidence.py`, antes da varredura por `_BACKTICK_RE`, o texto do campo (`arquivos-alvo` ou `entregavel`) troca cada âncora seguida de literal pela âncora só; o resto da função não muda. Com isso a entrada `` `<caminho>:<linha>` — `<literal>` `` vira um alvo, com ou sem crase escapada no literal, e o literal não vai aos descartados.
+- **Arquivos-alvo:**
+  - `.claude/tools/review_evidence.py`
+  - `tests/test_review_evidence.py`
+- **Contratos/classes:** constante de módulo `_LITERAL_APOS_ANCORA_RE = re.compile(r"(`[^`\s]+:\d+(?:-\d+)?`)\s*(?:—|:)\s*`(?:\\`|[^`\\])+`")`, aplicada com `.sub(r"\1", texto)`; mesma leitura de literal da `DFP-16` do `P-0752` (`card_check._LITERAL_APOS_ANCORA_RE`), duplicada aqui, sem import cruzado.
+- **Caso medido que motivou:** ver `## TK-89`, item (1).
+- **Testes (novos, em `tests/test_review_evidence.py`):** TF `test_tf_alvo_ancorado_com_literal_e_um_alvo` — o campo `- \`a/b.md:3\` — \`x \\\` y\` - \`c/d.py\`` (literal com crase escapada) → `_classificar_campo_alvos` devolve `(["a/b.md", "c/d.py"], [])`; hoje devolve `(["a/b.md"], [...])` (medido no protótipo). TR `test_tr_alvo_sem_ancora_nao_muda` — campo só com caminhos entre crases e um literal não caminho → mesmo resultado de hoje.
+- **Teste existente que muda (um só, `CT89-1`):** em `test_tr_extrair_literais_nao_caminho_lista_o_descartado`, a entrada `` `.claude/tools/rdo.py:79` — `_ID_HEADER_RE = re.compile(x)` `` perde o `:79` e fica `` `.claude/tools/rdo.py` — `_ID_HEADER_RE = re.compile(x)` ``. Razão: com linha, o par é âncora da `DFP-16` e o literal é dela (conferido pelo `card_check`), não literal descartado — o corte o tira dos descartados por decisão (Objetivo); sem linha, o `re.compile` continua literal não caminho e o teste segue provando o que prova (a `DB-27` lista o descartado). Os dois `assert` ficam como estão. Medido pelo consultor (protótipo na árvore, revertido): com o corte e essa troca, `tests/test_review_evidence.py` 55 passed, suíte 442 passed, `FPU-T2` 5 alvos e 0 descartados, o campo do TF → `(['a/b.md', 'c/d.py'], [])`.
+- **Verificação:**
+  1. `python -c "import sys;sys.path.insert(0,'.claude/tools');import review_evidence as r,rdo;from pathlib import Path;d=rdo.extrair_dossie(Path('docs/plans/P-0752-fato-no-ponto-de-uso.md'),'FPU-T2',esquema_legado=False,modelo_legado=None,classe_legado=None);print(len(r.extrair_arquivos_alvo(d.campos)))"` → `5` — antes `1`, depois `5`.
+  2. `python -m pytest tests/test_review_evidence.py -q -k alvo_ancorado_com_literal` → verde — antes `exit 5`, depois `exit 0` (antes nenhum teste selecionado).
+  3. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0`.
+  4. `python -m pytest tests/test_review_evidence.py -q -k literais_nao_caminho_lista` → verde — antes `exit 0`, depois `exit 0` (o teste de `CT89-1`, com a entrada trocada).
+- **Pronto quando:** a entrada de `Arquivos-alvo` com âncora e literal conta como um alvo na evidência, provado pelo TF e pela `FPU-T2` do `P-0752` (5 alvos).
+- **Não fazer:** não mudar `_eh_caminho`, `_LINHA_REF_RE` nem `_SECAO_REF_RE`; não importar `card_check`; não tocar `rdo.py`; não mudar os `assert` de `test_tr_extrair_literais_nao_caminho_lista_o_descartado` nem a entrada de `test_tf_extrair_arquivos_alvo_aceita_arquivo_de_raiz_e_recusa_literal_de_regex` (a mesma, que segue verde com `:79`); não aplicar o corte só aos alvos (descartados lidos do texto sem corte voltam a desalinhar na crase escapada).
+- **Contingências:**
+  - se cair um teste existente de `_classificar_campo_alvos` ou de `extrair_literais_nao_caminho` **outro que** `test_tr_extrair_literais_nao_caminho_lista_o_descartado` (tratado em `CT89-1`) → parar e sinalizar `blocked` razão `premissa`, nomeando o teste (no protótipo, o corte só muda cards do `P-0752` e só esse teste cai).
+- **Handover:** 2026-09-26 · para `TK-89b`
+  - **Entregue:** review_evidence.py: _LITERAL_APOS_ANCORA_RE corta o literal da âncora em _classificar_campo_alvos antes de _BACKTICK_RE; FPU-T2 do P-0752 conta 5 alvos
+  - **Contrato:** entrada de Arquivos-alvo 'caminho:linha — literal' é um alvo, e o literal não vai aos descartados
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `ready` — consultor TK-89 acionamento 1 (CT89-1): corte mantido nos alvos e nos descartados; test_tr_extrair_literais_nao_caminho_lista_o_descartado troca a entrada rdo.py:79 por rdo.py (asserts intactos); protótipo medido 442 passed
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-89a-o-leitor-de-alvos-da-evidencia-corta-o-literal-da-ancora-ant.md`, veredito aprovado 100%
+
+### TK-89b — A doutrina do gate do card conta oito itens, cita o `card_check` no `B3` e confere o literal contido na faixa [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** o `scrum-master` diz "oito itens" do Gate de delegação e cita o `card_check` do passo 3 na linha `B3`; a rubrica `### 8.1` diz que o literal da âncora confere quando está contido em alguma linha da faixa `linha..fim`, como a `DFP-16` do `P-0752` e o `card_check`.
+- **Arquivos-alvo:**
+  - `.claude/skills/scrum-master/SKILL.md:62` — `seção "Gate de delegação", sete itens`
+  - `.claude/skills/scrum-master/SKILL.md:285` — `pelo gate de delegação ou pelo`
+  - `docs/RUBRICA_DE_REVISAO.md:340-341` — `contra a linha citada`
+  - `.claude/README.md` (projeção regenerada, se o gerador do kit a reescrever)
+- **Caso medido que motivou:** ver `## TK-89`, itens (2) e (3).
+- **Passos:**
+  1. `.claude/skills/scrum-master/SKILL.md:62`: `sete itens` → `oito itens`.
+  2. `.claude/skills/scrum-master/SKILL.md:285`: `pelo gate de delegação ou pelo \`modelo.py check\` do passo 3` → `pelo gate de delegação, pelo \`modelo.py check\` ou pelo \`card_check\` do passo 3`.
+  3. Rubrica, na âncora do alvo (o trecho quebra entre as duas linhas): `desescapado e comparado por` + `strip()` + `contra a linha citada` → `desescapado e com \`strip()\`, e confere quando está contido em alguma linha (\`strip()\`) da faixa \`linha..fim\``.
+- **Verificação:**
+  1. `python -c "from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(t.count('sete itens'),t.count('oito itens'))"` → `0 1` — antes `1 0`, depois `0 1`.
+  2. `python -c "from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(sum(1 for l in t.splitlines() if l.startswith('| ') and 'B3' in l[:8] and 'card_check' in l))"` → `1` — antes `0`, depois `1`.
+  3. `python -c "from pathlib import Path;print(Path('docs/RUBRICA_DE_REVISAO.md').read_text(encoding='utf-8').count('contra a linha citada'))"` → `0` — antes `1`, depois `0`.
+  4. `pwsh .claude/checks/kit_check.ps1` → exit 0 — antes `exit 0`, depois `exit 0` (trava).
+- **Pronto quando:** as três frases da doutrina do gate batem com o gate que roda — Verificações 1 a 3.
+- **Não fazer:** não tocar o bloco A do `scrum-master`; não mudar a ordem nem o texto dos gates do Passo 3; não tocar a `passagem-de-bastao`.
+- **Contingências:**
+  - se a linha `B3` ou a frase da rubrica tiver mudado de texto antes do despacho (o gate de âncora acusa) → aplicar a mesma troca de sentido sobre o texto novo e registrar em `pendencia=`.
+- **Handover:** 2026-09-26 · para quem vier depois
+  - **Entregue:** scrum-master/SKILL.md:62 'oito itens'; :285 B3 cita card_check; RUBRICA_DE_REVISAO.md §8.1 literal contido na faixa linha..fim
+  - **Contrato:** a doutrina do gate do card bate com o gate que roda
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-89b-a-doutrina-do-gate-do-card-conta-oito-itens-cita-o-card-chec.md`, veredito aprovado 100%
+
+## TK-90 — O `P-0742` está fora do índice do diário, `blocked` com a condição já satisfeita
+
+- **Status:** `done` · 2026-09-27 — aberto pelo consultor do `P-0752` (acionamento 10), na varredura do gate do card sobre todo card não terminal, por ordem do dono de 2026-09-26 (erro inequívoco não se adia).
+
+**Caso medido (2026-09-26):** `docs/plans/P-0742-loop-fora-do-llm.md` existe com status `blocked` no cabeçalho e oito cards `ready` (`LF-T1`..`LF-T8`), e nenhuma linha do índice de `docs/DIARIO_DE_OBRAS.md` começa por `| P-0742-` (0 linhas, medido); nem `docs/plans/_INBOX.md` nem o histórico do inbox o citam — é o plano do `TK-59`, criado sem linha de inbox. A condição de destravamento escrita no cabeçalho (`P-0739` `done`) já está satisfeita. Os oito cards saem `card_check` exit 1 com `nenhum item reconhecido (comando em bloco cercado ausente)`: foram escritos antes do gate e cairão em `B3` no despacho. Numa cópia da árvore, uma linha de inbox mais `backlog.py drain` grava `| P-0742-LF | O loop sai do LLM | blocked | docs/plans/P-0742-loop-fora-do-llm.md |`, mas recalcula o contador do inbox pelo maior id do próprio inbox e o põe em `P-0743` (`check` sai `C-10`); com o contador reposto, `check` OK.
+
+**O que decide:** o registro no índice é correção conhecida (card `TK-90a`, `ready`). O destino do plano — retomar ou encerrar — era decisão do dono, tomada em 2026-09-26: *"Retomar"* (card `TK-90b`, que passa a ser a rodada `RP-1` do `P-0742`, ao planejador); a reescrita dos oito cards para o gate pertence à rodada de replanejamento do próprio plano, se ele retomar, e não a este tíquete (card vivo de outro plano não se reescreve para caber no instrumento, `I-3` do `P-0752`).
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com os cards TK-90a e TK-90b (consultor P-0752, acionamento 10)
+- **AE-88** (`TK-90b`, fechamento, 2026-09-27) — rodada de replanejamento despachada ao planejador não tem canal de medida gravada (card_check --gravar); o verde só se confirmou por re-execução do revisor **Rota:** auditoria final
+- **AE-89** (`TK-90b`, fechamento, 2026-09-27) — LF-T2..LF-T5 do P-0742 passam do teto DB-7 de backlog.py show (8.000 caracteres) e saem truncados; a Fase 4 do planejador não confronta o tamanho do card com o teto **Rota:** auditoria final
+
+
+
+### TK-90a — O `P-0742` entra no índice do diário como `blocked` [Sonnet · esforço low · classe mecanica]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** o índice de `docs/DIARIO_DE_OBRAS.md` ganha a linha do `P-0742`, com o status do cabeçalho do plano, pelo caminho canônico do inbox, sem mexer no contador de id de plano.
+- **Arquivos-alvo:**
+  - `docs/plans/_INBOX.md`
+  - `docs/DIARIO_DE_OBRAS.md` (índice e bloco `Fila corrente`, reescritos pelo `drain`)
+  - `docs/plans/_INBOX_HISTORICO.md` (apenso do `drain`)
+- **Passos:**
+  1. Anotar o valor do contador `**Próximo id de plano: P-NNNN.**` de `docs/plans/_INBOX.md`.
+  2. Apensar ao fim de `docs/plans/_INBOX.md` a linha ``- 2026-09-19 · `docs/plans/P-0742-loop-fora-do-llm.md` · O loop sai do LLM — registro tardio no índice (`TK-90a`).``
+  3. Rodar `python .claude/tools/backlog.py drain`.
+  4. Repor no contador o valor anotado no passo 1 (o `drain` o recalcula pelo maior id do inbox e o põe em `P-0743`, medido).
+- **Verificação:**
+  1. `python -c "from pathlib import Path;print(sum(1 for l in Path('docs/DIARIO_DE_OBRAS.md').read_text(encoding='utf-8').splitlines() if l.startswith('| P-0742-')))"` → `1` — antes `0`, depois `1`.
+  2. `python .claude/tools/backlog.py check` → `check: OK — nenhuma violação.` — antes `exit 0`, depois `exit 0` (trava: o `C-10` acusa contador que o `drain` deixou para trás).
+- **Pronto quando:** o índice tem uma linha do `P-0742` com o status do cabeçalho do plano, e o contador de id de plano é o de antes do `drain`.
+- **Não fazer:** não mudar o status nem o texto do `P-0742`; não tocar os cards `LF-T*`; não mudar o `backlog.py`.
+- **Contingências:**
+  - se o `drain` sair diferente de `0` ou tocar outra linha de índice além da do `P-0742` → parar e sinalizar `blocked` razão `premissa`, colando a saída.
+- **Handover:** 2026-09-26 · para `TK-90b`
+  - **Entregue:** índice do diário com | P-0742-LF | O loop sai do LLM | blocked | (docs/DIARIO_DE_OBRAS.md:308); contador do inbox mantido em P-0753
+  - **Contrato:** o P-0742 é visível ao backlog; a rodada RP-1 do planejador parte dele
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-90a-o-p-0742-entra-no-indice-do-diario-como-blocked.md`, veredito aprovado 100%
+
+### TK-90b — A rodada de replanejamento `RP-1` do `P-0742`: os oito cards passam no gate do card [Opus · esforço high · classe redacao]
+
+- **Status:** `done` · 2026-09-27 — decisão do dono *"Retomar"*; espera o `TK-90a`
+- **Depende de:** `TK-90a`
+- **Decisão do dono (2026-09-26):** *"Retomar"* — a opção (a) que este card levava ao dono; a (b), encerrar o plano, fica descartada.
+- **Despacho:** ao `pantonic-planner`, em instância fria — é a rodada de replanejamento `RP-1` do `P-0742` (`GOVERNANCA.md` §7 item 17, `G-REPLAN`), não card de executor. O dossiê `Ato de modelo` de `autoria` que o planejador devolver, quem conduz a sessão despacha ao `pantonic-model-designer` (`GOVERNANCA.md` §3.2), e a rodada segue com a seção escrita.
+- **Objetivo:** o `P-0742` ("O loop sai do LLM") volta à fila: a rodada `RP-1` escreve o que o plano não tem — a seção `## 1. Modelo conceitual`, pelo modelador — e reescreve os oito cards `LF-T1`..`LF-T8`, um por operação, com a `Verificação` na forma que o gate do card lê, e o plano sai de `blocked` para `ready`.
+- **Entrada da rodada:** o caso medido do `TK-90`, acima — cabeçalho `blocked` à espera do `P-0739` `done`, condição já satisfeita; os oito cards saem `card_check` exit 1 com `nenhum item reconhecido (comando em bloco cercado ausente)`; `modelo.py check` sai exit 2 com `plano anterior à doutrina`; `## Achados da execução` do `P-0742` vazio.
+- **Arquivos-alvo:**
+  - `docs/plans/P-0742-loop-fora-do-llm.md` — cabeçalho, seção do modelo (do modelador), os cards `LF-T*` e `## Achados da execução` (entrada `RP-1`)
+  - `docs/DIARIO_DE_OBRAS.md` (linha de índice do `P-0742`, escrita pelo `backlog.py status`)
+- **Passos:**
+  1. Seguir a seção "Rodada de replanejamento" de `.claude/agents/pantonic-planner.md`; como o plano não tem a seção do modelo, devolver primeiro o dossiê `Ato de modelo` de `autoria` (Fase 3a) e reescrever os cards só com a seção na árvore (Fase 3b), um card por operação, com o campo `Operação do modelo`.
+  2. Cada card reescrito passa pelos itens 11 a 13 da Fase 4 do planejador e sai `python .claude/tools/card_check.py --plano docs/plans/P-0742-loop-fora-do-llm.md --tarefa <ID>` exit 0 antes de gravado.
+  3. Gravar a entrada `RP-1` em `## Achados da execução` do `P-0742`, com a classificação da mudança e a decisão do dono (*"Retomar"*, 2026-09-26, `TK-90b`).
+  4. Rodar `python .claude/tools/backlog.py status P-0742 ready --nota "rodada RP-1 fechada (TK-90b)"`.
+- **Verificação:**
+  1. `python -c "from pathlib import Path;t=Path('docs/plans/P-0742-loop-fora-do-llm.md').read_text(encoding='utf-8');print(('**Status:** '+chr(96)+'ready') in t.split('**Prefixo')[0])"` → `True` (o cabeçalho do plano diz `ready`) — antes `False`, depois `True`.
+  2. `python -c "import sys;sys.path.insert(0,'.claude/tools');import backlog,subprocess;from pathlib import Path;p=[x for x in backlog.carregar(Path('.')).planos if x.id=='P-0742'][0];ids=[t.id for t in p.tarefas if t.status!='cancelled'];print(len(ids)>0 and all(subprocess.run([sys.executable,'.claude/tools/card_check.py','--plano','docs/plans/P-0742-loop-fora-do-llm.md','--tarefa',i],capture_output=True).returncode==0 for i in ids))"` → `True` (todo card não cancelado do plano fecha no gate) — antes `False`, depois `True`.
+  3. `python .claude/tools/modelo.py check --plano docs/plans/P-0742-loop-fora-do-llm.md` → `modelo: OK` — antes `exit 2`, depois `exit 0`.
+  4. `python .claude/tools/backlog.py check` → `check: OK — nenhuma violação.` — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** o cabeçalho e a linha de índice do `P-0742` dizem `ready`; o plano tem a seção do modelo com `modelo.py check` exit 0; todo card não cancelado dele sai `card_check` exit 0; a entrada `RP-1` está em `## Achados da execução` do plano.
+- **Não fazer:** não executar card do `P-0742`; não mudar o objetivo do plano nem decisão `DLF-*` do dono — o que for estratégico ou de escopo vai ao dono numa rodada de decisões, uma só (`G-REPLAN`); não estender `card_check.py`, `backlog.py` nem `modelo.py` para caber os cards; o `ready` do plano não o põe na janela, porque a diretiva de priorização é ato do dono.
+- **Contingências:**
+  - se uma decisão `DLF-*` do plano cair diante do `P-0739` entregue (verbo de `backlog.py` que o driver consome e que não existe mais) → decisão nova com id na tabela de decisões do plano, pela rodada, e o card que dela depende reescrito no mesmo ato; se a queda mudar o objetivo do plano → rodada de decisões ao dono e o card fica `blocked` razão `dependencia`, nomeando a decisão.
+  - se uma operação do modelo não couber num card coeso → o planejador devolve novo dossiê de `autoria` e o modelador substitui a seção no lugar (`GOVERNANCA.md` §3.2, "Rascunho antes do Marco 1"); a Verificação 2 lê os cards que existirem ao fim, e não uma lista fixa.
+- **Handover:** 2026-09-27 · para quem vier depois
+  - **Entregue:** P-0742 com ## 1 Modelo conceitual versão 1 (8 operações), cards LF-T1..LF-T8 reescritos um por operação com card_check exit 0, RP-1 em Achados, status ready 0/8
+  - **Contrato:** P-0742 ready e fora da janela até o Marco 1 (leitura da ## 1 pelo dono); a priorização é ato do dono
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `ready` — decisão do dono "Retomar" (2026-09-26): o card vira a rodada de replanejamento RP-1 do P-0742, ao pantonic-planner, depois do TK-90a (consultor P-0752, acionamento 11)
+  - 2026-09-27 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-90b-a-rodada-de-replanejamento-rp-1-do-p-0742-os-oito-cards-pass.md`, veredito aprovado 100%
+
+## TK-91 — O modelador não tem o ato que promove ou elimina a versão pendente no marco
+
+- **Status:** `done` · 2026-09-26 — aberto pelo consultor do `P-0752` (acionamento 11), ao validar a versão 2 do modelo do plano no marco.
+
+**Caso medido (2026-09-26):** `GOVERNANCA.md` §3.2 (*Versão vigente, pendente e obsoleta*) diz o que acontece no marco — aceita, a pendente passa a vigente e a anterior a obsoleta, e o plano guarda só a linha que registra a obsolescência; recusada, a pendente é eliminada — e dá ao modelador todo ato sobre o modelo. `.claude/agents/pantonic-model-designer.md`, seção `## Os quatro atos`, não tem esse desfecho: `grep -n -i "aceit" .claude/agents/pantonic-model-designer.md` sai vazio, e o bullet **Emenda** manda *"A `## 1` vigente **não se toca**"*. Um modelador frio que recebe o dossiê da promoção lê instrução contrária à tarefa; a promoção já foi feita em `P-0747` e `P-0748` (registro de versões: *"Caiu pelo aceite da versão 2"*) sem que o arquivo do agente a descrevesse.
+
+**O que decide:** correção conhecida — o bullet **Emenda** ganha o desfecho do marco, sem ato novo nem valor novo no campo `Ato` (card `TK-91a`, `ready`).
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-91a (consultor P-0752, acionamento 11)
+  - 2026-09-26 `in-progress` — tíquete fechado: único card TK-91a done, laudo aprovado 100 (docs/RDO/laudos/DIARIO_DE_OBRAS-TK-91a.md)
+  - 2026-09-26 `review` — tíquete fechado: único card TK-91a done, laudo aprovado 100 (docs/RDO/laudos/DIARIO_DE_OBRAS-TK-91a.md)
+  - 2026-09-26 `done` — tíquete fechado: único card TK-91a done, laudo aprovado 100 (docs/RDO/laudos/DIARIO_DE_OBRAS-TK-91a.md)
+- **AE-76** (`TK-91a`, fechamento, 2026-09-26) — Revisor: a secao 'A forma da devolucao' de .claude/agents/pantonic-model-designer.md (itens 1 e 2) nao cobria o desfecho do marco - o item 1 mandava apontar a '## 1A', que sai do plano no aceite, e o item 2 mandava devolver 'a linha da versao do ato', que o marco nao cria. **Rota:** corrigido no ato pelo condutor (regra do dono: erro inequivoco nao se adia): itens 1 e 2 ganharam o caso do marco, sem mudar a contagem de linhas; kit_check validate e check-drift OK
+
+
+### TK-91a — O bullet Emenda do modelador diz o que fazer no marco [Sonnet · esforço low · classe redacao]
+
+- **Status:** `done` · 2026-09-26
+- **Objetivo:** o arquivo do modelador descreve o desfecho da versão pendente no marco, aceita ou recusada, na forma da `GOVERNANCA.md` §3.2, dentro do ato `emenda`.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-model-designer.md:88` — `toca**: quem decide entre as duas é o marco, nunca você.`
+- **Passos:**
+  1. Logo depois da linha 88 de `.claude/agents/pantonic-model-designer.md`, dentro do bullet **Emenda**, inserir as seis linhas do bloco abaixo, cada uma com dois espaços de recuo no arquivo, como as linhas vizinhas do bullet, sem mudar outra linha do arquivo:
+
+     ```text
+     **No marco**, o desfecho da pendente chega em novo dossiê `Ato: emenda`, com a validação do
+     consultor e o ato do dono em `Motivo`. Aceita: o conteúdo da `## 1A` passa à `## 1`, com o
+     cabeçalho em `situação: vigente`; a `## 1A` sai do plano; no registro de versões a pendente passa
+     a `vigente` e a anterior a `obsoleta`, com a frase `Caiu pelo aceite da versão <N> em <data>` —
+     a linha fica, o conteúdo da obsoleta não. Recusada: a `## 1A` e a linha dela saem, e a vigente
+     fica sem marca (`GOVERNANCA.md` §3.2, *Versão vigente, pendente e obsoleta*).
+     ```
+- **Verificação:**
+  1. `python -c "from pathlib import Path;t=Path('.claude/agents/pantonic-model-designer.md').read_text(encoding='utf-8');print('Caiu pelo aceite da versão' in t)"` → `True` — antes `False`, depois `True`.
+  2. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode validate` → `kit_check: OK` — antes `exit 0`, depois `exit 0`.
+  3. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift` → `kit_check: check-drift OK` — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** o bullet **Emenda** do modelador diz o desfecho da pendente no marco, aceita e recusada, e os dois modos do `kit_check` seguem exit 0 (medido em protótipo sobre a árvore, revertido, em 2026-09-26).
+- **Não fazer:** não criar ato novo nem valor novo no campo `Ato` (a gramática de seis campos é da `GOVERNANCA.md` §3.2); não tocar a `GOVERNANCA.md`; não mudar o título `## Os quatro atos`.
+- **Contingências:**
+  - se a linha 88 não trouxer o literal ancorado (o gate de âncora acusa) → inserir as seis linhas logo depois da linha que termina o bullet **Emenda** com `quem decide entre as duas é o marco, nunca você.`, e registrar a linha em `pendencia=`.
+- **Handover:** 2026-09-26 · para `pantonic-model-designer`
+  - **Entregue:** .claude/agents/pantonic-model-designer.md: bullet Emenda (apos a linha 88) descreve o desfecho da pendente no marco, aceita e recusada; secao 'A forma da devolucao' itens 1 e 2 cobrem o marco (corrigido pelo condutor no ato, achado do revisor)
+  - **Contrato:** o modelador promove ou elimina a versao pendente no marco pelo ato emenda; kit_check validate e check-drift OK
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-91a-o-bullet-emenda-do-modelador-diz-o-que-fazer-no-marco.md`, veredito aprovado 100%
+
+
+## TK-92 — A medida do executor de card de tíquete grava onde o `review_evidence.py` não procura
+
+- **Status:** `done` · 2026-09-27 — aberto pelo consultor do `TK-86` (acionamento 2, `PC-2`), rota do achado `AE-77` do fechamento do `TK-86a`.
+
+**Caso medido (2026-09-26):** o item 5a do `pantonic-executor.md` e a Saída do Passo 5 do `scrum-master` mandam gravar a medida em `<evidencia>/<P-n>-<ID>-medida.json`, com `<P-n>` "o id do plano" — forma que não cobre card de tíquete do diário. O executor do `TK-86a` gravou `docs/RDO/evidencia/P-0751-TK-86a-medida.json` (o id do plano de onde o tíquete nasceu); o `review_evidence.py` procura `DIARIO_DE_OBRAS-TK-86a-medida.json` (`id_do_plano(...) or plano_path.stem`, em `montar_documento`), deu a medida como `ausente`, e o laudo deu `registro` parcial. O executor do `TK-91a`, na mesma janela, acertou o nome. A regra do destino vive em três lugares: na prosa de dois arquivos de doutrina e em `montar_documento`.
+
+**O que decide:** correção conhecida — o destino passa a ser uma função de `.claude/tools/caminhos.py`, chamada pelo `review_evidence.py` para procurar e pelo `card_check.py --gravar` sem caminho para gravar; a doutrina manda rodar `--gravar` sem caminho e deixa de ensinar a regra. Card `TK-92a`, `ready`. O arquivo `docs/RDO/evidencia/P-0751-TK-86a-medida.json` fica com o nome que tem: o laudo e a evidência do `TK-86a`, registros fechados, o citam por esse nome, e ele é o caso medido deste tíquete. Descartado: só emendar a prosa com o id derivado (a regra seguiria em três lugares).
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-92a (consultor TK-86, acionamento 2)
+- **AE-91** (`TK-92a`, fechamento, 2026-09-27) — evidência de card não rastreado sai inteira (caminhos.py, test_caminhos.py) **Rota:** TK-93a
+- **AE-92** (`TK-92a`, fechamento, 2026-09-27) — review_evidence no modo diário atribui escritas da orquestração (status no diário, linha de telemetria) a tíquetes que não as fizeram (TK-54b, TK-88b) **Rota:** auditoria final
+
+
+
+### TK-92a — O destino da medida do executor sai de uma função só, e o `card_check --gravar` sem caminho grava nele [Sonnet · esforço medium · classe implementacao]
+
+- **Status:** `done` · 2026-09-27
+- **Objetivo:**
+  1. `.claude/tools/caminhos.py` ganha `destino_medida(raiz, plano_path, tarefa)`: plano em pasta → `<pasta>/evidencia/<id>-<tarefa>-medida.json`; qualquer outro (plano legado, `docs/DIARIO_DE_OBRAS.md`) → `<raiz>/docs/RDO/evidencia/<id ou stem>-<tarefa>-medida.json`, com `<id ou stem>` = `id_do_plano(plano_path) or Path(plano_path).stem`, a regra que `montar_documento` usa hoje;
+  2. `montar_documento` de `.claude/tools/review_evidence.py` procura a medida em `destino_medida(root, plano_path, <tarefa>)`; com `dir_evidencia` informado, no mesmo nome de arquivo dentro de `dir_evidencia`, como hoje;
+  3. `--gravar` de `.claude/tools/card_check.py` aceita vir sem caminho e então grava em `destino_medida(<--root>, <--plano>, <tarefa>)`; com caminho, igual a hoje; ausente, não grava;
+  4. a doutrina manda rodar `--gravar` sem caminho (os dois trechos de `Passos`).
+- **Arquivos-alvo:**
+  - `.claude/tools/caminhos.py`
+  - `.claude/tools/review_evidence.py`
+  - `.claude/tools/card_check.py`
+  - `.claude/agents/pantonic-executor.md`
+  - `.claude/skills/scrum-master/SKILL.md`
+  - `tests/test_caminhos.py`
+  - `tests/test_card_check.py`
+- **Passos:**
+  1. Em `.claude/agents/pantonic-executor.md`, item 5a, o trecho depois de `antigo:` vira o trecho depois de `novo:` (sem quebra nova e sem refluxo; o rótulo não entra no arquivo):
+
+     ```text
+     antigo: --mundo depois --gravar <evidencia>/<P-n>-<ID>-medida.json`, com `<P-n>` o id do plano (`P-0752`, nunca o caminho) e `<evidencia>` = `docs/RDO/evidencia` no plano legado ou `<pasta>/evidencia` no plano em pasta — a pasta em que `review_evidence.py` procura a medida; exit 1
+     novo: --mundo depois --gravar`, sem caminho — o destino é o de `caminhos.destino_medida`, o mesmo em que `review_evidence.py` procura a medida, em plano legado, plano em pasta e tíquete do diário; exit 1
+     ```
+  2. Em `.claude/skills/scrum-master/SKILL.md`, Passo 5, Saída, idem (o trecho antigo está numa linha só do arquivo):
+
+     ```text
+     antigo: `<evidencia>/<P-n>-<ID>-medida.json` (`<P-n>` o id do plano; `<evidencia>` = `docs/RDO/evidencia` no legado, `<pasta>/evidencia` no plano em pasta), cuja ausência
+     novo: o destino de `caminhos.destino_medida` (o `card_check.py --gravar` sem caminho grava ali e o `review_evidence.py` procura ali), cuja ausência
+     ```
+- **Contratos/classes:** `caminhos.destino_medida(raiz: Path, plano_path: Path, tarefa: str) -> Path`. O `card_check.py` carrega `caminhos.py` do diretório do próprio módulo, como o `review_evidence.py` já faz. O JSON gravado não muda.
+- **Caso medido que motivou:** ver `## TK-92`.
+- **Testes (novos):** TF `test_tf_destino_medida_tres_residencias` (`tests/test_caminhos.py`) — `docs/DIARIO_DE_OBRAS.md` e `TK-1a` → `<raiz>/docs/RDO/evidencia/DIARIO_DE_OBRAS-TK-1a-medida.json`; `docs/plans/P-0001-x.md` e `T1` → `<raiz>/docs/RDO/evidencia/P-0001-T1-medida.json`; `docs/plans/P-0002-y/plano.md` e `T2` → `docs/plans/P-0002-y/evidencia/P-0002-T2-medida.json`. TF `test_tf_gravar_sem_caminho_grava_no_destino_derivado` (`tests/test_card_check.py`) — raiz temporária com o `plano-corpus.md` da fixture copiado como `docs/DIARIO_DE_OBRAS.md`, `--gravar` sem valor → exit `0` e `docs/RDO/evidencia/DIARIO_DE_OBRAS-CX-T1-medida.json` gravado na raiz temporária (nada gravado no repositório).
+- **Verificação:**
+  1. `python -c "import sys;sys.path.insert(0,'.claude/tools');import caminhos as c;from pathlib import Path;print(c.destino_medida(Path('.'),Path('docs/DIARIO_DE_OBRAS.md'),'TK-86a').as_posix())"` → `docs/RDO/evidencia/DIARIO_DE_OBRAS-TK-86a-medida.json` — antes `exit 1`, depois `docs/RDO/evidencia/DIARIO_DE_OBRAS-TK-86a-medida.json`.
+  2. `python -c "from pathlib import Path;fs=['.claude/agents/pantonic-executor.md','.claude/skills/scrum-master/SKILL.md'];print(sum(Path(f).read_text(encoding='utf-8').count('<P-n>-<ID>-medida.json') for f in fs))"` → `0` — antes `2`, depois `0`.
+  3. `python -c "from pathlib import Path;fs=['.claude/agents/pantonic-executor.md','.claude/skills/scrum-master/SKILL.md'];print(sum(Path(f).read_text(encoding='utf-8').count('caminhos.destino_medida') for f in fs))"` → `2` — antes `0`, depois `2`.
+  4. `python -m pytest tests/test_caminhos.py tests/test_card_check.py -q -k "destino_medida or gravar_sem_caminho"` → verde — antes `exit 5`, depois `exit 0`.
+  5. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0`.
+  6. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift` → `kit_check: check-drift OK` — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** a medida de card de tíquete, de plano legado e de plano em pasta é gravada e procurada no mesmo caminho, dado por uma função só (Verificação 1 e 4), e a doutrina manda o `--gravar` sem caminho (Verificação 2 e 3). Medido em protótipo do consultor sobre cópia da árvore, apagada, em 2026-09-26: suíte `428 passed` → `430 passed`, `check-drift` OK.
+- **Não fazer:** não mudar o JSON gravado nem o nome que o `review_evidence.py` procura hoje em plano legado e em pasta; não renomear nem apagar `docs/RDO/evidencia/P-0751-TK-86a-medida.json`; não tocar `.claude/skills/fatos-frescos/SKILL.md` (o `--gravar <caminho>` que ele ensina segue válido); não tocar `_classificar_campo_alvos` (é do `TK-89a`).
+- **Contingências:**
+  - se um teste existente de `tests/test_review_evidence.py` sobre a seção de medida do executor cair → parar e sinalizar `blocked` razão `premissa`, nomeando o teste (no protótipo, nenhum caiu).
+- **Handover:** 2026-09-27 · para `TK-93a`
+  - **Entregue:** caminhos.destino_medida (.claude/tools/caminhos.py:110) usado por review_evidence para procurar e por card_check --gravar sem caminho para gravar; doutrina do executor e do scrum-master manda --gravar sem caminho
+  - **Contrato:** a medida do executor grava e é achada pelo mesmo caminho, em plano legado, em pasta e no diário
+  - **Não refazer:** nada a declarar
+  - **Pendente:** nenhum
+- **Notas de execução:**
+  - 2026-09-27 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-92a-o-destino-da-medida-do-executor-sai-de-uma-funcao-so-e-o-car.md`, veredito aprovado 100%
+
+## TK-93 — A evidência não mostra o que mudou em arquivo não rastreado, e o redespacho perde a primeira execução
+
+- **Status:** `done` · 2026-09-27 — aberto pelo consultor do `TK-86` (acionamento 2, `PC-3`), rota do achado `AE-78` do fechamento do `TK-86a`.
+
+**Caso medido (2026-09-26):** (1) o `<ref>` do despacho é a saída de `git stash create` (Passo 4 do `scrum-master`), que não carrega arquivo não rastreado (armadilha já registrada em `docs/ARMADILHAS_DE_FERRAMENTA.md`, `AE-3` do `P-0750`). Para alvo não rastreado, `_diff_para_arquivo` do `review_evidence.py` devolve o arquivo inteiro, cortado no teto de 4000 caracteres: no `TK-86a`, `.claude/tools/encerrar.py` (não rastreado, 45974 bytes) saiu truncado antes das linhas 680-683, as editadas. (2) O redespacho do `TK-86a`, depois da triagem, capturou `<ref>` novo, e o `--desde` dele deixou fora da evidência os itens 1 a 3 da primeira execução. Protótipo do consultor (cópia da árvore, apagada): um `<ref>` que é commit, com pai `HEAD`, da árvore de trabalho inteira, gravado por índice temporário, mais a comparação de conteúdo do não rastreado presente no `<ref>`, dá na evidência do `TK-86a` só `encerrar.py` nos tocados e o hunk `@@ -679,6 +679,7 @@` da edição, sem mudar árvore, índice nem a lista de stash; suíte verde.
+
+**O que decide:** correção conhecida — `review_evidence.py --capturar-ref` captura o `<ref>` com os não rastreados, e o `--desde` julga pelo conteúdo o não rastreado presente no `<ref>`; o Passo 4 manda capturar assim e manda o redespacho da mesma tarefa reusar o `<ref>` do primeiro despacho. Card `TK-93a`, `ready`, depois do `TK-92a` (os dois tocam `review_evidence.py` e o `scrum-master`). Descartado: recortar o não rastreado pelas âncoras do card (depende de o card escrever âncora de linha, e a linha anda com a edição); levar ao revisor dois `--desde` (o do primeiro despacho já cobre as duas execuções).
+- **Notas de execução:**
+  - 2026-09-26 `ready` — aberto com o card TK-93a (consultor TK-86, acionamento 2)
+- **AE-93** (`TK-93a`, fechamento, 2026-09-27) — regressão: capturar_ref usa git add -A em índice vazio e deixa fora do <ref> o arquivo rastreado que casa com o .gitignore (git ls-files -ci), que o git stash create carregava; latente no PantonicApp (0 arquivos), vivo no PantonicVideo (4, egg-info) **Rota:** auditoria final
+- **AE-94** (`TK-93a`, fechamento, 2026-09-27) — não rastreado binário ou não-UTF-8 intocado desde o <ref> entra em tocados em toda evidência (_nao_rastreado_mudou_desde_ref devolve True quando o texto não decodifica); o card não fechou a classe **Rota:** auditoria final
+
+
+
+### TK-93a — O `<ref>` do despacho carrega o não rastreado, e o redespacho reusa o do primeiro despacho [Sonnet · esforço high · classe implementacao]
+
+- **Status:** `done` · 2026-09-27
+- **Depende de:** `TK-92a`
+- **Objetivo:** em `.claude/tools/review_evidence.py`:
+  1. `capturar_ref(root)` e a flag `--capturar-ref`, que imprime o `<ref>` e sai `0` sem exigir `--plano` nem `--tarefa` (sem a flag, os dois seguem obrigatórios): o `<ref>` é um commit cujo pai é `HEAD` (sem pai em repositório sem commit) e cuja árvore é a árvore de trabalho inteira — rastreados e não rastreados não ignorados —, gravado por índice temporário; árvore de trabalho, índice e lista de stash saem como entraram;
+  2. com `--desde <ref>`, o arquivo hoje não rastreado e presente no `<ref>` é julgado pelo conteúdo, comparado linha a linha com o fim de linha normalizado: entra nos tocados só se mudou, e o trecho dele é o diff unificado entre o conteúdo no `<ref>` e o atual, ou `(sem alteração desde <ref>)` quando igual; ele não entra nos tocados pela saída de `git diff <ref> --name-only` (que o dá como apagado) e o estado dele na evidência segue `??`. Com `<ref>` de `git stash create` (sem não rastreados), o resultado é o de hoje;
+  3. o Passo 4 do `scrum-master` manda capturar o `<ref>` pela flag e reusar o do primeiro despacho no redespacho (texto em `Passos`).
+- **Arquivos-alvo:**
+  - `.claude/tools/review_evidence.py`
+  - `tests/test_review_evidence.py`
+  - `.claude/skills/scrum-master/SKILL.md`
+- **Passos:**
+  1. Em `.claude/skills/scrum-master/SKILL.md`, Passo 4, as quatro linhas depois de `antigo:` viram as seis depois de `novo:` (as quebras são as do bloco; os rótulos não entram no arquivo; cada linha leva no arquivo os dois espaços de recuo que tem no bloco):
+
+     ```text
+     antigo:
+       `docs/telemetria.tsv`. Capturar como `<ref>` (schema `DP-S`) a saída de `git stash create` —
+       instantâneo dos arquivos rastreados no despacho, que não altera árvore, índice nem a lista de
+       stash —, ou `git rev-parse HEAD` quando ela vier vazia (árvore limpa); usada no passo 6
+       (`AUT-T5b`), onde o trecho de cada alvo passa a mostrar só o que mudou desde o despacho.
+     novo:
+       `docs/telemetria.tsv`. Capturar como `<ref>` (schema `DP-S`) a saída de
+       `python .claude/tools/review_evidence.py --capturar-ref` — instantâneo da árvore de trabalho
+       inteira no despacho, rastreados e não rastreados, que não altera árvore, índice nem a lista de
+       stash; usada no passo 6 (`AUT-T5b`), onde o trecho de cada alvo passa a mostrar só o que mudou
+       desde o despacho. No redespacho da mesma tarefa (retomada depois de `blocked`, ou retentativa),
+       o `<ref>` não se recaptura: vale o do primeiro despacho, para a evidência cobrir as duas execuções.
+     ```
+- **Contratos/classes:** `capturar_ref(root: Path) -> str` (o SHA do commit); `--capturar-ref` é `store_true`, com `--root` opcional como hoje. As assinaturas de `coletar_arquivos_tocados`, `coletar_estado_git`, `montar_trechos` e `montar_documento` não mudam.
+- **Caso medido que motivou:** ver `## TK-93`.
+- **Testes (novos, em `tests/test_review_evidence.py`):** TF `test_tf_capturar_ref_carrega_nao_rastreado` — repositório temporário com um não rastreado: `git show <ref>:<arquivo>` devolve o conteúdo dele, e `git status --porcelain=v1 --untracked-files=all` e `git stash list` saem iguais aos de antes da captura. TF `test_tf_nao_rastreado_no_ref_mostra_so_o_hunk` — não rastreado de 400 linhas no `<ref>`, uma linha editada depois: o trecho traz a linha nova com `+` e não é truncado no teto de 4000, e `coletar_arquivos_tocados(repo, ref)` devolve só ele (outro não rastreado, sem mudança, fica de fora). Os TF da `TK-78c` (`<ref>` de `git stash create`) seguem verdes sem mudança.
+- **Verificação:**
+  1. `python .claude/tools/review_evidence.py --capturar-ref` → verde — antes `exit 2`, depois `exit 0`.
+  2. `python -m pytest tests/test_review_evidence.py -q -k "capturar_ref or nao_rastreado_no_ref"` → verde — antes `exit 5`, depois `exit 0`.
+  3. `python -c "from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(t.count('git stash create'),t.count('review_evidence.py --capturar-ref'),t.count('vale o do primeiro despacho'))"` → `0 1 1` — antes `1 0 0`, depois `0 1 1`.
+  4. `python -m pytest -q` → nenhuma falha — antes `exit 0`, depois `exit 0`.
+  5. `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift` → `kit_check: check-drift OK` — antes `exit 0`, depois `exit 0`.
+- **Pronto quando:** a evidência de tarefa que edita arquivo não rastreado mostra o hunk da edição, e só o não rastreado que mudou entra nos tocados (Verificação 2); a captura existe e não mexe na árvore (Verificação 1 e 2); o Passo 4 manda capturar pela flag e reusar o primeiro `<ref>` (Verificação 3). Medido em protótipo do consultor sobre cópia da árvore com o `TK-92a` aplicado, apagada, em 2026-09-26: suíte `430 passed` → `432 passed`, `check-drift` OK.
+- **Não fazer:** não mudar o teto de 4000 caracteres nem o recorte por data (`st_mtime`) do não rastreado ausente do `<ref>`; não tocar `_classificar_campo_alvos` (é do `TK-89a`) nem o destino da medida (é do `TK-92a`); não mudar `pantonic-reviewer.md`, que cita o `<ref>` do passo 4 e segue certo; não usar `git stash push` nem nada que mexa na árvore, no índice real ou na lista de stash.
+- **Contingências:**
+  - se um teste existente de `tests/test_review_evidence.py` cair → parar e sinalizar `blocked` razão `premissa`, nomeando o teste (no protótipo, nenhum caiu).
+- **Handover:** 2026-09-27 · para quem vier depois
+  - **Entregue:** review_evidence.py --capturar-ref (capturar_ref: índice temporário com a árvore de trabalho) e julgamento por conteúdo do não rastreado presente no <ref>; scrum-master Passo 4 manda capturar assim e reusar o <ref> no redespacho
+  - **Contrato:** a evidência mostra só o hunk do não rastreado que mudou desde o despacho
+  - **Não refazer:** nada a declarar
+  - **Pendente:** rastreado-e-ignorado sai do <ref> (git add -A em índice vazio); binário ou não-UTF-8 intocado entra sempre em tocados — AE com rota auditoria final
+- **Notas de execução:**
+  - 2026-09-27 `done` — fechada por `encerrar.py`: RDO `docs/RDO/DIARIO_DE_OBRAS-TK-93a-o-ref-do-despacho-carrega-o-nao-rastreado-e-o-redespacho-reu.md`, veredito ressalva 91%

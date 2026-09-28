@@ -4,10 +4,10 @@
 **Plano de origem:** `P-0744` (classe B — este plano o sucede e herda as três tarefas dele, tarefa
 a tarefa; `docs/plans/P-0744-spec-do-planejador.md` passa a `superseded`) e `P-0743` (`done`,
 aceito em 2026-09-21 — é a premissa: o modelo de domínio e o modelador existem) ·
-**Status:** `blocked` · 2026-09-21 · aguarda o `go` do dono no Marco 1: o plano só vira `ready`
-depois que ele ler a `## 1. Modelo conceitual`. Enquanto isso as sete tarefas não são elegíveis para o
-loop — `backlog.py next` não as seleciona porque o pai está `blocked` —, e é assim que a Regra 1 global
-(não iniciar execução sem instrução explícita) se materializa no kanban, no mesmo padrão do `P-0744` ·
+**Status:** `done` · 2026-09-22 · **Marco 1 aceito pelo dono**, sobre a versão 3 do modelo: o
+plano está publicado e a fila alcança as sete tarefas. O `no-go` de 2026-09-21, sobre a versão 1,
+não cancelou o plano — o conceito de modelo se revisou no `P-0746` e se reaplicou aqui, e o dono
+mediu de novo em 2026-09-22 ·
 **Prefixo das tarefas no diário:** `PLN-T<n>` ·
 **Prefixo das decisões:** `DPN-<n>` · **Checagem de versão do kit:** modo hub — congelada em
 `0.0.0` (`GOVERNANCA.md` §10), nada a comparar · **Branch de trabalho:**
@@ -15,18 +15,21 @@ loop — `backlog.py next` não as seleciona porque o pai está `blocked` —, e
 o merge em `main` é ato do dono ao fim, com resolução de conflitos). A entrega aceita do `P-0741`+`P-0743`,
 que estava solta na árvore, é o **primeiro commit desta branch** (`e4c1608`, 84 arquivos) — `main` a alcança
 por `git merge --ff-only e4c1608` sem arrastar este plano.
-**Ordem de execução:** PLN-T1 → PLN-T2 → PLN-T3 → PLN-T4 → PLN-T5 → PLN-T6 → PLN-T7.
+**Ordem de execução:** PLN-T1 → PLN-T2 → PLN-T3 → PLN-T4 → PLN-T4a → PLN-T5 → PLN-T5a → PLN-T6 →
+PLN-T7 → PLN-T7a.
 **Modelo de planejamento:** Fable 5.1 (modelo ativo da sessão de 2026-09-21, escolhido pelo dono).
 
 **Marcos de validação pelo dono:**
 
 | marco | o que o dono lê | veredito |
 |---|---|---|
-| **Marco 1** | a `## 1. Modelo conceitual` deste plano, escrita pelo modelador — em especial o estado final da propriedade *régua de dimensionamento*, que aposenta o percentual de ocupação e a tabela de tetos | `go` = o plano sai de `blocked` para `ready` e a fila o alcança; `no-go` = `cancelled`, e o `P-0744` volta de `superseded` a `blocked` |
-| **Marco 2** | `python .claude/tools/modelo.py show --plano docs/plans/P-0745-planejador-modelo-operacao.md` depois da `PLN-T5`, mais a *Diretriz de dimensionamento de tarefa* de `GOVERNANCA.md` §3 e a Fase 3 de `.claude/agents/pantonic-planner.md` | aceite registrado no diário (`GOVERNANCA.md` §4.5); `no-go` abre rodada de replanejamento |
-| **Marco 3** | `docs/planner-spec.md` depois da `PLN-T6`, o `README.md` revisado (`PLN-T7`) e o documento de encerramento (skill `entrega-de-encerramento`) | aceite registrado no diário; fecha o plano |
+| **Marco 1** — **fechado em 2026-09-22** | a `## 1. Modelo conceitual` deste plano, escrita pelo modelador — os três objetos que o pedido da `## 0` nomeia, com o tipo de cada um, as sete propriedades que convergem e, em especial, o estado final de *agente de planejamento.régua com que ele dimensiona um card*, que aposenta o percentual de ocupação e a tabela de tetos | exercido duas vezes: `no-go` na versão 1, em 2026-09-21, que reautorou o modelo sem cancelar o plano e sem efeito sobre o `P-0744` — o desfecho real que o gate de dois ramos não previa; **`go` na versão 3**, em 2026-09-22, depois de o `P-0746` instituir o lastro obrigatório e de o adendo de objeto de escopo, externo e de medição redecompor o modelo. O plano sai de `blocked` para `ready` e a fila o alcança |
+| **Marco 2** — **fechado em 2026-09-22** | `python .claude/tools/modelo.py show --plano docs/plans/P-0745-planejador-modelo-operacao.md` depois da `PLN-T5`, mais a *Diretriz de dimensionamento de tarefa* de `GOVERNANCA.md` §3 e a Fase 3 de `.claude/agents/pantonic-planner.md` | **`go` em 2026-09-22.** O modelo e o drift foram apresentados ao dono com as quatro alterações da versão 4 isoladas por `diff` entre a `## 1` e a `## 1A`, e com a nota de que `--drift` expõe só uma delas — as outras três moram no `contrato` e no estado inicial, que o comando não compara. Veredito verbatim: *"Aceito o drift. Pode continuar o plano"*. A versão 4 passa a **vigente** e a 3 a **obsoleta** (merge das versões, Diretriz de desenho do `P-0743` item 7: drift validado funde). A `PLN-T6` sai da espera: o passo 0 dela lê este veredito |
+| **Marco 3** — **fechado em 2026-09-22** | `docs/planner-spec.md` depois da `PLN-T6`, o `README.md` revisado (`PLN-T7` e `PLN-T7a`) e o documento de encerramento (`docs/OPERACOES_AS_IS_P-0745.md`) | **`go` em 2026-09-22.** O as-is foi apresentado ao dono com os ganhos medidos, os seis degraus do padrão que a execução revelou — cada um com estado 🟢/🟡/🔴 — e as sete pendências. O dono questionou o número de pendências; a destrinchada mostrou **duas** de dívida real deste plano (as emendas de régua do `TK-72`, com texto pronto, e a cópia global do dono sem guarda executável), **uma** anterior ao plano (`TK-66`/`TK-74`), **duas** que são lacunas declaradas de propósito na `## 10` da especificação, e **duas** linhas cosméticas. Veredito verbatim: *"Pode concluir o plano"*. O plano fecha `done` 10/10 |
 
-**Tarefas:** 7 (`PLN-T1`..`PLN-T7`), fila única, sequencial.
+**Tarefas:** 10 — as sete da autoria (`PLN-T1`..`PLN-T7`) mais três cards corretivos, todos de
+2026-09-22: `PLN-T4a`, somado à `OP-3` (`AE-13`/`AE-14`); `PLN-T5a`, somado à `OP-4`
+(`AE-19`/`AE-20`); e `PLN-T7a`, somado à `OP-6` (`AE-23`/`AE-24`). Fila única, sequencial.
 
 ---
 
@@ -55,90 +58,100 @@ propriedades é o aceite dele.
 
 ## 1. Modelo conceitual
 
-> **Como ler esta seção (Marco 1).** Ela descreve, em linguagem corrente, o que este plano
-> entrega: os objetos que ele trabalha, as propriedades observadas desses objetos, a ordem em que
-> as operações as alteram e o estado final que o dono especificou. A leitura gerada por
-> `python .claude/tools/modelo.py show --plano docs/plans/P-0745-planejador-modelo-operacao.md` é
-> esta mesma seção com o estágio atual derivado do andamento das tarefas. Escrita sobre cards que
-> já existiam, pelo modo registrado na `DPN-10` — é a última vez.
+> **Como ler esta seção (Marcos 1 e 2).** Versão 4, vigente desde o aceite do dono no Marco 2 de
+> 2026-09-22; o que cada versão mudou, e por que a anterior caiu, está em `### 1.4 Registro de
+> versões`. A doutrina que a versão 3 instituiu em 2026-09-22 sobre o adendo de doutrina
+> que o dono ditou naquele dia e que `GOVERNANCA.md` §3.2 já publica: dentro de objeto há agora
+> **objeto de escopo**, o que o plano transforma e que por isso limita a atuação dele; **objeto
+> externo**, o que gera insumo sem ser transformado; e **objeto de medição**, o que porta a
+> propriedade pela qual a transformação se prova. Externo e medição são **constantes** — nenhuma
+> operação altera propriedade deles. A versão 2 media cinco das seis operações alterando objeto
+> constante, e foi substituída no lugar porque nunca vigorou: o Marco 1 não deu `go`. Aqui o
+> **agente de planejamento** é o objeto de escopo — o plano existe para levá-lo de um estado
+> anterior a um estado atualizado, e todas as seis operações agem sobre ele —; o **agente model
+> designer** é externo — gera o insumo que caracteriza a transformação e o plano não visa
+> alterá-lo —; e a **tarefa** é a medição — antes ela nasce sob os padrões obsoletos, depois sob
+> os vigentes, e é essa diferença que prova que quem planeja mudou. O pedido transcrito na `## 0`
+> descreve uma mudança de estado do framework que **já ocorreu**; este plano não a produz, ele
+> leva as instruções que governam o planejamento a alcançá-la. **Todo** elemento aqui tem lastro
+> declarado num trecho daquele pedido; o que o plano ainda entrega sem lastro nele reside em
+> `## Requisitos secundários`, logo abaixo. A leitura gerada por
+> `python .claude/tools/modelo.py show --plano docs/plans/P-0745-planejador-modelo-operacao.md`
+> é esta mesma seção com o estágio derivado do andamento das tarefas. Os cards da `## 8` precedem
+> o modelo (`DPN-10`), e por isso a numeração não alinha um para um: a `OP-5` se materializa em
+> dois cards.
 
-**Estado do modelo:** versão 1 · 2026-09-21 · autor: modelador · 7 operações · 21 propriedades · situação: vigente
+**Estado do modelo:** versão 4 · 2026-09-22 · autor: modelador · 3 objetos · 6 operações · 7 propriedades · situação: vigente
 
 ### 1.1 Objetos
 
-| objeto | o que é | propriedades | contrato | origem |
-|---|---|---|---|---|
-| agregado medido do planejador | o retrato contado do que o planejamento fez até aqui: quantas vezes cada comportamento apareceu, quando começou e quando foi a última vez | retrato por dimensão, série de custo do planejamento, série das rodadas de replanejamento | seção `## 12. Agregado medido` deste plano, inserida entre `## 11. Riscos` e `## Achados da execução`; dez subseções `### <n>. <dimensão>` na ordem da §4, com tabela de no máximo oito linhas cada e teto de 120 linhas para a seção inteira; só contagem, data, identificador e classe — nenhuma citação literal, nenhum trecho de plano, nenhuma linha de telemetria copiada; dimensão sem ocorrência traz a linha `sem ocorrência no corpus medido` | OP-1 |
-| norma da unidade de trabalho | o texto de governança que diz qual é a unidade de trabalho do loop e por que régua ela se dimensiona | régua de dimensionamento, unidade nomeada na doutrina | residência única em `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), espelhada em `.claude/global/CLAUDE.md` (Regras 2 e 7) e indexada em `docs/RESIDENCIA_DOUTRINA.md`; substituição de bloco nomeado, pelo texto literal dos passos da `PLN-T2`; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem | OP-2 |
-| guarda da forma antiga | o teste que afere, por literal, que o percentual de ocupação e a tabela de tetos não voltaram às residências editadas | cobertura das residências editadas | `tests/test_doutrina_unidade.py`, criado pela `PLN-T2` e estendido por `PLN-T3`, `PLN-T4` e `PLN-T5`; um teste por residência editada, com assertivas por literal sobre o texto do arquivo; piso de regressão como relação — o total de `python -m pytest tests -q` não reduz da referência datada `262 passed` (2026-09-21) | OP-2 |
-| gramática do card | a forma publicada de um card e as definições de conduta que nomeiam a unidade que ele materializa | formato do card, unidade nomeada nas skills | `.claude/skills/diario-de-obras/SKILL.md`, seção *Formato de uma tarefa*, mais uma linha em `modelo-por-fase`, uma em `bootstrap-pantonic` e uma em `.claude/agents/pantonic-fora-da-caixa.md`; a subseção *Modelo de domínio (seção do plano)* da mesma skill **não se toca** (fronteira com o `P-0743`, §6); ocorrência de outro sentido — passo atômico de migração, escrita atômica em disco — fica intacta | OP-3 |
-| protocolo do planejador | a definição de conduta do agente de planejamento: como ele abre uma sessão, como a encerra e como recorta um card | saídas do protocolo, momento da decomposição, régua no protocolo, descrição pública do papel | `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md`, produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem — são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE) | OP-4 |
-| gate do modelador | a fronteira entre o que o modelador corrige antes de devolver e o que ele devolve medido, mais a regra que diz a partir de quando o modelo se versiona | responsabilidade pelo lastro, regra do rascunho antes do primeiro aceite | `GOVERNANCA.md` §3.2 (tabela *Quem escreve* e dois parágrafos novos imediatamente antes de *Retroatividade*) e `.claude/agents/pantonic-model-designer.md` (gate de devolução e ato de autoria), nas duas pontas no mesmo card; `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam** — o vocabulário `V1`..`V20` não muda, só quem responde por `V1` e `V3` | OP-5 |
-| especificação do planejador | o documento que descreve a figura do planejamento para quem precisa decidir quando acioná-la e quanto ela custa | existência do documento, ancoragem das afirmações | `docs/planner-spec.md` (novo): uma seção por dimensão da §4 deste plano, na ordem dela, aberta por `## 0. O que esta especificação não é`; descreve a figura **depois** das `PLN-T2`..`PLN-T5` (`DPN-8`); não é residência do escopo do papel (matriz de `GOVERNANCA.md` §3) nem do protocolo de conduta (`.claude/agents/pantonic-planner.md`); a lista de dimensões tem residência única na §4 e não se reenuncia | OP-6 |
-| documentação pública do kit | a porta de entrada por onde quem chega ao repositório entende o que o kit faz, e o índice por onde alcança cada documento | unidade nomeada na porta de entrada, alcance pelo índice de documentos | `README.md` (glossário, §3, §4, §5, §6 e §11) e `docs/DOC_MAP.md`, com as entradas novas na forma da entrada de `docs/consultant-spec.md`; `pwsh -NoProfile -File .claude/checks/check-readme.ps1` sai `0`; numeral por extenso confere com a contagem de arquivos na árvore | OP-7 |
-| corpus medido da atuação do planejador | as fontes fechadas de onde sai o retrato do antes: os achados de execução dos planos recentes, a entrega aceita e a série de consumo | fechamento do corpus | as oito fontes nomeadas no método de sondagem da `PLN-T1`, nessa ordem e só elas; acesso barato pela busca do heading dos achados de execução seguida de leitura com `offset` e `limit` — nenhum plano lido inteiro; diário e histórico ficam de fora por tamanho; fonte ausente no caminho declarado leva a tarefa a `blocked` razão `premissa`, nunca à ampliação do corpus | externo |
-| modelo de domínio e o papel que o escreve | a rota entregue pelo plano anterior: a norma do modelo, a gramática que a máquina lê, o instrumento e o agente dono de todo ato sobre o modelo | forma lida pelo instrumento | `GOVERNANCA.md` §3.2, a subseção *Modelo de domínio (seção do plano)* da skill `diario-de-obras`, `.claude/tools/modelo.py` (`check` e `show`, `V1`..`V20`) e `.claude/agents/pantonic-model-designer.md`; premissa deste plano (`F-1`) e invariante dele (`I-4`) — `python .claude/tools/modelo.py check --plano docs/plans/P-0743-modelo-de-dominio.md` continua saindo `0` | externo |
-| citações históricas de medida | as frases já escritas que registram uma medida do passado, e não uma regra vigente | preservação das medidas registradas | `GOVERNANCA.md:123`, `README.md:366`, `.claude/global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md` e `CHANGELOG.md:62,160` (`F-16`); invariante `I-7` — não se reescrevem em nenhuma tarefa deste plano; o limiar da janela de orquestração em `.claude/tools/ocupacao.py` também fica, por `DPN-3`, porque não dimensiona tarefa | externo |
+| objeto | o que é | propriedades | contrato | origem | lastro na §0 | tipo |
+|---|---|---|---|---|---|---|
+| agente de planejamento | a figura que recebe um pedido, decide a rota e devolve um plano decomposto em cards — e o conjunto de instruções que a governam, que é onde ela de fato existe | aproveitamento do aparato de modelo, régua com que ele dimensiona um card, unidade de trabalho que ele recorta, responsabilidade pelo lastro das operações, descrição pública da figura | residências da conduta: `.claude/agents/pantonic-planner.md`, em **dez regiões — e esta enumeração é a lista inteira**: descrição, fatos estáveis, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card, rodada de replanejamento e o que ele nunca faz. Quem edita o arquivo confronta as dez antes de publicar; região de conduta que não esteja aqui é achado para o modelador, não licença de autoria. A outra residência da conduta é a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. A régua **numérica** não reside em `.claude/agents/pantonic-planner.md` — ela é interna a `GOVERNANCA.md` §3 —, mas o arquivo **remete** a ela, e remissão a régua aposentada conta como residência para efeito do estado final: enquanto a linha de `## Fatos estáveis` que invoca a tabela de classes como régua numérica do papel estiver viva, a propriedade da régua não alcançou o estado final, ainda que toda residência numérica tenha sido reescrita. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta | OP-1 | *“elabore o plano para melhoramento do agente de planejamento”*; *“Avalie o projeto atual”* | escopo |
+| agente model designer | o papel único que escreve todo ato sobre o modelo conceitual de um plano — e, por isso, quem gera o insumo de que quem planeja passa a depender | autoria exclusiva do modelo | não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala | externo | *“agora com o conceito de modelo e do agente model designer estabelecido”* | externo |
+| tarefa | a unidade de trabalho do loop: o card que um contexto executa inteiro, de ponta a ponta | padrão sob o qual ela nasce | nenhum card deste plano altera uma tarefa. O que se observa nela, antes e depois, é o padrão sob o qual ela nasce: o nome da unidade no cabeçalho e na doutrina, a régua que definiu o recorte e a presença do campo `Operação do modelo` com o texto e os contratos copiados. Os sete cards deste plano, escritos sob o padrão antigo, são o retrato do antes; a aferição do depois é o primeiro plano decomposto depois da `PLN-T4`, lido por `python .claude/tools/modelo.py show` | externo | *“a mudança da orientação de granularidade de tarefa, que não mais serão atividades atomicas, mas ativiidades de escopo maior, mantendo a coesão e coerência do objeto trabalhado”* | medição |
 
 ### 1.2 Fluxo de operações
 
-**A. Primeiro se mede o antes, porque ele deixa de existir logo depois**
+**A. A régua e a unidade mudam onde a doutrina as guarda**
 
-- **OP-1** — O investigador mede como o planejamento se comportou até aqui: conta, dimensão a dimensão, quantas vezes cada comportamento apareceu no corpus fechado, com a ocorrência mais antiga e a mais recente, o custo que a série registra e quantas rodadas de replanejamento houve, e fecha o retrato sem nenhum dado bruto.
-  - `precisa de: corpus medido da atuação do planejador` · `altera: agregado medido do planejador.retrato por dimensão, agregado medido do planejador.série de custo do planejamento, agregado medido do planejador.série das rodadas de replanejamento` · `tarefas: PLN-T1`
+- **OP-1** — O redator da norma troca a régua com que quem planeja dimensiona um card: aposenta o percentual de ocupação da janela e a tabela de tetos de turnos, e institui no lugar deles a materialização de uma operação inteira do modelo, coesa e coerente com o objeto trabalhado.
+  - `precisa de: tarefa, agente model designer` · `altera: agente de planejamento.régua com que ele dimensiona um card, agente de planejamento.unidade de trabalho que ele recorta` · `tarefas: PLN-T2` · `lastro: a revisão dos limites de janela; a mudança da orientação de granularidade de tarefa, que não mais serão atividades atomicas, mas ativiidades de escopo maior`
+- **OP-2** — O redator da gramática reescreve a forma do card que quem planeja emite: ele passa a nascer como a materialização de uma operação, com o texto dela copiado e o contrato dos objetos de que ela precisa, e as demais definições de conduta deixam de chamar a unidade pelo nome antigo.
+  - `precisa de: agente de planejamento, tarefa` · `altera: agente de planejamento.unidade de trabalho que ele recorta` · `tarefas: PLN-T3` · `lastro: mantendo a coesão e coerência do objeto trabalhado; que não mais serão atividades atomicas, mas ativiidades de escopo maior`
 
-**B. A régua muda na doutrina, e a forma antiga fica trancada**
+**B. O vão entre o modelo e quem planeja se fecha**
 
-- **OP-2** — O redator da norma troca a régua com que a doutrina dimensiona uma tarefa: aposenta o percentual de ocupação da janela e a tabela de tetos de turnos, institui a materialização de uma operação inteira do modelo como a unidade de trabalho, e levanta a guarda executável que impede a forma antiga de voltar às residências que ele acabou de editar.
-  - `precisa de: agregado medido do planejador, modelo de domínio e o papel que o escreve, citações históricas de medida` · `altera: norma da unidade de trabalho.régua de dimensionamento, norma da unidade de trabalho.unidade nomeada na doutrina, guarda da forma antiga.cobertura das residências editadas` · `tarefas: PLN-T2`
-- **OP-3** — O redator da gramática reescreve o formato publicado de um card para que ele nasça como a materialização de uma operação, com o campo que copia o texto da operação e o contrato dos objetos de que ela precisa, e tira o nome da unidade antiga das demais definições de conduta que ainda o repetiam.
-  - `precisa de: norma da unidade de trabalho, guarda da forma antiga, modelo de domínio e o papel que o escreve` · `altera: gramática do card.formato do card, gramática do card.unidade nomeada nas skills, guarda da forma antiga.cobertura das residências editadas` · `tarefas: PLN-T3`
+- **OP-3** — O autor de papéis fecha o vão do protocolo de quem planeja: a sessão ganha uma terceira forma de terminar sem plano fechado, com o esqueleto gravado e o pedido de autoria do modelo devolvido na linha de retorno; a decomposição só começa depois de o modelo existir, um card por operação, e o recorte deixa de se medir por percentual.
+  - `precisa de: agente de planejamento, agente model designer` · `altera: agente de planejamento.aproveitamento do aparato de modelo, agente de planejamento.régua com que ele dimensiona um card, agente de planejamento.descrição pública da figura` · `tarefas: PLN-T4, PLN-T4a` · `lastro: elabore o plano para melhoramento do agente de planejamento; agora com o conceito de modelo e do agente model designer estabelecido`
+- **OP-4** — O autor de papéis devolve a quem planeja o lastro que é dele: a lista de tarefas de cada operação do modelo passa a ser responsabilidade de quem decompõe o plano, e o que o instrumento mede nela volta medido para ele, em vez de travar a devolução de quem escreve o modelo.
+  - `precisa de: agente de planejamento, agente model designer` · `altera: agente de planejamento.responsabilidade pelo lastro das operações` · `tarefas: PLN-T5, PLN-T5a` · `lastro: elabore o plano para melhoramento do agente de planejamento; agora com o conceito de modelo e do agente model designer estabelecido`
 
-**C. O vão entre o modelo e os cards se fecha nas duas pontas**
+**C. A figura nova se descreve e chega a quem entra pela porta da frente**
 
-- **OP-4** — O autor de papéis fecha o vão do protocolo de quem planeja: a sessão ganha uma terceira forma de terminar sem plano fechado, em que ele grava o esqueleto e devolve o pedido de autoria do modelo na própria linha de retorno, e a decomposição só começa depois de o modelo existir, com um card por operação, na ordem delas e sem nenhum percentual no recorte.
-  - `precisa de: gramática do card, norma da unidade de trabalho, guarda da forma antiga, modelo de domínio e o papel que o escreve` · `altera: protocolo do planejador.saídas do protocolo, protocolo do planejador.momento da decomposição, protocolo do planejador.régua no protocolo, protocolo do planejador.descrição pública do papel, guarda da forma antiga.cobertura das residências editadas` · `tarefas: PLN-T4`
-- **OP-5** — O autor de papéis abre o portão do modelador para o plano que ainda não tem cards: a lista de tarefas de cada operação passa a ser lastro de quem planeja, as duas violações que ela dispara voltam medidas em vez de travar a devolução, e o modelo segue rascunho substituível no lugar até o primeiro aceite do dono.
-  - `precisa de: protocolo do planejador, norma da unidade de trabalho, guarda da forma antiga, modelo de domínio e o papel que o escreve` · `altera: gate do modelador.responsabilidade pelo lastro, gate do modelador.regra do rascunho antes do primeiro aceite, guarda da forma antiga.cobertura das residências editadas` · `tarefas: PLN-T5`
-
-**D. A figura nova se descreve e se publica**
-
-- **OP-6** — O redator da especificação escreve, pela primeira vez, o documento que descreve a figura de quem planeja: uma seção por dimensão, cada afirmação ancorada no retrato medido do antes ou na decisão deste plano que instituiu o depois, e a última seção nomeando o que o corpus ainda não permite dizer.
-  - `precisa de: agregado medido do planejador, protocolo do planejador, gate do modelador, norma da unidade de trabalho` · `altera: especificação do planejador.existência do documento, especificação do planejador.ancoragem das afirmações` · `tarefas: PLN-T6`
-- **OP-7** — O mantenedor acerta a documentação pública contra o estado da árvore ao fim da rota: a porta de entrada deixa de chamar a unidade de trabalho pelo nome antigo e perde o orçamento de turnos por classe, o índice de documentos passa a alcançar a especificação nova e este plano, e as frases que registram medida do passado ficam como estão.
-  - `precisa de: especificação do planejador, gramática do card, norma da unidade de trabalho, citações históricas de medida` · `altera: documentação pública do kit.unidade nomeada na porta de entrada, documentação pública do kit.alcance pelo índice de documentos` · `tarefas: PLN-T7`
+- **OP-5** — O redator da especificação descreve a figura de quem planeja depois de medir como ela se comportou até aqui: uma seção por dimensão, cada afirmação ancorada no retrato medido ou na decisão que instituiu o depois, e a última nomeando o que o corpus ainda não permite dizer.
+  - `precisa de: agente de planejamento, agente model designer` · `altera: agente de planejamento.descrição pública da figura` · `tarefas: PLN-T1, PLN-T6` · `lastro: Avalie o projeto atual; elabore o plano para melhoramento do agente de planejamento`
+- **OP-6** — O mantenedor leva a unidade nova à porta de entrada do repositório: o glossário e as seções que ainda chamam a unidade de trabalho pelo nome antigo passam a falar do card que materializa uma operação, o orçamento de turnos por classe sai de onde quem chega o lia, e a figura de quem planeja passa a se anunciar lá pela decomposição do modelo.
+  - `precisa de: agente de planejamento, tarefa` · `altera: agente de planejamento.unidade de trabalho que ele recorta, agente de planejamento.régua com que ele dimensiona um card, agente de planejamento.descrição pública da figura` · `tarefas: PLN-T7, PLN-T7a` · `lastro: que não mais serão atividades atomicas, mas ativiidades de escopo maior; a revisão dos limites de janela`
 
 ### 1.3 Estado inicial e estado final
 
-| propriedade | estado inicial | estado final |
-|---|---|---|
-| agregado medido do planejador.retrato por dimensão | não existe retrato do papel: o que se sabe dele está espalhado pelos achados de execução de quatro planos e pela entrega aceita do `P-0743`, sem nenhuma contagem | dez subseções, uma por dimensão da §4, cada uma com o número de ocorrências, a mais antiga e a mais recente com data, a classe de erro dominante e um exemplo citado por identificador — no máximo 120 linhas, nenhum dado bruto |
-| agregado medido do planejador.série de custo do planejamento | a série de consumo tem **uma** linha de planejamento (`RPC-P0735-planejamento`, 2026-08-15, Opus, 64 usos de ferramenta, 183 mil tokens); mediana e máximo coincidem (`F-9`) | a dimensão de custo declara o número de linhas, a mediana, o máximo e as datas da primeira e da última, e diz explicitamente o que uma linha só não permite afirmar |
-| agregado medido do planejador.série das rodadas de replanejamento | não há contagem de quantas rodadas houve, quantas fecharam como decisão técnica no próprio contexto, quantas subiram ao dono e quantas terminaram com o plano `superseded` | as quatro contagens existem na dimensão do acionamento, e dimensão sem ocorrência aparece como linha explícita, nunca como silêncio |
-| norma da unidade de trabalho.régua de dimensionamento | a diretriz dimensiona tarefa por percentual de ocupação da janela (50%, tolerância 60%) e por uma tabela de tetos de turnos por classe calibrada em 2026-08-01 sobre janela de 200 mil; os números vivem em cinco residências (`F-5`) | três critérios sem número — uma operação inteira do modelo, contexto coerente e coeso, autossuficiência em contexto; a tabela de tetos aposentada e a classe preservada como natureza do trabalho; o único limiar que fica é o da janela de orquestração, declarado fora do dimensionamento de tarefa |
-| norma da unidade de trabalho.unidade nomeada na doutrina | a doutrina nomeia a tarefa atômica como unidade em dez linhas vivas de `GOVERNANCA.md`, `.claude/global/CLAUDE.md` e `docs/RESIDENCIA_DOUTRINA.md`, com destino linha a linha no censo da §7 | nenhuma dessas linhas nomeia a tarefa atômica como unidade: o módulo coeso ganha definição decidível — a materialização de uma operação do modelo — e a guarda executável afere a ausência por literal |
-| guarda da forma antiga.cobertura das residências editadas | nenhum teste afere a ausência do percentual de ocupação ou da tabela de tetos; texto de doutrina sem guarda regride no primeiro transporte do kit (`DPN-9`) | um arquivo de teste novo, nascido com a norma e estendido pelas três operações seguintes, cobre por literal cada residência editada, e o total da suíte não reduz da referência datada `262 passed` |
-| gramática do card.formato do card | o bloco de formato da skill abre por *Formato de uma tarefa atômica*, tem `Objetivo` em uma frase e `Pronto quando` como critério objetivo solto; o campo `Operação do modelo` não aparece nele | o bloco abre por *Formato de uma tarefa*, declara a tarefa como materialização de uma operação, traz o campo `Operação do modelo` com texto e contratos copiados, e o `Pronto quando` deriva do estado final de cada propriedade que a operação altera |
-| gramática do card.unidade nomeada nas skills | três skills e um agente nomeiam a tarefa atômica em uma linha cada, fora o título do bloco de formato (`F-6`) | nenhum dos quatro a nomeia como unidade: todos falam em card materializado por uma operação do modelo; as ocorrências de outro sentido, como passo atômico de migração, ficam intactas |
-| protocolo do planejador.saídas do protocolo | o protocolo declara cinco fases e **duas** saídas antes do plano fechado: campanha de investigação e rodada de decisões | **três** saídas antes do plano fechado; a terceira é o esqueleto gravado mais o dossiê de autoria do modelo devolvido na linha de retorno, para quem conduz a sessão despachar o modelador |
-| protocolo do planejador.momento da decomposição | vão medido (`F-3`): a fase de autoria manda escrever cards que citam `OP-<n>` antes de as operações existirem, e a única parada prevista é a do plano já gravado | a fase de autoria se parte em duas — esqueleto e dossiê, depois decomposição sobre o modelo já na árvore —, com um card por operação, na ordem das operações e com o id derivado do número dela |
-| protocolo do planejador.régua no protocolo | a Fase 4 repete a ocupação estimada de ~50% (tolerância 60%) e o sinal de card acima de ~80 linhas, no mesmo item em que já convive a régua por tema (`F-7`) | a conferência dimensiona por operação inteira, coesão e autossuficiência em contexto; nenhum percentual e nenhum sinal de volume sobrevivem, e operação que não cabe num card coeso volta ao modelador por dossiê em vez de ser partida |
-| protocolo do planejador.descrição pública do papel | a `description` do agente e a linha regenerada do índice do kit anunciam decomposição em *tarefas atômicas fechadas* | as duas anunciam decomposição do modelo em cards fechados, um por operação, e a parada que devolve o dossiê de autoria; a linha do índice sai da regeneração, nunca de edição à mão |
-| gate do modelador.responsabilidade pelo lastro | das violações do instrumento, só `V2`, `V4` e `V14` são declaradas alheias ao modelador; `V1` e `V3` são tratadas como da seção, e sobre plano ainda sem cards ele não consegue fechar o gate (`F-4`) | `V1` e `V3` são violações do lastro de quem planeja, voltam como saída literal medida, e a norma e a definição do papel dizem o mesmo nas duas pontas, fechadas no mesmo card |
-| gate do modelador.regra do rascunho antes do primeiro aceite | a norma trata toda emenda como versionamento; não há regra para o modelo ainda não validado, e um segundo ato de autoria antes do Marco 1 não tem forma declarada | entre a autoria e o primeiro `go` do dono a seção é rascunho e se substitui no lugar, sem bloco irmão e sem linha nova no registro de versões; versionar começa a partir do primeiro aceite |
-| especificação do planejador.existência do documento | `docs/planner-spec.md` não existe: o planejamento é o papel descrito só pela definição de conduta, enquanto a consultoria já tem especificação e entrada no índice (`F-14`) | o documento existe, com uma seção por dimensão na ordem da §4 e uma seção de abertura que declara o que ele não é — nem residência do escopo do papel, nem do protocolo de conduta |
-| especificação do planejador.ancoragem das afirmações | não aplicável: nada escrito, e a única afirmação de custo disponível vem de uma linha de série (`F-9`) | toda afirmação numérica ou factual aponta para a subseção do agregado que a mediu ou para a decisão `DPN-<n>` que a instituiu; afirmação sem uma das duas âncoras não entra, e o que o corpus não responde é nomeado em vez de adivinhado |
-| documentação pública do kit.unidade nomeada na porta de entrada | o `README.md` nomeia a tarefa atômica em dez linhas, entre elas a entrada do glossário, e carrega o parágrafo do orçamento de turnos por classe na §3 (`F-6`) | o glossário abre por card, as demais linhas falam de card por operação, o parágrafo do orçamento vira a classe como natureza do trabalho, e `check-readme.ps1` continua saindo `0` |
-| documentação pública do kit.alcance pelo índice de documentos | `docs/DOC_MAP.md` não alcança a especificação do planejador, que não existe, nem este plano | duas entradas novas, na forma da entrada de `docs/consultant-spec.md`, cada uma com o resumo em uma linha, a lista de seções e a linha `**Acesso:**`, com a contagem real de linhas |
-| corpus medido da atuação do planejador.fechamento do corpus | oito fontes nomeadas e alcançáveis na árvore em 2026-09-21 | as mesmas oito: fonte fora da lista não entra, nenhum plano é lido inteiro, e fonte ausente no caminho declarado para a tarefa em vez de ampliar o corpus |
-| modelo de domínio e o papel que o escreve.forma lida pelo instrumento | a norma, a gramática, o instrumento e o agente estão na árvore, e o `check` sobre o `P-0743` imprime `modelo: OK — 13 operações, 9 objetos, 21 propriedades, 18 tarefas, versão 1` e sai `0` (`F-1`) | inalterada: nenhuma tarefa deste plano toca o instrumento, os testes dele, as fixtures nem a subseção da gramática, e aquele `check` continua saindo `0` (`I-4`) |
-| citações históricas de medida.preservação das medidas registradas | seis frases registram medida do passado — o executor em 71 turnos numa tarefa atômica, a auditoria de consumo de 2026-07-08 e as linhas do histórico de versões (`F-16`) | as mesmas seis, intactas: medida do passado é registro, não regra, e nenhuma tarefa deste plano a reescreve (`I-7`) |
+| propriedade | estado inicial | estado final | lastro na §0 |
+|---|---|---|---|
+| agente de planejamento.aproveitamento do aparato de modelo | o protocolo manda o modelo preceder a decomposição, mas prevê uma única parada — o plano já gravado —, e por isso quem planeja escreve cards que citam operações antes de elas existirem (`F-3`); o lado do executor já mudou, o do planejador só pela metade (`F-7`) | a sessão tem três saídas antes do plano fechado, e a terceira é o esqueleto gravado com o dossiê de autoria devolvido na linha de retorno; a decomposição só começa com o modelo na árvore, um card por operação, na ordem delas e com o id derivado do número da operação | *“agora com o conceito de modelo e do agente model designer estabelecido”* |
+| agente de planejamento.régua com que ele dimensiona um card | ele dimensiona por percentual de ocupação da janela — 50%, tolerância 60% — e por uma tabela de tetos de turnos por classe calibrada em 2026-08-01 sobre uma janela de 200 mil tokens; os números vivem em cinco residências (`F-5`), e a janela real medida em 2026-09-18 é de um milhão (`F-7`); além das cinco, uma sexta residência **remete** aos números sem os repetir e o censo da §7 não a apanhou — `## Fatos estáveis` de `.claude/agents/pantonic-planner.md` declara que a régua numérica é a tabela de classes de `GOVERNANCA.md` §3, interna ao papel | ele dimensiona por três critérios sem número — uma operação inteira do modelo, contexto coerente e coeso, autossuficiência em contexto —, com a tabela de tetos aposentada e a classe preservada como natureza do trabalho; o único limiar que fica é o da janela de orquestração, declarado fora do dimensionamento de tarefa. E **nenhuma residência da conduta remete à tabela aposentada**: a linha de `## Fatos estáveis` de `.claude/agents/pantonic-planner.md` que hoje invoca a tabela de classes como a régua numérica interna ao papel ou morre, ou passa a dizer o que `GOVERNANCA.md` §3 diz desde a `PLN-T2` — a classe é natureza do trabalho e não carrega teto. Aposentar a tabela e deixar viva a linha que a invoca é o defeito de `F-5` repetido do lado do ponteiro: a régua numérica sobrevivendo na residência que ninguém reescreveu | *“assim como a revisão dos limites de janela”*; *“mantendo a coesão e coerência do objeto trabalhado”* |
+| agente de planejamento.unidade de trabalho que ele recorta | ele recorta tarefas atômicas: vinte e uma linhas de doutrina viva nomeiam a unidade assim — `GOVERNANCA.md`, `README.md`, as duas cópias das regras globais, três skills e dois agentes (`F-6`), com destino linha a linha no censo da §7 —, e o bloco de formato que ele preenche abre por *Formato de uma tarefa atômica*, com objetivo em uma frase e critério objetivo solto, sem nada que ligue o card ao objeto trabalhado nem o campo `Operação do modelo` | ele recorta a materialização de uma operação inteira do modelo: nenhuma dessas linhas nomeia a tarefa atômica como unidade, e o bloco de formato abre por *Formato de uma tarefa*, declara o card como essa materialização, traz o campo `Operação do modelo` com o texto e os contratos copiados e faz o `Pronto quando` derivar do estado final de cada propriedade que a operação altera; as ocorrências de outro sentido ficam intactas | *“a mudança da orientação de granularidade de tarefa, que não mais serão atividades atomicas, mas ativiidades de escopo maior”*; *“mantendo a coesão e coerência do objeto trabalhado”* |
+| agente de planejamento.responsabilidade pelo lastro das operações | a lista de tarefas de cada operação e o id de tarefa que ela cita são tratados como defeito da seção do modelo, e quem planeja não responde por eles em residência nenhuma (`F-4`) | a lista de tarefas de cada operação é lastro declarado de quem planeja, e as duas violações que ela dispara voltam medidas para ele; a norma e as duas definições de conduta dizem o mesmo nas duas pontas | *“elabore o plano para melhoramento do agente de planejamento”*; *“agora com o conceito de modelo e do agente model designer estabelecido”* |
+| agente de planejamento.descrição pública da figura | a figura existe só na definição de conduta: `docs/planner-spec.md` não existe, enquanto a consultoria já tem especificação e entrada no índice (`F-14`), e a `description` do agente e a linha do índice do kit anunciam decomposição em tarefas atômicas fechadas | a figura tem especificação própria — uma seção por dimensão da §4, cada afirmação ancorada no retrato medido ou na decisão que a instituiu, e o que o corpus não responde nomeado em vez de adivinhado —, e a `description` do agente, a linha regenerada do índice do kit e o `README.md` anunciam a decomposição do modelo em cards | *“Avalie o projeto atual, e elabore o plano para melhoramento do agente de planejamento”* |
+| tarefa.padrão sob o qual ela nasce | ela nasce sob os padrões obsoletos: chamada de tarefa atômica, recortada por percentual de ocupação e teto de turnos, sem o campo `Operação do modelo` que a ligue ao objeto trabalhado — os sete cards da `## 8` deste plano são esse retrato | ela nasce sob os padrões vigentes: um card por operação do modelo, recortado por coesão e coerência do objeto trabalhado, com o campo `Operação do modelo` trazendo o texto e os contratos copiados e o `Pronto quando` derivado do estado final das propriedades que a operação altera. Nenhuma operação deste plano a altera: a diferença entre as duas colunas é o que **prova** que quem planeja foi transformado | *“a mudança da orientação de granularidade de tarefa, que não mais serão atividades atomicas, mas ativiidades de escopo maior”* |
+| agente model designer.autoria exclusiva do modelo | todo ato sobre a seção `## 1. Modelo conceitual` de um plano é dele, e só dele; é ele quem gera o insumo — a seção escrita — de que quem planeja passa a depender | o mesmo, inalterado: este plano não o transforma. O que o alteraria — o portão com que ele aceita ou recusa escrever sobre um plano ainda sem cards — é colateral, e se escala em vez de virar operação | *“agora com o conceito de modelo e do agente model designer estabelecido”* |
 
 ### 1.4 Registro de versões
 
 | versão | data | situação | por |
 |---|---|---|---|
-| 1 | 2026-09-21 | vigente | modelador — autoria sobre o pedido do dono de 2026-09-21 (§0) e as decisões `DPN-1`..`DPN-11` |
+| 4 | 2026-09-22 | vigente | modelador — conflito apurado pelo revisor da `PLN-T4` entre o texto do modelo e o que a entrega materializou. Duas células, nenhuma operação tocada: o contrato do `agente de planejamento` enumerava oito regiões de `.claude/agents/pantonic-planner.md` como residências da conduta e omitia `## Fatos estáveis` e `## O que você NUNCA faz`, esta editada pela própria `PLN-T4`; e o estado final de `agente de planejamento.régua com que ele dimensiona um card`, que dá a tabela de tetos por aposentada, não alcançava o ponteiro vivo a ela em `.claude/agents/pantonic-planner.md:36-37`. Validada no Marco 2 de 2026-09-22, com o `go` do dono — *“Aceito o drift. Pode continuar o plano”* —, e promovida a vigente nessa data |
+| 3 | 2026-09-22 | obsoleta | modelador — emenda sob o adendo de doutrina do dono de 2026-09-22, publicado em `GOVERNANCA.md` §3.2: objeto de escopo, objeto externo e objeto de medição, com a coluna `tipo` na tabela de objetos. O agente de planejamento passa a ser o único objeto de escopo e as seis operações agem só sobre ele; a tarefa passa a medição e o agente model designer a externo, constantes que nenhuma operação altera. Caiu pelo aceite da versão 4 no Marco 2 de 2026-09-22 |
+| 2 | 2026-09-22 | obsoleta | substituída no lugar pela versão 3, sem nunca ter vigorado — o Marco 1 não deu `go` depois dela. Medição que a derrubou: cinco das seis operações alteravam propriedade de objeto constante — `OP-1`, `OP-2` e `OP-6` sobre a tarefa, `OP-4` sobre o agente model designer, `OP-3` mista |
+| 1 | 2026-09-21 | obsoleta | caiu no `no-go` do Marco 1 de 2026-09-21 — onze objetos, quatro deles sem lastro no enunciado e quatro que eram propriedade promovida a objeto, e vinte e um estados finais para um enunciado que especificou poucos (`docs/DIARIO_DE_OBRAS.md` › `## TK-69` §3); substituída no lugar, sem nunca ter vigorado |
+
+---
+
+## Requisitos secundários
+
+> Residência do elemento sem lastro no pedido da `## 0` (`GOVERNANCA.md` §3.2; skill
+> `diario-de-obras`, *Modelo de domínio (seção do plano)*). Nada aqui é contrato: são entregas
+> que o agente julga necessárias para que o modelo não seja prejudicado, e a responsabilidade
+> por elas é inteira dele. O dono as lê para saber que existem — não para aprová-las. As quatro
+> saíram da `### 1.1` da versão 1 na reautoria de 2026-09-22, e continuam a ser entregues pelos
+> cards que já as previam.
+
+| requisito | por que o agente o julga necessário | quem responde |
+|---|---|---|
+| a seção `## 12. Agregado medido` deste plano, e o corpus fechado de oito fontes de onde ela sai (`PLN-T1`) | a descrição pública da figura só pode afirmar o que foi medido; sem o retrato do antes, cada afirmação da especificação seria adivinhação. O enunciado pediu a figura melhorada, não o retrato — o retrato é meio | agente |
+| `tests/test_doutrina_unidade.py`, a guarda executável da forma antiga (`DPN-9`) | é a aferição do critério de fracasso que o dono nomeou — instrumento que ainda usa o conceito obsoleto —, e texto de doutrina sem guarda regride no primeiro transporte do kit. É aceite, não coisa que o plano trabalha | agente |
+| as duas entradas novas de `docs/DOC_MAP.md` — a da especificação e a deste plano (`PLN-T7`) | o índice de documentos é como um agente frio alcança o que o plano publica | agente |
+| as citações históricas de medida, preservadas intactas (`F-16`, `I-7`) | medida do passado é registro, não regra; reescrevê-las apagaria a evidência que justifica a troca de régua | agente |
 
 ---
 
@@ -336,6 +349,7 @@ o que estas tarefas são.
 
 | arquivo:linha | forma encontrada | destino |
 |---|---|---|
+| `GOVERNANCA.md:78,80` | §3, parágrafo de abertura (hierarquia qualidade > rota > custo): "orçamento de turnos" como instrumento de sustentabilidade e "caber no orçamento" | `PLN-T7` reescreve — sítio acrescentado ao censo pelo consultor em 2026-09-22 (`AE-10`), passo 4a |
 | `GOVERNANCA.md:91` | matriz, linha Planejamento: "tarefas atômicas fechadas", "ocupação estimada", "dossiê de autoria junto com o plano gravado" | `PLN-T2` reescreve |
 | `GOVERNANCA.md:123` | "numa única tarefa atômica, ~30% do limite de 5h" (medida de 2026-07) | **fica** (`I-7`) |
 | `GOVERNANCA.md:137-147` | "A unidade de trabalho é o módulo coeso" | `PLN-T2` acrescenta a definição pela operação |
@@ -352,14 +366,17 @@ o que estas tarefas são.
 | `.claude/global/CLAUDE.md:49` | Regra 2, "várias tarefas atômicas" | `PLN-T2` reescreve |
 | `.claude/global/CLAUDE.md:139-143` | Regra 7, bullet "Orçamento por tarefa atômica" | `PLN-T2` reescreve |
 | `C:/Users/panta/.claude/CLAUDE.md:31-36` | Regra 2, bullet Capacidade — **idêntico byte a byte** ao do kit (`F-15`) | `PLN-T2` reescreve (`DPN-12`) |
+| `C:/Users/panta/.claude/CLAUDE.md:78` | Regra 2, *Consequências práticas*, "várias tarefas atômicas" — espelho de `.claude/global/CLAUDE.md:49`, idêntico byte a byte (`F-15`) | `PLN-T2` reescreve ("várias tarefas") — passo 14b, linha acrescentada ao censo pelo consultor em 2026-09-22 (`AE-7`) |
 | `C:/Users/panta/.claude/CLAUDE.md:167-171` | Regra 7, bullet "Orçamento por tarefa atômica" — **idêntico byte a byte** ao do kit | `PLN-T2` reescreve (`DPN-12`) |
 | `C:/Users/panta/.claude/CLAUDE.md`, Controles 1.1 e 1.2 | 28 linhas que a cópia do kit não tem | **fica** — matéria alheia ao tema, tíquete `TK-68` |
 | `.claude/global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md:4,71-72` | auditoria de 2026-07-08 | **fica** (`I-7`) |
 | `docs/RESIDENCIA_DOUTRINA.md:80` | item 2.1 "capacidade (~50% da janela)" | `PLN-T2` reescreve a célula |
 | `docs/RESIDENCIA_DOUTRINA.md:142` | item 7.7 "Orçamento por tarefa atômica" | `PLN-T2` reescreve a linha |
 | `.claude/agents/pantonic-planner.md:3` | `description`: "tarefas atômicas fechadas" | `PLN-T4` reescreve |
+| `.claude/agents/pantonic-planner.md:36-37` | `## Fatos estáveis`: "a régua numérica é a **tabela de classes** de `GOVERNANCA.md` §3" — remissão à tabela que a `PLN-T2` aposentou | `PLN-T4a` reescreve a segunda metade da frase — sítio acrescentado ao censo pelo consultor em 2026-09-22 (`AE-13`/`AE-14`); a varredura de 2026-09-21 buscou `atômic\|atomic` e `50%\|60%\|~80 linhas\|fatias verticais`, e "tabela de classes" não casa nenhum |
 | `.claude/agents/pantonic-planner.md:237-238` | Fase 4 item 5: "~50% (...) 60%", "~80 linhas" | `PLN-T4` reescreve |
 | `.claude/agents/pantonic-planner.md:187` | "fatias verticais finas primeiro" | `PLN-T4` reescreve |
+| `.claude/agents/pantonic-model-designer.md:24-27` | `## Fatos estáveis`, frase **antecedente** do bullet do `exit 1`: "é da seção **toda** violação que o instrumento não indexa pelo `<ID>` de uma tarefa: as de `secao`, as de `OP-<n>` e as de `objeto`" — governa, e contradiz, o que a `PLN-T5` publicou cinco linhas adiante sobre `V1` e `V3`; e a lista `(V6, V7, V15, V17)` está incompleta (medido: `V21 objeto` existe e não é citado) | `PLN-T5a` reescreve — sítio acrescentado ao censo pelo consultor em 2026-09-22 (`AE-19`/`AE-20`); fora dos `Arquivos-alvo` de todo card até aqui |
 | `.claude/agents/pantonic-executor.md:140` | heading "Módulo coeso, não fragmento atômico" | **fica** — é a negação |
 | `.claude/agents/pantonic-fora-da-caixa.md:54` | "cada passo virando tarefa atômica candidata" | `PLN-T3` reescreve |
 | `.claude/agents/pantonic-fora-da-caixa.md:67` | "passos atômicos, cada um testável" (passo de migração) | **fica** — outro sentido |
@@ -367,7 +384,9 @@ o que estas tarefas são.
 | `.claude/skills/modelo-por-fase/SKILL.md:24` | "Uma tarefa atômica do diário de obras, TDD" | `PLN-T3` reescreve |
 | `.claude/skills/bootstrap-pantonic/SKILL.md:34` | "checklists de tarefas atômicas" | `PLN-T3` reescreve |
 | `.claude/README.md:20` | região gerada, `description` do planejador | `PLN-T4` regenera |
-| `README.md:94,305,350,382,405,432,478,824,825` | glossário, §3, §4, §5, §6, §11 | `PLN-T7` reescreve |
+| `README.md:94,305,350,382,405,432,478,825,826` | glossário, §3, §4, §5, §6, §11 — re-ancoradas em 2026-09-22: as duas linhas da §11 estavam como `824,825` e o arquivo andou uma linha; `:94` escreve `Tarefa atômica` com maiúscula e `:382` é a única linha com **duas** ocorrências | `PLN-T7` reescreve |
+| `README.md:121-124`, `:209,211`, `:308-309`, `:311-322`, `:324-326`, `:941-942`, `:946-947`, `:1032` | **oito sítios de doutrina viva** que defendem, definem ou pressupõem o teto de turnos por classe que o `README.md:306` declara aposentado: a entrada de glossário `- **Orçamento de turnos**`; o parágrafo da hierarquia qualidade > rota > custo, **espelho de `GOVERNANCA.md:78,80`**; o parágrafo do `≤30`; o `**Por quê.**` que defende o teto graduado; a premissa de estouro em `**Onde o gerente intervém.**`; a calibração de tetos como finalidade da série, em dois pontos; e a linha da tabela de trade-offs. Nenhum estava no censo | `PLN-T7a` reescreve — sítios acrescentados ao censo pelo consultor em 2026-09-22 (`AE-23`/`AE-24`), por varredura do **conceito** aposentado |
+| `README.md:1036` | §11, tabela de trade-offs: "71 turnos e ~189 mil tokens numa única tarefa atômica" — **a mesma** medida histórica de `README.md:366`, em segunda residência | **fica** (`I-7`) — sítio acrescentado ao censo pelo consultor em 2026-09-22 (`AE-17`); é por ele que a Verificação 3 da `PLN-T7` espera **2**, não `1` |
 | `README.md:366` | "uma única tarefa atômica chega a 71 turnos" (medida) | **fica** (`I-7`) |
 | `README.md:401`, `GOVERNANCA.md:724` | "fatias verticais finas antes de camadas horizontais" (G-SLICE, §7 item 1: ordem de entregáveis, não tamanho de card) | **fica** — outro sentido |
 | `CHANGELOG.md:62,160` | histórico de versões | **fica** (`I-7`) |
@@ -379,16 +398,21 @@ o que estas tarefas são.
 ## 8. Tarefas
 
 ### PLN-T1 — O agregado medido da atuação do planejador [Sonnet · esforço high · classe investigacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Objetivo:** a seção `## 12. Agregado medido` deste plano preenchida com uma tabela por dimensão
   da §4, dentro de 120 linhas, sem nenhum dado bruto — o retrato do planejador **antes** deste plano.
 - **Fundamento:** `DPN-1`, `DPN-8`; fatos `F-2`, `F-9`. Herda o método da `PLS-T1` do `P-0744`
   com o corpus ampliado; o corpus é fechado e não se amplia.
-- **Operação do modelo:** `OP-1`
-  - OP-1: O investigador mede como o planejamento se comportou até aqui: conta, dimensão a dimensão, quantas vezes cada comportamento apareceu no corpus fechado, com a ocorrência mais antiga e a mais recente, o custo que a série registra e quantas rodadas de replanejamento houve, e fecha o retrato sem nenhum dado bruto.
-  - precisa de: corpus medido da atuação do planejador — as oito fontes nomeadas no método de sondagem da `PLN-T1`, nessa ordem e só elas; acesso barato pela busca do heading dos achados de execução seguida de leitura com `offset` e `limit` — nenhum plano lido inteiro; diário e histórico ficam de fora por tamanho; fonte ausente no caminho declarado leva a tarefa a `blocked` razão `premissa`, nunca à ampliação do corpus
+- **Operação do modelo:** `OP-5`
+  - OP-5: O redator da especificação descreve a figura de quem planeja depois de medir como ela se comportou até aqui: uma seção por dimensão, cada afirmação ancorada no retrato medido ou na decisão que instituiu o depois, e a última nomeando o que o corpus ainda não permite dizer.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
 - **Camada e fronteira:** nenhuma camada de produto é tocada. A tarefa lê o corpus e escreve
   **só** neste arquivo de plano.
+- **Arquivos-alvo:**
+  - `docs/plans/P-0745-planejador-modelo-operacao.md` — só este arquivo, e nele só a seção nova
+    `## 12. Agregado medido`, inserida entre `## 11. Riscos` e `## Achados da execução`. As oito
+    fontes do corpus (`Método de sondagem`) são **lidas, nunca escritas**, e por isso não são
+    arquivo-alvo.
 - **Método de sondagem:**
   - **Corpus fechado, nesta ordem e só ele:** (1) `.claude/agents/pantonic-planner.md`, as entradas
     `RP-1`..`RP-7` e os casos `AE-*` e `DM-*` que elas citam; (2)
@@ -448,10 +472,19 @@ o que estas tarefas são.
      ```
      → **10** — as dez subseções do agregado, numeradas. **Medido antes: 0**.
   3. ```
-     python -c "import pathlib;t=pathlib.Path('docs/plans/P-0745-planejador-modelo-operacao.md').read_text(encoding='utf-8');s=t.split('## 12. Agregado medido')[1].split('\n## ')[0];print(len(s.splitlines()))"
+     python -c "import re,pathlib;t=pathlib.Path('docs/plans/P-0745-planejador-modelo-operacao.md').read_text(encoding='utf-8');m=re.search(r'^## 12\. Agregado medido\n.*?(?=^## )', t, re.M|re.S);print(len(m.group(0).splitlines()) if m else 0)"
      ```
-     → um número **menor ou igual a 120**. **Medido antes: o comando falha com `IndexError`,
-     porque a seção não existe**.
+     → um número **maior que 0 e menor ou igual a 120** — a seção inteira, do heading até a linha
+     anterior ao próximo `## `. **Medido antes: 0** — a seção não existe.
+     > **Reparo do consultor, 2026-09-22, com a tarefa já em `review` (`AE-2`).** O comando
+     > publicado originalmente partia o arquivo pelo literal `## 12. Agregado medido`, que ocorre
+     > **primeiro dentro do próprio card** (`Objetivo` e `Formato do agregado`): media prosa do
+     > card, nunca a seção. Medido: devolve **6** no arquivo entregue e **73** no arquivo de
+     > `d75e7a6` — nunca o `IndexError` que o card deduzia, porque o literal já existia no card
+     > antes da entrega. O **critério não mudou** (≤ 120); mudou só o instrumento que o afere,
+     > agora ancorado no heading em início de linha. Medições deste reparo, rodadas: **106** no
+     > arquivo entregue, **0** no arquivo de `d75e7a6`. O número que o executor reportou na linha
+     > de retorno (6) é o da forma antiga.
   4. ```
      python .claude/tools/backlog.py check
      ```
@@ -461,23 +494,22 @@ o que estas tarefas são.
   máximo 120 linhas — o número que tem de existir ao final é, por dimensão, a contagem de
   ocorrências e a data da mais antiga e da mais recente.
   Por propriedade que a operação altera (`DPN-6`):
-  - `agregado medido do planejador.retrato por dimensão` — dez subseções, uma por dimensão da §4, cada uma com o número de ocorrências, a mais antiga e a mais recente com data, a classe de erro dominante e um exemplo citado por identificador — no máximo 120 linhas, nenhum dado bruto — Verificação 1, 2 e 3.
-  - `agregado medido do planejador.série de custo do planejamento` — a dimensão de custo declara o número de linhas, a mediana, o máximo e as datas da primeira e da última, e diz explicitamente o que uma linha só não permite afirmar — Verificação 2.
-  - `agregado medido do planejador.série das rodadas de replanejamento` — as quatro contagens existem na dimensão do acionamento, e dimensão sem ocorrência aparece como linha explícita, nunca como silêncio — Verificação 2.
+  - `agente de planejamento.descrição pública da figura` — a parcela desta tarefa: o retrato medido do antes, de que a descrição depende; a propriedade só alcança o estado final na `PLN-T6` — Verificação 1, 2 e 3.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não propriedade do modelo: a seção `## 12. Agregado medido` e o corpus fechado de onde ela sai.
 - **Fora do escopo desta tarefa:** a redação da especificação (`PLN-T6`) e o índice de documentos
   (`PLN-T7`).
 
 ### PLN-T2 — A norma da unidade de trabalho e dos limites [Opus · esforço high · classe redacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Depende de:** `PLN-T1`
 - **Objetivo:** `GOVERNANCA.md`, `.claude/global/CLAUDE.md` e `docs/RESIDENCIA_DOUTRINA.md` dizem
   que a unidade de trabalho é a materialização de uma operação do modelo e que nenhum percentual de
   ocupação nem teto de turnos dimensiona tarefa; uma guarda executável tranca a forma antiga.
 - **Fundamento:** `DPN-2`, `DPN-3`, `DPN-9`; fatos `F-5`, `F-6`, `F-7`, `F-8`, `F-15`, `F-16`;
   censo da §7; invariantes `I-6`, `I-7`, `I-9`.
-- **Operação do modelo:** `OP-2`
-  - OP-2: O redator da norma troca a régua com que a doutrina dimensiona uma tarefa: aposenta o percentual de ocupação da janela e a tabela de tetos de turnos, institui a materialização de uma operação inteira do modelo como a unidade de trabalho, e levanta a guarda executável que impede a forma antiga de voltar às residências que ele acabou de editar.
-  - precisa de: agregado medido do planejador — seção `## 12. Agregado medido` deste plano, inserida entre `## 11. Riscos` e `## Achados da execução`; dez subseções `### <n>. <dimensão>` na ordem da §4, com tabela de no máximo oito linhas cada e teto de 120 linhas para a seção inteira; só contagem, data, identificador e classe — nenhuma citação literal, nenhum trecho de plano, nenhuma linha de telemetria copiada; dimensão sem ocorrência traz a linha `sem ocorrência no corpus medido`; modelo de domínio e o papel que o escreve — `GOVERNANCA.md` §3.2, a subseção *Modelo de domínio (seção do plano)* da skill `diario-de-obras`, `.claude/tools/modelo.py` (`check` e `show`, `V1`..`V20`) e `.claude/agents/pantonic-model-designer.md`; premissa deste plano (`F-1`) e invariante dele (`I-4`) — `python .claude/tools/modelo.py check --plano docs/plans/P-0743-modelo-de-dominio.md` continua saindo `0`; citações históricas de medida — `GOVERNANCA.md:123`, `README.md:366`, `.claude/global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md` e `CHANGELOG.md:62,160` (`F-16`); invariante `I-7` — não se reescrevem em nenhuma tarefa deste plano; o limiar da janela de orquestração em `.claude/tools/ocupacao.py` também fica, por `DPN-3`, porque não dimensiona tarefa
+- **Operação do modelo:** `OP-1`
+  - OP-1: O redator da norma troca a régua com que quem planeja dimensiona um card: aposenta o percentual de ocupação da janela e a tabela de tetos de turnos, e institui no lugar deles a materialização de uma operação inteira do modelo, coesa e coerente com o objeto trabalhado.
+  - precisa de: tarefa — nenhum card deste plano altera uma tarefa. O que se observa nela, antes e depois, é o padrão sob o qual ela nasce: o nome da unidade no cabeçalho e na doutrina, a régua que definiu o recorte e a presença do campo `Operação do modelo` com o texto e os contratos copiados. Os sete cards deste plano, escritos sob o padrão antigo, são o retrato do antes; a aferição do depois é o primeiro plano decomposto depois da `PLN-T4`, lido por `python .claude/tools/modelo.py show`; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
 - **Camada e fronteira:** doutrina (`GOVERNANCA.md`, cópia do kit das regras globais, mapa de
   residência) e um teste de invariância em `tests/`. Nenhum instrumento, nenhum agente, nenhuma
   skill.
@@ -501,7 +533,7 @@ o que estas tarefas são.
   - `.claude/global/CLAUDE.md:139-143` (Regra 7, bullet `- **Orçamento por tarefa atômica**`)
   - `docs/RESIDENCIA_DOUTRINA.md:80` (linha `| 2.1 |`)
   - `docs/RESIDENCIA_DOUTRINA.md:142` (linha `| 7.7 |`)
-  - `C:/Users/panta/.claude/CLAUDE.md` — **fora do repositório** (`DPN-12`); só os dois blocos nomeados no passo 14a, com o literal idêntico ao dos passos 10 e 12
+  - `C:/Users/panta/.claude/CLAUDE.md` — **fora do repositório** (`DPN-12`); só os blocos nomeados nos passos 14a e 14b, com o literal idêntico ao dos passos 10, 11 e 12
   - `tests/test_doutrina_unidade.py` (novo)
 - **Passos:**
   1. Em `GOVERNANCA.md:91`, substituir o trecho `decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 11), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto; **o dimensionamento de cada tarefa** sob a *Diretriz de dimensionamento de tarefa* desta seção — coesão, autossuficiência em contexto e ocupação estimada, exercidas no recorte, não publicadas no card;` pelo texto literal:
@@ -592,8 +624,17 @@ o que estas tarefas são.
       substituições já feitas na cópia do kit (`DPN-12`): o bullet `- **Capacidade**` da Regra 2 pelo
       literal do passo 10, e o bullet `- **Orçamento por tarefa atômica**` da Regra 7 pelo literal do
       passo 12. Os dois blocos de origem são idênticos byte a byte aos da cópia do kit (`F-15`), logo o
-      literal é o mesmo e não se reescreve. **Nenhuma outra linha desse arquivo se toca** — em especial,
-      os Controles 1.1 e 1.2 da Regra 1, que são matéria do `TK-68`.
+      literal é o mesmo e não se reescreve. **Nenhuma outra linha desse arquivo se toca além da do passo
+      14b** — em especial, os Controles 1.1 e 1.2 da Regra 1, que são matéria do `TK-68`.
+  14b. Ainda em `C:/Users/panta/.claude/CLAUDE.md`, na **Regra 2**, parágrafo `**Consequências
+      práticas:**` (linha **78**, medida em 2026-09-22), substituir `o contexto atravessa várias
+      tarefas atômicas` por `o contexto atravessa várias tarefas`. É a **mesma** substituição do
+      passo 11, aplicada ao parágrafo espelho: fora dos Controles 1.1 e 1.2 as duas cópias são
+      idênticas byte a byte (`F-15`), e depois deste passo o parágrafo volta a fechar com o do kit,
+      quebra de linha inclusive. **Não é matéria nova** — é a terceira ocorrência da mesma forma
+      antiga que os passos 10, 11 e 12 aposentam, omitida do censo da §7 na autoria e acrescentada
+      a ele em 2026-09-22 (`AE-7`). Este passo é na **Regra 2**: os Controles 1.1 e 1.2 da Regra 1
+      seguem intocados.
   15. Criar `tests/test_doutrina_unidade.py` com o conteúdo literal:
       ```python
       """TR do P-0745 (PLN-T2..PLN-T5): a forma antiga da unidade de trabalho — percentual de
@@ -626,14 +667,14 @@ o que estas tarefas são.
     ~100 colunas é permitido, mudança de palavra não é.
   - `GOVERNANCA.md:123` e `.claude/global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md` não se editam (`I-7`).
   - Não editar `.claude/tools/ocupacao.py`, `tests/test_ocupacao.py`, skills nem agentes (`I-8`).
-  - No arquivo do dono, **só** os dois blocos do passo 14a. A guarda executável continua aferindo **apenas**
+  - No arquivo do dono, **só** os blocos dos passos 14a e 14b. A guarda executável continua aferindo **apenas**
     arquivos do repositório — teste que leia caminho absoluto de usuário não roda em outra máquina —, e o
     arquivo do dono se afere pelas verificações 10 e 11 deste card.
   - Não commitar (`I-1`).
 - **Não fazer:**
   - Não "aproveitar" para reescrever outras linhas de `GOVERNANCA.md` que citem tema, módulo ou
     ocupação além das listadas nos `Arquivos-alvo`: o censo da §7 é fechado.
-  - Não tocar, no arquivo do dono, nada além dos dois blocos do passo 14a — os Controles 1.1 e 1.2 são do
+  - Não tocar, no arquivo do dono, nada além dos blocos dos passos 14a e 14b — os Controles 1.1 e 1.2 são do
     `TK-68`, e o arquivo não é alvo de nenhum outro card deste plano.
   - Não alterar a *Gramática do card* nem o vocabulário de classes.
 - **Contingências:**
@@ -642,7 +683,7 @@ o que estas tarefas são.
      sinalizar `blocked` razão `premissa`, com o literal na linha de retorno.
   2. Se `python -m pytest tests -q` reprovar em teste que este card não criou → parar e sinalizar
      `blocked` razão `premissa`, colando a linha de falha.
-  3. Se um dos dois blocos do passo 14a não existir, literalmente, em `C:/Users/panta/.claude/CLAUDE.md`
+  3. Se um dos blocos dos passos 14a e 14b não existir, literalmente, em `C:/Users/panta/.claude/CLAUDE.md`
      → **não parar**: deixar o arquivo como está, registrar na linha de retorno
      `contingência 3 acionada: literal ausente no CLAUDE.md global do dono — <qual bloco>` e seguir. O
      arquivo é do dono, está fora do repositório e pode ter mudado; a entrega do card não depende dele.
@@ -695,20 +736,22 @@ o que estas tarefas são.
   11. ```
       grep -c 'tarefa atômica\|tarefas atômicas' 'C:/Users/panta/.claude/CLAUDE.md'
       ```
-      → **0**. **Medido antes: 2**.
+      → **0**, depois dos passos 14a **e** 14b. **Medido antes de tudo: 2.** **Medido em 2026-09-22,
+      com o 14a aplicado e o 14b ainda não: 1** — a única ocorrência remanescente é a da linha 78,
+      que o passo 14b trata, e foi esse estado que devolveu o card `blocked` (`AE-6`, `AE-7`).
 - **Pronto quando:** as onze verificações acima imprimem os valores declarados e nenhum arquivo fora
   dos `Arquivos-alvo` foi editado. As verificações 10 e 11 saem da contingência 3 se ela for acionada,
   e então a linha de retorno a nomeia.
   Por propriedade que a operação altera (`DPN-6`):
-  - `norma da unidade de trabalho.régua de dimensionamento` — três critérios sem número — uma operação inteira do modelo, contexto coerente e coeso, autossuficiência em contexto; a tabela de tetos aposentada e a classe preservada como natureza do trabalho; o único limiar que fica é o da janela de orquestração, declarado fora do dimensionamento de tarefa — Verificação 2, 3, 4, 5 e 7.
-  - `norma da unidade de trabalho.unidade nomeada na doutrina` — nenhuma dessas linhas nomeia a tarefa atômica como unidade: o módulo coeso ganha definição decidível — a materialização de uma operação do modelo — e a guarda executável afere a ausência por literal — Verificação 1, 4 e 6.
-  - `guarda da forma antiga.cobertura das residências editadas` — um arquivo de teste novo, nascido com a norma e estendido pelas três operações seguintes, cobre por literal cada residência editada, e o total da suíte não reduz da referência datada `262 passed` — Verificação 8.
+  - `agente de planejamento.régua com que ele dimensiona um card` — ele dimensiona por três critérios sem número — uma operação inteira do modelo, contexto coerente e coeso, autossuficiência em contexto —, com a tabela de tetos aposentada e a classe preservada como natureza do trabalho; o único limiar que fica é o da janela de orquestração, declarado fora do dimensionamento de tarefa — Verificação 2, 3, 4, 5 e 7.
+  - `agente de planejamento.unidade de trabalho que ele recorta` — a parcela desta tarefa: nenhuma das linhas de doutrina editadas aqui nomeia a tarefa atômica como unidade; o módulo coeso ganha definição decidível — a materialização de uma operação do modelo — Verificação 1, 4 e 6.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não propriedade do modelo: a guarda executável `tests/test_doutrina_unidade.py`, aferida pela Verificação 8.
 - **Fora do escopo desta tarefa:** a gramática do card e as skills (`PLN-T3`), o protocolo do
   planejador (`PLN-T4`), o gate do modelador e a tabela *Quem escreve* de §3.2 (`PLN-T5`), o
   `README.md` (`PLN-T7`).
 
 ### PLN-T3 — A gramática do card: a tarefa é a materialização de uma operação [Sonnet · esforço medium · classe redacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Depende de:** `PLN-T2`
 - **Objetivo:** a skill `diario-de-obras` apresenta o formato de uma tarefa como a materialização
   de uma operação do modelo, com o campo `Operação do modelo` no bloco de formato; as skills
@@ -716,9 +759,9 @@ o que estas tarefas são.
   tarefa atômica.
 - **Fundamento:** `DPN-2`, `DPN-6`, `DPN-9`; fatos `F-6`; censo da §7 (linhas das skills e do
   `pantonic-fora-da-caixa`).
-- **Operação do modelo:** `OP-3`
-  - OP-3: O redator da gramática reescreve o formato publicado de um card para que ele nasça como a materialização de uma operação, com o campo que copia o texto da operação e o contrato dos objetos de que ela precisa, e tira o nome da unidade antiga das demais definições de conduta que ainda o repetiam.
-  - precisa de: norma da unidade de trabalho — residência única em `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), espelhada em `.claude/global/CLAUDE.md` (Regras 2 e 7) e indexada em `docs/RESIDENCIA_DOUTRINA.md`; substituição de bloco nomeado, pelo texto literal dos passos da `PLN-T2`; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; guarda da forma antiga — `tests/test_doutrina_unidade.py`, criado pela `PLN-T2` e estendido por `PLN-T3`, `PLN-T4` e `PLN-T5`; um teste por residência editada, com assertivas por literal sobre o texto do arquivo; piso de regressão como relação — o total de `python -m pytest tests -q` não reduz da referência datada `262 passed` (2026-09-21); modelo de domínio e o papel que o escreve — `GOVERNANCA.md` §3.2, a subseção *Modelo de domínio (seção do plano)* da skill `diario-de-obras`, `.claude/tools/modelo.py` (`check` e `show`, `V1`..`V20`) e `.claude/agents/pantonic-model-designer.md`; premissa deste plano (`F-1`) e invariante dele (`I-4`) — `python .claude/tools/modelo.py check --plano docs/plans/P-0743-modelo-de-dominio.md` continua saindo `0`
+- **Operação do modelo:** `OP-2`
+  - OP-2: O redator da gramática reescreve a forma do card que quem planeja emite: ele passa a nascer como a materialização de uma operação, com o texto dela copiado e o contrato dos objetos de que ela precisa, e as demais definições de conduta deixam de chamar a unidade pelo nome antigo.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; tarefa — nenhum card deste plano altera uma tarefa. O que se observa nela, antes e depois, é o padrão sob o qual ela nasce: o nome da unidade no cabeçalho e na doutrina, a régua que definiu o recorte e a presença do campo `Operação do modelo` com o texto e os contratos copiados. Os sete cards deste plano, escritos sob o padrão antigo, são o retrato do antes; a aferição do depois é o primeiro plano decomposto depois da `PLN-T4`, lido por `python .claude/tools/modelo.py show`
 - **Camada e fronteira:** skills e um agente do kit; um teste somado ao arquivo criado pela
   `PLN-T2`. A subseção "Modelo de domínio (seção do plano)" da skill `diario-de-obras` **não se
   toca** (fronteira com o `P-0743`, §6).
@@ -791,14 +834,13 @@ o que estas tarefas são.
      → `check: OK — nenhuma violação.`, exit **0**. **Medido antes: o mesmo**.
 - **Pronto quando:** as seis verificações imprimem os valores declarados.
   Por propriedade que a operação altera (`DPN-6`):
-  - `gramática do card.formato do card` — o bloco abre por *Formato de uma tarefa*, declara a tarefa como materialização de uma operação, traz o campo `Operação do modelo` com texto e contratos copiados, e o `Pronto quando` deriva do estado final de cada propriedade que a operação altera — Verificação 1, 2 e 3.
-  - `gramática do card.unidade nomeada nas skills` — nenhum dos quatro a nomeia como unidade: todos falam em card materializado por uma operação do modelo; as ocorrências de outro sentido, como passo atômico de migração, ficam intactas — Verificação 4.
-  - `guarda da forma antiga.cobertura das residências editadas` — um arquivo de teste novo, nascido com a norma e estendido pelas três operações seguintes, cobre por literal cada residência editada, e o total da suíte não reduz da referência datada `262 passed` — Verificação 5.
+  - `agente de planejamento.unidade de trabalho que ele recorta` — a parcela desta tarefa: o bloco de formato que ele preenche abre por *Formato de uma tarefa*, declara o card como a materialização de uma operação, traz o campo `Operação do modelo` com o texto e os contratos copiados e faz o `Pronto quando` derivar do estado final de cada propriedade que a operação altera; e nenhuma das quatro definições de conduta nomeia a tarefa atômica como unidade, com as ocorrências de outro sentido, como passo atômico de migração, intactas — Verificação 1, 2, 3 e 4.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não propriedade do modelo: a extensão da guarda `tests/test_doutrina_unidade.py`, aferida pela Verificação 5.
 - **Fora do escopo desta tarefa:** o protocolo do planejador (`PLN-T4`) e a `description` dele,
   que é o que a região gerada de `.claude/README.md` repete.
 
 ### PLN-T4 — O protocolo do planejador: modelo primeiro, um card por operação [Opus · esforço xhigh · classe redacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Depende de:** `PLN-T3`
 - **Objetivo:** `.claude/agents/pantonic-planner.md` reescrito nas regiões que a `DPN-2`, a
   `DPN-3`, a `DPN-4`, a `DPN-5` e a `DPN-6` tocam — descrição, tese, protocolo com três saídas,
@@ -806,9 +848,9 @@ o que estas tarefas são.
   replanejamento com card corretivo somado à operação — e a região gerada de `.claude/README.md`
   regenerada.
 - **Fundamento:** `DPN-2`..`DPN-6`, `DPN-9`; fatos `F-3`, `F-5`, `F-7`, `F-11`; censo da §7.
-- **Operação do modelo:** `OP-4`
-  - OP-4: O autor de papéis fecha o vão do protocolo de quem planeja: a sessão ganha uma terceira forma de terminar sem plano fechado, em que ele grava o esqueleto e devolve o pedido de autoria do modelo na própria linha de retorno, e a decomposição só começa depois de o modelo existir, com um card por operação, na ordem delas e sem nenhum percentual no recorte.
-  - precisa de: gramática do card — `.claude/skills/diario-de-obras/SKILL.md`, seção *Formato de uma tarefa*, mais uma linha em `modelo-por-fase`, uma em `bootstrap-pantonic` e uma em `.claude/agents/pantonic-fora-da-caixa.md`; a subseção *Modelo de domínio (seção do plano)* da mesma skill **não se toca** (fronteira com o `P-0743`, §6); ocorrência de outro sentido — passo atômico de migração, escrita atômica em disco — fica intacta; norma da unidade de trabalho — residência única em `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), espelhada em `.claude/global/CLAUDE.md` (Regras 2 e 7) e indexada em `docs/RESIDENCIA_DOUTRINA.md`; substituição de bloco nomeado, pelo texto literal dos passos da `PLN-T2`; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; guarda da forma antiga — `tests/test_doutrina_unidade.py`, criado pela `PLN-T2` e estendido por `PLN-T3`, `PLN-T4` e `PLN-T5`; um teste por residência editada, com assertivas por literal sobre o texto do arquivo; piso de regressão como relação — o total de `python -m pytest tests -q` não reduz da referência datada `262 passed` (2026-09-21); modelo de domínio e o papel que o escreve — `GOVERNANCA.md` §3.2, a subseção *Modelo de domínio (seção do plano)* da skill `diario-de-obras`, `.claude/tools/modelo.py` (`check` e `show`, `V1`..`V20`) e `.claude/agents/pantonic-model-designer.md`; premissa deste plano (`F-1`) e invariante dele (`I-4`) — `python .claude/tools/modelo.py check --plano docs/plans/P-0743-modelo-de-dominio.md` continua saindo `0`
+- **Operação do modelo:** `OP-3`
+  - OP-3: O autor de papéis fecha o vão do protocolo de quem planeja: a sessão ganha uma terceira forma de terminar sem plano fechado, com o esqueleto gravado e o pedido de autoria do modelo devolvido na linha de retorno; a decomposição só começa depois de o modelo existir, um card por operação, e o recorte deixa de se medir por percentual.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
 - **Camada e fronteira:** um agente do kit e a região gerada do índice do kit. O escopo do papel
   continua na matriz de `GOVERNANCA.md` §3 (`G-SCOPE`): este card muda o **como**, não amplia o
   papel. As entradas `RP-1`..`RP-7` e os doze itens de verificação da Fase 4 que não citam
@@ -978,16 +1020,130 @@ o que estas tarefas são.
      → `check: OK — nenhuma violação.`, exit **0**. **Medido antes: o mesmo**.
 - **Pronto quando:** as oito verificações imprimem os valores declarados.
   Por propriedade que a operação altera (`DPN-6`):
-  - `protocolo do planejador.saídas do protocolo` — **três** saídas antes do plano fechado; a terceira é o esqueleto gravado mais o dossiê de autoria do modelo devolvido na linha de retorno, para quem conduz a sessão despachar o modelador — Verificação 3.
-  - `protocolo do planejador.momento da decomposição` — a fase de autoria se parte em duas — esqueleto e dossiê, depois decomposição sobre o modelo já na árvore —, com um card por operação, na ordem das operações e com o id derivado do número dela — Verificação 3 e 5.
-  - `protocolo do planejador.régua no protocolo` — a conferência dimensiona por operação inteira, coesão e autossuficiência em contexto; nenhum percentual e nenhum sinal de volume sobrevivem, e operação que não cabe num card coeso volta ao modelador por dossiê em vez de ser partida — Verificação 1 e 2.
-  - `protocolo do planejador.descrição pública do papel` — as duas anunciam decomposição do modelo em cards fechados, um por operação, e a parada que devolve o dossiê de autoria; a linha do índice sai da regeneração, nunca de edição à mão — Verificação 4 e 6.
-  - `guarda da forma antiga.cobertura das residências editadas` — um arquivo de teste novo, nascido com a norma e estendido pelas três operações seguintes, cobre por literal cada residência editada, e o total da suíte não reduz da referência datada `262 passed` — Verificação 7.
+  - `agente de planejamento.aproveitamento do aparato de modelo` — a sessão tem três saídas antes do plano fechado, e a terceira é o esqueleto gravado com o dossiê de autoria devolvido na linha de retorno; a decomposição só começa com o modelo na árvore, um card por operação, na ordem delas e com o id derivado do número da operação — Verificação 3 e 5.
+  - `agente de planejamento.descrição pública da figura` — a parcela desta tarefa: a `description` do agente e a linha regenerada do índice do kit anunciam a decomposição do modelo em cards, um por operação, e a parada que devolve o dossiê de autoria; a linha do índice sai da regeneração, nunca de edição à mão — Verificação 4 e 6.
+  - `agente de planejamento.régua com que ele dimensiona um card` — a parcela desta tarefa: nenhum percentual e nenhum sinal de volume sobrevivem no protocolo, a conferência dimensiona por operação inteira, coesão e autossuficiência em contexto, e operação que não cabe num card coeso volta ao modelador por dossiê em vez de ser partida — Verificação 1 e 2.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não propriedade do modelo: a extensão da guarda `tests/test_doutrina_unidade.py`, aferida pela Verificação 7.
 - **Fora do escopo desta tarefa:** o gate do modelador (`PLN-T5`); a spec (`PLN-T6`); o
   `README.md` fora da região gerada de `.claude/README.md` (`PLN-T7`).
 
+### PLN-T4a — O ponteiro sobrevivente da tabela aposentada, nos Fatos estáveis do planejador [Sonnet · esforço low · classe redacao]
+- **Status:** `done` · 2026-09-22
+- **Depende de:** `PLN-T4`
+- **Objetivo:** `.claude/agents/pantonic-planner.md:36-37` deixa de remeter à *tabela de classes* de
+  `GOVERNANCA.md` §3, aposentada pela `PLN-T2` (`DPN-3`), e passa a dizer o que a régua é hoje; a
+  primeira metade da frase — `Nenhum teto se escreve no card` — sobrevive intacta, porque continua
+  verdadeira. Uma guarda executável tranca o retorno da remissão.
+- **Fundamento:** `DPN-3`; achado `AE-13`. **Card corretivo somado à `OP-3`**, na forma que a
+  própria `PLN-T2` instituiu em `GOVERNANCA.md` §3 (*A unidade de trabalho é o módulo coeso*: card
+  corretivo de replanejamento **somado à operação que repara**, nunca operação partida em dois).
+  Resíduo de `OP-3` e não de `OP-1`: quem aposentou a tabela foi a `OP-1`, em `GOVERNANCA.md`, mas
+  o ponteiro sobrevivente está em `.claude/agents/pantonic-planner.md` — residência da `OP-3`, a
+  única operação que declara alterar a **régua** e agir naquele arquivo.
+- **Operação do modelo:** `OP-3`
+  - OP-3: O autor de papéis fecha o vão do protocolo de quem planeja: a sessão ganha uma terceira forma de terminar sem plano fechado, com o esqueleto gravado e o pedido de autoria do modelo devolvido na linha de retorno; a decomposição só começa depois de o modelo existir, um card por operação, e o recorte deixa de se medir por percentual.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
+  - **Contrato copiado da versão 3, vigente em 2026-09-22.** A versão 4 está **pendente** do
+    veredito do dono no Marco 2 (`## 1A`), e a medição parte sempre do modelo **vigente**
+    (`GOVERNANCA.md` §3.2). Este card executa antes do Marco 2, logo não há o que recopiar.
+- **Camada e fronteira:** um agente do kit, uma frase, mais uma asserção na guarda executável que a
+  `PLN-T2` criou. Nenhuma linha de `GOVERNANCA.md`, nenhuma skill, nenhum instrumento de
+  `.claude/tools/`. A região gerada `kit:agents` de `.claude/README.md` **não** se regenera: o texto
+  tocado está em `## Fatos estáveis`, não na `description` do frontmatter — a Verificação 5 afere
+  que o drift continua ausente.
+- **Domínio:** *tabela de classes* — a tabela de tetos de turnos por classe que vivia em
+  `GOVERNANCA.md` §3 e foi aposentada em 2026-09-21 (`DPN-3`), substituída pelo bullet *Classe do
+  card — natureza, não teto* (`GOVERNANCA.md:189`). *Fatos estáveis* — a região de
+  `.claude/agents/pantonic-planner.md` que a versão 4 pendente do modelo acrescenta à enumeração
+  fechada das residências da conduta.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-planner.md:36-37` (`## Fatos estáveis`, fim do bullet do cabeçalho de tarefa)
+  - `tests/test_doutrina_unidade.py` (acréscimo de uma função de teste; as duas existentes não se tocam)
+- **Passos:**
+  1. Em `.claude/agents/pantonic-planner.md:37`, substituir o literal
+     `card: a régua numérica é a tabela de classes de `GOVERNANCA.md` §3, interna a este papel.`
+     pelo literal
+     `card, e nenhum número o dimensiona: a classe é natureza do trabalho (`GOVERNANCA.md` §3, *Classe do card — natureza, não teto*) e a régua é a operação do modelo que o card materializa (`GOVERNANCA.md` §3.2).`
+     O fim da linha 36 — `Nenhum teto se escreve no` — **não se toca**: é a metade verdadeira da
+     frase, e a Verificação 2 afere que ela sobreviveu. Quebra de linha se reajusta a ~100 colunas;
+     palavra não muda.
+  2. Acrescentar a `tests/test_doutrina_unidade.py`, **depois** das duas funções existentes e sem
+     alterar nenhuma delas, a função literal:
+     ```python
+     def test_conduta_do_planejador_nao_remete_a_tabela_aposentada():
+         t = _texto(".claude/agents/pantonic-planner.md")
+         assert "tabela de classes" not in t
+         assert "tabela de tetos" not in t
+         assert "Nenhum teto se escreve no" in t
+     ```
+  3. Rodar as verificações abaixo.
+- **Restrições desta tarefa:**
+  - Só a segunda metade da frase muda. Nenhuma outra linha de `.claude/agents/pantonic-planner.md`
+    se toca — em especial as entradas `RP-1`..`RP-7` e os itens da Fase 4, que são a memória medida
+    do papel (`I-9`).
+  - As duas funções já existentes de `tests/test_doutrina_unidade.py` não se alteram: são entrega
+    aceita da `PLN-T2`.
+  - Não regenerar região alguma de `.claude/README.md`.
+  - Não commitar (`I-1`).
+- **Não fazer:**
+  - Não "aproveitar" para revisar outras remissões do agente: a varredura da família
+    `tabela de classes|tabela de tetos|teto por classe` foi feita em 2026-09-22 e este é o **único**
+    sítio vivo (`AE-14`). `CHANGELOG.md:196,215` e
+    `.claude/global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md:71` são registro datado e **ficam** (`I-7`).
+  - Não tocar `GOVERNANCA.md`: o sítio dele já é da `PLN-T7`, passo 4a.
+- **Contingências:**
+  1. Se o literal do passo 1 não casar byte a byte → localizar por
+     `grep -n 'tabela de classes' .claude/agents/pantonic-planner.md` e aplicar sobre a linha
+     devolvida; se o literal não existir no arquivo → parar e sinalizar `blocked` razão `premissa`.
+  2. Se `python -m pytest tests -q` reprovar em teste que este card não criou → parar e sinalizar
+     `blocked` razão `premissa`, colando a linha de falha.
+- **Testes:** `TR-DU-3` (`test_conduta_do_planejador_nao_remete_a_tabela_aposentada`), em
+  `tests/test_doutrina_unidade.py`; suíte: `python -m pytest tests -q`.
+- **Verificação:**
+
+  1. ```
+     grep -c 'tabela de classes' .claude/agents/pantonic-planner.md
+     ```
+     → **0**. **Medido antes: 1** (2026-09-22).
+  2. ```
+     grep -c 'Nenhum teto se escreve no' .claude/agents/pantonic-planner.md
+     ```
+     → **1** — a metade verdadeira sobreviveu. **Medido antes: 1** (2026-09-22).
+  3. ```
+     grep -c 'Classe do card — natureza, não teto' .claude/agents/pantonic-planner.md
+     ```
+     → **1**. **Medido antes: 0** (2026-09-22). O alvo da remissão existe: o mesmo `grep -c` sobre
+     `GOVERNANCA.md` devolve **1**, medido na mesma data.
+  4. ```
+     python -m pytest tests -q
+     ```
+     → termina em `<N> passed`, com `<N>` igual ao total re-medido no despacho **mais 1**.
+     **Medido antes: `271 passed`** (2026-09-22).
+  5. ```
+     pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift
+     ```
+     → exit **0**, primeira linha `kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 11 skill(s)); materializacao do alvo 'projeto' == canonico.`
+     **Medido antes: o mesmo** (2026-09-22).
+  6. ```
+     python .claude/tools/backlog.py check
+     ```
+     → `check: OK — nenhuma violação.`, exit **0**. **Medido antes: o mesmo**.
+- **Pronto quando:** as seis verificações imprimem os valores declarados e nenhum arquivo fora dos
+  `Arquivos-alvo` foi editado.
+  Por propriedade que a operação altera (`DPN-6`):
+  - `agente de planejamento.régua com que ele dimensiona um card` — a parcela desta tarefa: a última
+    residência da conduta que remetia à tabela aposentada deixa de remeter, e passa a apontar para a
+    régua vigente; é o estado final que a versão 4 pendente do modelo exige e que o dono valida no
+    Marco 2 — Verificação 1, 2 e 3.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não
+    propriedade do modelo: a asserção nova de `tests/test_doutrina_unidade.py`, aferida pela
+    Verificação 4.
+- **Fora do escopo desta tarefa:** o sítio de `GOVERNANCA.md` (`PLN-T7`, passo 4a); a recópia dos
+  contratos da versão 4 nos cards abertos, que é condicionada ao veredito do dono no Marco 2 e mora
+  na `PLN-T6` e na `PLN-T7`.
+
 ### PLN-T5 — O modelador diante do plano sem cards, e o lastro que é do planejador [Sonnet · esforço medium · classe redacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Depende de:** `PLN-T4`
 - **Objetivo:** `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md` publicam, nas
   duas pontas, que o modelador escreve a §1 sobre um plano ainda sem cards, que `V1` e `V3` são
@@ -996,9 +1152,9 @@ o que estas tarefas são.
 - **Fundamento:** `DPN-4`, `DPN-5`, `DPN-7`, `DPN-9`; fatos `F-3`, `F-4`. A mudança de papel se
   publica nas duas pontas no mesmo card — a classe de defeito "metade de mudança de papel
   publicada" está medida em `docs/Entregas Aceitas/Entregas - P-0743.md`.
-- **Operação do modelo:** `OP-5`
-  - OP-5: O autor de papéis abre o portão do modelador para o plano que ainda não tem cards: a lista de tarefas de cada operação passa a ser lastro de quem planeja, as duas violações que ela dispara voltam medidas em vez de travar a devolução, e o modelo segue rascunho substituível no lugar até o primeiro aceite do dono.
-  - precisa de: protocolo do planejador — `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md`, produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem — são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE); norma da unidade de trabalho — residência única em `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), espelhada em `.claude/global/CLAUDE.md` (Regras 2 e 7) e indexada em `docs/RESIDENCIA_DOUTRINA.md`; substituição de bloco nomeado, pelo texto literal dos passos da `PLN-T2`; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; guarda da forma antiga — `tests/test_doutrina_unidade.py`, criado pela `PLN-T2` e estendido por `PLN-T3`, `PLN-T4` e `PLN-T5`; um teste por residência editada, com assertivas por literal sobre o texto do arquivo; piso de regressão como relação — o total de `python -m pytest tests -q` não reduz da referência datada `262 passed` (2026-09-21); modelo de domínio e o papel que o escreve — `GOVERNANCA.md` §3.2, a subseção *Modelo de domínio (seção do plano)* da skill `diario-de-obras`, `.claude/tools/modelo.py` (`check` e `show`, `V1`..`V20`) e `.claude/agents/pantonic-model-designer.md`; premissa deste plano (`F-1`) e invariante dele (`I-4`) — `python .claude/tools/modelo.py check --plano docs/plans/P-0743-modelo-de-dominio.md` continua saindo `0`
+- **Operação do modelo:** `OP-4`
+  - OP-4: O autor de papéis devolve a quem planeja o lastro que é dele: a lista de tarefas de cada operação do modelo passa a ser responsabilidade de quem decompõe o plano, e o que o instrumento mede nela volta medido para ele, em vez de travar a devolução de quem escreve o modelo.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
 - **Camada e fronteira:** doutrina (§3.2) e um agente do kit. `modelo.py`, `tests/test_modelo.py`
   e as fixtures **não se tocam**: o vocabulário `V1`..`V20` não muda, só quem responde por `V1` e
   `V3`.
@@ -1068,52 +1224,212 @@ o que estas tarefas são.
 - **Verificação:**
 
   1. ```
-     grep -c 'V3' .claude/agents/pantonic-model-designer.md
+     grep -c 'e `V3`, que moram no' .claude/agents/pantonic-model-designer.md
      ```
-     → **um número maior ou igual a 2**. **Medido antes: 0**.
+     → **1** — a menção de `V3` como violação que mora no **lastro**. **Medido em 2026-09-22,
+     contra a entrega na árvore: 1.**
+  1a. ```
+      grep -c '`V3` dispara por construção' .claude/agents/pantonic-model-designer.md
+      ```
+      → **1** — a menção de `V3` como violação que dispara sobre plano ainda sem cards. **Medido
+      em 2026-09-22, contra a entrega na árvore: 1.**
+      > **Reparo do consultor, 2026-09-22 (`AE-17`).** A forma anterior era
+      > `grep -c 'V3' … → um número maior ou igual a 2`, e **`grep -c` conta linhas com match, não
+      > ocorrências**: o literal do passo 3 é uma linha física única que carrega as **duas**
+      > menções, então o comando devolvia `1` sobre uma entrega correta e a tarefa parou
+      > `blocked premissa`. Medido: `grep -c 'V3' …` = **1**, `grep -o 'V3' … | wc -l` = **2**.
+      > O aceite **não** foi afrouxado — ficou mais estrito: em vez de "duas ocorrências quaisquer
+      > da sigla", afere-se que **cada uma das duas afirmações** existe, por literal próprio. O
+      > literal entregue no passo 3 **não se toca**: quem estava errado era o aferidor, não a
+      > entrega (`DM-12`), e reescrever a entrega para o número fechar seria inverter a regra.
   2. ```
      grep -c 'Só cinco violações' .claude/agents/pantonic-model-designer.md
      ```
-     → **1**. **Medido antes: 0**.
+     → **1**. **Medido em 2026-09-22: 0.**
   3. ```
      grep -c 'Só três violações' .claude/agents/pantonic-model-designer.md
      ```
-     → **0**. **Medido antes: 1**.
+     → **0**. **Medido em 2026-09-22: 1.**
   4. ```
      grep -c '^\*\*Lastro\.\*\*\|^\*\*Rascunho antes do Marco 1\.\*\*' GOVERNANCA.md
      ```
-     → **2**. **Medido antes: 0**.
+     → **2**. **Medido em 2026-09-22: 0.**
   5. ```
      python .claude/tools/modelo.py check --plano docs/plans/P-0743-modelo-de-dominio.md
      ```
-     → `modelo: OK — 13 operações, 9 objetos, 21 propriedades, 18 tarefas, versão 1`, exit **0**. **Medido antes: o mesmo** (invariância, `I-4`).
+     → a **mesma** saída re-medida no despacho, byte a byte, e exit **0** — este card não toca o
+     `P-0743` (invariância, `I-4`). A forma é relação, não constante: o que se afere é que **este
+     card** não moveu o `P-0743`, e não que o `P-0743` seja imóvel. **Medido em 2026-09-22:**
+     `modelo: OK — 13 operações, 9 objetos, 21 propriedades, 18 tarefas, versão 1`.
   6. ```
      python -m pytest tests -q
      ```
-     → `<N> passed`, com `<N>` igual ao total re-medido no despacho **mais 1**. **Medido antes: `262 passed`** (2026-09-21, antes da `PLN-T2`).
+     → `<N> passed`, com `<N>` igual ao total re-medido no despacho **mais 1**. **Medido em
+     2026-09-22, depois da `PLN-T4a`: `274 passed`** — o valor publicado na autoria
+     (`262 passed`, 2026-09-21) envelheceu doze testes em quatro tarefas, e a forma-relação
+     absorveu sem dano. É por isso que ela fica (`AE-16`).
   7. ```
      python .claude/tools/backlog.py check
      ```
      → `check: OK — nenhuma violação.`, exit **0**. **Medido antes: o mesmo**.
-- **Pronto quando:** as sete verificações imprimem os valores declarados. É o gate do **Marco 2**:
+- **Pronto quando:** as **oito** verificações — 1, 1a, 2, 3, 4, 5, 6 e 7 — imprimem os valores
+  declarados. É o gate do **Marco 2**:
   a orquestração abre o marco com `modelo.py show` sobre este plano.
   Por propriedade que a operação altera (`DPN-6`):
-  - `gate do modelador.responsabilidade pelo lastro` — `V1` e `V3` são violações do lastro de quem planeja, voltam como saída literal medida, e a norma e a definição do papel dizem o mesmo nas duas pontas, fechadas no mesmo card — Verificação 1, 2, 3 e 4.
-  - `gate do modelador.regra do rascunho antes do primeiro aceite` — entre a autoria e o primeiro `go` do dono a seção é rascunho e se substitui no lugar, sem bloco irmão e sem linha nova no registro de versões; versionar começa a partir do primeiro aceite — Verificação 4.
-  - `guarda da forma antiga.cobertura das residências editadas` — um arquivo de teste novo, nascido com a norma e estendido pelas três operações seguintes, cobre por literal cada residência editada, e o total da suíte não reduz da referência datada `262 passed` — Verificação 6.
+  - `agente de planejamento.responsabilidade pelo lastro das operações` — a lista de tarefas de cada operação é lastro declarado de quem planeja e as duas violações que ela dispara voltam medidas para ele; a norma e as duas definições de conduta dizem o mesmo nas duas pontas — Verificação 1, 1a, 2, 3 e 4.
+  - **Colateral, aprovado pelo dono em 2026-09-22 e entregue por este card, fora do modelo:** os passos 1, 2 e 4 também abrem o portão do modelador para plano ainda sem cards e declaram que, entre a autoria e o primeiro aceite do dono, a seção é rascunho que se substitui no lugar. As duas alteram o `agente model designer`, que é objeto **externo** do modelo (`GOVERNANCA.md` §3.2), e por isso não são operação nem propriedade daqui. **Não escale**: a decisão já foi tomada — entregue-as com o resto do card — aferidas pela metade `**Rascunho antes do Marco 1.**` da Verificação 4.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não propriedade do modelo: a extensão da guarda `tests/test_doutrina_unidade.py`, aferida pela Verificação 6.
 - **Fora do escopo desta tarefa:** a spec (`PLN-T6`) e o `README.md` (`PLN-T7`).
 
+### PLN-T5a — A frase que governa o gate do modelador, e a enumeração que envelheceu [Sonnet · esforço low · classe redacao]
+- **Status:** `done` · 2026-09-22
+- **Depende de:** `PLN-T5`
+- **Objetivo:** a frase **antecedente** de `.claude/agents/pantonic-model-designer.md:24-27` deixa
+  de classificar `V1` e `V3` como violações "da seção" — que travariam a devolução do ato pelo
+  próprio critério que ela enuncia —, e a enumeração das violações de `objeto` deixa de ser lista
+  fechada, porque a medição mostrou que ela já estava incompleta.
+- **Fundamento:** `DPN-4`, `DPN-5`; achado `AE-19`. **Card corretivo somado à `OP-4`**, na forma
+  que a `PLN-T2` instituiu em `GOVERNANCA.md` §3 (card corretivo de replanejamento **somado à
+  operação que repara**). É resíduo da `OP-4` e de nenhuma outra: o texto da operação diz, literal,
+  "em vez de **travar a devolução** de quem escreve o modelo", e a frase antecedente é exatamente o
+  que ainda trava. Completa um **colateral que o dono já aprovou em 2026-09-22** e que a `PLN-T5`
+  entregou pela metade — não é matéria nova e não se escala de novo.
+- **Operação do modelo:** `OP-4`
+  - OP-4: O autor de papéis devolve a quem planeja o lastro que é dele: a lista de tarefas de cada operação do modelo passa a ser responsabilidade de quem decompõe o plano, e o que o instrumento mede nela volta medido para ele, em vez de travar a devolução de quem escreve o modelo.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
+  - **Contrato copiado da versão 3, vigente em 2026-09-22.** A versão 4 está pendente do veredito
+    do dono no Marco 2 (`## 1A`), e a medição parte sempre do modelo vigente (`GOVERNANCA.md`
+    §3.2). Se o veredito for `go` na versão 4 antes do despacho deste card, o contrato se recopia
+    do bloco vigente, na mesma regra do passo 0 da `PLN-T6` (`AE-14`).
+- **Camada e fronteira:** um agente do kit, uma frase, mais uma asserção na guarda executável.
+  Nenhuma linha de `GOVERNANCA.md` — a ponta da norma está correta e foi conferida concordante
+  pelo reviewer da `PLN-T5` —, nenhum instrumento de `.claude/tools/`. A região gerada `kit:agents`
+  de `.claude/README.md` **não** se regenera: o texto está em `## Fatos estáveis`, não na
+  `description` do frontmatter, e a Verificação 5 afere que o drift continua ausente.
+- **Domínio:** *violação da seção* — no gate do modelador, a violação que o impede de devolver o
+  ato. O critério publicado é o **rótulo de indexação** que `.claude/tools/modelo.py` imprime:
+  `secao`, `OP-<n>`, `objeto` ou o `<ID>` de uma tarefa. Medido em 2026-09-22 contra
+  `tests/fixtures/modelo/plano-invalido.md`: `V1` e `V3` saem indexadas por `OP-<n>` — logo, pelo
+  critério antecedente, seriam "da seção", contra o que a frase seguinte publica.
+- **Arquivos-alvo:**
+  - `.claude/agents/pantonic-model-designer.md:24-27` (`## Fatos estáveis`, a frase antecedente do
+    bullet do `exit 1`, da palavra `seção` na linha 24 até `antes de devolver.` na linha 27)
+  - `tests/test_doutrina_unidade.py` (acréscimo de uma função; as existentes não se tocam)
+- **Passos:**
+  1. Em `.claude/agents/pantonic-model-designer.md`, substituir o bloco literal que hoje ocupa as
+     linhas 24 a 27 até `antes de devolver.` —
+     ```
+       seção **toda** violação que o instrumento não indexa pelo `<ID>` de uma tarefa: as de `secao`, as
+       de `OP-<n>` e as de `objeto`, estas últimas vindas de `### 1.1 Objetos` e de
+       `### 1.3 Estado inicial e estado final` (`V6`, `V7`, `V15`, `V17`). Corrija a seção que você mesmo
+       escreveu e rode de novo antes de devolver.
+     ```
+     — pelo bloco literal:
+     ```
+       seção **toda** violação que o instrumento não indexa pelo `<ID>` de uma tarefa — as de
+       `secao`, as de `OP-<n>` e as de `objeto`, estas últimas vindas de `### 1.1 Objetos` e de
+       `### 1.3 Estado inicial e estado final` —, **exceto `V1` e `V3`**: o instrumento as indexa
+       por `OP-<n>`, mas elas moram no lastro e não são suas, como a frase seguinte declara. A
+       classe se lê pelo **rótulo com que o instrumento indexa** a violação, nunca por lista de
+       códigos: o vocabulário `V1`..`V21` cresce, e lista fechada envelhece. Corrija a seção que
+       você mesmo escreveu e rode de novo antes de devolver.
+     ```
+     **Ajuste de quebra de linha para caber em ~100 colunas é permitido e esperado; mudança de
+     palavra não é.** A frase seguinte, que começa em `Só cinco violações **não são suas**:`,
+     **não se toca** — é entrega aceita da `PLN-T5`.
+  2. Acrescentar a `tests/test_doutrina_unidade.py`, **depois** das funções existentes e sem
+     alterar nenhuma delas, a função literal:
+     ```python
+     def test_gate_do_modelador_nao_classifica_lastro_como_secao():
+         t = _texto(".claude/agents/pantonic-model-designer.md")
+         assert "exceto `V1` e `V3`" in t
+         assert "(`V6`, `V7`, `V15`, `V17`)" not in t
+         assert "Só cinco violações" in t
+     ```
+  3. Rodar as verificações abaixo.
+- **Restrições desta tarefa:**
+  - A frase `Só cinco violações **não são suas**: ...` e tudo que a segue **não se tocam**: são
+    entrega aceita da `PLN-T5`, conferida concordante pelo reviewer em 2026-09-22.
+  - Nenhuma outra linha de `.claude/agents/pantonic-model-designer.md` se toca.
+  - As funções já existentes de `tests/test_doutrina_unidade.py` não se alteram.
+  - Não regenerar região alguma de `.claude/README.md`. Não commitar (`I-1`).
+- **Não fazer:**
+  - Não tocar `.claude/tools/modelo.py`, `tests/test_modelo.py` nem as fixtures: o vocabulário
+    `V1`..`V21` é insumo e invariante deste plano.
+  - Não "aproveitar" para revisar outras frases do agente: a varredura das 111 linhas foi feita em
+    2026-09-22 e este é o **único** sítio que governa ou contradiz o que a `PLN-T5` publicou
+    (`AE-20`). Em especial, `:55-57` (autoria preenche `tarefas:` por convenção) e `:107` (a lista
+    é lastro do planejador depois da autoria) foram conferidos **concordantes** e ficam como estão.
+  - Não tocar `GOVERNANCA.md` §3.2: a outra ponta está correta.
+- **Contingências:**
+  1. Se o bloco literal não casar byte a byte — quebra de linha diferente, por exemplo → localizar
+     por `grep -n 'e as de .objeto., estas últimas vindas' .claude/agents/pantonic-model-designer.md`
+     e aplicar sobre a frase que a linha devolver, preservando o sentido literal do texto novo. Se
+     a frase não existir no arquivo → parar e sinalizar `blocked` razão `premissa`.
+  2. Se `python -m pytest tests -q` reprovar em teste que este card não criou → parar e sinalizar
+     `blocked` razão `premissa`, colando a linha de falha.
+- **Testes:** `TR-DU-6` (`test_gate_do_modelador_nao_classifica_lastro_como_secao`), em
+  `tests/test_doutrina_unidade.py`; suíte: `python -m pytest tests -q`.
+- **Verificação:**
+
+  1. ```
+     grep -c 'exceto `V1` e `V3`' .claude/agents/pantonic-model-designer.md
+     ```
+     → **1**. **Medido em 2026-09-22: 0.**
+  2. ```
+     grep -c '(`V6`, `V7`, `V15`, `V17`)' .claude/agents/pantonic-model-designer.md
+     ```
+     → **0** — a lista fechada saiu. **Medido em 2026-09-22: 1.**
+  3. ```
+     grep -c 'Só cinco violações' .claude/agents/pantonic-model-designer.md
+     ```
+     → **1** — a entrega da `PLN-T5` sobreviveu intacta. **Medido em 2026-09-22: 1.**
+  4. ```
+     python -m pytest tests -q
+     ```
+     → `<N> passed`, com `<N>` igual ao total re-medido no despacho **mais 1**. **Medido em
+     2026-09-22: `275 passed`.**
+  5. ```
+     pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift
+     ```
+     → exit **0**, com os **mesmos** números de agentes e skills re-medidos no despacho — este card
+     não cria nem remove agente nem skill. **Medido em 2026-09-22:**
+     `kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 11 skill(s)); materializacao do alvo 'projeto' == canonico.`
+  6. ```
+     python .claude/tools/backlog.py check
+     ```
+     → `check: OK — nenhuma violação.`, exit **0**. **Medido em 2026-09-22: o mesmo.**
+  7. ```
+     python .claude/tools/modelo.py check --plano docs/plans/P-0745-planejador-modelo-operacao.md
+     ```
+     → a **mesma** saída re-medida no despacho e exit **0**: este card não toca o modelo
+     (invariância). **Medido em 2026-09-22:**
+     `modelo: OK — 6 operações, 3 objetos, 7 propriedades, 8 tarefas, versão 3`.
+- **Pronto quando:** as sete verificações imprimem os valores declarados e nenhum arquivo fora dos
+  `Arquivos-alvo` foi editado.
+  Por propriedade que a operação altera (`DPN-6`):
+  - `agente de planejamento.responsabilidade pelo lastro das operações` — a parcela desta tarefa: o
+    gate do modelador deixa de ter duas leituras sobre `V1` e `V3`, e a única que resta é a que a
+    `PLN-T5` publicou — elas são lastro do planejador e voltam medidas para ele, em vez de travar a
+    devolução de quem escreve o modelo — Verificação 1 e 3.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não
+    propriedade do modelo: a asserção nova de `tests/test_doutrina_unidade.py` e a retirada da lista
+    fechada de códigos, aferidas pelas Verificações 2 e 4.
+- **Fora do escopo desta tarefa:** a ponta da norma em `GOVERNANCA.md` §3.2, correta e conferida; o
+  vocabulário `V1`..`V21` do instrumento; e a divergência entre a tabela de transições da skill
+  `diario-de-obras` e o `_TRANSICOES` de `backlog.py` (`AE-18`, rota `TK-66`).
+
 ### PLN-T6 — A especificação do agente de planejamento [Opus · esforço xhigh · classe redacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Depende de:** `PLN-T5`
 - **Objetivo:** `docs/planner-spec.md` escrito, com uma seção por dimensão da §4, cada afirmação
   ancorada no agregado da `PLN-T1` (o antes) ou numa decisão `DPN-<n>` deste plano (o depois), e
   nenhuma afirmação sem uma das duas âncoras.
 - **Fundamento:** `DPN-1`, `DPN-8`; fatos `F-9`, `F-14`. A lista de dimensões tem residência
   única na §4; este card a consome, não a reenuncia. Herda a `PLS-T2` do `P-0744`.
-- **Operação do modelo:** `OP-6`
-  - OP-6: O redator da especificação escreve, pela primeira vez, o documento que descreve a figura de quem planeja: uma seção por dimensão, cada afirmação ancorada no retrato medido do antes ou na decisão deste plano que instituiu o depois, e a última seção nomeando o que o corpus ainda não permite dizer.
-  - precisa de: agregado medido do planejador — seção `## 12. Agregado medido` deste plano, inserida entre `## 11. Riscos` e `## Achados da execução`; dez subseções `### <n>. <dimensão>` na ordem da §4, com tabela de no máximo oito linhas cada e teto de 120 linhas para a seção inteira; só contagem, data, identificador e classe — nenhuma citação literal, nenhum trecho de plano, nenhuma linha de telemetria copiada; dimensão sem ocorrência traz a linha `sem ocorrência no corpus medido`; protocolo do planejador — `.claude/agents/pantonic-planner.md` (descrição, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card e rodada de replanejamento) e a região gerada `kit:agents` de `.claude/README.md`, produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem — são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE); gate do modelador — `GOVERNANCA.md` §3.2 (tabela *Quem escreve* e dois parágrafos novos imediatamente antes de *Retroatividade*) e `.claude/agents/pantonic-model-designer.md` (gate de devolução e ato de autoria), nas duas pontas no mesmo card; `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam** — o vocabulário `V1`..`V20` não muda, só quem responde por `V1` e `V3`; norma da unidade de trabalho — residência única em `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), espelhada em `.claude/global/CLAUDE.md` (Regras 2 e 7) e indexada em `docs/RESIDENCIA_DOUTRINA.md`; substituição de bloco nomeado, pelo texto literal dos passos da `PLN-T2`; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem
+- **Operação do modelo:** `OP-5`
+  - OP-5: O redator da especificação descreve a figura de quem planeja depois de medir como ela se comportou até aqui: uma seção por dimensão, cada afirmação ancorada no retrato medido ou na decisão que instituiu o depois, e a última nomeando o que o corpus ainda não permite dizer.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md`, em **dez regiões — e esta enumeração é a lista inteira**: descrição, fatos estáveis, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card, rodada de replanejamento e o que ele nunca faz. Quem edita o arquivo confronta as dez antes de publicar; região de conduta que não esteja aqui é achado para o modelador, não licença de autoria. A outra residência da conduta é a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. A régua **numérica** não reside em `.claude/agents/pantonic-planner.md` — ela é interna a `GOVERNANCA.md` §3 —, mas o arquivo **remete** a ela, e remissão a régua aposentada conta como residência para efeito do estado final: enquanto a linha de `## Fatos estáveis` que invoca a tabela de classes como régua numérica do papel estiver viva, a propriedade da régua não alcançou o estado final, ainda que toda residência numérica tenha sido reescrita. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; agente model designer — não se transforma neste plano: a seção `## 1. Modelo conceitual` escrita por ele e o vocabulário de violações `V1`..`V21` de `.claude/tools/modelo.py` são o insumo que quem planeja consome, e permanecem como estão. `.claude/tools/modelo.py`, `tests/test_modelo.py` e as fixtures **não se tocam**. O que os cards deste plano publicam em `GOVERNANCA.md` §3.2 e em `.claude/agents/pantonic-model-designer.md` é a responsabilidade de **quem planeja** pelo lastro das operações, e nada além disso: o portão com que o modelador aceita ou recusa escrever a seção sobre um plano ainda sem cards não é objeto deste plano — alterá-lo é colateral e se escala
 - **Camada e fronteira:** documentação em `docs/`. Nenhum código, nenhum teste, nenhum arquivo do
   kit.
 - **Domínio:** *planejador* é o papel declarado na matriz de responsabilidades de `GOVERNANCA.md`
@@ -1124,6 +1440,16 @@ o que estas tarefas são.
 - **Arquivos-alvo:**
   - `docs/planner-spec.md` (novo)
 - **Passos:**
+  0. **Sincronizar o contrato copiado com o modelo vigente, antes de qualquer outro passo.** Ler a
+     linha do veredito do **Marco 2** na tabela de marcos deste plano — ela já está registrada
+     quando este card é despachado, porque o Marco 2 precede a `PLN-T6`. Se o veredito for `go` na
+     versão 4, recopiar para o campo `Operação do modelo` **deste card** o texto da operação e a
+     linha `precisa de` a partir do bloco do modelo que estiver **vigente**, e fazer o mesmo na
+     `PLN-T7` — que é o único outro card aberto com contrato copiado. Se for `no-go`, a versão 3
+     permanece vigente e **nada se recopia**. Registrar na linha de retorno
+     `passo 0: contrato <recopiado da versão 4 | mantido na versão 3>`. Não é decisão do executor:
+     o veredito do dono já existe e este passo apenas o materializa (`GOVERNANCA.md` §3.2, *a
+     medição parte sempre do modelo vigente*). Acrescentado pelo consultor em 2026-09-22 (`AE-14`).
   1. Criar `docs/planner-spec.md` com o título `# Especificação do agente de planejamento` e um
      cabeçalho de três linhas: a data; a frase que declara as duas fontes — a `## 12. Agregado
      medido` e a `## 3. Decisões` de `docs/plans/P-0745-planejador-modelo-operacao.md`; e a frase
@@ -1178,9 +1504,15 @@ o que estas tarefas são.
      ```
      → **11** — a seção `## 0` mais as dez dimensões. **Medido antes: o arquivo não existe**.
   2. ```
-     grep -c 'DPN-' docs/planner-spec.md
+     grep -o 'DPN-[0-9]*' docs/planner-spec.md | sort -u | wc -l
      ```
-     → **um número maior ou igual a 5** (uma âncora por decisão que a seção 4 e a 5 citam). **Medido antes: o arquivo não existe**.
+     → **um número maior ou igual a 5** — âncoras **distintas**, uma por decisão que a seção 4 e a
+     5 citam. **Medido antes: o arquivo não existe.** A forma anterior (`grep -c 'DPN-'`) contava
+     **linhas com match** e errava nos dois sentidos: cinco decisões citadas numa linha davam `1`,
+     e a mesma decisão repetida em cinco linhas dava `5` — nenhum dos dois é "uma âncora por
+     decisão" (`AE-17`). Forma nova exercitada em 2026-09-22 contra um arquivo que existe,
+     `docs/plans/P-0745-planejador-modelo-operacao.md`: devolve **13** âncoras distintas, contra
+     **74** linhas pela forma antiga.
   3. ```
      python -c "import pathlib;print(len(pathlib.Path('docs/planner-spec.md').read_text(encoding='utf-8').splitlines()))"
      ```
@@ -1193,24 +1525,28 @@ o que estas tarefas são.
   exatamente uma seção, e nenhuma seção carrega número que não esteja no agregado da `PLN-T1` nem
   regra que não esteja numa `DPN-<n>`.
   Por propriedade que a operação altera (`DPN-6`):
-  - `especificação do planejador.existência do documento` — o documento existe, com uma seção por dimensão na ordem da §4 e uma seção de abertura que declara o que ele não é — nem residência do escopo do papel, nem do protocolo de conduta — Verificação 1 e 3.
-  - `especificação do planejador.ancoragem das afirmações` — toda afirmação numérica ou factual aponta para a subseção do agregado que a mediu ou para a decisão `DPN-<n>` que a instituiu; afirmação sem uma das duas âncoras não entra, e o que o corpus não responde é nomeado em vez de adivinhado — Verificação 2.
+  - `agente de planejamento.descrição pública da figura` — a figura tem especificação própria — uma seção por dimensão da §4, cada afirmação ancorada no retrato medido ou na decisão que a instituiu, e o que o corpus não responde nomeado em vez de adivinhado —, e a `description` do agente e a linha regenerada do índice do kit anunciam a decomposição do modelo em cards, na parcela que esta tarefa fecha: o documento existe, com uma seção por dimensão na ordem da §4 e uma seção de abertura que declara o que ele não é — Verificação 1, 2 e 3.
 - **Fora do escopo desta tarefa:** o índice de documentos e a revisão do README (`PLN-T7`).
 
 ### PLN-T7 — O índice de documentos e a revisão do README [Sonnet · esforço medium · classe implementacao]
-- **Status:** `ready` · 2026-09-21
+- **Status:** `done` · 2026-09-22
 - **Depende de:** `PLN-T6`
 - **Objetivo:** `docs/planner-spec.md` e este plano alcançáveis por `docs/DOC_MAP.md`; o `README.md`
-  revisado contra o estado da árvore ao fim deste plano — as nove linhas de "tarefa atômica" da §7
-  reescritas, a §3 sem a tabela de tetos — e `check-readme.ps1` verde.
+  revisado contra o estado da árvore ao fim deste plano — reescritas **todas** as linhas de
+  "tarefa atômica" da §7 **menos uma**, a `README.md:366`, medida histórica que não se edita
+  (`I-7`), e a §3 sem a tabela de tetos — e `check-readme.ps1` verde; e o parágrafo de abertura de
+  `GOVERNANCA.md` §3 sem o orçamento de turnos, que é o mesmo ato na residência espelho do hub.
 - **Fundamento:** `DPN-1`, `DPN-2`, `DPN-3`; fatos `F-6`, `F-10`, `F-14`, `F-16`; invariantes
   `I-6`, `I-7`. É a tarefa de revisão de README que `G-README` dever 2 exige de toda sprint. Herda
   a `PLS-T3` do `P-0744`.
-- **Operação do modelo:** `OP-7`
-  - OP-7: O mantenedor acerta a documentação pública contra o estado da árvore ao fim da rota: a porta de entrada deixa de chamar a unidade de trabalho pelo nome antigo e perde o orçamento de turnos por classe, o índice de documentos passa a alcançar a especificação nova e este plano, e as frases que registram medida do passado ficam como estão.
-  - precisa de: especificação do planejador — `docs/planner-spec.md` (novo): uma seção por dimensão da §4 deste plano, na ordem dela, aberta por `## 0. O que esta especificação não é`; descreve a figura **depois** das `PLN-T2`..`PLN-T5` (`DPN-8`); não é residência do escopo do papel (matriz de `GOVERNANCA.md` §3) nem do protocolo de conduta (`.claude/agents/pantonic-planner.md`); a lista de dimensões tem residência única na §4 e não se reenuncia; gramática do card — `.claude/skills/diario-de-obras/SKILL.md`, seção *Formato de uma tarefa*, mais uma linha em `modelo-por-fase`, uma em `bootstrap-pantonic` e uma em `.claude/agents/pantonic-fora-da-caixa.md`; a subseção *Modelo de domínio (seção do plano)* da mesma skill **não se toca** (fronteira com o `P-0743`, §6); ocorrência de outro sentido — passo atômico de migração, escrita atômica em disco — fica intacta; norma da unidade de trabalho — residência única em `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), espelhada em `.claude/global/CLAUDE.md` (Regras 2 e 7) e indexada em `docs/RESIDENCIA_DOUTRINA.md`; substituição de bloco nomeado, pelo texto literal dos passos da `PLN-T2`; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; citações históricas de medida — `GOVERNANCA.md:123`, `README.md:366`, `.claude/global/docs/RECOMENDACOES_CONSUMO_GLOBAL.md` e `CHANGELOG.md:62,160` (`F-16`); invariante `I-7` — não se reescrevem em nenhuma tarefa deste plano; o limiar da janela de orquestração em `.claude/tools/ocupacao.py` também fica, por `DPN-3`, porque não dimensiona tarefa
-- **Camada e fronteira:** documentação. Nenhum código, nenhum arquivo do kit.
+- **Operação do modelo:** `OP-6`
+  - OP-6: O mantenedor leva a unidade nova à porta de entrada do repositório: o glossário e as seções que ainda chamam a unidade de trabalho pelo nome antigo passam a falar do card que materializa uma operação, o orçamento de turnos por classe sai de onde quem chega o lia, e a figura de quem planeja passa a se anunciar lá pela decomposição do modelo.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md`, em **dez regiões — e esta enumeração é a lista inteira**: descrição, fatos estáveis, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card, rodada de replanejamento e o que ele nunca faz. Quem edita o arquivo confronta as dez antes de publicar; região de conduta que não esteja aqui é achado para o modelador, não licença de autoria. A outra residência da conduta é a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. A régua **numérica** não reside em `.claude/agents/pantonic-planner.md` — ela é interna a `GOVERNANCA.md` §3 —, mas o arquivo **remete** a ela, e remissão a régua aposentada conta como residência para efeito do estado final: enquanto a linha de `## Fatos estáveis` que invoca a tabela de classes como régua numérica do papel estiver viva, a propriedade da régua não alcançou o estado final, ainda que toda residência numérica tenha sido reescrita. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; tarefa — nenhum card deste plano altera uma tarefa. O que se observa nela, antes e depois, é o padrão sob o qual ela nasce: o nome da unidade no cabeçalho e na doutrina, a régua que definiu o recorte e a presença do campo `Operação do modelo` com o texto e os contratos copiados. Os sete cards deste plano, escritos sob o padrão antigo, são o retrato do antes; a aferição do depois é o primeiro plano decomposto depois da `PLN-T4`, lido por `python .claude/tools/modelo.py show`
+- **Camada e fronteira:** documentação — a porta de entrada (`README.md`, `docs/DOC_MAP.md`) e o
+  parágrafo de abertura de `GOVERNANCA.md` §3, residência espelho do mesmo texto. Nenhum código,
+  nenhum arquivo de `.claude/`.
 - **Arquivos-alvo:**
+  - `GOVERNANCA.md:78,80` (§3, parágrafo de abertura: "orçamento de turnos", "caber no orçamento")
   - `docs/DOC_MAP.md:157` (entrada de `docs/consultant-spec.md`, modelo da entrada nova)
   - `README.md:94` (glossário, `- **Tarefa atômica** —`)
   - `README.md:305` (§3, parágrafo `**Orçamento de turnos por classe de tarefa.**`, até o fim do parágrafo e da tabela que o segue, se houver)
@@ -1219,8 +1555,14 @@ o que estas tarefas são.
   - `README.md:405` (§5, `Uma tarefa atômica bem escrita carrega, no mínimo:`)
   - `README.md:432` (§5, `a tarefa atômica em contexto limpo`)
   - `README.md:478` (§6, `**Passo 3 — escolher uma única tarefa atômica.**`)
-  - `README.md:824-825` (§11, linhas `| `pantonic-planner` |` e `| `pantonic-executor` |`)
+  - `README.md:825-826` (§11, linhas `| `pantonic-planner` |` e `| `pantonic-executor` |` — re-ancoradas em 2026-09-22; o card as citava como `824-825`)
 - **Passos:**
+  0. **Conferir o contrato copiado.** Se a `PLN-T6` registrou `passo 0: contrato recopiado da
+     versão 4`, o campo `Operação do modelo` deste card já foi recopiado por ela; conferir que o
+     texto de `OP-6` e a linha `precisa de` batem com o bloco vigente do modelo e, se não baterem,
+     recopiar. Se a `PLN-T6` registrou `mantido na versão 3`, nada se faz. Registrar na linha de
+     retorno `passo 0: contrato <conferido | recopiado>`. Acrescentado pelo consultor em 2026-09-22
+     (`AE-14`).
   1. Acrescentar a `docs/DOC_MAP.md` uma entrada `## docs/planner-spec.md (~<n> linhas)` na mesma
      forma da entrada de `docs/consultant-spec.md` da linha 157: o resumo em uma linha, a lista de
      seções e a linha `**Acesso:**` com o `Grep` de heading; `<n>` é a contagem real obtida por
@@ -1229,6 +1571,16 @@ o que estas tarefas são.
   3. Em `README.md:94`, substituir `- **Tarefa atômica** — a unidade de execução, definida por uma propriedade: executável por um agente` pelo início literal `- **Card** — a unidade de execução: a materialização de **uma operação do modelo** do plano, executável por um agente` e ajustar o restante da entrada do glossário para que a propriedade que a define seja *uma operação inteira, coesa e autossuficiente em contexto*, sem percentual e sem teto.
   4. Em `README.md:305`, substituir o parágrafo `**Orçamento de turnos por classe de tarefa.**` — e a tabela de tetos que o segue, se existir — por um parágrafo literal:
      `**Classe do card — natureza, não teto.** A classe do cabeçalho (`mecanica|implementacao|comportamental|investigacao|redacao`) declara a natureza do trabalho e calibra a profundidade de quem executa; nenhum número de turnos ou de ocupação dimensiona a tarefa. A tabela de tetos por classe, calibrada em 2026-08-01 sobre o recorte atômico numa janela de 200k, foi aposentada em 2026-09-21 junto com esse recorte (`GOVERNANCA.md` §3; `P-0745`). O consumo continua medido em `docs/telemetria.tsv` e se lê na série, nunca como aceite.`
+  4a. Em `GOVERNANCA.md:78`, substituir `fase, orçamento de turnos e economia de contexto` por
+     `fase, dimensionamento pela operação do modelo e economia de contexto`; e em
+     `GOVERNANCA.md:80`, substituir `nenhuma rota se muda para caber no orçamento` por
+     `nenhuma rota se muda para caber no custo`. É o **mesmo ato do passo 4**, na residência espelho:
+     o parágrafo de abertura da §3 ainda vende o orçamento de turnos como instrumento de
+     sustentabilidade, enquanto a própria §3 o aposentou como régua na `PLN-T2` (`DPN-3`), e `custo`
+     é o termo que a mesma hierarquia já usa duas frases antes. Quebra de linha se reajusta a ~100
+     colunas; palavra não muda. Sítio acrescentado ao censo da §7 pelo consultor em 2026-09-22
+     (`AE-10`), e é o **único** órfão da forma antiga em `GOVERNANCA.md` — varredura medida na
+     mesma data.
   5. Em `README.md:350`, substituir `decomposição em checklists de tarefas atômicas` por `decomposição do modelo em cards, um por operação`.
   6. Em `README.md:382`, substituir `decompõe a iniciativa em **tarefas atômicas**. Uma tarefa atômica é definida` por `decompõe o modelo em **cards, um por operação**. Um card é definido`.
   7. Em `README.md:405`, substituir `Uma tarefa atômica bem escrita carrega, no mínimo:` por `Um card bem escrito carrega, no mínimo:` e acrescentar à lista que o segue, como primeiro item, `a operação do modelo que materializa, com texto e contrato copiados`.
@@ -1240,7 +1592,9 @@ o que estas tarefas são.
   12. Devolver, na linha de retorno, a saída literal de `check-readme.ps1` — é o insumo do veredito
       do dono.
 - **Restrições desta tarefa:**
-  - `README.md:366` não se edita (`I-7`); `README.md:401` não se edita (outro sentido, §7).
+  - `README.md:366` **e** `README.md:1036` não se editam (`I-7`): são a mesma medida histórica de
+    2026-07, em duas residências, e são exatamente as duas linhas que a Verificação 3 espera
+    encontrar ao final (`AE-17`). `README.md:401` não se edita (outro sentido, §7).
   - Entrada do índice segue a forma da entrada vigente de `docs/consultant-spec.md`, incluindo a
     linha `**Acesso:**`. Não inventar forma nova.
   - Se `README.md` ou `docs/DOC_MAP.md` tiverem frase que conte itens de uma lista tocada, ela se
@@ -1269,31 +1623,239 @@ o que estas tarefas são.
   2. ```
      grep -c 'Acesso:' docs/DOC_MAP.md
      ```
-     → **um número maior em 2 que o medido no despacho**. **Medido antes: 9** (2026-09-21).
+     → **um número maior em 2 que o medido no despacho**. **Medido em 2026-09-22: 11** — o valor
+     publicado na autoria (**9**, 2026-09-21) envelheceu duas entradas; a forma-relação absorveu
+     (`AE-16`).
   3. ```
-     grep -c 'tarefa atômica\|tarefas atômicas' README.md
+     grep -ic 'tarefa atômica\|tarefas atômicas' README.md
      ```
-     → **1** (só a linha 366, medida histórica). **Medido antes: 10**.
+     → **2** — as **duas** medidas históricas que ficam (`I-7`): `README.md:366` e
+     `README.md:1036`, as duas carregando a mesma aferição de 2026-07 ("71 turnos e ~189 mil
+     tokens numa única tarefa atômica"). **Medido em 2026-09-22: 11 linhas e 12 ocorrências.**
+     Três defeitos de aferidor corrigidos no mesmo ato (`AE-17`): **(i)** o `-i` é necessário —
+     a entrada de glossário de `README.md:94` escreve **`Tarefa atômica`** com maiúscula, e a
+     forma anterior, sem `-i`, **não a enxergava**; **(ii)** o esperado passa de `1` para `2`,
+     porque a segunda medida histórica (`README.md:1036`) não estava no censo da §7 e foi
+     acrescentada a ele como **fica**; **(iii)** a contagem é de **linhas** de propósito — a
+     pergunta é "que linhas sobraram" —, e a conferência de que nenhuma ocorrência ficou escondida
+     numa linha já reescrita é a Verificação 3a.
+  3a. ```
+      grep -oi 'tarefa atômica\|tarefas atômicas' README.md | wc -l
+      ```
+      → **2** — uma ocorrência em cada uma das duas linhas históricas. **Medido em 2026-09-22: 12
+      ocorrências em 11 linhas**, sendo `README.md:382` a única linha com **duas** — e o passo 6
+      cobre as duas no mesmo literal.
   4. ```
      grep -c 'Orçamento de turnos por classe de tarefa' README.md
      ```
      → **0**. **Medido antes: 1**.
+  4a. ```
+      grep -c 'orçamento de turnos\|caber no orçamento' GOVERNANCA.md
+      ```
+      → **0**. **Medido antes: 2** — as duas linhas do passo 4a (`GOVERNANCA.md:78` e `:80`),
+      contadas em 2026-09-22.
   5. ```
      pwsh -NoProfile -File .claude/checks/check-readme.ps1
      ```
-     → exit **0**, primeira linha começando por `check-readme: OK - 10 agente(s), 11 skill(s), 20 guardrail(s)`. **Medido antes: o mesmo**.
+     → exit **0**, e a primeira linha começa por `check-readme: OK -` com **os mesmos números de
+     agentes, skills e guardrails re-medidos no despacho** — este card não cria nem remove agente,
+     skill ou guardrail, então a relação é de invariância, não de constante (`AE-16`). **Medido em
+     2026-09-22:** `check-readme: OK - 10 agente(s), 11 skill(s), 20 guardrail(s), versão '0.0.0',
+     14 seção(ões) com Fonte da verdade válida`.
   6. ```
      python .claude/tools/backlog.py check
      ```
      → `check: OK — nenhuma violação.`, exit **0**. **Medido antes: o mesmo**.
-- **Pronto quando:** as seis verificações imprimem os valores declarados e a saída literal de
-  `check-readme.ps1` está na linha de retorno.
+- **Pronto quando:** as **oito** verificações — 1, 2, 3, 3a, 4, 4a, 5 e 6 — imprimem os valores
+  declarados e a saída literal de `check-readme.ps1` está na linha de retorno.
   Por propriedade que a operação altera (`DPN-6`):
-  - `documentação pública do kit.unidade nomeada na porta de entrada` — o glossário abre por card, as demais linhas falam de card por operação, o parágrafo do orçamento vira a classe como natureza do trabalho, e `check-readme.ps1` continua saindo `0` — Verificação 3, 4 e 5.
-  - `documentação pública do kit.alcance pelo índice de documentos` — duas entradas novas, na forma da entrada de `docs/consultant-spec.md`, cada uma com o resumo em uma linha, a lista de seções e a linha `**Acesso:**`, com a contagem real de linhas — Verificação 1 e 2.
+  - `agente de planejamento.unidade de trabalho que ele recorta` — a parcela desta tarefa: o glossário abre por card, as demais linhas da porta de entrada falam do card que materializa uma operação, e `check-readme.ps1` continua saindo `0` — Verificação 3 e 5.
+  - `agente de planejamento.régua com que ele dimensiona um card` — a parcela desta tarefa: o parágrafo do orçamento de turnos por classe sai da porta de entrada e vira a classe como natureza do trabalho, e o parágrafo de abertura de `GOVERNANCA.md` §3 deixa de vender o orçamento de turnos como instrumento de sustentabilidade — Verificação 4 e 4a.
+  - `agente de planejamento.descrição pública da figura` — a parcela desta tarefa: as linhas do `README.md` que anunciavam decomposição em tarefas atômicas passam a anunciar a decomposição do modelo em cards, um por operação — Verificação 3.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não propriedade do modelo: as duas entradas novas de `docs/DOC_MAP.md`, aferidas pela Verificação 1 e 2.
 - **Fora do escopo desta tarefa:** o veredito do dono sobre o README e sobre a especificação
   (Marco 3), registrado pela orquestração (`GOVERNANCA.md` §4.5); o documento de encerramento
   (skill `entrega-de-encerramento`), que a orquestração produz ao fechar o plano.
+### PLN-T7a — O README deixa de defender a régua que ele mesmo aposenta [Sonnet · esforço medium · classe redacao]
+- **Status:** `done` · 2026-09-22
+- **Depende de:** `PLN-T7`
+- **Objetivo:** nenhuma linha de doutrina **viva** do `README.md` defende, define ou pressupõe o
+  teto de turnos por classe que o `README.md:306` declara aposentado. As duas **medidas históricas**
+  (`README.md:354` e `README.md:1025`) permanecem intactas: medida datada não se falsifica (`I-7`).
+- **Fundamento:** `DPN-3`; achado `AE-23`, varredura do `AE-24`. **Card corretivo somado à `OP-6`**,
+  na forma que a `PLN-T2` instituiu em `GOVERNANCA.md` §3. É resíduo da `OP-6` e de nenhuma outra: a
+  operação diz, literal, que o mantenedor leva a unidade nova **à porta de entrada do repositório** e
+  que "o orçamento de turnos por classe sai de onde quem chega o lia" — e oito sítios da porta de
+  entrada ficaram fora do censo. **Nenhum passo deste card autora doutrina nova:** cada substituição
+  condensa texto **já publicado e aceito** em `GOVERNANCA.md` §3, cuja âncora vem nomeada no passo.
+  O `README.md` é residência **derivada**; a autoridade é o hub.
+- **Operação do modelo:** `OP-6`
+  - OP-6: O mantenedor leva a unidade nova à porta de entrada do repositório: o glossário e as seções que ainda chamam a unidade de trabalho pelo nome antigo passam a falar do card que materializa uma operação, o orçamento de turnos por classe sai de onde quem chega o lia, e a figura de quem planeja passa a se anunciar lá pela decomposição do modelo.
+  - precisa de: agente de planejamento — residências da conduta: `.claude/agents/pantonic-planner.md`, em **dez regiões — e esta enumeração é a lista inteira**: descrição, fatos estáveis, tese do papel, abertura do protocolo, Fases 3a e 3b, Fase 4, Fase 5, anatomia do card, rodada de replanejamento e o que ele nunca faz. Quem edita o arquivo confronta as dez antes de publicar; região de conduta que não esteja aqui é achado para o modelador, não licença de autoria. A outra residência da conduta é a região gerada `kit:agents` de `.claude/README.md` — produzida por `pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode generate` e nunca editada à mão. Residências da régua e da unidade: `GOVERNANCA.md` §3 (matriz de responsabilidades, *A unidade de trabalho é o módulo coeso*, *Diretriz de dimensionamento de tarefa*, tabela da §4, §4.1, §4.3, G-PLANREADY e G-MODULO), `.claude/global/CLAUDE.md` (Regras 2 e 7) e a cópia do dono (`DPN-12`), `docs/RESIDENCIA_DOUTRINA.md`, as skills `diario-de-obras` (*Formato de uma tarefa*), `modelo-por-fase` e `bootstrap-pantonic`, `.claude/agents/pantonic-fora-da-caixa.md` e `README.md`. A régua **numérica** não reside em `.claude/agents/pantonic-planner.md` — ela é interna a `GOVERNANCA.md` §3 —, mas o arquivo **remete** a ela, e remissão a régua aposentada conta como residência para efeito do estado final: enquanto a linha de `## Fatos estáveis` que invoca a tabela de classes como régua numérica do papel estiver viva, a propriedade da régua não alcançou o estado final, ainda que toda residência numérica tenha sido reescrita. Residência da responsabilidade pelo lastro: `GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`, nas duas pontas no mesmo card. Residência da descrição: `docs/planner-spec.md` (novo), uma seção por dimensão da §4, na ordem dela e aberta por `## 0. O que esta especificação não é`. O censo linha a linha, com destino, é a §7; a classe do cabeçalho do card permanece como natureza do trabalho, porque os parsers a leem; ocorrência de outro sentido — escrita atômica em disco, passo atômico de migração — fica intacta; as entradas `RP-1`..`RP-7` e os itens de verificação que não citam ocupação permanecem, são a memória medida do papel; o escopo do papel continua na matriz de `GOVERNANCA.md` §3 (G-SCOPE), e a especificação não é residência nem do escopo nem do protocolo de conduta; tarefa — nenhum card deste plano altera uma tarefa. O que se observa nela, antes e depois, é o padrão sob o qual ela nasce: o nome da unidade no cabeçalho e na doutrina, a régua que definiu o recorte e a presença do campo `Operação do modelo` com o texto e os contratos copiados. Os sete cards deste plano, escritos sob o padrão antigo, são o retrato do antes; a aferição do depois é o primeiro plano decomposto depois da `PLN-T4`, lido por `python .claude/tools/modelo.py show`
+- **Camada e fronteira:** documentação, um arquivo. Nenhuma linha de `GOVERNANCA.md` — a autoridade
+  está correta e é a fonte de cada literal deste card —, nenhum agente, nenhuma skill, nenhum
+  instrumento. `docs/planner-spec.md` **não se toca**: é entrega aceita da `PLN-T6`.
+- **Domínio:** *doutrina viva* × *medida histórica* — a distinção que governa este card. Doutrina
+  viva é enunciado normativo em vigor: envelhece e se corrige. Medida histórica é observação datada:
+  **não se falsifica**, permanece e é preservada por `I-7`. As duas medidas históricas do `README`
+  são `:354` e `:1025`, ambas "71 turnos e ~189 mil tokens numa única tarefa atômica", de 2026-07.
+- **Arquivos-alvo:**
+  - `README.md:121-124` (glossário, entrada `- **Orçamento de turnos**`)
+  - `README.md:209,211` (§ da hierarquia qualidade > rota > custo — espelho de `GOVERNANCA.md:78,80`)
+  - `README.md:308-309` (parágrafo do `≤30` da rodada de replanejamento)
+  - `README.md:311-322` (parágrafo `**Por quê.**`, que defende o teto graduado)
+  - `README.md:324-326` (parágrafo `**Onde o gerente intervém.**`, premissa de estouro de teto)
+  - `README.md:941-942` e `README.md:946-947` (calibração de tetos como finalidade da série)
+  - `README.md:1032` (tabela de trade-offs, linha do teto graduado)
+  - `tests/test_doutrina_unidade.py` (acréscimo de uma função; as existentes não se tocam)
+- **Passos:**
+  1. Em `README.md:121-124`, substituir a entrada inteira `- **Orçamento de turnos** — …` pela
+     entrada literal, condensada de `GOVERNANCA.md:188-197` (*Classe do card — natureza, não teto*):
+     ```
+     - **Classe do card** — `mecanica|implementacao|comportamental|investigacao|redacao`: declara a
+       **natureza** do trabalho e calibra a profundidade de quem executa. **Não carrega teto**:
+       nenhum número de turnos ou de ocupação dimensiona uma tarefa — a unidade é a operação do
+       modelo que o card materializa. O consumo segue medido em `docs/telemetria.tsv` e se lê **na
+       série**, nunca como aceite. Onde a regra mora: `GOVERNANCA.md` §3 (§3 desta página).
+     ```
+  2. Em `README.md:209`, substituir `o
+     orçamento de turnos, o modelo por fase e a disciplina de coleta existem` por
+     `o dimensionamento pela operação do modelo, o modelo por fase e a disciplina de coleta existem`;
+     e em `README.md:211`, substituir `nenhuma rota se muda para caber no orçamento` por
+     `nenhuma rota se muda para caber no custo`. São **as mesmas duas substituições** já aplicadas em
+     `GOVERNANCA.md:78,80` pelo passo 4a da `PLN-T7`: este é o parágrafo espelho, e o literal é o
+     mesmo. Quebra de linha se reajusta a ~100 colunas; palavra não muda.
+  3. Em `README.md:308-309`, **remover** o parágrafo inteiro
+     `A rodada de replanejamento tem linha própria porque a série dessas rodadas não cabe em ≤30, e dividi-la entre contextos obrigaria a repagar a leitura da decisão em cada fatia.`
+     — ele descreve uma linha de uma tabela que não existe mais.
+  4. Em `README.md:311-322`, substituir o parágrafo `**Por quê.**` inteiro pelo literal, que
+     **preserva o que continua verdadeiro** e descarta a defesa do teto — condensado de
+     `GOVERNANCA.md:165-187` (*Diretriz de dimensionamento de tarefa*) e `:188-197`:
+     ```
+     **Por quê.** Custo e consumo são informativos e não têm valor em isolamento: só rendem insight
+     analisados **em conjunto, na série**, e limite não conscientemente delimitado que afete o fluxo
+     é vício, não critério. Foi por isso que o teto por classe saiu: ele dimensionava a tarefa por um
+     número quando o que a dimensiona é a **operação do modelo** que ela materializa — coesa,
+     autossuficiente em contexto. O controle real é **recortar o card pela operação**, e operação que
+     não cabe num card coeso é defeito do modelo, não card grande. O registro qualitativo por tarefa,
+     quando existe, mora no card "Lições aprendidas na tarefa" do laudo de revisão.
+     ```
+  5. Em `README.md:324-326`, substituir `escolher uma classe mais generosa *depois* do estouro é falsificar a`
+     por `escolher uma classe mais generosa *depois* da entrega é falsificar a`, e
+     `se um estouro se repete numa mesma classe, o sinal é de decomposição errada, e a resposta é replanejar`
+     por `estouro de contexto numa tarefa é registrado no corpo dela e vira insumo de revisão do modelo — sinal de operação mal recortada`.
+     Literal de `GOVERNANCA.md:185-187` e `:196-197`. O resto do parágrafo **não se toca**.
+  6. Em `README.md:941-942`, substituir `a calibração dos tetos de que o modelo econômico` por
+     `a leitura da série de que o modelo econômico`. O número medido (**11% a 44%**) **não se toca**:
+     é medida histórica.
+  7. Em `README.md:946`, substituir `É ele quem lê a série para calibrar tetos — e a regra é que`
+     por `É ele quem lê a série — e a regra é que`; e em `README.md:947`, substituir
+     `(estouro de teto,` por `(estouro de contexto,`.
+  8. Em `README.md:1032`, substituir a célula-regra
+     `**Teto de turnos graduado por classe, calibrado pela série medida**` e a célula de custo que a
+     acompanha pelo literal, condensado de `GOVERNANCA.md:165-197`:
+     ```
+     | **Nenhum número dimensiona uma tarefa: a unidade é a operação do modelo** | Perde-se o alarme numérico por classe, que era barato de ler. Em troca, o recorte passa a ser por coesão da operação, e estouro deixa de ser sinal de card grande para ser insumo de revisão do modelo — operação mal recortada volta ao modelador. A série continua medida em `docs/telemetria.tsv`, lida em conjunto, nunca como aceite. |
+     ```
+  9. Acrescentar a `tests/test_doutrina_unidade.py`, **depois** das funções existentes e sem alterar
+     nenhuma delas, a função literal:
+     ```python
+     def test_readme_nao_defende_a_regua_aposentada():
+         t = _texto("README.md")
+         assert "Orçamento de turnos" not in t
+         assert "Um teto único para tudo" not in t
+         assert "Teto de turnos graduado por classe" not in t
+         assert "calibrar tetos" not in t
+         assert "calibração dos tetos" not in t
+         assert "não cabe em ≤30" not in t
+         assert "71 turnos e ~189 mil tokens" in t
+     ```
+  10. Rodar as verificações abaixo.
+- **Restrições desta tarefa:**
+  - `README.md:354` e `README.md:1025` **não se editam** (`I-7`): são a mesma medida datada de
+    2026-07, em duas residências, e a Verificação 8 afere que sobreviveram.
+  - Nenhum literal deste card é autoral: cada um condensa `GOVERNANCA.md` §3, cuja âncora está no
+    passo. Divergindo o literal do card do texto do hub, **manda o hub** — e a divergência vai na
+    linha de retorno como achado, sem edição de `GOVERNANCA.md`.
+  - Ajuste de quebra de linha para ~100 colunas é permitido e esperado; mudança de palavra não é.
+  - Não editar `docs/planner-spec.md`, `docs/DOC_MAP.md` nem `.claude/README.md`. Não commitar (`I-1`).
+- **Não fazer:**
+  - Não tocar os sítios de **outro sentido**, conferidos na varredura de 2026-09-22 e que **ficam**:
+    `README.md:286-303` (economia de turnos como disciplina de **custo**, que o plano não aposenta),
+    `:704`, `:707`, `:722`, `:727`, `:744` (teto de checkpoint e de dossiê, outro sentido).
+  - Não "aproveitar" para revisar seção alheia: a varredura foi pelo **conceito aposentado** e por
+    todos os nomes que o invocam, e os oito sítios acima são a lista inteira (`AE-24`).
+- **Contingências:**
+  1. Se uma âncora de linha não casar → localizar pelo literal citado no passo (`grep -n`) e seguir;
+     literal ausente → parar e sinalizar `blocked` razão `premissa`, com o literal na linha de retorno.
+  2. Se `python -m pytest tests -q` reprovar em teste que este card não criou → parar e sinalizar
+     `blocked` razão `premissa`, colando a linha de falha.
+- **Testes:** `TR-DU-7` (`test_readme_nao_defende_a_regua_aposentada`); suíte: `python -m pytest tests -q`.
+- **Verificação:**
+
+  1. ```
+     grep -c 'Orçamento de turnos' README.md
+     ```
+     → **0**. **Medido em 2026-09-22: 1.**
+  2. ```
+     grep -c 'caber no orçamento' README.md
+     ```
+     → **0**. **Medido em 2026-09-22: 1.**
+  3. ```
+     grep -c 'não cabe em ≤30' README.md
+     ```
+     → **0**. **Medido em 2026-09-22: 1.**
+  4. ```
+     grep -c 'Um teto único para tudo' README.md
+     ```
+     → **0**. **Medido em 2026-09-22: 1.**
+  5. ```
+     grep -c 'calibração dos tetos\|calibrar tetos' README.md
+     ```
+     → **0**. **Medido em 2026-09-22: 2** (uma ocorrência de cada, em linhas distintas).
+  6. ```
+     grep -c 'Teto de turnos graduado por classe' README.md
+     ```
+     → **0**. **Medido em 2026-09-22: 1.**
+  7. ```
+     grep -c 'Classe do card — natureza, não teto' README.md
+     ```
+     → **1** — o parágrafo que a `PLN-T7` instalou sobrevive intacto. **Medido em 2026-09-22: 1.**
+  8. ```
+     grep -c '71 turnos e ~189 mil tokens' README.md
+     ```
+     → **2** — as duas medidas históricas preservadas (`I-7`). **Medido em 2026-09-22: 2.**
+  9. ```
+     pwsh -NoProfile -File .claude/checks/check-readme.ps1
+     ```
+     → exit **0**, com os **mesmos** números de agentes, skills e guardrails re-medidos no despacho.
+     **Medido em 2026-09-22:** `check-readme: OK - 10 agente(s), 11 skill(s), 20 guardrail(s)`.
+  10. ```
+      python -m pytest tests -q
+      ```
+      → `<N> passed`, com `<N>` igual ao total re-medido no despacho **mais 1**. **Medido em
+      2026-09-22: `276 passed`.**
+  11. ```
+      python .claude/tools/backlog.py check
+      ```
+      → `check: OK — nenhuma violação.`, exit **0**. **Medido em 2026-09-22: o mesmo.**
+  12. ```
+      python .claude/tools/modelo.py check --plano docs/plans/P-0745-planejador-modelo-operacao.md
+      ```
+      → a **mesma** saída re-medida no despacho e exit **0**: este card não toca o modelo
+      (invariância). **Medido em 2026-09-22: exit 0, versão 4.**
+- **Pronto quando:** as doze verificações imprimem os valores declarados e nenhum arquivo fora dos
+  `Arquivos-alvo` foi editado.
+  Por propriedade que a operação altera (`DPN-6`):
+  - `agente de planejamento.régua com que ele dimensiona um card` — a parcela desta tarefa: a porta
+    de entrada do repositório deixa de **defender** a régua que ela mesma declara aposentada, e a
+    única régua que um leitor novo encontra é a operação do modelo — Verificação 1 a 7.
+  - As demais entregas desta tarefa são **requisito secundário** (`## Requisitos secundários`), não
+    propriedade do modelo: a asserção nova de `tests/test_doutrina_unidade.py`, aferida pela
+    Verificação 10.
+- **Fora do escopo desta tarefa:** as duas medidas históricas (`I-7`); os sítios de outro sentido
+  nomeados no `Não fazer`; e as duas atribuições erradas do `review_evidence.py`, rota `TK-66`/`TK-74`.
+
 
 ---
 
@@ -1306,9 +1868,13 @@ PLN-T1 (agregado medido — o antes)
    └→ PLN-T2 (a norma: unidade e limites)
         └→ PLN-T3 (a gramática do card e as skills)
              └→ PLN-T4 (o protocolo do planejador)
-                  └→ PLN-T5 (o modelador e o lastro)   ← Marco 2
+                  └→ PLN-T4a (o ponteiro sobrevivente da tabela aposentada — corretivo da OP-3)
+                  └→ PLN-T5 (o modelador e o lastro)
+                  └→ PLN-T5a (a frase que governa o gate — corretivo da OP-4)   ← Marco 2
                        └→ PLN-T6 (a especificação)
-                            └→ PLN-T7 (índice e README)  ← Marco 3
+                            └→ PLN-T7 (índice e README)
+                            └→ PLN-T7a (o README deixa de defender a régua aposentada —
+                                        corretivo da OP-6)   ← Marco 3
 ```
 
 `PLN-T1` vai primeiro porque mede o antes, e o antes deixa de existir na `PLN-T2`. `PLN-T2` precede
@@ -1340,7 +1906,7 @@ mudança de papel nas duas pontas e é o gate do Marco 2. `PLN-T6` depende de tu
 | risco | resposta pré-decidida |
 |---|---|
 | O modelador devolve um número de operações diferente de sete, ou uma partição que não casa os sete cards da §8 | é o modelo que manda (`DPN-2`): quem conduz a sessão de autoria ajusta os cards ao modelo — funde ou parte cards **antes** de registrar, e a §8 sai com um card por operação. Depois do registro, é rodada de replanejamento |
-| O dono dá `no-go` no Marco 1 porque não aceita aposentar o percentual e os tetos (`DPN-3`) | o plano vai a `cancelled`; o `P-0744` volta de `superseded` a `blocked`, com a razão original; nada foi editado, porque nenhuma tarefa roda antes do Marco 1 |
+| O dono dá `no-go` no Marco 1 porque não aceita aposentar o percentual e os tetos (`DPN-3`) | o modelo volta ao modelador para reautoria e o plano segue `blocked`; nada foi editado, porque nenhuma tarefa roda antes do Marco 1, e o `P-0744` continua `superseded` |
 | `main` muda durante a execução (a outra janela) e o merge conflita em `GOVERNANCA.md`, no diário ou no `README.md` | é o desenho do dono (§0): a execução inteira corre em `plan/planner-modelo-escopo` e o merge é ato dele, com resolução de conflitos; nenhuma tarefa faz `merge` nem `rebase`. A superfície de conflito já foi **reduzida na origem**: a entrega solta do `P-0741`+`P-0743` virou o primeiro commit desta branch (`e4c1608`), que `main` alcança por `git merge --ff-only`, e a partir dali só este plano diverge |
 | O dono veta, no Marco 1, editar o `CLAUDE.md` global dele (`DPN-12`) | a `PLN-T2` perde o passo 14a e as verificações 10 e 11, e nada mais muda — o card fecha só com a cópia do kit; a pendência volta a ser ato do dono, e a linha do `TK-68` a registra |
 | A guarda de `tests/test_doutrina_unidade.py` quebra por reformulação legítima futura da doutrina | é o objetivo: quem reformular edita a guarda no mesmo card, como toda regra de conformance do kit |
@@ -1349,6 +1915,706 @@ mudança de papel nas duas pontas e é o gate do Marco 2. `PLN-T6` depende de tu
 
 ---
 
+## 12. Agregado medido
+
+### 1. A figura, em uma página
+
+| métrica | valor |
+|---|---|
+| ocorrências | sem ocorrência no corpus medido |
+
+### 2. Gatilho
+
+| métrica | valor |
+|---|---|
+| ocorrências | 14 |
+| mais antiga | `AE-1`→`RP-1` (`P-0739`), 2026-09-16 |
+| mais recente | `AE-23`→`RP-1` (`P-0743`), 2026-09-21 |
+| classe dominante | `blocked motivo=premissa` do executor/revisor |
+| exemplo | `AE-1`→`RP-1` (`P-0739`), 2026-09-16 |
+
+### 3. Domínio de decisão
+
+| métrica | valor |
+|---|---|
+| ocorrências | 14 |
+| mais antiga | `RP-1` (`P-0739`), 2026-09-16 |
+| mais recente | `RP-1` (`P-0743`), 2026-09-21 |
+| classe dominante | técnica/tática fechada no próprio contexto (`G-NOASK`) |
+| exemplo | `RP-1` (`P-0741`), 2026-09-20 — fronteira com decisão do dono |
+
+### 4. Operacionalização do plano em cards
+
+| métrica | valor |
+|---|---|
+| ocorrências | 7 |
+| mais antiga | `AE-1`/`RP-1` (`P-0739`), 2026-09-16 |
+| mais recente | régua de granularidade, `Entregas - P-0743.md`, 2026-09-21 |
+| classe dominante | gramática ou campo de card ambíguo |
+| exemplo | `AE-1` (`P-0739`), 2026-09-16 |
+
+### 5. Fronteira
+
+| métrica | valor |
+|---|---|
+| ocorrências | 5 |
+| mais antiga | `RP-3` (`P-0739`), 2026-09-16 |
+| mais recente | papéis que escrevem no modelo (3→1), `Entregas - P-0743.md`, 2026-09-21 |
+| classe dominante | quem escreve ou edita — papel vs ferramenta |
+| exemplo | `AE-11` (`P-0740`), 2026-09-18 |
+
+### 6. Instrumento
+
+| métrica | valor |
+|---|---|
+| ocorrências | 3 |
+| mais antiga | `RP-1` de `pantonic-planner.md` (sobre `P-0739`), 2026-09-16 |
+| mais recente | `RP-2` de `pantonic-planner.md` (`AE-4`, `P-0740`), 2026-09-18 |
+| classe dominante | comando citado em `Verificação` sem execução medida |
+| exemplo | `RP-2` de `pantonic-planner.md` (`AE-4`, `P-0740`), 2026-09-18 |
+
+### 7. Custo e teto
+
+| métrica | valor |
+|---|---|
+| linhas de planejamento | 1 |
+| consumo mediano | 183k tk |
+| consumo máximo | 183k tk (mesma linha, `F-9`) |
+| data primeira | 2026-08-15 |
+| data última | 2026-08-15 |
+| exemplo | `RPC-P0735-planejamento`, 2026-08-15 |
+
+### 8. A rodada de replanejamento
+
+| métrica | valor |
+|---|---|
+| ocorrências | 14 |
+| replanejamento (planejador) | 13 |
+| reparo (consultor, substituto) | 1 — `RP-5` (`P-0740`), 2026-09-18 |
+| mais antiga | `RP-1` (`P-0739`), 2026-09-16 |
+| mais recente | `RP-1` (`P-0743`), 2026-09-21 |
+| classe dominante | técnica/tática sobre achado do executor ou revisor |
+| exemplo | `RP-6` (`P-0739`), 2026-09-18 |
+
+### 9. Estatística do próprio acionamento
+
+| métrica | valor |
+|---|---|
+| rodadas totais | 14 |
+| fecharam técnica/tática no contexto | 13 |
+| subiram ao dono (como saída da rodada) | 0 |
+| decisão do dono antecedente à rodada | 1 — `RP-1` (`P-0741`), 2026-09-20 |
+| terminaram com plano `superseded` | 0 |
+| mais antiga | `RP-1` (`P-0739`), 2026-09-16 |
+| mais recente | `RP-1` (`P-0743`), 2026-09-21 |
+| exemplo | `RP-2` (`P-0739`), 2026-09-16 |
+
+### 10. O que esta especificação não fecha
+
+| pergunta que o corpus não responde |
+|---|
+| se a rodada de reparo conduzida pelo consultor (`RP-5`, `P-0740`) conta como rodada de replanejamento da dimensão 8/9, ou é classe à parte |
+| se escalonamento ao consultor (`ESC-*`) é ocorrência da dimensão 2 ou 3, já que não é rodada de replanejamento nem decisão do dono |
+| custo de sessão de planejamento cuja `tarefa` na telemetria não contém `planej`/`planner` — a linha única da dimensão 7 pode subcontar |
+| por que a dimensão 1 não tem ocorrência medida no corpus fechado |
+| se "papéis que escrevem no modelo: 3→1" (`Entregas - P-0743.md`) é decisão retroativa sobre a dimensão 3 ou fato novo da dimensão 5 |
+
+---
+
 ## Achados da execução
 
-_(vazio; apensado por quem executa ou orquestra)_
+- **AE-1 — card publicado sem `Arquivos-alvo`, e o gerador de evidência para o loop no passo 6.**
+  A `PLN-T1` foi o único dos sete cards deste plano sem o campo `Arquivos-alvo` nem `Entregável`:
+  declarava o alvo três vezes em prosa (`Camada e fronteira`, `Restrições desta tarefa`, `Formato
+  do agregado que volta`) e nenhuma no campo que o instrumento lê. Medido em 2026-09-22, com a
+  tarefa já em `review`: `review_evidence.py --tarefa PLN-T1` sai exit 1 com
+  `'PLN-T1' precisa de exatamente um entre 'Arquivos-alvo' e 'Entregável' (tem nenhum)`
+  (`rdo.py:313-320`), e sem o dossiê o reviewer não julga. Reparado pelo consultor em
+  `docs/plans/P-0745-planejador-modelo-operacao.md:399-403`, transcrevendo para o campo o alvo que
+  a prosa do card já fixava — um arquivo só, a declaração mais estreita possível, que só aperta o
+  crivo do reviewer. Gerador passa a sair exit 0. Reincidência medida da família `AE-19` do
+  `TK-72` (`Arquivos-alvo` fecha o efeito colateral obrigatório). **Rota:** `TK-72`, não matéria nova.
+- **AE-2 — verificação que não mede o que pretende, e `Medido antes` deduzido em vez de rodado.**
+  A Verificação 3 da `PLN-T1` partia o plano pelo literal `## 12. Agregado medido`, que ocorre
+  primeiro **dentro do próprio card** (`Objetivo` e `Formato do agregado`): media prosa do card,
+  não a seção entregue. Medido em 2026-09-22: a forma original devolve **6** no arquivo entregue —
+  número que satisfaz `≤ 120` pela letra e não afere nada — e **73** no arquivo em `d75e7a6`,
+  quando a seção ainda não existia; logo o `Medido antes: o comando falha com IndexError` do card
+  era **dedução, e falsa**, segundo defeito da mesma família no mesmo item. A seção real é
+  `docs/plans/P-0745-planejador-modelo-operacao.md:1362-1467`, 106 linhas. Reparado pelo consultor
+  em `:461-475`: comando ancorado em `^## 12\. Agregado medido` com `re.M`, rodado — **106** no
+  arquivo entregue, **0** quando a seção não existe. O critério (`≤ 120`) não mudou; mudou o
+  aferidor, e o reparo está declarado no próprio card para o reviewer ver a emenda. O achado é
+  autoral do executor da `PLN-T1`, que o reportou na linha de retorno em vez de deixar passar.
+  Reincidência medida da família `AE-20` do `TK-72` (`DM-12`: comando de aceite não se deduz, se
+  roda). **Rota:** `TK-72`.
+- **AE-3 — com trabalho de outro plano não commitado na árvore, nenhum recorte do gerador isola a
+  entrega.** O dossiê da `PLN-T1` (`docs/RDO/evidencia/P-0745-PLN-T1.md`, gerado com
+  `--desde d75e7a6`) lista 15 arquivos "fora dos alvos e sem atribuição" e 22 "alheios", **todos**
+  do `P-0746` e **todos** já sujos no `git status` da abertura da janela, antes de a `PLN-T1` ser
+  despachada. `--desde <ref>` só recorta rastreado alterado desde um commit; trabalho não
+  commitado e arquivo `??` entram sempre, por construção (`review_evidence.py`,
+  `coletar_arquivos_tocados`). Consequência medida: o reviewer recebe ruído maior que a entrega e
+  tem material para um `rejeitado` falso, que só não ocorre porque o despacho carrega o aviso à
+  mão. Família nova, distinta de `AE-19`/`AE-20` — é do instrumento e da cadência de commit, não
+  da autoria do card. Não reparado aqui: `.claude/tools/*` está fora do escopo deste plano.
+  **Rota:** `TK-66`/`TK-74`, com `AE-9` e `AE-21` — as três facetas do mesmo recorte.
+- **AE-4 — âncora errada na dimensão 6 do agregado, apurada pelo reviewer da `PLN-T1`.**
+  Laudo de 2026-09-22, veredito `ressalva` 88% `bloqueante=nenhuma`, recomendação `escalar`:
+  a subseção `### 6. Instrumento` da seção `## 12. Agregado medido`
+  (`docs/plans/P-0745-planejador-modelo-operacao.md:1419-1427`) cita um identificador que não
+  corresponde à ocorrência medida no corpus. Não é defeito de contagem nem de método — é de
+  citação, e por isso não bloqueou o veredito. **Tem de ser corrigida antes de a `PLN-T6`
+  consumir o agregado como insumo**, senão a especificação herda a âncora quebrada: a `PLN-T6`
+  escreve uma seção por dimensão da §4 a partir exatamente deste agregado. Roteado ao consultor
+  de plano por `B1` na mesma janela.
+  **REPARADO em 2026-09-22 pelo consultor:** a citação era `RP-3` onde o corpus ancora `RP-2` em
+  quatro lugares (`pantonic-planner.md:112`, `:320`; `P-0740:6244`, `:6249`), e as três ocorrências
+  de `RP-3` no corpus são todas de 2026-09-16 e do `P-0739`. Corrigido em
+  `docs/plans/P-0745-planejador-modelo-operacao.md:1425` e `:1427`; a contagem `3` foi conferida e
+  **não** alterada. `backlog.py check` e `modelo.py check` exit 0. Nada pendente neste achado; o
+  que o reparo revelou de novo está no `AE-5`. **Rota:** fechado no ato pelo consultor nesta
+  janela; nada pendente.
+- **AE-5 — a tabela de métrica do agregado nomeia os extremos, mas a contagem não é
+  re-derivável, e o identificador `RP-<n>` é por plano.** Reparada a `### 6. Instrumento`
+  (`AE-4`), ficaram medidos dois defeitos de forma da tabela, não de número. **(i)** A linha
+  `ocorrências | 3` declara três ocorrências e a tabela nomeia só duas — a mais antiga e a mais
+  recente; a do meio não aparece. O corpus fechado tem **quatro** citações de instrumento
+  candidatas (`.claude/agents/pantonic-planner.md:97`, `:103`, `:107`, `:112`/`:320`), logo o
+  número `3` não é contradito, mas **qual** das quatro o executor excluiu não se re-deriva da
+  tabela — e quem consumir o agregado não tem como reconstruir o conjunto. **(ii)** A dimensão 6 é
+  a **única** das dez que cita no formato `RP-<n> de pantonic-planner.md`; as outras nove citam
+  `RP-<n>` (`P-<plano>`). O identificador `RP-<n>` é **por plano** (cada plano tem o seu `RP-1`),
+  e `pantonic-planner.md` só o hospeda por referência — citar o arquivo em vez do plano da rodada
+  deixa o identificador ambíguo, e foi nessa ambiguidade que a âncora errada do `AE-4` sobreviveu
+  à autoria. **Consequência para a `PLN-T6`:** ela escreve a seção 6 a partir desta tabela; sem a
+  ocorrência do meio nomeada e com a citação no formato divergente, a especificação publica um
+  número que não sustenta e uma âncora que não resolve. **Rota:** insumo da `PLN-T6` — ao redigir
+  a dimensão 6, nomear as três ocorrências com `arquivo:linha` e uniformizar a citação para
+  `RP-<n>` (`P-<plano>`), como nas outras nove dimensões. Não se corrige no agregado: a `PLN-T1`
+  está fechada e a contagem medida não está errada.
+- **AE-6 — a `PLN-T2` parou por premissa: o passo 14a e a Verificação 11 do card se contradizem
+  na cópia do dono das regras globais.** Medido em 2026-09-22, com os passos 1-15 já aplicados na
+  árvore. O passo 14a escopa a edição de `C:/Users/panta/.claude/CLAUDE.md` a **dois** blocos — o
+  bullet `- **Capacidade**` da Regra 2 e o bullet `- **Orçamento por tarefa atômica**` da Regra 7 —,
+  e o card reforça "nada além dos dois blocos nomeados" (`DPN-12`). A **Verificação 11** exige
+  `grep -c 'tarefa atômica\|tarefas atômicas'` = **0** naquele arquivo **inteiro**. A **segunda** das
+  duas ocorrências que o `Medido antes: 2` contava, e a única remanescente depois do passo 14a,
+  está em `C:/Users/panta/.claude/CLAUDE.md:78`
+  (`o contexto atravessa várias tarefas atômicas`), que é a **análoga** da que o passo 11 trata em
+  `.claude/global/CLAUDE.md:49` — e o passo 11 foi escopado só à cópia do kit. Logo o card manda,
+  ao mesmo tempo, não tocar aquela linha e entregar o arquivo com zero ocorrências: as duas coisas
+  não coexistem. A **contingência 3** não cobre o caso — ela trata do bloco do passo 14a não existir
+  literalmente, e os dois existiam byte a byte, como o `F-15` declara; ambos foram aplicados com o
+  literal idêntico ao do kit. **Estado medido da entrega:** Verificações 1-7 e 10 conformes
+  (`1, 0, 0, 3, 0, 0, 0, 0`), `.claude/global/CLAUDE.md` em **0** ocorrências, cópia do dono em
+  **1**, `tests/test_doutrina_unidade.py` criado, `backlog.py check` e
+  `modelo.py check` exit 0. Só a Verificação 11 fica em 1, e por isso o `Pronto quando` não fecha.
+  **Rota:** `A3b` do `scrum-master` — a tarefa fica `blocked` razão `premissa`, sem RDO e sem
+  laudo, e a matéria sobe ao **planejador** por `G-REPLAN` (`GOVERNANCA.md` §7 item 17). A decisão
+  que falta é de uma linha: ou o passo 14a passa a nomear um terceiro bloco na cópia do dono
+  (a linha 78, com o mesmo literal que o passo 11 aplica em `.claude/global/CLAUDE.md:49`), ou a
+  Verificação 11 deixa de aferir o arquivo inteiro e passa a aferir só os dois blocos. Família do
+  `AE-20`/`TK-72` (verificação cujo alvo é mais largo que o escopo que o card autoriza), agora
+  medida do lado do **escopo**, não do comando.
+  **RESOLVIDO em 2026-09-22 pelo consultor, não pelo planejador:** pelo ato do dono da mesma data
+  (`DC-4`, `docs/consultant-spec.md` §3), a parada de executor é triada pela figura, e esta era
+  tática. Nenhuma das duas saídas que este achado antecipou foi tomada isoladamente: o defeito
+  estava a montante das duas, no censo da §7 (`AE-7`). A rota "sobe ao planejador por `G-REPLAN`"
+  registrada acima é a que a `A3b` do `scrum-master` prescrevia e que o ato do dono substituiu.
+- **AE-7 — o censo da §7 do arquivo do dono nasceu de um `diff` de dois bullets, e a Verificação 11
+  foi escrita contra o arquivo inteiro.** Causa-raiz do `AE-6`, medida em 2026-09-22. O censo da §7
+  enumera para `.claude/global/CLAUDE.md` **três** sítios de edição (`:31-36`, `:49`, `:139-143`) e
+  para `C:/Users/panta/.claude/CLAUDE.md` apenas **dois** (`:31-36`, `:167-171`) mais a linha dos
+  Controles 1.1/1.2 como `fica`. O sítio espelho de `.claude/global/CLAUDE.md:49` — o parágrafo
+  *Consequências práticas* da Regra 2, `C:/Users/panta/.claude/CLAUDE.md:78` — **nunca entrou no
+  censo**. O motivo está no `F-15`: a conferência entre as duas cópias foi feita por `diff` **sobre
+  os dois bullets que o plano reescreve**, e concluiu, corretamente, que eles são idênticos byte a
+  byte; o que ela não fez foi varrer o arquivo do dono pela **forma antiga** que o plano aposenta.
+  O passo 14a herdou a enumeração do censo ("os dois blocos"), enquanto a Verificação 11 foi escrita
+  contra o **arquivo inteiro** — e as duas coisas não fecham. **A restrição não era restrição:** o
+  motivo declarado dela, verbatim no passo e no censo, é preservar os Controles 1.1 e 1.2 da Regra 1
+  (`TK-68`), e a linha 78 está na Regra 2. **Reparado pelo consultor** (`DC-1`, `DC-3`, `DC-4`): o
+  censo ganhou a linha `:78` (`docs/plans/P-0745-planejador-modelo-operacao.md:362`), o card ganhou
+  o **passo 14b** (`:618-627`), `Arquivos-alvo` (`:525`), restrições (`:659`, `:666`), contingência 3
+  (`:675`) e a cadeia de medição da Verificação 11 (`:728-730`) foram alinhados. Sem drift:
+  `modelo.py check` segue exit 0 na versão 3, com as mesmas 6 operações, 3 objetos e 7 propriedades.
+  **Regra de autoria que o caso mede:** quando um card edita **duas cópias** de um mesmo documento,
+  o censo da cópia secundária se levanta pela **varredura da forma antiga naquela cópia**, nunca por
+  `diff` dos trechos já enumerados na cópia primária — `diff` de dois blocos prova que os dois blocos
+  são iguais, e não diz nada sobre o terceiro. Família do `AE-20`/`TK-72`, agora medida do lado do
+  **censo**, não do comando nem do escopo da verificação. **Rota:** `TK-72`.
+  **Conferido pelo reviewer da `PLN-T2` em 2026-09-22 — ponteiro, não achado novo:** a matéria é a
+  deste `AE-7` (e do `AE-6`), e o que a revisão acrescenta é a aferição independente de que o
+  reparo fechou. Medido por leitura direta do arquivo fora do repositório, que nenhum dossiê de
+  evidência alcança: os **três** blocos de `C:/Users/panta/.claude/CLAUDE.md` tocados pelos passos
+  14a e 14b — `- **Capacidade**`, `- **Classe do card é natureza, não teto**` e o parágrafo
+  `**Consequências práticas:**` (linha 78) — são **byte a byte idênticos** aos de
+  `.claude/global/CLAUDE.md`, comparados por leitura em `utf-8` dos três trechos, sem CRLF em
+  nenhuma das duas cópias. O `diff` **inteiro** entre as duas cópias são hoje **29 linhas, todas o
+  bloco dos Controles 1.1 e 1.2** que só o arquivo do dono tem (as 28 linhas que o censo declara
+  como `fica`): os Controles estão intactos, nenhum dos três passos encostou neles, e não sobrou
+  divergência em mais lugar nenhum. Verificações 10 e 11 re-rodadas em `0` e `0`. **Rota: sem
+  ação** — o `AE-6` e este achado ficam fechados; a regra de autoria que o caso mede segue no
+  `TK-72`, que é quem a incorpora à régua de criação de card.
+- **AE-8 — o censo da §7 está fechado e incompleto, e os cards que faltam herdam o vão.**
+  Apurado pelo reviewer da `PLN-T2` em 2026-09-22, laudo `aprovado` 100% `bloqueante=nenhuma`,
+  recomendação `escalar`. `GOVERNANCA.md:78,80` ainda nomeia o **orçamento de turnos** como alavanca
+  de qualidade (`Modelo por fase, orçamento de turnos e economia de contexto tornam a qualidade
+  sustentável (...) nenhuma rota se muda para caber no orçamento`) — na **mesma §3** de que o
+  passo 4 da `PLN-T2` removeu o bullet e a tabela de tetos. O sítio **não está no censo da §7** e
+  não é alvo de card nenhum; o `Não fazer` do card proibia o executor de tocá-lo, e ele
+  corretamente não tocou. Não rebaixou a entrega: a `PLN-T2` fez tudo que o card mandava.
+  **É a mesma família do `AE-7`** — censo levantado por enumeração de sítios conhecidos em vez de
+  varredura da forma antiga —, agora medida dentro do próprio `GOVERNANCA.md` e não na cópia
+  secundária. **Consequência:** `PLN-T3`..`PLN-T7` herdam o censo fechado e o mesmo `Não fazer`,
+  então o vão não se fecha sozinho em nenhum card seguinte. **Rota:** decidir qual card passa a
+  possuir a linha **antes do próximo despacho** — roteado ao consultor de plano por `B1` na mesma
+  janela, sob as diretivas `DC-1`/`DC-3`/`DC-4` (`docs/consultant-spec.md` §3).
+- **AE-9 — arquivo-alvo compartilhado entre dois planos: a atribuição por arquivo não separa as
+  entregas, e o `AE-3` era mais largo do que se mediu.** Apurado pelo reviewer da `PLN-T2` em
+  2026-09-22. O `AE-3` mediu o fenômeno **por arquivo**: trabalho não commitado do `P-0746` entra
+  sempre no recorte `--desde <ref>`, e o dossiê da `PLN-T2`
+  (`docs/RDO/evidencia/P-0745-PLN-T2.md:91`) repete o retrato — 15 arquivos "fora dos alvos e sem
+  atribuição" e 48 tocados no total, contra **quatro** que são da entrega (`GOVERNANCA.md`,
+  `.claude/global/CLAUDE.md`, `docs/RESIDENCIA_DOUTRINA.md`, `tests/test_doutrina_unidade.py`).
+  O que não se tinha medido é que a poluição **entra também dentro de um arquivo-alvo**:
+  `git diff -U0 d75e7a6 -- GOVERNANCA.md` devolve onze hunks, dez deles nos nove sítios que a
+  `PLN-T2` reescreve, e **um de `+51` linhas** no antigo `:354` (hoje `:337-389`), que abre em
+  `**Lastro no enunciado, e as duas vias de leitura.**` — matéria do `P-0746`, não desta entrega.
+  Como a atribuição do dossiê é **por arquivo** (`docs/RUBRICA_DE_REVISAO.md:48-60`),
+  `GOVERNANCA.md` chega ao reviewer marcado `da entrega` **inteiro**, com 51 linhas de outro plano
+  dentro. O que deveria haver: ou atribuição por **hunk** quando o arquivo-alvo está sujo com
+  trabalho não commitado de outro plano, ou cadência de commit que isole a entrega antes do
+  despacho da revisão. **Não rebaixou dimensão nenhuma:** reconciliado sob o passo 3a do protocolo
+  de revisão, com os hunks confrontados um a um contra os `Arquivos-alvo`. **Rota:** família
+  `TK-66`/`TK-74` (atribuição e recorte de `review_evidence.py`), a que este caso acrescenta a
+  faceta **intra-arquivo** — `TK-66` mede atribuição a tarefa nunca despachada e `TK-74` mede alvo
+  terminado em barra; nenhum dos dois cobre arquivo-alvo com hunk de outro plano.
+  **Não subiu como pendência:** é matéria de instrumento e de cadência, já com tíquete vivo, não
+  invalida a rota do `P-0745` e não exige decisão antes do próximo despacho.
+- **AE-10 — a varredura que o `AE-7` exigiu, aplicada à residência primária: um sítio órfão, e a
+  atribuição dele pela operação, não pela fila.** Executado em 2026-09-22 sobre o `AE-8`, sob
+  `DC-1`/`DC-3`/`DC-4`. Varredura de `GOVERNANCA.md` **inteiro** pelas formas que este plano
+  aposenta (`orçamento de turnos`, `teto de turnos`, `tabela de tetos`, `tarefa atômica`,
+  `% de ocupação`), mais `turnos` e `atômic` soltos, estendida a `docs/RESIDENCIA_DOUTRINA.md` e
+  `.claude/global/CLAUDE.md`. **Resultado: `GOVERNANCA.md:78,80` é o único órfão** — duas linhas de
+  um mesmo parágrafo, não uma. Todos os demais achados se classificam e **ficam**: `:93` é a negação
+  da forma antiga, gêmea do literal que a `PLN-T2` instalou em `:185`; `:123` é `I-7` e a Verificação
+  1 da `PLN-T2` exige exatamente 1; `:180`, `:185`, `:192-193` são texto instalado pela `PLN-T2`;
+  `:122`, `:135`, `:219`, `:221` são economia de turnos como disciplina de **custo**, que o plano não
+  aposenta; `:98` é outro sentido; `:576`-`:615` e `:786` são a janela de orquestração, preservada
+  por `DPN-3`. Em `docs/RESIDENCIA_DOUTRINA.md`, o `DR-C` (`:169`, `:183`) é registro datado de
+  2026-08 que o próprio documento já supera em `:218` — mesma classe do `:123`, e reescrevê-lo seria
+  falsificar histórico. `.claude/global/CLAUDE.md`: zero órfãos.
+  **Atribuição:** o sítio passa a ser da **`PLN-T7`** (`OP-6`), e a razão é a operação, não a fila —
+  a `OP-6` nomeia a matéria verbatim ("o orçamento de turnos por classe sai de onde quem chega o
+  lia"), o campo `precisa de` dela já declara `GOVERNANCA.md` §3 como residência da régua, e o passo
+  4 do mesmo card já remove o parágrafo gêmeo em `README.md:305`: é um ato só, em duas residências
+  espelho. Censo da §7 (`:346`), `Arquivos-alvo`, passo **4a**, Verificação **4a** e a frase de
+  contagem do `Pronto quando` (`I-6`) alinhados no mesmo ato.
+  **Urgência reavaliada com medição:** nenhuma verificação de `PLN-T3`..`PLN-T7` faz grep de
+  `GOVERNANCA.md` pela forma antiga, logo o sítio **não bloqueava a `PLN-T3`**. O risco real era o
+  outro: o plano fechar com a §3 se contradizendo — e esse está fechado.
+  **Regra de autoria que o caso soma ao `AE-7`:** sítio órfão se atribui ao card cuja **operação**
+  já o cobre pelo texto e pelo contrato de objetos; se nenhuma operação o cobrir, o caminho é card
+  corretivo somado à operação que repara — e aí a matéria é do planejador ou do modelador, porque a
+  lista `tarefas:` mora dentro da `## 1. Modelo conceitual`. **Rota:** `TK-72`.
+- **AE-11 — `modelo.py` confere lastro só numa direção: operação → tarefa, nunca tarefa → operação.**
+  Medido em 2026-09-22 em `.claude/tools/modelo.py:350-354`: o instrumento emite `V1` (operação sem
+  tarefa) e `V3` (tarefa inexistente citada por uma operação), mas **não** verifica que todo card de
+  `## 8. Tarefas` seja citado por alguma operação. Consequência: um card acrescentado a um plano sem
+  atualizar a lista `tarefas:` da operação que ele materializa sai **lastro órfão e invisível** —
+  `modelo.py check` continua verde e a contagem de tarefas continua batendo com a lista, não com o
+  plano. Foi o que impediu, neste caso, a rota "card corretivo `PLN-T2b` somado à `OP-1`", que a
+  norma instalada pela `PLN-T2` prescreveria: sem poder tocar a `## 1. Modelo conceitual`, o card
+  novo nasceria fora do alcance do instrumento. **Rota:** linhagem do `P-0746` (lastro do modelo) /
+  `TK-66`. Sem ação nesta janela — `.claude/tools/*` não é objeto do `P-0745`.
+- **AE-12 — âncora de linha sobre alvo compartilhado não é invariante, e a contingência de âncora
+  não cobre descrição errada de tamanho.** Apurado pelo reviewer da `PLN-T3` em 2026-09-22, laudo
+  `ressalva` 94% `bloqueante=nenhuma`, recomendação `seguir com ressalva`. O card declarava
+  `Arquivos-alvo: .claude/skills/diario-de-obras/SKILL.md:206-225`; o heading real estava em **245**
+  — desvio de **+39** produzido pelo trabalho não commitado do `P-0746` no mesmo arquivo. Pior que o
+  deslocamento: o Passo 2 descreve o bloco cercado como *"linhas 209-226"*, **18 linhas**, e ele tem
+  **14** (real: `253-268`). A **Contingência 1** do card cobre a âncora que não casa, mas **não**
+  cobre a descrição errada do **tamanho** do bloco — e um executor que confiasse na contagem
+  inseriria as duas linhas no lugar errado. O card só ficou executável porque a orquestração
+  re-derivou as âncoras no despacho e mandou localizar os dois bullets **pelo literal**, não pela
+  posição. É o critério (xviii)/`AE-49` aplicado à **âncora de linha** em vez da contagem de corpus:
+  âncora sobre arquivo que outra entrega desloca **não é invariante** ao que o card possui.
+  **Família `AE-2`/`AE-6`/`AE-7`**, agora medida na âncora e não na verificação nem no censo — é a
+  quarta ocorrência da mesma raiz nesta janela: o card afirma sobre a árvore um número que envelhece
+  entre a autoria e o despacho. **Rota:** `TK-72`, somada à régua de autoria de card.
+  **Segundo achado do mesmo laudo, rota `sem ação`:** a Verificação 5 publicava
+  `Medido antes: 262 passed` (2026-09-21, antes da `PLN-T2`), defasado em **+9** do total real no
+  despacho (**271**). É o **único** dos seis `Medido antes` do card que estava errado — V1 (1),
+  V2 (0), V3 (1), V4 (`:1,:1,:1`) e V6 conferem com o estado pré-entrega re-medido. A **forma** do
+  item é a conforme (relação ao total re-medido **mais 1**, com o literal como referência datada),
+  então o aceite se sustenta com o valor real: **272 = 271 + 1**, re-rodado na revisão. Por isso
+  não entra na família acima.
+- **AE-13 — a décima residência da régua ficou fora de todo card, e o censo da §7 não podia
+  apanhá-la.** Apurado pelo reviewer da `PLN-T4` em 2026-09-22 (laudo `aprovado` 100%,
+  `bloqueante=nenhuma`, recomendação `escalar`) e confirmado pelo modelador no mesmo dia.
+  `.claude/agents/pantonic-planner.md:36-37`, em `## Fatos estáveis`, diz *"Nenhum teto se escreve
+  no card: a régua numérica é a tabela de classes de `GOVERNANCA.md` §3, interna a este papel"* — e
+  segue **byte-idêntica ao `HEAD`**. A tabela que ela invoca foi **aposentada pela `PLN-T2`** às
+  07:23 de 2026-09-22, onze horas antes da entrega da `PLN-T4`: o ponteiro está quebrado. Nenhum
+  card do `P-0745` tem essa linha nos `Arquivos-alvo`, e a `PLN-T4` **não podia** corrigi-la sem
+  sair dos alvos declarados — a entrega dela está correta e fechou em 100%.
+  **Por que o censo não a apanhou:** a varredura de 2026-09-21 buscou `atômic|atomic` e
+  `50%|60%|~80 linhas|fatias verticais`; a linha diz *"tabela de classes"* e não casa nenhum dos
+  dois padrões. É **meia mudança de papel publicada** — a classe de defeito que o `P-0743` mediu e
+  que este plano existe para não repetir.
+  **Ato de modelo executado:** o reviewer devolveu dossiê de `conflito` e o modelador o acatou,
+  registrando a **versão 4 pendente** num bloco `## 1A` irmão (a `## 1` vigente não foi tocada fora
+  da tabela de versões). Duas células, nenhuma operação alterada: o contrato do `agente de
+  planejamento` passa a enumerar **dez** regiões de conduta — as oito anteriores mais
+  `## Fatos estáveis` e `## O que você NUNCA faz`, esta editada pela própria `PLN-T4` — e declara a
+  enumeração **fechada**; e o estado final de `régua com que ele dimensiona um card` passa a exigir
+  que nenhuma residência da conduta **remeta** à tabela aposentada. A régua **numérica** continua
+  não residindo no agente: ela é interna a `GOVERNANCA.md` §3, e o que o contrato acrescenta é que
+  *remissão* a régua aposentada conta como residência para efeito do estado final. **O dono valida
+  ou recusa a versão 4 no Marco 2**, que é `modelo.py show` depois da `PLN-T5`.
+  **Aviso operacional para o Marco 2, medido pelo modelador:** `modelo.py show --drift` compara
+  propriedades, operações e estado, mas **não compara a célula `contrato`** — rodando só `--drift`
+  o dono vê uma das duas mudanças. O marco tem de rodar também `--pendente`, que renderiza o bloco
+  inteiro com o contrato.
+  **Rota:** card corretivo `PLN-T4a` somado à `OP-3`, roteado ao consultor por `B1` na mesma
+  janela. A §7 ganha linha nova com destino, e o corpus se re-varre por
+  `tabela de classes|tabela de tetos|teto por classe` antes da `PLN-T7` — se este ponteiro escapou,
+  outros da mesma família podem ter escapado.
+- **AE-14 — o primeiro card corretivo do plano, a varredura que o autorizou e dois vãos de
+  instrumento que ele expôs.** Medido em 2026-09-22, em resposta ao `AE-13`, sob `DC-1`/`DC-3`/`DC-4`.
+  **(i) Varredura, não enumeração** (regra do `AE-7`, terceira aplicação): varrido
+  `tabela de classes|tabela de tetos|teto por classe|tetos por classe|régua numérica` em todo
+  `*.md`/`*.py`/`*.ps1` do repositório, ampliado para `teto` e `turnos` em todo o `.claude/`.
+  **`.claude/agents/pantonic-planner.md:36-37` é o único órfão vivo.** Ficam, classificados:
+  `pantonic-reviewer.md:62,155` (negações verdadeiras, classe do `GOVERNANCA.md:93`);
+  `pantonic-planner.md:97,264,412` (outro sentido); `pantonic-planner.md:258,260` e
+  `pantonic-executor.md:74,78-80` (texto novo alinhado); `GOVERNANCA.md:192`,
+  `RESIDENCIA_DOUTRINA.md:142`, `tests/test_doutrina_unidade.py:2` (texto que **registra** a
+  aposentadoria); `README.md:305` (já é da `PLN-T7`); `CHANGELOG.md:196,215` e
+  `RECOMENDACOES_CONSUMO_GLOBAL.md:71` (registro datado, `I-7`); e os tetos de outro sentido das
+  cinco skills. **(ii) Card corretivo `PLN-T4a`**, somado à `OP-3` na forma que a própria `PLN-T2`
+  instalou em `GOVERNANCA.md` §3 — resíduo de `OP-3` e não de `OP-1`, porque quem aposentou a
+  tabela foi a `OP-1` em `GOVERNANCA.md`, mas o ponteiro sobrevivente está na residência da `OP-3`.
+  Posicionado **antes** da `PLN-T5`: o estado final que a versão 4 pendente exige — nenhuma
+  residência da conduta remetendo à tabela aposentada — é o que o dono valida no Marco 2, e validá-lo
+  sobre corpus que ainda o contradiz mediria o modelo contra o mundo errado. **(iii) Vão de
+  instrumento confirmado (`AE-11`), agora com prova:** com o `PLN-T4a` escrito e fora de toda lista
+  `tarefas:`, `modelo.py check` sai **exit 0** e imprime `8 tarefas` — ele conta os cards de `## 8`
+  e **nunca** confere card → operação. Lastro furado é silencioso, e por isso o `Ato de modelo`
+  desta rodada é obrigatório, não opcional. **(iv) Vão de instrumento novo:** `V14` confere que os
+  sub-bullets do campo `Operação do modelo` **existem**, nunca que a cópia está **corrente** — com
+  a versão 4 pendente do Marco 2, `PLN-T6` e `PLN-T7` carregam contrato da versão 3 e nada acusa.
+  Resolvido sem antecipar o dono: **passo 0 condicional** na `PLN-T6`, que lê o veredito já
+  registrado do Marco 2 e recopia ou não, e passo 0 de conferência na `PLN-T7` — o executor
+  materializa um veredito, não decide. **Rota:** (iii) e (iv) para a linhagem do `P-0746`/`TK-66`;
+  (i) e (ii) para o `TK-72`, como terceira medição da família "censo por enumeração".
+  **Regra de autoria que o caso soma:** varredura de censo se faz pelo **conceito aposentado** e
+  por todos os nomes que o invocam, não pelos padrões que a rodada anterior usou — a de 2026-09-21
+  buscou `atômic|atomic` e `50%|60%|~80 linhas|fatias verticais`, e "tabela de classes" não casa
+  nenhum dos dois.
+- **AE-15 — a raiz das seis ocorrências: a régua de autoria prende o número re-derivável à linha
+  de aceite, e os seis defeitos moraram todos fora dela.** Apurado pelo reviewer da `PLN-T4a` em
+  2026-09-22 (laudo `aprovado` 100%, `bloqueante=nenhuma`, recomendação `escalar`). O card da
+  `PLN-T4a` afirmava, em `Arquivos-alvo` e em `Restrições desta tarefa`, *"as duas funções já
+  existentes"* de `tests/test_doutrina_unidade.py`; no despacho havia **quatro** (a `PLN-T2` criou
+  duas, a `PLN-T3` a terceira, a `PLN-T4` a quarta). **Agravante:** este card foi escrito **hoje,
+  minutos antes do despacho**, pelo consultor — e ainda assim errou a contagem. Inócuo na entrega:
+  o executor nomeou o erro na linha de retorno, não decidiu nada e não alterou nenhuma das quatro.
+  **A raiz, e é o achado que importa:** a §8 da rubrica de revisão, critérios (v) e (xiii), prende
+  o *"número re-derivável por comando, nunca copiado"* à **linha de aceite**. Os seis defeitos desta
+  janela moraram em `Arquivos-alvo`, em `Restrições`, em descrição de tamanho de bloco e em censo —
+  **todos fora do bloco `Verificação`**. A régua, como está escrita, **não alcança a classe**, e é
+  por isso que seis ocorrências passaram por ela sem serem apanhadas: `AE-2` (verificação que mede
+  a coisa errada), `AE-6` (escopo mais estreito que a verificação), `AE-7` (censo por `diff` de dois
+  bullets), `AE-12` (âncora de linha e tamanho de bloco), `AE-13` (residência fora do censo) e esta.
+  **Rota:** emenda à §8 de `docs/RUBRICA_DE_REVISAO.md`, estendendo o critério a **qualquer
+  afirmação do card sobre o estado da árvore** — contagem de funções, de regiões, de sítios,
+  descrição de tamanho —, não só às linhas de aceite. É matéria de **kit**, fora do escopo do
+  `P-0745`: vai para o `TK-72`, que é a régua de autoria de card, como a medição que fecha a família.
+  **Segundo achado do mesmo laudo, rota `sem ação`:** o literal `Medido antes: 271 passed` da
+  Verificação 4 estava vencido no despacho (total re-medido: **273**), **sem dano**, porque a linha
+  é **relação** (*"`<N>` igual ao total re-medido no despacho mais 1"*) e o literal é referência
+  datada. Registrado como confirmação de que a **forma-relação absorve** o envelhecimento que a
+  forma-constante não absorveria — é o contraexemplo que dá a solução da família acima.
+- **AE-16 — a forma-relação aplicada aos três cards abertos, e o discriminante que a medição
+  revelou: o número não envelhece por ser número, envelhece por ser de outro.** Feito em
+  2026-09-22 em resposta ao `AE-15`, sob `DC-1`/`DC-3`/`DC-4`. Varridos os três cards abertos por
+  toda afirmação numérica **sobre a árvore**, dentro e fora do bloco `Verificação` — que é onde
+  cinco dos seis defeitos da família moraram. **Dez sítios, em dois cards; a `PLN-T6` estava
+  limpa.** Reparados: `PLN-T5` V1-V4 re-datados, valores da autoria confirmados por re-medição;
+  `PLN-T5` V5 de constante para **relação de invariância** ("a mesma saída re-medida no despacho,
+  byte a byte") — o que se afere é que **este card** não moveu o `P-0743`, nunca que o `P-0743`
+  seja imóvel; `PLN-T5` V6 com a constante de apoio corrigida de `262 passed` para `274 passed`;
+  `PLN-T7` Objetivo, de "as **nove** linhas" para "todas menos uma, a `README.md:366`" — alvo que
+  não envelhece; `PLN-T7` V2, **que já havia envelhecido**, de `9` para `11`; `PLN-T7` V3
+  re-datado; e `PLN-T7` V5 de constante para relação de invariância nos números de agentes, skills
+  e guardrails. **Medição que corrige a intuição:** das dez, **seis constantes continuavam exatas**
+  e quatro estavam ou ficaram erradas. Logo o defeito **não é "ser constante"**. O discriminante é
+  a **autoria do número**: número sobre o que o próprio card escreve é causado por ele e não
+  envelhece — a `PLN-T6` inteira é desta classe, e por isso saiu limpa; número sobre o **resto da
+  árvore** envelhece entre a autoria e o despacho, porque outros cards e outros planos o movem, e
+  só sobrevive como **relação** ("igual ao re-medido no despacho ± n") ou **invariância** ("o mesmo
+  re-medido no despacho"). **Caso que fecha a demonstração:** a V4 do `PLN-T4a` publicou
+  `271 passed` e o real no despacho era `273` — dois testes de diferença em minutos, sem dano
+  nenhum, porque a linha era relação. A `PLN-T7` V2 envelheceu duas entradas em um dia, também sem
+  dano, pela mesma razão. **Rota:** a emenda da §8 de `docs/RUBRICA_DE_REVISAO.md` **não** foi
+  feita — é régua de kit, fora do objeto do `P-0745`, e vai ao `TK-72` com o texto já redigido,
+  para custo zero de redação na abertura do tíquete.
+  **Texto proposto para a emenda, a aplicar fora desta janela:** *"O número que um card afirma é
+  **medição**, e medição envelhece. O critério vale em **todo campo do card** — `Arquivos-alvo`,
+  `Passos`, `Restrições`, `Não fazer`, `Objetivo` e `Pronto quando`, não só `Verificação`. Número
+  sobre o que o próprio card escreve pode ser constante: o card é a causa dele. Número sobre
+  qualquer outra parte da árvore se escreve como **relação** — `igual ao re-medido no despacho
+  ± n`, `o mesmo re-medido no despacho`, `todos menos <o nomeado>` — ou vem acompanhado do comando
+  que o re-deriva. Contagem de itens de um conjunto que o card não cria ('as duas funções', 'as
+  nove linhas', 'os três blocos') é a forma proibida: nomeia-se o conjunto pela regra, nunca pela
+  cardinalidade. Casos medidos: `AE-2`, `AE-6`, `AE-7`, `AE-12`, `AE-13`, `AE-15` e `AE-16` do
+  `P-0745` — seis autores distintos, dois planejadores, três executores e o consultor."*
+- **AE-17 — o aferidor mede a pergunta errada: `grep -c` conta linhas, e quatro verificações dos
+  cards abertos perguntavam ocorrência, distinção ou caixa.** Sétima ocorrência da família do
+  `AE-2`, e a primeira em que o defeito é **semântica de comando**, não número envelhecido.
+  Disparo: a `PLN-T5` voltou `blocked premissa` em 2026-09-22 com a entrega **correta** na árvore —
+  o literal do passo 3 é uma linha física única que carrega as duas menções de `V3`, e
+  `grep -c 'V3'` devolveu **1** onde a V1 exigia **≥2**; `grep -o 'V3' … | wc -l` devolve **2**. O
+  executor inseriu o literal verbatim, não reflowou e parou: conduta correta, porque reflow seria
+  decidir ponto de quebra que o card não autoriza (`Regra 8`). **Varredura dos três cards abertos
+  pela mesma semântica — quatro defeitos, não um:** **(i)** `PLN-T5` V1, reparada em duas
+  verificações por literal próprio, forma **mais estrita** que a original — em vez de "duas
+  ocorrências quaisquer da sigla", cada uma das duas afirmações tem de existir; a entrega **não se
+  tocou**, porque reescrever entrega correta para o número fechar inverte o `DM-12`.
+  **(ii)** `PLN-T6` V2, `grep -c 'DPN-' ≥5` para aferir "uma âncora por decisão": errava nos dois
+  sentidos — cinco decisões numa linha dariam `1`, a mesma decisão em cinco linhas daria `5`.
+  Trocada por `grep -o 'DPN-[0-9]*' | sort -u | wc -l`, exercitada contra um arquivo que existe:
+  **13** distintas contra **74** linhas. **(iii)** `PLN-T7` V3, com **três** defeitos sobrepostos e
+  que teria repetido este mesmo bloqueio **no card que fecha o plano**: sem `-i` não enxergava
+  `**Tarefa atômica**` de `README.md:94` (10 linhas contra 11 com `-i`); esperava `1` quando o
+  pós-estado correto é **2**, porque `README.md:1036` carrega a mesma medida histórica de
+  `README.md:366` e **não estava no censo**; e contava linhas onde `README.md:382` tem **duas**
+  ocorrências (12 ocorrências em 11 linhas). Reparada para `grep -ic … = 2`, mais a V3a de
+  ocorrências. **(iv)** censo da §7: as âncoras da §11 andaram uma linha (`824,825` → `825,826`) e
+  `README.md:1036` entrou como **fica** (`I-7`). **O que este achado acrescenta ao `AE-16`, sem
+  contradizê-lo:** aquela régua pergunta *de quem é o número* e resolve o envelhecimento; esta
+  pergunta *o comando responde à pergunta da linha?* e resolve a semântica. As duas são necessárias
+  — a V1 da `PLN-T5` passou pela varredura do `AE-16` e foi classificada "exata", porque o
+  `Medido antes` **estava** exato; o que estava errado era o aferidor. **Regra que o caso fixa:**
+  toda linha de `Verificação` declara, além do valor esperado, **que pergunta o comando responde**
+  — presença de literal, contagem de linhas, contagem de ocorrências ou contagem de identificadores
+  distintos —, e o comando se escolhe pela pergunta: `grep -c` só quando a pergunta é sobre
+  **linhas** e o alvo não pode repetir na mesma; `grep -o … | wc -l` para ocorrências;
+  `grep -o … | sort -u | wc -l` para distinção; `-i` sempre que o corpus mistura caixa.
+  **Rota:** `TK-72`, junto com a emenda da §8 da rubrica proposta no `AE-16` — os dois critérios
+  entram no mesmo ato, porque são as duas metades da mesma régua.
+- **AE-18 — a doutrina publica a transição `blocked` → `review` e o instrumento a recusa.**
+  Medido em 2026-09-22, ao materializar o desbloqueio da `PLN-T5`.
+  `.claude/skills/diario-de-obras/SKILL.md:102` publica a transição, com gatilho e condição:
+  *"`blocked` → `review` — a rodada de replanejamento corrigiu o **aceite** de um `blocked premissa`
+  cuja entrega material já está na árvore (`G-REPLAN`, saída (c)); nenhum retorno novo de executor é
+  exigido — **gatilho 1**: o `scrum-master` invoca o `pantonic-reviewer`"*. O par
+  `("blocked", "review")` **não existe** em `_TRANSICOES` de `.claude/tools/backlog.py:1166-1179`,
+  que só admite `blocked` → `ready` e `blocked` → `cancelled`. Consequência medida: o caminho
+  doutrinário é recusado pelo instrumento, e o loop alcança o mesmo estado por
+  `blocked` → `ready` → `in-progress` → `review`, três chamadas em vez de uma, com o mesmo efeito e
+  sem executor — o que a linha 102 autoriza explicitamente. É **meia mudança publicada** na direção
+  inversa das outras desta janela: aqui a doutrina andou e o instrumento ficou. **Não reparado:**
+  `.claude/tools/*` não é objeto do `P-0745`. **Rota:** linhagem do `P-0746`/`TK-66`, junto com o
+  `AE-11` (o instrumento não confere card → operação) — as duas são defasagem do mesmo instrumento
+  em relação à doutrina que ele deveria aferir.
+- **AE-19 — o gate do modelador ficou meio aberto: a frase antecedente contradiz o literal novo.**
+  Apurado pelo reviewer da `PLN-T5` em 2026-09-22, laudo `aprovado` 100% `bloqueante=nenhuma`,
+  recomendação `escalar`. A `PLN-T5` devolveu ao **lastro do planejador** as violações `V1` e `V3`,
+  publicando-o nas duas pontas (`GOVERNANCA.md` §3.2 e `.claude/agents/pantonic-model-designer.md`)
+  — e as duas pontas foram conferidas concordantes. Mas a frase **antecedente** daquele agente,
+  fora do recorte do passo 3 e **fora dos `Arquivos-alvo` do card**, continua dizendo: *"é da seção
+  toda violação que o instrumento não indexa pelo `<ID>` de uma tarefa: as de `secao`, as de
+  `OP-<n>` e as de `objeto`"*. Medido contra `tests/fixtures/modelo/plano-invalido.md`:
+  `modelo.py` emite `V1 OP-2` e `V3 OP-3`, isto é, **indexadas por `OP-<n>`**. Pela regra
+  antecedente elas são "da seção" e o ato do modelador não se conclui; pelo literal novo elas são
+  do lastro do planejador e o ato se devolve. **As duas leituras coexistem no mesmo arquivo.**
+  Defeito do **dossiê**, não da entrega: o executor não podia editar aquela região, e por isso
+  `criterio-de-pronto` ficou `conforme`. **Urgência:** a recópia dos contratos prevista para depois
+  do Marco 2 (`AE-14` item iv) **herda a ambiguidade** se nenhum card a fechar. **Rota:** roteado
+  ao consultor por `B1` na mesma janela, sob `DC-1`/`DC-3`/`DC-4`. Oitava ocorrência da família do
+  censo por enumeração (`AE-7`, `AE-10`, `AE-13`, `AE-17`): o recorte do passo alcançou a frase que
+  se queria mudar e não a frase que a governa.
+- **AE-20 — a varredura do gate do modelador: um sítio que governa, e uma enumeração de códigos
+  que envelheceu dentro da mesma frase.** Medido em 2026-09-22 em resposta ao `AE-19`, sob
+  `DC-1`/`DC-3`/`DC-4`; oitava ocorrência da família do censo por enumeração (`AE-7`, `AE-10`,
+  `AE-13`, `AE-17`). **(i) A contradição, confirmada por mapeamento completo:** levantado em
+  `.claude/tools/modelo.py` o rótulo de indexação de cada código `V1`..`V21` — `secao`: V13, V19,
+  V20; `OP-<n>`: V1, V3, V5, V8, V9, V10, V11, V12, V16, V18; `objeto`: V6, V7, V15, V17, V21;
+  `<ID>` de tarefa: V2, V4, V14. O critério antecedente de
+  `.claude/agents/pantonic-model-designer.md:24-27` ("`OP-<n>` ⇒ da seção") está **correto para
+  oito dos dez**; as duas exceções são exatamente `V1` e `V3`, que a `PLN-T5` publicou como lastro
+  do planejador. O reparo não reescreve o critério — **nomeia a exceção onde o critério é
+  enunciado**. **(ii) Defeito segundo, que o laudo não viu e a varredura viu:** a mesma frase
+  enumera as violações de `objeto` como `(V6, V7, V15, V17)` — **quatro de cinco**. `V21 objeto —
+  objeto sem lastro declarado`, criada pelo `P-0746`, **não aparece uma única vez** no arquivo do
+  agente (`grep -c 'V21'` = 0). Corrigido pela régua do `AE-16`/`AE-17`: a lista sai e entra a
+  regra — a classe se lê pelo **rótulo com que o instrumento indexa**, nunca por lista de códigos,
+  porque o vocabulário cresce e lista fechada envelhece. **(iii) Varredura das 111 linhas:** este é
+  o **único** sítio que governa ou contradiz o que a `PLN-T5` publicou. Conferidos concordantes e
+  mantidos: `:55-57` (na autoria ele preenche `tarefas:` por convenção — é o que faz `V3` disparar
+  por construção), `:107`, `:39-44`, `:3`, `:104`. **(iv) Rota:** card corretivo `PLN-T5a`,
+  somado à `OP-4` porque o texto da operação diz literalmente "em vez de **travar a devolução** de
+  quem escreve o modelo" e a frase antecedente é o que ainda trava; censo da §7 com o sítio;
+  `Ato de modelo` de lastro devolvido para a lista `tarefas:` da `OP-4` nos dois blocos.
+  **(v) Natureza do ato:** não é matéria nova — é a **conclusão de um colateral que o dono aprovou
+  em 2026-09-22** e que a `PLN-T5` entregou pela metade por defeito de recorte, e por isso não se
+  escala de novo. **(vi) Cadência, corrigida:** a recópia de contratos do `AE-14` (iv) **não**
+  propaga esta ambiguidade — ela copia texto do modelo, não do arquivo do agente. Nada antes do
+  Marco 2 depende deste reparo. Quem sofre a ambiguidade é o modelador frio na **próxima autoria
+  de plano sem cards**, que é o cenário que a `PLN-T5` abriu. **(vii) Duas lições da janela
+  embutidas no card corretivo:** cláusula explícita de reflow no passo — cuja ausência foi o que
+  bloqueou a `PLN-T5` (`AE-17`) — e literais de verificação escolhidos para caber **numa linha
+  física**, porque a frase-alvo se parte entre as linhas 24 e 25 e um `grep` de linha única sobre
+  ela devolve `0`, medido antes de publicar. **Rota:** `TK-72`.
+- **AE-21 — arquivo-alvo não rastreado entra colado inteiro no dossiê de evidência.** Apurado pelo
+  reviewer da `PLN-T5a` em 2026-09-22 (laudo `aprovado` 100%, recomendação `seguir`; achado de alvo
+  `dossiê`, não rebaixou dimensão). Terceira faceta da família do `AE-3`/`AE-9`, e a primeira sobre
+  arquivo **não rastreado**: `tests/test_doutrina_unidade.py` está em `??` no `git status` — foi
+  criado pela `PLN-T2` e nunca commitado —, e por isso `review_evidence.py` o entrega **inteiro**
+  ao revisor, sem separar a função que esta tarefa acrescentou das seis que as entregas anteriores
+  já haviam aceito. Somado aos 15 arquivos do `P-0746` que saem como "fora dos alvos e sem
+  atribuição", a reconciliação exigiu **mtime** mais confronto com o dossiê de evidência da
+  `PLN-T5`. **Recapitulando a família:** `AE-3` mediu o fenômeno por arquivo (trabalho não
+  commitado de outro plano entra sempre no recorte `--desde <ref>`); `AE-9` mediu dentro de um
+  arquivo-alvo rastreado (hunk de outro plano chega marcado `da entrega`); este mede o arquivo
+  **não rastreado**, onde não há sequer hunk a separar. As três têm a mesma causa a montante —
+  **a árvore carrega trabalho não commitado de dois planos** — e o mesmo par de remédios: atribuição
+  por hunk no instrumento, ou cadência de commit que isole a entrega antes do despacho da revisão.
+  **Rota:** `TK-66`/`TK-74`, com `AE-3` e `AE-9`. Sem ação nesta janela: `.claude/tools/*` não é
+  objeto do `P-0745`.
+- **AE-22 — três achados de ofício da revisão da `PLN-T6`, nenhum bloqueante, todos com rota.**
+  Laudo `aprovado` 100% `bloqueante=nenhuma`, recomendação `seguir`, 2026-09-22.
+  **(i) A rota do `AE-5` era indeterminável pela metade, e a recusa do executor foi correta.** O
+  `AE-5` roteou à `PLN-T6` nomear as **três** ocorrências da dimensão 6 do agregado e uniformizar a
+  citação. O executor entregou a metade que se deriva — os extremos, com `arquivo:linha` re-medido
+  (`pantonic-planner.md:109` para `RP-1` (`P-0739`) e `:124`/`:342` para `RP-2` (`P-0740`)), no
+  formato `RP-<n>` (`P-<plano>`) das outras nove, que é o item (ii) do `AE-5` — e **recusou nomear
+  a terceira**, porque o agregado fixa os extremos e a contagem `3` sem dizer qual das duas
+  candidatas (`:115` `RP-2` `P-0739`, `:119` `RP-3` `P-0739`) entrou. O reviewer confrontou as
+  quatro linhas, confirmou que existem e que o **próprio corpo do `AE-5`** já dizia que a exclusão
+  não se re-deriva. Escolher seria afirmação sem âncora, vedada pelo card. **O defeito é do
+  roteamento, não da entrega:** rotear a um card a correção de um dado que o corpus não permite
+  reconstruir produz tarefa parcialmente impossível. **Rota:** a pergunta ficou registrada na
+  seção 10 de `docs/planner-spec.md`; fechá-la exige o critério de inclusão que a `PLN-T1` usou, e
+  isso é matéria de quem tiver o corpus aberto, não deste plano.
+  **(ii) Literal de corpus sem data, no próprio card.** A Verificação 2 da `PLN-T6` ilustrava com
+  `74` linhas contendo `DPN-`; o real mede **79** hoje e **65** em `d75e7a6`. O número é
+  ilustrativo e o critério vigente é a forma nova — `grep -o 'DPN-[0-9]*' | sort -u | wc -l` = **13**
+  distintas, que confirmou —, então não houve dano. É a família `AE-16` na forma exata que ela
+  prevê: constante sobre a árvore, sem data, num campo de `Verificação`. **Rota:** `TK-72`.
+  **(iii) Duas imperfeições de redação em `docs/planner-spec.md`, sem custo de dimensão.**
+  `:127` fecha a seção 6 com *"É a primeira vez que uma mudança de doutrina do papel nasce com
+  aferição automática em vez de só com texto"* — **sem âncora** no agregado nem em `DPN`, e a razão
+  da `DPN-9` cita aferição por invariância medida já no `P-0740`. É o **único floreio em 217 linhas**
+  que ancoram todo número, data e identificador; reversível por deleção, sem claim dependendo dele.
+  E a linha `Âncoras` da seção 5 é a única que aponta para a seção 10 omitindo a citação
+  `agregado, dimensão 10, Nª linha` que as seções 2, 7, 8 e 9 trazem. **Rota:** passagem da
+  `PLN-T7` ou card corretivo; **nenhuma bloqueia o Marco 3**.
+- **AE-23 — o censo da §7 fechou incompleto e o `README` §3 saiu do plano contradizendo a si
+  mesmo.** Apurado pelo reviewer da `PLN-T7` em 2026-09-22, laudo `ressalva` **83%**
+  `bloqueante=nenhuma`, recomendação `escalar` — o menor percentual da janela, e no card que fecha
+  o plano. O passo 6 da `PLN-T7` instalou em `README.md:306` o parágrafo que **aposenta** a tabela
+  de tetos. Mas ficaram fora do censo, e hoje **contradizem esse parágrafo**, três sítios do mesmo
+  documento: `README.md:308-309` (o parágrafo do `≤30` da rodada de replanejamento),
+  `README.md:311-324` (o *"Por quê"* que defende o teto graduado, mais *"Onde o gerente intervém"*,
+  premissado em estouro de teto) e `README.md:1032` (a linha da tabela de trade-offs
+  *"Teto de turnos graduado por classe, calibrado pela série medida"*).
+  **Por que nada apanhou:** o único aceite do passo 11 — *"percorrer o `README` contra o estado da
+  árvore"* — é `check-readme.ps1` exit 0, que confere estrutura e contagens e **não discrimina
+  órfão semântico**. A execução **não podia** editá-los: o `Não fazer` fecha o censo e a linha de
+  risco do plano manda registrar como `AE-<n>`. A entrega está correta dentro do que o card
+  autorizou; o defeito é de autoria de censo.
+  **Nona ocorrência da família** (`AE-7`, `AE-10`, `AE-13`, `AE-17`, `AE-19`, `AE-20`), e a mais
+  cara: **não resta card no plano**, e é o `README` que o dono lê no Marco 3. **Rota:** roteado ao
+  consultor por `B1`, e **tem de fechar antes do Marco 3**.
+  **Dois achados menores do mesmo laudo, ambos alvo `dossiê`, sem custo de dimensão:**
+  **(i)** âncoras do card envelhecidas na **terceira** geração de re-ancoragem — os `Arquivos-alvo`
+  diziam `README.md:825-826` enquanto o passo 10 e a árvore em `HEAD` dizem `824/825`, e a
+  `Restrição` citava `README.md:1036` quando a segunda medida histórica está em `:1035`. Sem dano:
+  a execução resolveu pelo literal, como a contingência 3 prescreve. **(ii)** `review_evidence.py`
+  errou duas atribuições no dossiê desta tarefa — não reconheceu `GOVERNANCA.md:78,80` como caminho
+  (lista de linhas separada por vírgula) e marcou `GOVERNANCA.md` como alheio quando ele é
+  arquivo-alvo; e extraiu `docs/consultant-spec.md` de dentro de um parêntese numa linha de alvo,
+  marcando-o `da entrega` quando é trabalho do consultor (provado por mtime). Reconciliado por hunk
+  e mtime no passo 3a. **Rota:** `TK-66`/`TK-74`, com `AE-3`, `AE-9` e `AE-21`.
+- **AE-24 — a varredura do `README` pelo conceito aposentado: oito sítios de doutrina viva, não
+  três, e um deles é do consultor.** Medido em 2026-09-22 em resposta ao `AE-23`; nona ocorrência
+  da família do censo por enumeração (`AE-7`, `AE-10`, `AE-13`, `AE-17`, `AE-19`, `AE-20`) e a
+  primeira em que o defeito é **doutrina viva contradizendo doutrina viva** no documento de
+  entrada, e não ponteiro quebrado ou contagem errada. **(i) Oito sítios**, contra os três do
+  laudo: `:121-124` (entrada de glossário `- **Orçamento de turnos**`, gêmea da `- **Tarefa
+  atômica**` de `:94` que o passo 3 reescreveu — o censo pegou uma e não a outra); `:209,211`;
+  `:308-309`; `:311-322`; `:324-326`; `:941-942`; `:946-947`; `:1032`. Os três últimos e o
+  glossário **não estavam** no laudo, e apareceram só porque a varredura foi pelo **conceito** e
+  por todos os nomes que o invocam — `teto`, `tetos`, `orçamento`, `turnos`, `ocupação`,
+  `tool uses` —, nunca pelos padrões da rodada anterior. **(ii) Erro próprio, declarado:**
+  `README.md:209,211` é o **espelho exato** de `GOVERNANCA.md:78,80`, sítio que o consultor
+  atribuiu à `PLN-T7` na rodada do `AE-10` tratando **só a residência do hub**, sem conferir a
+  gêmea da porta de entrada — contra a régua que ele mesmo fixara no `AE-7` ("censo de cópia
+  secundária se levanta por varredura, nunca por `diff` do já enumerado"). Segunda vez na janela em
+  que a família tem a digital do consultor, depois do `AE-15`. **(iii) Distinção preservada:** os
+  sítios de **outro sentido** ficam — `:286-303` (economia de turnos como disciplina de **custo**,
+  que o plano não aposenta), `:704`, `:707`, `:722`, `:727`, `:744` (teto de checkpoint e de
+  dossiê) —, e as **duas medidas históricas** `:354` e `:1025` são preservadas por `I-7`: medida
+  datada não se falsifica, e a guarda `TR-DU-7` afere **presença** delas junto com a ausência da
+  doutrina revogada, porque guarda que só afere ausência autoriza apagar demais. **(iv) Por que o
+  passo 11 da `PLN-T7` não apanhou:** seu único aceite é `check-readme.ps1` exit 0, que confere
+  estrutura e contagens e **não discrimina órfão semântico** — "percorrer o README contra o estado
+  da árvore" é instrução sem aferidor, e instrução sem aferidor não fecha nada. **(v) Rota:** card
+  corretivo `PLN-T7a`, somado à `OP-6` porque a operação diz literalmente que o mantenedor leva a
+  unidade nova à porta de entrada e que "o orçamento de turnos por classe sai de onde quem chega o
+  lia"; censo da §7 com os oito sítios; `Ato de modelo` de lastro para a `tarefas:` da `OP-6`.
+  **(vi) Régua que o caso fixa, e que fecha a série da janela:** quando um card **aposenta um
+  conceito**, o alvo não é o parágrafo que o instituía — é **todo enunciado que o define, o
+  defende, o pressupõe ou o invoca por nome**, em toda residência, e a varredura se faz pelo
+  conceito, jamais pelo literal do parágrafo revogado. Doutrina viva envelhece e se corrige; medida
+  datada não se falsifica — e o card tem de aferir **as duas direções**. **Rota:** `TK-72`, com o
+  `AE-16` e o `AE-17`, os três critérios no mesmo ato.
+- **AE-25 — guarda que prende uma ponta de um invariante de duas.** Apurado pelo reviewer da
+  `PLN-T7a` em 2026-09-22, laudo `aprovado` 100% `bloqueante=nenhuma`, recomendação `seguir`;
+  achado de alvo `dossiê`, sem custo de dimensão. A `TR-DU-7` foi escrita para prender as **duas
+  pontas** do `I-7`: ausência da doutrina revogada **e** presença da medida datada que não se
+  falsifica. Exercitada por mutação em memória, ela cumpre a primeira em 6/6 — reinserir qualquer
+  um dos seis literais obsoletos a derruba — e cumpre a segunda **pela metade**: a asserção é
+  `assert "71 turnos e ~189 mil tokens" in t`, que prende **uma** residência, e o `I-7` protege
+  **duas** (`README.md:349` e `:1020`). **Apagar apenas uma passa.** Medido: `grep -c` = 2, ambas
+  intactas hoje, então não houve dano. O literal foi ditado verbatim pelo passo 9 e o card proibia
+  mudar palavra — é defeito de **autoria do dossiê**, não da execução. **Régua que o caso fixa:**
+  guarda de invariante com N residências afere **contagem**, não pertinência — `in t` prova que
+  sobrou pelo menos uma, nunca que sobraram as N. **Rota:** `TK-72`, com `AE-16`, `AE-17` e
+  `AE-24`. **Segundo achado do mesmo laudo, alvo `dossiê`:** âncoras do card divergiam do real na
+  **quarta** geração de re-ancoragem do plano (`Por quê` era `311-320`, não `311-322`;
+  `Onde o gerente intervém` em `322-325`, não `324-326`). Resolvido pelo literal via contingência 1,
+  sem perda nem arrasto de vizinho — a cauda de "Onde o gerente intervém" sobreviveu como o card
+  mandava. Mesma causa das três anteriores: âncora de linha contra arquivo que entregas do próprio
+  marco deslocam. **Rota:** `TK-72`, família `AE-12`.
+- **AE-26 — o loop duplicou nove linhas de telemetria: o gancho grava e o loop apensou de novo.**
+  Medido em 2026-09-22 no fechamento do plano, durante a redação do documento de encerramento —
+  que apurou pares repetidos ao somar o custo da janela. Defeito de **condução do loop**, não do
+  instrumento. O gancho `SubagentStop` grava sozinho a linha de consumo ao fim de cada subagente; a
+  norma do `scrum-master` manda **conferir** essa linha contra o bloco `<usage>` da notificação e
+  **corrigi-la à mão quando divergir** (`AE-3` do `P-0739` mediu o caso do valor inflado). O loop
+  leu a norma como se mandasse **apensar**, e apensou a segunda linha em **nove das dez** tarefas —
+  nas duas primeiras (`PLN-T1`, `PLN-T2`) seguiu a norma corretamente, conferindo e corrigindo só a
+  duração, e daí em diante não conferiu mais se o gancho já havia gravado.
+  **Efeito medido:** 47 linhas brutas no recorte `2026-09-22` das tarefas `PLN-*`/`MARCO*` contra
+  **38** distintas. Cada par diferia **exclusivamente na duração**, em frações de segundo —
+  `tool_uses` e `tokens_k` idênticos. Logo **nenhuma medida por tarefa estava errada** e **todo
+  total de janela publicado antes da limpeza estava inflado**: o número reportado ao dono durante a
+  execução (`3.592,4k` no relatório de encerramento da primeira janela, e `5.472,2k` depois) é
+  maior que o real. **Reparado no fechamento:** as nove duplicatas removidas, mantendo a linha de
+  duração derivada do `<usage>`; `sort | uniq -d` sobre o recorte devolve vazio. Totais verdadeiros
+  da execução inteira: **38 registros, 852 tool uses, 4.553,9k tokens** — 3.959,3k em 31 registros
+  de Opus e 594,6k em 7 de Sonnet.
+  **Régua que o caso fixa:** a linha de telemetria de subagente tem **um** autor por rodada. O loop
+  confere se o gancho gravou **antes** de apensar, e só apensa quando ele não gravou — que é o caso
+  do subagente retomado por `SendMessage`, em que o gancho não dispara. Apensar sem conferir
+  transforma um registro de medida em soma dupla, e o consumo de janela é **medida, nunca
+  auto-relato** (`GOVERNANCA.md` §4.2). **Rota:** `TK-72`, junto com as demais emendas de régua
+  desta janela — é defeito de procedimento do loop, não de card, mas mora na mesma família: o
+  executor da norma leu o que ela não diz.

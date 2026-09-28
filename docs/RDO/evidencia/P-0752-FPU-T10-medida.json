@@ -1,0 +1,50 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T10",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T03:58:05+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import csv;from pathlib import Path;r=list(csv.reader(Path('docs/ACIONAMENTOS_CONSULTOR.tsv').open(encoding='utf-8',newline=''),delimiter='\\t'));print(len(r[0]),r[0][-1],all(len(l)==len(r[0]) for l in r[1:]))\"",
+      "exit": 0,
+      "saida": "10 causa_raiz True",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;c=chr(96);t=Path('.claude/agents/pantonic-consultant.md').read_text(encoding='utf-8').splitlines();p=[('valor-reutilizado','valor reutilizado em vez de medido;'),('premissa-nao-sondada','premissa não sondada na autoria;'),('auto-relato','auto-relato aceito;'),('regra-esquecida','regra ou precedente esquecido;'),('semantica-de-ferramenta','semântica de ferramenta;'),('contexto-presumido','contexto presumido com o dono.')];print(t[38:44]==['   - '+c+k+c+' — '+v for k,v in p],(c+'inconclusivo'+c+', '+c+'causa_raiz'+c+'.') in t[37] and t[37].endswith('o critério de cada classe:'),t[44]=='')\"",
+      "exit": 0,
+      "saida": "True True True",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;print(Path('GOVERNANCA.md').read_text(encoding='utf-8').count('Vocabulário de causa raiz')>=1)\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python .claude/tools/backlog.py check",
+      "exit": 0,
+      "saida": "check: OK — nenhuma violação.",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -c \"from pathlib import Path;print(Path('GOVERNANCA.md').read_text(encoding='utf-8').count('nenhuma conferência da régua'))\"",
+      "exit": 0,
+      "saida": "2",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "python -c \"from pathlib import Path;c=chr(96);t=Path('GOVERNANCA.md').read_text(encoding='utf-8');print(sum(t.count('| '+c+k+c+' | ')==1 for k in 'valor-reutilizado premissa-nao-sondada auto-relato regra-esquecida semantica-de-ferramenta contexto-presumido'.split()),t.count('por plano fechado é a medida deste vocabulário; linha de base: 25 de 40 acionamentos em 2026-09-26 ('+c+'P-0752'+c+' F-10).'),t.count(c+'docs/ACIONAMENTOS_CONSULTOR.tsv'+c+'; causa raiz pelo vocabulário da §3.3 | '))\"",
+      "exit": 0,
+      "saida": "6 1 1",
+      "bate": true
+    }
+  ]
+}

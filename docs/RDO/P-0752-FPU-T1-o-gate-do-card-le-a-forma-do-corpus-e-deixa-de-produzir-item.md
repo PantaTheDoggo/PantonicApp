@@ -1,0 +1,99 @@
+# RDO — P-0752 · FPU-T1
+
+# Humano
+
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" concluída em 2026-09-26.
+O verificador de cards agora lê a forma de Verificação que os planos de fato usam e parou de inventar itens a partir de números no meio da prosa.
+Revisão: aprovada sem ressalva (100%).
+Pendência para o dono: nenhuma.
+Plano "Fato no ponto de uso: os mecanismos contra o esquecimento e a assunção": 1/11 tarefas concluídas; próxima: "Toda âncora de arquivo e linha do card leva o literal, e o gate confere a linha hoje".
+Handover para quem vem depois: registrado no card; o `next` o entrega à sucessora.
+Achados registrados no plano, com rota: 2 (ver seção de achados da execução).
+
+# Máquina
+
+**Plano:** `docs/plans/P-0752-fato-no-ponto-de-uso.md`
+**Tarefa:** `FPU-T1` — O gate do card lê a forma do corpus e deixa de produzir item fantasma
+**Modelo:** Sonnet · **Classe:** implementacao
+**Esquema de leitura do plano:** padrao
+
+## Dossiê
+
+**Objetivo:** `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` sai `0` sobre card conforme nas duas formas (DFP-2), compara o mundo derivado do status (`done` → `depois`; demais → `antes`), reconhece marcador de item só no início de linha do markdown original (DFP-3) e continua saindo `1` com falha nomeada nos casos da fixture atual.
+
+**Arquivos-alvo:** - `.claude/tools/card_check.py` — `_ITEM_MARKER_RE` e `_parsear_itens` (linhas 73-135), `_bate_com_medido` (181), `verificar_tarefa` (191-256), `main` (259-296) - `.claude/tools/rdo.py` — `DossieTarefa.__init__` (linha 164-178: acrescentar `campos_linhas`) e `extrair_dossie` (263-330: preencher `campos_linhas` a partir de `_parsear_campos_com_linhas`, que substitui `_parsear_campos` e devolve também as linhas brutas por campo, sem mudar o dicionário `campos` — DFP-15) - `tests/test_card_check.py`, `tests/test_rdo.py` - `tests/fixtures/card_check/plano-corpus.md` (novo)
+
+**Verificação:** 1. `python -m pytest tests/test_card_check.py tests/test_rdo.py -q` → verde, com os cinco testes novos — antes `68 passed`, depois `73 passed`. 2. `python .claude/tools/card_check.py --plano docs/plans/P-0751-esgotar-backlog.md --tarefa EBK-T1` → exit 1 com exatamente duas falhas, `item 1: esperado sem literal` e `item 3: comando recusado - primeiro token fora da lista fechada ('python', 'pwsh')`, e nenhuma `fora da forma` — antes exit `1` com `4 item(ns)` `fora da forma da 8.1`, depois exit `1` com `2 item(ns)`. Roda a suíte inteira (item 4), cerca de 35 s. Medido pelo consultor (2026-09-26), com os comandos rodados como `_rodar_comando`: item 2 sai `0` com `check: OK — nenhuma violação.` na saída; item 4 sai `0` com `397 passed`; item 3 recusado com esse motivo exato. 3. `python .claude/tools/card_check.py --plano tests/fixtures/card_check/plano-exemplo.md --tarefa EX-T4` → exit 1 com `fora da forma` — antes exit `1`, depois exit `1` (regressão da forma 8.1; a linha não discrimina e é declarada como trava, não como aceite). 4. `python -m pytest -q` → nenhuma falha; `passed` ≥ 397 + 5 — antes `397 passed`.
+
+**Pronto quando:** card.premissas conferidas — conferidas por comando sobre card conforme nas duas formas (fixture) e lidas sem `fora da forma` sobre o corpus vivo — Verificações 1 e 2; régua executável.conferências — o `card_check` fecha sobre o corpus vivo e sobre a fixture antiga — Verificações 1 a 3.
+
+**Dossiê fechado por:** nenhum
+
+**Extras (rótulos livres do plano, verbatim):**
+
+- **Status:** `done` · 2026-09-26
+- **Operação do modelo:** `OP-1` - OP-1: O gate do card passa a ler a forma de Verificação que o corpus vivo usa, a rodar cada comando e a comparar o valor do mundo em que o card está. - precisa de: card — Quem implementa faz o instrumento ler a forma que o corpus vivo usa; card vivo não se reescreve para caber no instrumento.
+- **Fundamento:** DFP-2 (emendada por DFP-14), DFP-3, DFP-14, F-2; `docs/RUBRICA_DE_REVISAO.md` `### 8.1`.
+- **Contratos/classes:** `card_check.verificar_tarefa(plano: Path, tarefa_id: str, root: Path, mundo: str | None = None) -> tuple[bool, list[str]]` — `mundo` em `{"antes", "depois", None}`; `None` deriva do status do card. `ItemVerificacao` ganha `antes: str | None` e `depois: str | None`; `medido_antes` continua sendo o da forma 8.1. `DossieTarefa.campos_linhas: dict[str, list[str]]` — mesmas chaves de `campos`, valor é a lista de linhas brutas do campo.
+- **Passos:** 1. (DFP-13) Mover o corpo de `rdo._parsear_campos` para uma função nova `_parsear_campos_com_linhas(linhas) -> tuple[dict[str, str], list[list[str]], dict[str, list[str]]]`, que acumula também as linhas brutas de cada campo canônico (a linha do rótulo e cada linha indentada anexada a ele); (DFP-15) `_parsear_campos` é apagada — invólucro sem chamador de produção reprova o gate bloqueante `dead_code.py` —, e os dois chamadores diretos `tests/test_rdo.py:1017` e `:1040` passam a `campos, _, _ = rdo._parsear_campos_com_linhas(linhas)`, sem mudar asserção nenhuma. **A árvore já contém a entrega do 2º redespacho** (`rdo.py`, `card_check.py`, `test_rdo.py`, `test_card_check.py`, fixture `plano-corpus.md`, com 73/402 passed): ajustar só isto — apagar a função `_parsear_campos` (`rdo.py:273-277`), trocar as duas linhas de teste, e atualizar as menções em docstring a `_parsear_campos` em `card_check.py:9` e `rdo.py:386` para `_parsear_campos_com_linhas`; o resto da árvore não se refaz. `extrair_dossie` (linha 329) passa a chamar `_parsear_campos_com_linhas`; `DossieTarefa.__init__` ganha `campos_linhas=None` como último parâmetro (o único construtor é `rdo.py:344`). Os 60 testes de `tests/test_rdo.py` continuam verdes, com a troca das duas linhas de chamada como única alteração deles (medido em cópia pelo consultor, acionamento 3: `python .claude/checks/dead_code.py` exit 0 `0 achado(s)`; `73 passed` na Verificação 1; suíte `402 passed`). 2. Em `card_check._parsear_itens`, receber as linhas brutas do campo `verificacao` em vez do texto achatado; marcador de item é `^\s*(\d+)\.` no início de uma linha bruta (DFP-3). O item vai da linha do marcador até a linha anterior ao próximo marcador (linhas juntadas com espaço). Item cujo resto da linha do marcador, depois de `N.`, abre bloco cercado (```` ``` ````, como `EX-T1`) é forma 8.1 (tratamento atual); item cujo resto começa por crase simples é forma inline (DFP-14: `→` e par opcionais); qualquer outro item (prosa depois de `N.`, como `EX-T4`) segue `item N: fora da forma da 8.1`, com a mensagem atual. Na forma inline: comando = conteúdo da primeira crase, esperado = texto entre `→` e ` — antes` (ou o fim do item), `antes`/`depois` = valores capturados por `antes\s+`?([^`,;]+)`?[,;]?\s*depois\s+`?([^`.\n]+)`?`, quando existirem (o valor pode estar entre crases ou não). 3. Em `verificar_tarefa`, derivar `mundo` do bullet `- **Status:**` do card quando `mundo is None` (`done` → `depois`; qualquer outro → `antes`). Status: `rdo._status_atual(plano_path, dossie.tarefa_id, dossie, None)` (lê o bullet do plano legado). Forma inline, nesta ordem e uma falha por item, sem as checagens de `→`/`Medido antes` da 8.1: (a) valor do mundo (DFP-14) — card não `done` sem `antes` → `item N: sem valor antes`; card `done` sem par e sem `→` → `item N: sem valor esperado`; card `done` sem par com esperado sem crase → `item N: esperado sem literal`; (b) `_validar_comando` recusa → `item N: comando recusado - <motivo>` (mesma linha da 8.1); (c) rodar e comparar com `_bate_com_medido(valor_do_mundo, returncode, saida)` → `divergencia` como na 8.1. `**Aferição: manual**` num item inline segue a regra da 8.1. Forma 8.1: sem mudança de semântica (compara `Medido antes` em qualquer mundo, como hoje). 4. Em `main`, acrescentar `--mundo {antes,depois}` opcional. 5. Fixture nova `tests/fixtures/card_check/plano-corpus.md` com cabeçalho de plano legado mínimo e quatro cards na forma inline: `CX-T1` `ready` com `1. \`python -c "print('a')"\` → \`b\` — antes \`a\`, depois \`b\`` (fecha em `antes`); `CX-T2` `done` com o mesmo item (fecha em `depois` só se o comando imprimir `b` — usar `python -c "print('b')"`); `CX-T3` `ready` com item sem `antes` (falha `sem valor antes`); `CX-T4` `ready` cujo campo `Contingências` contém a prosa `acionamento 1. medido` (nenhum item fantasma: a Verificação dele tem um item só, e o gate reporta um só).
+- **Testes (novos, em `tests/test_card_check.py`):** TF `test_tf_corpus_ready_compara_antes` (`CX-T1` → exit 0); TF `test_tf_corpus_done_compara_depois` (`CX-T2` → exit 0; com `--mundo antes` → exit 1 e `divergencia`); TF `test_tf_corpus_sem_antes_falha` (`CX-T3` → exit 1, `sem valor antes`); TF `test_tf_marcador_so_no_inicio_de_linha` (`CX-T4` → exatamente um item reconhecido, exit 0); TR: os 8 testes atuais sobre `plano-exemplo.md` inalterados e verdes; em `tests/test_rdo.py`, os dois testes de `_parsear_campos` (`:1017`, `:1040`) mudam só a linha de chamada (DFP-15). Em `tests/test_rdo.py`: TF `test_tf_campos_linhas_preserva_quebras` (`campos_linhas["verificacao"]` tem tantas linhas quanto o bloco bruto do card da fixture de `rdo`).
+- **Não fazer:** não tocar `_validar_comando` nem `_COMANDOS_PERMITIDOS`; não reescrever card nenhum de `docs/plans/` nem do diário (I-3); não tocar `encerrar.py` (I-4); não mudar o dicionário `campos` nem as chaves dele.
+- **Contingências:** - (fato, DFP-14, não mais contingência) o item 3 do `EBK-T1` (`P-0751:151`) não tem `→` e é inline pelo par; o comando PowerShell nu é recusado, e o item 1 (`→ verde, com os testes acima.`) não tem literal: as duas falhas são o aceite da Verificação 2, não defeito da entrega — não pare por elas nem reescreva o `EBK-T1` (I-3). - chamadores de `_parsear_campos` medidos em 2026-09-26 (`grep -rn "_parsear_campos(" --include=*.py .claude tests`): `rdo.py:329`, `tests/test_rdo.py:1017`, `tests/test_rdo.py:1040` — `rdo.py:329` é o `extrair_dossie` e os dois de teste migram no Passo 1 (DFP-15); se o grep listar chamador fora desses → migre-o para `_parsear_campos_com_linhas` desempacotando três valores, sem parar. - (fato, DFP-15) `python .claude/checks/dead_code.py` é gate bloqueante da `guardrails-check` e roda no fechamento: símbolo de produção chamado só de `tests/` reprova; não crie invólucro, alias nem exceção no `dead_code.py` — exit 0 com `0 achado(s)` foi medido com o reparo do Passo 1. - se o bullet `- **Status:**` não existir no card (plano em pasta) → `mundo` = `antes`, com aviso na saída `status ausente: comparando antes`.
+- **Handover:** 2026-09-26 · para `FPU-T3`, `FPU-T5` - **Entregue:** card_check le as duas formas de Verificacao: 8.1 (bloco cercado na linha do marcador) e inline (crase apos N., seta e par antes/depois opcionais, DFP-14) - .claude/tools/card_check.py:121 _parsear_itens sobre linhas brutas, :248 verificar_tarefa(plano, tarefa_id, root, mundo=None) deriva o mundo do Status (done->depois), :383 main com --mundo {antes,depois}; rdo._parsear_campos_com_linhas (.claude/tools/rdo.py:212) substitui _parsear_campos e devolve campos_linhas; DossieTarefa(..., campos_linhas=None) em rdo.py:171; fixture tests/fixtures/card_check/plano-corpus.md (CX-T1..CX-T4) - **Contrato:** card_check sai 0 sobre card conforme nas duas formas e 1 com falha nomeada por item (sem valor antes, sem valor esperado, esperado sem literal, comando recusado, divergencia, fora da forma da 8.1); marcador de item so no inicio de linha bruta; sobre EBK-T1 do P-0751 sai exit 1 com exatamente item 1 esperado sem literal e item 3 comando recusado; suite 402 passed, test_card_check+test_rdo 73 passed; dead_code 0 achados - **Não refazer:** parser inline e derivacao de mundo ja pagos; _parsear_campos nao existe mais (nao recriar invólucro: dead_code reprova) - **Pendente:** nenhum teste tranca o fantasma de prosa 'N.' na linha de continuacao do proprio item de Verificacao (o CX-T4 so cobre outro campo) - fixture absorvivel no FPU-T5; regex do par antes/depois nao casa com parentese entre antes e depois (item 1 do FPU-T3)
+- **Notas de execução:** - 2026-09-26 `ready` — consultor ac.2: DFP-14 (seta e par opcionais na forma inline), Verificacao 2 re-medida - 2026-09-26 `ready` — consultor ac.3: DFP-15 (invólucro _parsear_campos apagado, 2 testes migram; dead_code medido exit 0); redespacho sobre a árvore atual, sem consumir retentativa - 2026-09-26 `done` — fechada por `encerrar.py`: RDO `docs/RDO/P-0752-FPU-T1-o-gate-do-card-le-a-forma-do-corpus-e-deixa-de-produzir-item.md`, veredito aprovado 100%
+
+## Execução
+
+**Consumo:** 23 tool uses, 58.5 k tokens, 174.1 s (fonte: `<usage>` do encerramento)
+
+**Pendência para o dono:** nenhuma
+
+## Laudo
+
+**Veredito:** aprovado
+
+**Percentual:** 100%
+
+**Dimensão bloqueante:** nenhuma
+
+**Recomendação:** seguir
+
+## Lições aprendidas na tarefa
+
+Quatro linhas medidas do FPU-T1 na serie (docs/telemetria.tsv:856-859), tres delas paradas blocked por premissa do card (AE-1, AE-2, AE-3 do P-0752), cada uma fechada por decisao do consultor (DFP-13, DFP-14, DFP-15). O custo da tarefa ficou na autoria do card, nao na execucao: a ultima passagem so apagou o involucro e trocou duas linhas de teste. A medida que faltou no ensaio do consultor em DFP-13 foi a bateria de guardas (dead_code), nao so o pytest.
+
+## Fechamento
+
+**Desdobramento:** aprovado
+
+# Histórico
+
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma". Passo: conferir os gates e preparar o despacho.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma". Passo: conferir os gates e preparar o despacho.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": gates aprovados; vou materializar in-progress e gravar o ponto de partida.
+Agente executor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai executar: `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` sai `0` sobre card conforme nas duas formas (DFP-2), compara o mundo derivado do status (`done` → `depois`; demais → `antes`), reconhece marcador de item só no início de li…
+Agente executor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": blocked — motivo premissa: contingência do próprio card ("se `_parsear_campos` tiver mais de um chamador além de `extrair_dossie` → parar e sinalizar `blocked` razão `premissa`, nomeando os chamadores") se confirmou: grep em `_parsear_campos` (`D:\workspaces\PantonicApp\tests\test_rdo.py:1017` em `test_tf_campo_termina_em_bullet_de_prosa` e `D:\workspaces\PantonicApp\tests\test_rdo.py:1040` em `test_tr_campo_multilinha_continua_valendo`) mostra dois chamadores diretos de `rdo._parsear_campos(linhas)` que desempacotam `campos, _ = ...` (tupla de 2); o Passo 1 do card exige mudar a assinatura para `tuple[dict[str, str], list[list[str]], dict[str, list[str]]]` (3 elementos) e no mesmo Passo 1 declara "Os 53 testes de tests/test_rdo.py continuam verdes sem alteração" — as duas chamadas diretas quebram com `ValueError: too many values to unpack` assim que a assinatura muda, contradizendo essa cláusula. Nenhuma edição foi feita (parei na triagem/leitura, antes da primeira mudança em `.claude/tools/rdo.py`, `.claude/tools/card_check.py` ou nos testes)..
+Scrum master vai marcar a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" como blocked, sem RDO.
+Agente consultor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai triar.
+Agente consultor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": rota resolve.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": gates aprovados; vou materializar in-progress e gravar o ponto de partida.
+Agente executor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai executar: `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` sai `0` sobre card conforme nas duas formas (DFP-2), compara o mundo derivado do status (`done` → `depois`; demais → `antes`), reconhece marcador de item só no início de li…
+Agente executor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": blocked — motivo premissa: defeito=ambiguidade: o Passo 2 do card e o DFP-2 (fundamento) exigem `→` como elemento obrigatório da forma inline, mas a Contingência 1 do mesmo card exige que o item 3 de `EBK-T1` — que não tem `→` — seja reconhecido como inline (para falhar como "comando recusado", não como "fora da forma da 8.1")..
+Scrum master vai marcar a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" como blocked, sem RDO.
+Agente consultor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai triar.
+Agente consultor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": rota resolve.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": gates aprovados; vou materializar in-progress e gravar o ponto de partida.
+Agente executor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai executar: `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` sai `0` sobre card conforme nas duas formas (DFP-2), compara o mundo derivado do status (`done` → `depois`; demais → `antes`), reconhece marcador de item só no início de li…
+Agente executor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": blocked — motivo premissa:: Passo 1 (`_parsear_campos` vira invólucro sobre `_parsear_campos_com_linhas`) deixa `_parsear_campos` sem chamador de produção alcançável — o gate bloqueante `dead_code.py` (G-DEADCODE) falha nisso..
+Scrum master vai marcar a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" como blocked, sem RDO.
+Agente consultor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai triar.
+Agente consultor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": rota resolve.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": gates aprovados; vou materializar in-progress e gravar o ponto de partida.
+Agente executor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai executar: `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` sai `0` sobre card conforme nas duas formas (DFP-2), compara o mundo derivado do status (`done` → `depois`; demais → `antes`), reconhece marcador de item só no início de li…
+Agente executor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": review — sem pendência.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": vou reunir para o revisor o que mudou desde o despacho, os arquivos tocados fora do previsto e o resultado dos testes e guardas do kit.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": vou reunir para o revisor o que mudou desde o despacho, os arquivos tocados fora do previsto e o resultado dos testes e guardas do kit.
+Agente revisor recebe a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" e vai confrontar a entrega com o card.
+Agente revisor devolveu a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": aprovado 100%, bloqueante nenhuma.
+Scrum master vai fechar a tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma" como done: registrar estado, RDO e telemetria.
+Tarefa "O gate do card lê a forma do corpus e deixa de produzir item fantasma": vou reunir para o revisor o que mudou desde o despacho, os arquivos tocados fora do previsto e o resultado dos testes e guardas do kit.

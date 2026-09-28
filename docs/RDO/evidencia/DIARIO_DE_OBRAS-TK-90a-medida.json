@@ -1,0 +1,22 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-90a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T02:17:09+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;print(sum(1 for l in Path('docs/DIARIO_DE_OBRAS.md').read_text(encoding='utf-8').splitlines() if l.startswith('| P-0742-')))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python .claude/tools/backlog.py check",
+      "exit": 0,
+      "saida": "check: OK — nenhuma violação.",
+      "bate": true
+    }
+  ]
+}

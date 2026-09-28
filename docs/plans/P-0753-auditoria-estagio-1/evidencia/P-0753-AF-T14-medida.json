@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T14",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T16:03:45+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_modelo.py -q -k \"pendente_roda_o_vocabulario or drift_mostra_contrato\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 32 deselected in 0.06s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python .claude/tools/modelo.py check --plano tests/fixtures/modelo/fluxo-pendente-contrato.md",
+      "exit": 1,
+      "saida": "1A: V5 OP-3 — objeto inexistente objeto fantasma\nmodelo: FALHOU — 1 violação(ões)",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python .claude/tools/modelo.py show --plano tests/fixtures/modelo/fluxo-pendente-contrato.md --drift",
+      "exit": 0,
+      "saida": "# Drift do modelo — fluxo-pendente-contrato — fluxo-pendente-contrato\nvigente: versão 1 · 2026-09-20   pendente: versão 2 · 2026-09-27\n\n## Objetos\n[~] resultado um — contrato: um registro validado => um registro validado e datado",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 44%]\n........................................................................ [ 58%]\n........................................................................ [ 73%]\n........................................................................ [ 88%]\n..........................................................               [100%]\n490 passed in 46.91s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

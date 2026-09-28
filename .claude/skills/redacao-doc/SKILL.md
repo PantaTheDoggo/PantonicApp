@@ -9,7 +9,8 @@ description: Redação de documento publicado — elimina narrativa de proveniê
 
 Toda autoria, reescrita ou revisão de documento da classe **publicado** (ver §5). Obrigatória antes
 de dar qualquer doc dessa classe como pronto. Não se aplica a registro de obra (§5, classe
-**registro**), onde narrar é a função.
+**registro**), onde narrar é a função. Mensagem de conversa ao dono não é documento publicado:
+segue *Mensagem legível ao dono* (`GOVERNANCA.md` §4.2) e a skill `mensagem-ao-dono`.
 
 ## 1. A regra
 

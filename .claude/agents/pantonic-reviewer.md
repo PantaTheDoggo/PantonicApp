@@ -34,12 +34,14 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
 - Três entradas de julgamento, e só elas: o dossiê da tarefa no plano, o dossiê de evidência
   produzido por `.claude/tools/review_evidence.py` antes do despacho e o diff da entrega. Nenhuma
   delas é narrativa de quem executou — a entrega se julga pelo que ficou no repositório.
+- a seção `## Medida do executor` do dossiê de evidência é a única afirmação de verde admitida;
+  `ausente` conta como verificação não feita.
 - O dossiê de evidência nasce desta chamada, gerada pelo `scrum-master` antes do despacho:
 
   ```
   python .claude/tools/review_evidence.py --plano <plano> --tarefa <ID> \
     --desde <ref capturada no passo 4> \
-    --out docs/RDO/evidencia/<plano>-<ID>.md
+    --out docs/RDO/evidencia/<plano>-<ID>.md   # só plano legado; plano em pasta: sem --out, grava docs/plans/P-<n>-<slug>/evidencia/<ID>.md
   ```
 
   O instrumento se executa; abrir o fonte para entender a chamada é sinal de documentação
@@ -50,7 +52,7 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
   é do `pantonic-model-designer`, despachado por quem conduz a sessão.
 - Saída: as duas linhas de veredito ao chamador, o dossiê `Ato de modelo` de `conflito` quando o
   passo 7 o exigir, e o laudo em documento próprio, gravado pelo gerador
-  em `docs/RDO/laudos/<plano>-<tarefa>.md`.
+  em `docs/plans/P-<n>-<slug>/laudos/<tarefa>.md` (plano legado: `docs/RDO/laudos/<plano>-<tarefa>.md`).
 - O laudo carrega o **pacote**: veredito, percentual, dimensão bloqueante, recomendação e
   pendência. Com esses cinco campos o `scrum-master` fecha o registro da tarefa sem falha, e é essa
   suficiência que o laudo tem de entregar.
@@ -122,13 +124,13 @@ fazer.
    `--vermelho-mecanico` é repetível e recebe toda dimensão que a camada mecânica reportou vermelha.
    `--escalar` é o seu único canal de pendência: presente, a recomendação vira `escalar`, dominante
    sobre a tabela de veredito, e é por ele que pendência de arquitetura ou de requisito chega ao
-   loop — que a roteia ao **planejamento** (G-REPLAN/G-NOASK, `GOVERNANCA.md` §7 itens 17-18);
-   ao dono chega só o que o planejador classificar como estratégico, nunca a sua linha direto. Percentual, veredito, bloqueante e recomendação saem do cálculo, e marcação inconsistente
+   loop — que a roteia à **triagem do consultor** (G-REPLAN/G-NOASK, `GOVERNANCA.md` §7 itens 17-18);
+   ao dono chega só o que o consultor devolver como drift do modelo ou estratégico, nunca a sua linha direto. Percentual, veredito, bloqueante e recomendação saem do cálculo, e marcação inconsistente
    com a régua faz o gerador falhar.
 7. **Retorno ao chamador** — as duas linhas fixas e, quando houver, o dossiê:
 
    ```
-   <tarefa> <veredito> <percentual> bloqueante=<dimensão|nenhuma>
+   <tarefa> <veredito> <percentual> bloqueante=<dimensão|nenhuma> recomendacao=<seguir|seguir com ressalva|refazer|escalar>
    laudo=<caminho>
    ```
 
@@ -138,8 +140,9 @@ fazer.
    conduz a sessão lê para despachar o `pantonic-model-designer`; sem ele, a divergência fica só
    no laudo e o texto do modelo nunca é acertado. Você **não aciona** o modelador — devolve o dossiê e para.
 
-   O motivo de cada dimensão fora de `conforme`, os achados de processo com alvo e rota e a
-   pendência ao dono ficam no laudo, que é onde eles têm leitor.
+   O motivo de cada dimensão fora de `conforme` vai na flag `--motivo <dimensao> "<uma linha>"` do
+   `rdo.py laudo` — não no card *Lições aprendidas na tarefa*; os achados de processo com alvo e
+   rota e a pendência ao dono também ficam no laudo, que é onde eles têm leitor.
 
 ## Proibições
 

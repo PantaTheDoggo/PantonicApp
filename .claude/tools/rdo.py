@@ -9,12 +9,21 @@ gramática fixa da `DP-C` (`extrair_dossie`, reusada também por `review_evidenc
 pendência-do-laudo) e o consumo medido, **calcula** o desdobramento pela tabela de dois ramos de
 `calcular_desdobramento` e materializa o documento a partir de `.claude/tools/rdo_template.md`
 numa única escrita atômica — o formato do RDO vive no template, não em nenhum prompt de agente.
+O RDO tem três seções de nível 1 (`TK-88`): `# Humano` (resumo em linguagem corrente, o que o
+dono lê — `--humano`), `# Máquina` (dossiê verbatim, pacote do laudo, consumo e desdobramento, o
+que o próximo agente lê) e `# Histórico` (as linhas do painel do gerente para a tarefa —
+`--historico`). Quem preenche as duas seções de fora é `.claude/tools/encerrar.py tarefa`, o
+instrumento de fechamento que chama `cmd_close` em processo; `close` chamado direto preenche o
+mínimo honesto e nunca inventa linha de painel.
 
-O RDO é escrito por uma única transição (`review` → `done`, `DP-F`/`DP-E`): tarefa `cancelled` ou
-`blocked` não produz RDO, então `close` não tem `--status` e não lê `status` de lugar nenhum. O
-laudo é documento **consumido e descartado** pelo `scrum-master` (`DP-H`) — `close` não abre
-arquivo de laudo nenhum e não conhece `--laudos-dir`; o template não pendura ponteiro para um
-documento que já não existe.
+O RDO é escrito por uma única transição (`review` → `done`, `DP-F`/`DP-E`): `close` recusa (exit
+!= 0, nada escrito) a tarefa cujo status corrente não é `done` — lido na mesma fonte que
+`backlog.py status` escreve (bullet `- **Status:**` no plano legado e no diário, linha da tarefa em
+`estado.tsv` no plano em pasta), nunca aceito por flag (`close` não tem `--status`, `DEB-8`).
+Status ausente (card sem o bullet, tarefa sem linha no `estado.tsv`, `estado.tsv` inexistente)
+conta como não-`done`. O laudo é documento **consumido e descartado** pelo `scrum-master` (`DP-H`)
+— `close` não abre arquivo de laudo nenhum e não conhece `--laudos-dir`; o template não pendura
+ponteiro para um documento que já não existe.
 
 Plano legado (cabeçalho sem colchete algum — a gramática fixa da `DX-15` é `### <ID> — <título>
 [<modelo> · classe <classe>]`, com o segmento histórico ` · teto <N>` aceito e descartado sem
@@ -31,16 +40,19 @@ diretório se preciso. `--vermelho-mecanico <dimensao>` (repetível) declara o q
 já reportou vermelho; marcar `conforme` contra uma dimensão declarada vermelha é recusado (`DA-7`).
 `--escalar "<uma linha>"` força `recomendacao=escalar` independentemente da tabela, e a linha
 gravada é a pendência que a regra `B1` consome. `--achado-processo <alvo> "<uma linha>"`
-(repetível; alvo em `dossie`, `doutrina`, `rubrica` ou `modelo`) grava a seção `## Achado de processo` e
+(repetível; alvo em `dossie` — ou `dossiê` —, `doutrina`, `rubrica` ou `modelo`) grava a seção `## Achado de processo` e
 **não** altera percentual, veredito, bloqueante nem recomendação — invariante 1 de
 `docs/RUBRICA_DE_REVISAO.md` §6; `--escalar` fica reservado ao achado que invalida a rota (decisão
-de arquitetura ou de requisito).
+de arquitetura ou de requisito). `--motivo <dimensao> "<uma linha>"` (repetível, só para dimensão
+fora de `conforme`) grava a seção `## Motivo das dimensões fora de conforme`, entre a tabela de
+níveis e o achado de processo — é o lugar do motivo, não o card *Lições aprendidas na tarefa*.
 
 Escrita atômica (arquivo temporário no mesmo diretório de destino + `os.replace`) e falha ruidosa
 (exit != 0, mensagem em stderr, nada escrito) no mesmo padrão de `.claude/tools/telemetria.py`."""
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import math
 import os
 import re
@@ -49,6 +61,18 @@ import tempfile
 import unicodedata
 from fractions import Fraction
 from pathlib import Path
+
+
+def _carregar_caminhos():
+    caminho = Path(__file__).resolve().parent / "caminhos.py"
+    spec = importlib.util.spec_from_file_location("caminhos", caminho)
+    modulo = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = modulo
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_caminhos = _carregar_caminhos()
 
 _MODELOS = {"Opus", "Sonnet", "Haiku"}
 
@@ -146,7 +170,7 @@ class DossieTarefa:
     de anotações adiadas (`from __future__ import annotations`) que `dataclasses` faz na
     definição da classe — evitado ficando fora do mecanismo de dataclass."""
 
-    def __init__(self, tarefa_id, titulo, modelo, classe, esquema, campos, extras):
+    def __init__(self, tarefa_id, titulo, modelo, classe, esquema, campos, extras, campos_linhas=None):
         self.tarefa_id = tarefa_id
         self.titulo = titulo
         self.modelo = modelo
@@ -154,6 +178,7 @@ class DossieTarefa:
         self.esquema = esquema  # "padrao" | "legado"
         self.campos = campos
         self.extras = extras
+        self.campos_linhas = campos_linhas
 
 
 def _remover_acentos(texto: str) -> str:
@@ -186,8 +211,14 @@ def _slugify(titulo: str) -> str:
     return texto[:60].rstrip("-")
 
 
-def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]:
-    """Extrai os campos canônicos (`_CAMPOS_CANONICOS`) e os extras de um bloco de card.
+def _parsear_campos_com_linhas(
+    linhas: list[str],
+) -> tuple[dict[str, str], list[list[str]], dict[str, list[str]]]:
+    """Extrai os campos canônicos (`_CAMPOS_CANONICOS`) e os extras de um bloco de card, e
+    acumula também `campos_linhas`: por campo canônico, a lista das linhas **brutas** que o
+    compõem (a linha do rótulo e cada linha indentada anexada a ele) — usado por `card_check.py`
+    para reconhecer marcador de item só no início de uma linha bruta do markdown original
+    (`DFP-3`), sem recorrer ao texto achatado de `campos` (`DFP-13`).
 
     Regra de fim de campo (`AE-27` item 2, caso `LM-T2b`): um **bullet de topo** encerra o campo
     corrente, case ele `_CAMPO_RE` (campo canônico) ou não. Antes deste reparo, só um bullet que
@@ -199,6 +230,7 @@ def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]
     """
     campos: dict[str, str] = {}
     extras: list[list[str]] = []
+    campos_linhas: dict[str, list[str]] = {}
     chave_atual: str | None = None
     em_extra = False
 
@@ -210,6 +242,7 @@ def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]
             chave = _normalizar_rotulo(rotulo)
             if chave in _CAMPOS_CANONICOS:
                 campos[chave] = conteudo
+                campos_linhas[chave] = [linha]
                 chave_atual = chave
                 em_extra = False
             else:
@@ -225,6 +258,7 @@ def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]
                 extras[-1][1] = (extras[-1][1] + " " + texto).strip()
             elif chave_atual is not None:
                 campos[chave_atual] = (campos[chave_atual] + " " + texto).strip()
+                campos_linhas[chave_atual].append(linha)
             continue
         if linha.startswith("- "):
             # Bullet de topo que não casa `_CAMPO_RE` (rótulo sem ':**'): encerra o campo
@@ -235,7 +269,7 @@ def _parsear_campos(linhas: list[str]) -> tuple[dict[str, str], list[list[str]]]
         # linha sem indentação que não é campo novo nem bullet de topo: fora da gramática,
         # ignorada.
 
-    return campos, extras
+    return campos, extras, campos_linhas
 
 
 def extrair_dossie(
@@ -304,7 +338,9 @@ def extrair_dossie(
         if _SECTION_BREAK_RE.match(linhas[j]):
             fim_idx = j
             break
-    campos, extras_brutos = _parsear_campos(linhas[header_idx + 1 : fim_idx])
+    campos, extras_brutos, campos_linhas = _parsear_campos_com_linhas(
+        linhas[header_idx + 1 : fim_idx]
+    )
 
     for obrigatorio in ("objetivo", "verificacao", "pronto-quando"):
         if not campos.get(obrigatorio, "").strip():
@@ -327,7 +363,41 @@ def extrair_dossie(
         esquema=esquema,
         campos=campos,
         extras=[(rotulo, conteudo) for rotulo, conteudo in extras_brutos],
+        campos_linhas=campos_linhas,
     )
+
+
+_STATUS_EXTRA_RE = re.compile(r"^`([a-z-]+)`")
+
+
+def _status_atual(
+    plano_path: Path,
+    tarefa_id: str,
+    dossie: DossieTarefa,
+    pasta_plano: Path | None,
+) -> str | None:
+    """Status corrente da tarefa, lida na mesma fonte que `backlog.py status` escreve (`DEB-8`):
+    linha da tarefa em `estado.tsv` no plano em pasta; bullet `- **Status:**` (capturado como
+    extra por `_parsear_campos_com_linhas`, já que não é campo canônico) no plano legado e no diário.
+    Ausente devolve `None` — o chamador trata como não-`done`."""
+    if pasta_plano is not None:
+        estado_path = _caminhos.estado_tsv(plano_path)
+        if not estado_path.is_file():
+            return None
+        linhas = estado_path.read_text(encoding="utf-8").splitlines()
+        for linha in linhas[1:]:
+            campos = linha.split("\t")
+            if len(campos) != 6:
+                continue
+            id_, tipo, status, _razao, _data, _nota = campos
+            if tipo == "tarefa" and id_ == tarefa_id:
+                return status
+        return None
+    for rotulo, conteudo in dossie.extras:
+        if rotulo.strip().lower() == "status":
+            m = _STATUS_EXTRA_RE.match(conteudo.strip())
+            return m.group(1) if m else None
+    return None
 
 
 def _render(template_texto: str, mapping: dict[str, str]) -> str:
@@ -503,6 +573,8 @@ def calcular_laudo(
 
 
 _ALVOS_ACHADO = {"dossie": "dossiê", "doutrina": "doutrina", "rubrica": "rubrica", "modelo": "modelo"}
+# Grafia acentuada aceita na entrada e normalizada antes da validação (TK-85a).
+_SINONIMOS_ALVO = {"dossiê": "dossie"}
 
 
 def _formatar_achados_processo(pares: list[list[str]] | None) -> str:
@@ -517,8 +589,20 @@ def _formatar_achados_processo(pares: list[list[str]] | None) -> str:
     return "\n".join(linhas)
 
 
+def _formatar_motivos(pares: list[list[str]] | None, niveis: dict[str, str]) -> str:
+    """TK-85a: uma linha por `--motivo`, na ordem dada. Sem motivo, o corpo é `nenhum` (a seção
+    existe sempre, como a de achado de processo)."""
+    if not pares:
+        return "nenhum"
+    linhas = ["| dimensão | nível | motivo |", "|---|---|---|"]
+    for dimensao, texto in pares:
+        linhas.append(f"| {dimensao} | {niveis[dimensao]} | {texto.strip()} |")
+    return "\n".join(linhas)
+
+
 def cmd_laudo(args: argparse.Namespace) -> Path:
-    """EXA-T18: laudo grava documento próprio em `docs/RDO/laudos/<plano>-<tarefa>.md` — não
+    """EXA-T18/SAN-T3: laudo grava documento próprio em `<pasta-do-plano>/laudos/<tarefa>.md` (plano
+    em pasta, sem `--laudos-dir`) ou em `docs/RDO/laudos/<plano>-<tarefa>.md` (plano legado) — não
     depende de RDO nenhum aberto, e o `close` (EXA-T19) não o lê: o `pacote` chega a `close` por
     argumento, de quem consumiu este documento."""
     for flag, valor in (("--plano", args.plano), ("--tarefa", args.tarefa)):
@@ -527,6 +611,10 @@ def cmd_laudo(args: argparse.Namespace) -> Path:
                 f"{flag} é identificador (ex.: P-0734, T18), não caminho: {valor!r}. "
                 "Laudo de sonda vai para --laudos-dir <scratchpad>."
             )
+    if args.achado_processo:
+        args.achado_processo = [
+            [_SINONIMOS_ALVO.get(alvo, alvo), texto] for alvo, texto in args.achado_processo
+        ]
     for alvo, texto in (args.achado_processo or []):
         if alvo not in _ALVOS_ACHADO:
             raise RdoValidationError(
@@ -540,12 +628,30 @@ def cmd_laudo(args: argparse.Namespace) -> Path:
                 "--achado-processo: uma linha, sem '|' — a tabela do laudo quebraria"
             )
     niveis = {d: getattr(args, d.replace("-", "_")) for d in _DIMENSOES_ORDEM}
+    for dimensao, texto in (args.motivo or []):
+        if dimensao not in niveis:
+            raise RdoValidationError(
+                f"--motivo: dimensão '{dimensao}' fora de {list(_DIMENSOES_ORDEM)}"
+            )
+        if niveis[dimensao] == "conforme":
+            raise RdoValidationError(
+                f"--motivo: '{dimensao}' está 'conforme' — motivo só para dimensão fora de conforme"
+            )
+        if not texto.strip():
+            raise RdoValidationError("--motivo: a linha do motivo não pode ser vazia")
+        if "|" in texto or "\n" in texto:
+            raise RdoValidationError("--motivo: uma linha, sem '|' — a tabela do laudo quebraria")
     vermelhos = set(args.vermelho_mecanico or [])
 
     resultado = calcular_laudo(niveis, vermelhos, escalar=args.escalar)
 
-    laudos_dir = Path(args.laudos_dir) if args.laudos_dir is not None else _default_laudos_dir()
-    destino = laudos_dir / f"{args.plano}-{args.tarefa}.md"
+    pasta_plano = _caminhos.pasta_por_id(_default_root(), args.plano) if args.laudos_dir is None else None
+    if pasta_plano is not None:
+        destino = _caminhos.destino_laudo(pasta_plano, args.tarefa)
+        laudos_dir = destino.parent
+    else:
+        laudos_dir = Path(args.laudos_dir) if args.laudos_dir is not None else _default_laudos_dir()
+        destino = laudos_dir / f"{args.plano}-{args.tarefa}.md"
 
     tabela_niveis = "\n".join(f"| {d} | {niveis[d]} |" for d in _DIMENSOES_ORDEM)
 
@@ -565,6 +671,8 @@ def cmd_laudo(args: argparse.Namespace) -> Path:
         "| dimensão | nível |\n"
         "|---|---|\n"
         f"{tabela_niveis}\n\n"
+        "## Motivo das dimensões fora de conforme\n\n"
+        f"{_formatar_motivos(args.motivo, niveis)}\n\n"
         "## Achado de processo\n\n"
         f"{_formatar_achados_processo(args.achado_processo)}\n\n"
         "## Lições aprendidas na tarefa\n\n"
@@ -652,13 +760,32 @@ def _regenerar_indice(rdo_dir: Path) -> Path:
     return indice_path
 
 
-def cmd_close(args: argparse.Namespace) -> Path:
-    # Guarda de domínio do consumo (`P-0740` `LM-T1a`, `DM-15` (iii)) — corre antes de qualquer
-    # outra checagem de `cmd_close`, `--plano` incluso: nada é lido nem escrito se um dos três
-    # campos estiver fora do domínio.
-    tool_uses = _validar_inteiro_nao_negativo("tool_uses", args.tool_uses)
-    tokens_k = _validar_numero_nao_negativo_finito("tokens_k", args.tokens_k)
-    duracao_s = _validar_numero_nao_negativo_finito("duracao_s", args.duracao_s)
+def checar_close(args: argparse.Namespace, status_exigido: str = "done") -> Path:
+    """As checagens do `cmd_close`, sem escrita, devolvendo o destino do RDO (`TK-88d`): guarda
+    de domínio do consumo, plano/dossiê, status da tarefa (fonte de `_status_atual`, comparada a
+    `status_exigido` — `cmd_close` usa `"done"`; quem checa **antes** de escrever o `done`, como
+    `encerrar.py fechar_tarefa`, usa `"review"`), template e o destino do RDO (recusa se já
+    existe — tarefa já fechada). Nenhum arquivo é tocado."""
+    # Guarda de domínio do consumo (`P-0740` `LM-T1a`, `DM-15` (iii); `--nao-medido` na `TK-88b`)
+    # — corre antes de qualquer outra checagem, `--plano` incluso: nada é lido nem escrito se o
+    # trio estiver fora do domínio, incompleto, ou junto de `--nao-medido`.
+    trio = (args.tool_uses, args.tokens_k, args.duracao_s)
+    tem_nao_medido = args.nao_medido is not None
+    if tem_nao_medido and any(v is not None for v in trio):
+        raise RdoValidationError("consumo: --tool-uses/--tokens-k/--duracao-s e --nao-medido não vêm juntos")
+    if not tem_nao_medido and any(v is not None for v in trio) and not all(v is not None for v in trio):
+        raise RdoValidationError("consumo: --tool-uses, --tokens-k e --duracao-s vão juntos")
+    if not tem_nao_medido and not all(v is not None for v in trio):
+        raise RdoValidationError("consumo: exige --tool-uses/--tokens-k/--duracao-s ou --nao-medido")
+
+    if tem_nao_medido:
+        razao_nao_medido = args.nao_medido.strip()
+        if not razao_nao_medido or _contar_linhas(args.nao_medido) > 1:
+            raise RdoValidationError("nao_medido: razão é uma linha não vazia")
+    else:
+        _validar_inteiro_nao_negativo("tool_uses", args.tool_uses)
+        _validar_numero_nao_negativo_finito("tokens_k", args.tokens_k)
+        _validar_numero_nao_negativo_finito("duracao_s", args.duracao_s)
 
     plano_path = Path(args.plano)
     if not plano_path.is_file():
@@ -672,19 +799,58 @@ def cmd_close(args: argparse.Namespace) -> Path:
         classe_legado=args.classe,
     )
 
+    pasta_plano = _caminhos.pasta_do_plano(plano_path)
+    status_atual = _status_atual(plano_path, dossie.tarefa_id, dossie, pasta_plano)
+    if status_atual != status_exigido:
+        raise RdoValidationError(
+            f"status: tarefa '{dossie.tarefa_id}' está '{status_atual or 'ausente'}', exigido '{status_exigido}'"
+        )
+
     template_path = args.template if args.template is not None else _default_template_path()
     if not template_path.is_file():
         raise RdoValidationError(f"template: arquivo não encontrado '{template_path}'")
-    template_texto = template_path.read_text(encoding="utf-8")
 
-    plano_id_match = re.match(r"^(P-\d{4})", plano_path.stem)
-    plano_id = plano_id_match.group(1) if plano_id_match else plano_path.stem
+    plano_id = _caminhos.id_do_plano(plano_path) or plano_path.stem
     nome_arquivo = f"{plano_id}-{dossie.tarefa_id}-{_slugify(dossie.titulo)}.md"
 
-    rdo_dir = Path(args.rdo_dir) if args.rdo_dir is not None else _default_rdo_dir()
-    destino = rdo_dir / nome_arquivo
+    if args.rdo_dir is None and pasta_plano is not None:
+        destino = _caminhos.destino_rdo(pasta_plano, dossie.tarefa_id)
+    else:
+        rdo_dir = Path(args.rdo_dir) if args.rdo_dir is not None else _default_rdo_dir()
+        destino = rdo_dir / nome_arquivo
     if destino.exists():
         raise RdoValidationError(f"rdo: '{destino}' já existe — tarefa já fechada")
+    return destino
+
+
+def cmd_close(args: argparse.Namespace) -> Path:
+    destino = checar_close(args, "done")
+
+    tem_nao_medido = args.nao_medido is not None
+    razao_nao_medido: str | None = None
+    tool_uses = tokens_k = duracao_s = None
+    if tem_nao_medido:
+        razao_nao_medido = args.nao_medido.strip()
+    else:
+        tool_uses = _validar_inteiro_nao_negativo("tool_uses", args.tool_uses)
+        tokens_k = _validar_numero_nao_negativo_finito("tokens_k", args.tokens_k)
+        duracao_s = _validar_numero_nao_negativo_finito("duracao_s", args.duracao_s)
+
+    plano_path = Path(args.plano)
+    dossie = extrair_dossie(
+        plano_path,
+        args.tarefa,
+        esquema_legado=args.esquema_legado,
+        modelo_legado=args.modelo,
+        classe_legado=args.classe,
+    )
+    pasta_plano = _caminhos.pasta_do_plano(plano_path)
+
+    template_path = args.template if args.template is not None else _default_template_path()
+    template_texto = template_path.read_text(encoding="utf-8")
+
+    plano_id = _caminhos.id_do_plano(plano_path) or plano_path.stem
+    rdo_dir = destino.parent
 
     for nome_campo, valor in (
         ("recomendacao", args.recomendacao),
@@ -694,10 +860,14 @@ def cmd_close(args: argparse.Namespace) -> Path:
         if valor is not None and _contar_linhas(valor) > 1:
             raise RdoValidationError(f"{nome_campo}: aceita no máximo uma linha")
 
-    # Consumo (`tool_uses`/`tokens_k`/`duracao_s`, validados no topo desta função) é medido e vai
-    # para o documento via TOOL_USES/TOKENS_K/DURACAO_S no `mapping` abaixo — não decide o
-    # desdobramento (`DP-Q`, §21 do `P-0734`).
+    # Consumo (`tool_uses`/`tokens_k`/`duracao_s`, validados em `checar_close`, ou a razão de
+    # `--nao-medido`) é medido — ou declarado ausente — e vai para o documento via CONSUMO no
+    # `mapping` abaixo — não decide o desdobramento (`DP-Q`, §21 do `P-0734`).
     desdobramento = calcular_desdobramento(args.veredito)
+    if razao_nao_medido is not None:
+        consumo_texto = f"não medido — {razao_nao_medido}"
+    else:
+        consumo_texto = f"{tool_uses} tool uses, {tokens_k:.1f} k tokens, {duracao_s:.1f} s (fonte: `<usage>` do encerramento)"
 
     linhas_pendencia = []
     if args.pendencia:
@@ -715,9 +885,22 @@ def cmd_close(args: argparse.Namespace) -> Path:
         else "nenhum"
     )
 
+    # As três seções do RDO (`TK-88`): `# Humano` — resumo em linguagem corrente, sem sigla
+    # solta, o que o dono lê; `# Máquina` — o dossiê verbatim, o pacote do laudo e o consumo,
+    # verboso e preciso, o que o próximo agente lê; `# Histórico` — as linhas que o painel do
+    # gerente (`progresso_hook.py`) gerou para a tarefa, na ordem em que o loop as atravessou.
+    # `close` chamado sem as duas seções preenche o mínimo honesto: título da tarefa e veredito
+    # no humano, e a declaração de ausência no histórico — nunca inventa linha de painel.
+    humano = (getattr(args, "humano", None) or "").strip() or (
+        f'Tarefa "{dossie.titulo}" concluída. Revisão: {args.veredito}, {args.percentual}%.'
+    )
+    historico = (getattr(args, "historico", None) or "").strip() or "(nenhuma linha do painel para esta tarefa)"
+
     mapping = {
+        "HUMANO": humano,
+        "HISTORICO": historico,
         "PLANO_ID": plano_id,
-        "PLANO_PATH": str(args.plano),
+        "PLANO_PATH": str(args.plano).replace("\\", "/"),
         "TAREFA_ID": dossie.tarefa_id,
         "TITULO": dossie.titulo,
         "MODELO": dossie.modelo,
@@ -730,9 +913,7 @@ def cmd_close(args: argparse.Namespace) -> Path:
         "PRONTO_QUANDO": dossie.campos["pronto-quando"],
         "DOSSIE_FECHADO_POR": dossie.campos.get("dossie-fechado-por") or "nenhum",
         "EXTRAS": extras_bloco,
-        "TOOL_USES": str(tool_uses),
-        "TOKENS_K": f"{tokens_k:.1f}",
-        "DURACAO_S": f"{duracao_s:.1f}",
+        "CONSUMO": consumo_texto,
         "PENDENCIA": pendencia_final,
         "VEREDITO": args.veredito,
         "PERCENTUAL": str(args.percentual),
@@ -753,12 +934,23 @@ def cmd_close(args: argparse.Namespace) -> Path:
         Path(tmp_path).unlink(missing_ok=True)
         raise
 
-    _regenerar_indice(rdo_dir)
+    if args.rdo_dir is not None or pasta_plano is None:
+        _regenerar_indice(rdo_dir)
 
     return destino
 
 
+def _forcar_utf8(stream) -> None:
+    """Console cp1252 do Windows estoura `UnicodeEncodeError` ao imprimir acento; `reconfigure`
+    só existe em stream de texto real."""
+    reconfigure = getattr(stream, "reconfigure", None)
+    if reconfigure is not None:
+        reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(argv: list[str] | None = None) -> int:
+    _forcar_utf8(sys.stdout)
+    _forcar_utf8(sys.stderr)
     parser = argparse.ArgumentParser(
         description="RDO da tarefa gerado por função, no fechamento — não por redação (EXA-T19)."
     )
@@ -766,12 +958,14 @@ def main(argv: list[str] | None = None) -> int:
 
     laudo_parser = subparsers.add_parser(
         "laudo",
-        help="Calcula o laudo e grava documento próprio em docs/RDO/laudos/<plano>-<tarefa>.md (T18).",
+        help="Calcula o laudo e grava documento próprio em <pasta-do-plano>/laudos/<tarefa>.md (plano em pasta) ou docs/RDO/laudos/<plano>-<tarefa>.md (T18).",
     )
     laudo_parser.add_argument("--plano", required=True, help="Identificador do plano (ex.: P-0734).")
     laudo_parser.add_argument("--tarefa", required=True, help="Identificador da tarefa (ex.: T18).")
     laudo_parser.add_argument(
-        "--laudos-dir", default=None, help="Diretório de saída (default: docs/RDO/laudos)."
+        "--laudos-dir",
+        default=None,
+        help="Diretório de saída (default: <pasta-do-plano>/laudos/ para plano em pasta; docs/RDO/laudos para plano legado ou tíquete).",
     )
     for _dimensao in _DIMENSOES_ORDEM:
         laudo_parser.add_argument(
@@ -803,8 +997,22 @@ def main(argv: list[str] | None = None) -> int:
         metavar=("ALVO", "LINHA"),
         default=None,
         help=(
-            "Achado de processo (repetivel): ALVO e dossie, doutrina, rubrica ou modelo, seguido de uma "
-            "linha. Nao altera percentual, veredito, bloqueante nem recomendacao (RUBRICA §6)."
+            "Achado de processo (repetivel): ALVO e dossie (ou dossiê), doutrina, rubrica ou modelo, "
+            "seguido de uma linha. Nao altera percentual, veredito, bloqueante nem recomendacao "
+            "(RUBRICA §6)."
+        ),
+    )
+    laudo_parser.add_argument(
+        "--motivo",
+        dest="motivo",
+        nargs=2,
+        action="append",
+        metavar=("DIMENSAO", "LINHA"),
+        default=None,
+        help=(
+            "Motivo de uma dimensao fora de conforme (repetivel): DIMENSAO e uma das sete, seguida de "
+            "uma linha. Recusado para dimensao em conforme. Grava a secao 'Motivo das dimensoes fora "
+            "de conforme'."
         ),
     )
     laudo_parser.add_argument(
@@ -824,16 +1032,22 @@ def main(argv: list[str] | None = None) -> int:
     close_parser.add_argument("--plano", required=True, help="Caminho do .md do plano.")
     close_parser.add_argument("--tarefa", required=True, help="Identificador da tarefa (ex.: T19).")
     close_parser.add_argument(
-        "--tool-uses", required=True, dest="tool_uses",
-        help="Tool uses gastos, medidos (nunca auto-relatados). Validado em código (LM-T1a).",
+        "--tool-uses", default=None, dest="tool_uses",
+        help="Tool uses gastos, medidos (nunca auto-relatados). Validado em código (LM-T1a). "
+        "Vai com --tokens-k/--duracao-s; exigido junto deles quando falta --nao-medido (TK-88b).",
     )
     close_parser.add_argument(
-        "--tokens-k", required=True, dest="tokens_k",
+        "--tokens-k", default=None, dest="tokens_k",
         help="Milhares de tokens gastos, medidos. Validado em código (LM-T1a).",
     )
     close_parser.add_argument(
-        "--duracao-s", required=True, dest="duracao_s",
+        "--duracao-s", default=None, dest="duracao_s",
         help="Duração em segundos, medida (aceita decimal). Validado em código (LM-T1a).",
+    )
+    close_parser.add_argument(
+        "--nao-medido", default=None, dest="nao_medido",
+        help="Fecha sem consumo medido: razão de uma linha, no lugar do trio de consumo (TK-88b). "
+        "Exige exatamente um dos dois — o trio ou --nao-medido.",
     )
     close_parser.add_argument(
         "--veredito", required=True, choices=("aprovado", "ressalva"),
@@ -869,7 +1083,25 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     close_parser.add_argument(
-        "--rdo-dir", default=None, help="Diretório de saída (default: docs/RDO)."
+        "--humano",
+        default=None,
+        help=(
+            "Seção `# Humano` do RDO: resumo em linguagem corrente para o dono (TK-88). "
+            "Ausente: título da tarefa e veredito."
+        ),
+    )
+    close_parser.add_argument(
+        "--historico",
+        default=None,
+        help=(
+            "Seção `# Histórico` do RDO: as linhas do painel do gerente para esta tarefa, "
+            "como texto (TK-88). Ausente: declaração de que não há linhas."
+        ),
+    )
+    close_parser.add_argument(
+        "--rdo-dir",
+        default=None,
+        help="Diretório de saída (default: <pasta-do-plano>/rdo/ para plano em pasta, sem INDEX.md; docs/RDO para plano legado ou tíquete).",
     )
     close_parser.add_argument(
         "--template", type=Path, default=None, help="Template (default: rdo_template.md do script)."

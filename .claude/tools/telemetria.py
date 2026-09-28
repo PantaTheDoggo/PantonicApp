@@ -40,6 +40,11 @@ class TelemetriaValidationError(ValueError):
     """Coluna inválida — tipo ou domínio (mensagem já traz o nome da coluna)."""
 
 
+class TelemetriaRepetidaError(ValueError):
+    """A última linha da mesma `tarefa` na série já tem `modelo`, `tool_uses` e `tokens_k`
+    iguais (DFP-8) — mesma rodada, recusada antes de qualquer escrita."""
+
+
 def _validar_texto(nome: str, valor: str) -> str:
     if not valor or not valor.strip():
         raise TelemetriaValidationError(f"{nome}: vazio")
@@ -113,11 +118,54 @@ def build_row(args: argparse.Namespace) -> str:
     return "\t".join(valores[coluna] for coluna in _COLUMNS)
 
 
+def ultima_linha_da_tarefa(path: Path, tarefa: str) -> dict[str, str] | None:
+    """Última linha da série cuja coluna `tarefa` bate com `tarefa`, ou `None` se a série não
+    existe ou não tem nenhuma. Cabeçalho: a primeira linha quando ela começa por `data\t`; sem
+    cabeçalho (arquivo criado pelo próprio `append_row`, que não escreve header), as colunas
+    seguem `_COLUMNS`."""
+    if not path.exists():
+        return None
+    linhas = [linha for linha in path.read_text(encoding="utf-8").splitlines() if linha]
+    if not linhas:
+        return None
+    colunas = _COLUMNS
+    if linhas[0].startswith("data\t"):
+        colunas = tuple(linhas[0].split("\t"))
+        linhas = linhas[1:]
+    ultima = None
+    for linha in linhas:
+        registro = dict(zip(colunas, linha.split("\t")))
+        if registro.get("tarefa") == tarefa:
+            ultima = registro
+    return ultima
+
+
+def eh_repetida(ultima: dict, nova: dict) -> bool:
+    """`True` quando `modelo`, `tool_uses` e `tokens_k` são iguais como texto entre as duas
+    linhas (DFP-8) — a comparação que define "mesma rodada"; `duracao_s` não entra."""
+    return all(ultima.get(campo) == nova.get(campo) for campo in ("modelo", "tool_uses", "tokens_k"))
+
+
+def checar_repetida(path: Path, row: str) -> None:
+    """Lê `row` pelas colunas de `_COLUMNS` e lança `TelemetriaRepetidaError` quando a última
+    linha da mesma `tarefa` na série de `path` já tem `modelo`, `tool_uses` e `tokens_k` iguais
+    (DFP-8) — chamada antes de qualquer escrita, para que a recusa valha para todo escritor."""
+    nova = dict(zip(_COLUMNS, row.split("\t")))
+    ultima = ultima_linha_da_tarefa(path, nova.get("tarefa", ""))
+    if ultima is not None and eh_repetida(ultima, nova):
+        raise TelemetriaRepetidaError(
+            f"linha repetida: {nova['tarefa']} já tem linha com modelo, tool_uses e tokens_k "
+            f"iguais (data {ultima.get('data')})"
+        )
+
+
 def append_row(path: Path, row: str) -> None:
     """Escrita atômica em modo append: lê o conteúdo atual (bytes, sem interpretar), monta
     conteúdo-anterior + linha-nova num arquivo temporário no mesmo diretório, e substitui via
     `os.replace` — o arquivo final nunca fica parcialmente escrito, e o conteúdo anterior nunca
-    é alterado, só sucedido pela linha nova."""
+    é alterado, só sucedido pela linha nova. Recusa a linha repetida da mesma rodada (DFP-8)
+    antes de ler os bytes — a recusa vale para todo escritor, não só o CLI."""
+    checar_repetida(path, row)
     existing = path.read_bytes() if path.exists() else b""
     if existing and not existing.endswith(b"\n"):
         existing += b"\n"
@@ -166,7 +214,11 @@ def main(argv: list[str] | None = None) -> int:
         except TelemetriaValidationError as exc:
             print(f"telemetria: FALHOU - {exc}", file=sys.stderr)
             return 1
-        append_row(target, row)
+        try:
+            append_row(target, row)
+        except TelemetriaRepetidaError as exc:
+            print(f"telemetria: FALHOU - {exc}", file=sys.stderr)
+            return 3
         print(f"telemetria: OK - linha adicionada a '{target}'.")
         return 0
 

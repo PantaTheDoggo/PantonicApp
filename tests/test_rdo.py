@@ -26,6 +26,9 @@ autonoma.md` é lido, nunca escrito, por este módulo."""
 from __future__ import annotations
 
 import importlib.util
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -223,9 +226,27 @@ def test_tr_laudo_recusa_nao_se_aplica_em_dimensao_que_nao_admite(tmp_path, caps
 # --- close (EXA-T19) — o RDO nasce inteiro no fechamento ----------------------------------------
 
 
+def _plano_real_com_status_done(tmp_path: Path) -> Path:
+    """Cópia de `_PLANO_REAL` em `tmp_path / "plano-real"` (subpasta, porque vários testes contam
+    os `.md` de `tmp_path` como RDO), com a linha `` - **Status:** `done` · 2026-09-25 `` inserida
+    logo abaixo de cada linha que começa por `### T7 — ` e por `### T8a — ` (`DEB-8`) — o plano
+    real não é tocado."""
+    destino = tmp_path / "plano-real" / _PLANO_REAL.name
+    if not destino.exists():
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        linhas = _PLANO_REAL.read_text(encoding="utf-8").splitlines()
+        saida: list[str] = []
+        for linha in linhas:
+            saida.append(linha)
+            if linha.startswith("### T7 — ") or linha.startswith("### T8a — "):
+                saida.append("- **Status:** `done` · 2026-09-25")
+        destino.write_text("\n".join(saida) + "\n", encoding="utf-8")
+    return destino
+
+
 def _argv_close(tmp_path, tarefa="T7", omit=(), **overrides: str) -> list[str]:
     campos = {
-        "--plano": str(_PLANO_REAL),
+        "--plano": str(_plano_real_com_status_done(tmp_path)),
         "--tarefa": tarefa,
         "--tool-uses": "12",
         "--tokens-k": "80",
@@ -244,6 +265,68 @@ def _argv_close(tmp_path, tarefa="T7", omit=(), **overrides: str) -> list[str]:
     for flag, valor in campos.items():
         argv += [flag, valor]
     return argv
+
+
+def test_tf_close_recusa_tarefa_nao_done_e_aceita_done_no_plano_legado(tmp_path):
+    """TF do `DEB-8`: `close` recusa (exit != 0, nada escrito) uma tarefa `in-progress` — status
+    lido do bullet `- **Status:**` do corpo do card, no plano legado — e aceita (exit 0, RDO
+    escrito) a mesma tarefa quando o status passa a `done`."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(
+        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]", status="in-progress",
+    )
+
+    exit_code = rdo.main(_argv_close(tmp_path, tarefa="T1", **{"--plano": str(plano)}))
+
+    assert exit_code != 0
+    assert [p for p in tmp_path.glob("*.md") if p.name not in ("plano.md", "INDEX.md")] == []
+
+    _escrever_plano_sintetico(
+        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]", status="done",
+    )
+
+    exit_code_done = rdo.main(_argv_close(tmp_path, tarefa="T1", **{"--plano": str(plano)}))
+
+    assert exit_code_done == 0
+    gerados = [p for p in tmp_path.glob("*.md") if p.name not in ("plano.md", "INDEX.md")]
+    assert len(gerados) == 1
+
+
+def test_tf_close_recusa_tarefa_nao_done_e_aceita_done_no_plano_em_pasta(tmp_path):
+    """TF do `DEB-8`: mesmo par sobre plano em pasta — status lido da linha da tarefa em
+    `estado.tsv`, nunca do corpo do card."""
+    rdo = _load_rdo()
+    plano = tmp_path / "docs" / "plans" / "P-0-delta" / "plano.md"
+    plano.parent.mkdir(parents=True)
+    _escrever_plano_sintetico(plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]")
+    estado_path = plano.parent / "estado.tsv"
+    rdo_dir = tmp_path / "rdo-dir"
+    argv = [
+        "close", "--plano", str(plano), "--tarefa", "T1",
+        "--tool-uses", "5", "--tokens-k", "10", "--duracao-s", "60",
+        "--veredito", "aprovado", "--percentual", "100", "--bloqueante", "nenhuma",
+        "--recomendacao", "seguir", "--pendencia-laudo", "nenhuma",
+        "--rdo-dir", str(rdo_dir),
+    ]
+
+    estado_path.write_text(
+        rdo._caminhos.CABECALHO_ESTADO + "\n" + "T1\ttarefa\tin-progress\t-\t2026-09-25\t-\n",
+        encoding="utf-8",
+    )
+    exit_code = rdo.main(argv)
+
+    assert exit_code != 0
+    assert not rdo_dir.exists() or [p for p in rdo_dir.glob("*.md")] == []
+
+    estado_path.write_text(
+        rdo._caminhos.CABECALHO_ESTADO + "\n" + "T1\ttarefa\tdone\t-\t2026-09-25\t-\n",
+        encoding="utf-8",
+    )
+    exit_code_done = rdo.main(argv)
+
+    assert exit_code_done == 0
+    assert len([p for p in rdo_dir.glob("*.md") if p.name != "INDEX.md"]) == 1
 
 
 def test_tf_close_gera_rdo_completo_a_partir_do_plano_pacote_e_consumo(tmp_path):
@@ -282,7 +365,10 @@ def test_tf_close_gera_rdo_completo_a_partir_do_plano_pacote_e_consumo(tmp_path)
     assert "{{" not in conteudo
     assert "LAUDO_PATH" not in conteudo
     assert "docs/RDO/laudos" not in conteudo
-    assert "status" not in conteudo.lower()
+    # o RDO transcreve o bullet de status do card como campo extra (já acontece em produção,
+    # ex.: o RDO do EBK-T3 em docs/RDO/); a asserção exclui essa linha transcrita e prova que
+    # `close` não produz status por conta própria (DEB-8).
+    assert "status" not in conteudo.replace("- **Status:** `done` · 2026-09-25", "").lower()
 
     indice = (tmp_path / "INDEX.md").read_text(encoding="utf-8")
     assert gerados[0].name in indice
@@ -299,6 +385,42 @@ def test_tf_close_tokens_k_decimal_grava_sem_conversao(tmp_path):
     gerados = [p for p in tmp_path.glob("*.md") if p.name != "INDEX.md"]
     conteudo = gerados[0].read_text(encoding="utf-8")
     assert "203.7" in conteudo
+
+
+def test_tf_close_nao_medido_sem_trio(tmp_path):
+    """TF (`TK-88b`): `--nao-medido "<razão>"` no lugar do trio de consumo grava o RDO com
+    `**Consumo:** não medido — <razão>`, sem nenhum número de consumo no documento."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(
+        _argv_close(
+            tmp_path,
+            omit=("--tool-uses", "--tokens-k", "--duracao-s"),
+            **{"--nao-medido": "executada fora do loop, sem <usage>"},
+        )
+    )
+
+    assert exit_code == 0
+    gerados = [p for p in tmp_path.glob("*.md") if p.name != "INDEX.md"]
+    assert len(gerados) == 1
+    conteudo = gerados[0].read_text(encoding="utf-8")
+    assert "**Consumo:** não medido — executada fora do loop, sem <usage>" in conteudo
+    assert "tool uses" not in conteudo
+    assert "{{" not in conteudo
+
+
+def test_tr_close_sem_trio_nem_nao_medido_recusa(tmp_path, capsys):
+    """TR (`TK-88b`): sem o trio de consumo e sem `--nao-medido`, `cmd_close` recusa (exit != 0)
+    antes de escrever qualquer coisa — exatamente um dos dois é exigido."""
+    rdo = _load_rdo()
+
+    exit_code = rdo.main(
+        _argv_close(tmp_path, omit=("--tool-uses", "--tokens-k", "--duracao-s"))
+    )
+
+    assert exit_code == 1
+    assert "exige --tool-uses/--tokens-k/--duracao-s ou --nao-medido" in capsys.readouterr().err
+    assert [p for p in tmp_path.glob("*.md")] == []
 
 
 def test_tr_close_tokens_k_inteiro_grava_uma_casa_decimal_sempre(tmp_path):
@@ -407,10 +529,12 @@ def test_tr_close_consumo_valido_segue_igual(tmp_path):
     assert "300" in conteudo
 
 
-def _escrever_plano_sintetico(caminho: Path, cabecalho: str) -> None:
+def _escrever_plano_sintetico(caminho: Path, cabecalho: str, status: str | None = None) -> None:
+    linha_status = f"- **Status:** `{status}` · 2026-09-25\n" if status is not None else ""
     caminho.write_text(
         "# Plano de teste\n\n"
         f"{cabecalho}\n"
+        f"{linha_status}"
         "- **Objetivo:** validar a gramática do cabeçalho.\n"
         "- **Arquivos-alvo:** `arquivo.py`.\n"
         "- **Verificação:** bateria do §3.\n"
@@ -443,7 +567,8 @@ def test_tr_extrair_dossie_cabecalho_historico_com_teto_e_aceito_e_descartado(tm
     rdo = _load_rdo()
     plano = tmp_path / "plano.md"
     _escrever_plano_sintetico(
-        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao · teto 40]"
+        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao · teto 40]",
+        status="done",
     )
 
     dossie = rdo.extrair_dossie(
@@ -925,7 +1050,7 @@ def test_tf_campo_termina_em_bullet_de_prosa():
         "  | `251.1` | `message.id` |",
     ]
 
-    campos, _ = rdo._parsear_campos(linhas)
+    campos, _, _ = rdo._parsear_campos_com_linhas(linhas)
 
     assert review_evidence.extrair_arquivos_alvo(campos) == [
         ".claude/tools/rdo.py",
@@ -948,12 +1073,42 @@ def test_tr_campo_multilinha_continua_valendo():
         "  - `.claude/tools/review_evidence.py`",
     ]
 
-    campos, _ = rdo._parsear_campos(linhas)
+    campos, _, _ = rdo._parsear_campos_com_linhas(linhas)
 
     assert review_evidence.extrair_arquivos_alvo(campos) == [
         ".claude/tools/rdo.py",
         "tests/test_rdo.py",
         ".claude/tools/review_evidence.py",
+    ]
+
+
+def test_tf_campos_linhas_preserva_quebras(tmp_path):
+    """TF da `FPU-T1` (`DFP-13`): `extrair_dossie` passa a preencher `campos_linhas`, a partir de
+    `_parsear_campos_com_linhas` — mesmas chaves de `campos`, valor é a lista de linhas brutas do
+    campo. O bloco bruto de `Verificação` abaixo tem três linhas (o rótulo e duas continuações);
+    `campos_linhas["verificacao"]` tem as mesmas três, na ordem do markdown original."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    plano.write_text(
+        "# Plano de teste\n\n"
+        "### T1 — Tarefa sintética [Sonnet · classe implementacao]\n"
+        "- **Objetivo:** validar `campos_linhas`.\n"
+        "- **Arquivos-alvo:** `arquivo.py`.\n"
+        "- **Verificação:**\n"
+        "  1. primeira linha do item.\n"
+        "  2. segunda linha do item.\n"
+        "- **Pronto quando:** o teste passa.\n",
+        encoding="utf-8",
+    )
+
+    dossie = rdo.extrair_dossie(
+        plano, "T1", esquema_legado=False, modelo_legado=None, classe_legado=None,
+    )
+
+    assert dossie.campos_linhas["verificacao"] == [
+        "- **Verificação:**",
+        "  1. primeira linha do item.",
+        "  2. segunda linha do item.",
     ]
 
 
@@ -974,3 +1129,247 @@ def test_tf_laudo_aceita_alvo_modelo(tmp_path):
     assert exit_code == 0
     conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
     assert "| modelo | oração M-3 divergente |" in conteudo
+
+
+# --- close/laudo nascem na pasta do plano (P-0749 SAN-T3) ---------------------------------------
+
+
+def test_tf_san_13_close_grava_rdo_na_pasta_do_plano(tmp_path, monkeypatch):
+    """TF da SAN-T3: sem `--rdo-dir`, `close` sobre um plano em pasta grava o RDO dentro de
+    `<pasta-do-plano>/rdo/<tarefa>.md`, sem regenerar `INDEX.md` (que é do destino legado) e sem
+    tocar o diretório legado apontado por `_default_rdo_dir` (monkeypatchado para provar que não é
+    chamado)."""
+    rdo = _load_rdo()
+    monkeypatch.setattr(rdo, "_default_rdo_dir", lambda: tmp_path / "legado")
+    plano = tmp_path / "docs" / "plans" / "P-0-gama" / "plano.md"
+    plano.parent.mkdir(parents=True)
+    _escrever_plano_sintetico(plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]")
+    (plano.parent / "estado.tsv").write_text(
+        rdo._caminhos.CABECALHO_ESTADO + "\n" + "T1\ttarefa\tdone\t-\t2026-09-25\t-\n",
+        encoding="utf-8",
+    )
+
+    exit_code = rdo.main(
+        [
+            "close", "--plano", str(plano), "--tarefa", "T1",
+            "--tool-uses", "5", "--tokens-k", "10", "--duracao-s", "60",
+            "--veredito", "aprovado", "--percentual", "100", "--bloqueante", "nenhuma",
+            "--recomendacao", "seguir", "--pendencia-laudo", "nenhuma",
+        ]
+    )
+
+    assert exit_code == 0
+    assert (plano.parent / "rdo" / "T1.md").is_file()
+    assert not (plano.parent / "rdo" / "INDEX.md").exists()
+    assert not (tmp_path / "legado").exists()
+
+
+def test_tf_san_14_laudo_na_pasta_e_no_legado(tmp_path, monkeypatch):
+    """TF da SAN-T3: sem `--laudos-dir`, `laudo` para um `--plano` que resolve a uma pasta de plano
+    grava dentro dela (`<pasta>/laudos/<tarefa>.md`), sem criar `docs/RDO`; para um `--plano` que
+    não resolve a nenhuma pasta (nenhuma colide com o prefixo), cai no destino legado de sempre."""
+    rdo = _load_rdo()
+    monkeypatch.setattr(rdo, "_default_root", lambda: tmp_path)
+    plano = tmp_path / "docs" / "plans" / "P-0-gama" / "plano.md"
+    plano.parent.mkdir(parents=True)
+    _escrever_plano_sintetico(plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]")
+
+    argv = _argv_laudo(tmp_path, plano="P-0", tarefa="GAM-T1")
+    del argv[argv.index("--laudos-dir"):argv.index("--laudos-dir") + 2]
+
+    exit_code = rdo.main(argv)
+
+    assert exit_code == 0
+    assert (plano.parent / "laudos" / "GAM-T1.md").is_file()
+    assert not (tmp_path / "docs" / "RDO").exists()
+
+    argv2 = _argv_laudo(tmp_path, plano="P-0749", tarefa="SAN-T1")
+    del argv2[argv2.index("--laudos-dir"):argv2.index("--laudos-dir") + 2]
+
+    exit_code2 = rdo.main(argv2)
+
+    assert exit_code2 == 0
+    assert (tmp_path / "docs" / "RDO" / "laudos" / "P-0749-SAN-T1.md").is_file()
+
+
+def test_tr_san_19_close_com_rdo_dir_sobre_plano_em_pasta_vence_a_flag(tmp_path):
+    """TR da SAN-T3a: com `--rdo-dir` explícito sobre um plano em pasta, a flag vence também no
+    índice — `close` regenera o `INDEX.md` do diretório apontado pela flag, e não grava nada em
+    `<pasta-do-plano>/rdo` (que é o destino default, superado aqui pela flag)."""
+    rdo = _load_rdo()
+    plano = tmp_path / "docs" / "plans" / "P-0-gama" / "plano.md"
+    plano.parent.mkdir(parents=True)
+    _escrever_plano_sintetico(plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]")
+    (plano.parent / "estado.tsv").write_text(
+        rdo._caminhos.CABECALHO_ESTADO + "\n" + "T1\ttarefa\tdone\t-\t2026-09-25\t-\n",
+        encoding="utf-8",
+    )
+
+    flag_dir = tmp_path / "flag"
+
+    exit_code = rdo.main(
+        [
+            "close", "--plano", str(plano), "--tarefa", "T1",
+            "--tool-uses", "5", "--tokens-k", "10", "--duracao-s", "60",
+            "--veredito", "aprovado", "--percentual", "100", "--bloqueante", "nenhuma",
+            "--recomendacao", "seguir", "--pendencia-laudo", "nenhuma",
+            "--rdo-dir", str(flag_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    assert (flag_dir / "INDEX.md").is_file()
+    assert len(list(flag_dir.glob("P-0-T1-*.md"))) == 1
+    assert not (plano.parent / "rdo").exists()
+
+
+def test_tf_utf8_close_help_sob_ambiente_hostil():
+    """TF do TK-82a: sob ambiente hostil explícito (`PYTHONIOENCODING` vazio, `-X utf8=0`), `rdo.py
+    close --help` redirecionado para pipe sai em UTF-8 — não no cp1252 do console do Windows.
+    Sobre o `main()` anterior à reconfiguração, este teste falha no Windows (caso medido no card)."""
+    env = dict(os.environ)
+    env["PYTHONIOENCODING"] = ""
+
+    resultado = subprocess.run(
+        [sys.executable, "-X", "utf8=0", str(_RDO_PATH), "close", "--help"],
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    assert resultado.returncode == 0
+    assert "Diretório".encode("utf-8") in resultado.stdout
+    assert "Diretório".encode("cp1252") not in resultado.stdout
+
+
+# --- TK-88 — as três seções do RDO -------------------------------------------------------------
+
+
+def test_tf_tk88_close_escreve_tres_secoes_e_preenche_humano_e_historico(tmp_path):
+    """TF do `TK-88`: o RDO nasce em três seções de nível 1 — `# Humano`, `# Máquina` e
+    `# Histórico` —, com o dossiê e o laudo dentro da máquina; `--humano`/`--historico`
+    preenchem as duas pontas, e sem eles o `close` escreve o mínimo honesto, sem inventar linha."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(
+        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]", status="done",
+    )
+
+    exit_code = rdo.main(_argv_close(
+        tmp_path, tarefa="T1", **{
+            "--plano": str(plano),
+            "--humano": 'Tarefa "Tarefa sintética" concluída.\nNada pendente.',
+            "--historico": 'Agente executor recebe a tarefa "Tarefa sintética" e vai executar o card.',
+        },
+    ))
+
+    assert exit_code == 0
+    conteudo = next(p for p in tmp_path.glob("*.md") if p.name not in ("plano.md", "INDEX.md")).read_text(encoding="utf-8")
+    assert conteudo.startswith("# RDO — plano · T1")
+    assert conteudo.index("# Humano") < conteudo.index("# Máquina") < conteudo.index("## Dossiê")
+    assert conteudo.index("## Fechamento") < conteudo.index("# Histórico")
+    assert "Nada pendente." in conteudo.split("# Humano", 1)[1].split("# Máquina", 1)[0]
+    assert 'vai executar o card.' in conteudo.split("# Histórico", 1)[1]
+    assert "{{" not in conteudo
+    assert (tmp_path / "INDEX.md").read_text(encoding="utf-8").count("| aprovado |") == 1
+
+    plano2 = tmp_path / "sem" / "plano.md"
+    plano2.parent.mkdir()
+    _escrever_plano_sintetico(
+        plano2, "### T1 — Tarefa sintética [Sonnet · classe implementacao]", status="done",
+    )
+    assert rdo.main(_argv_close(tmp_path / "sem", tarefa="T1", **{"--plano": str(plano2)})) == 0
+    conteudo2 = next(p for p in (tmp_path / "sem").glob("*.md") if p.name not in ("plano.md", "INDEX.md")).read_text(encoding="utf-8")
+    assert 'Tarefa "Tarefa sintética" concluída. Revisão: aprovado, 100%.' in conteudo2
+    assert "(nenhuma linha do painel para esta tarefa)" in conteudo2
+
+
+def test_tf_close_grava_plano_em_barra(tmp_path):
+    """TF do `TK-88c`: `cmd_close` com o caminho do plano em barra invertida grava a linha
+    `**Plano:**` sem barra invertida — venha o caminho como vier."""
+    rdo = _load_rdo()
+    plano = tmp_path / "plano.md"
+    _escrever_plano_sintetico(
+        plano, "### T1 — Tarefa sintética [Sonnet · classe implementacao]", status="done",
+    )
+    plano_barra_invertida = str(plano).replace("/", "\\")
+
+    exit_code = rdo.main(_argv_close(tmp_path, tarefa="T1", **{"--plano": plano_barra_invertida}))
+
+    assert exit_code == 0
+    conteudo = next(p for p in tmp_path.glob("*.md") if p.name not in ("plano.md", "INDEX.md")).read_text(encoding="utf-8")
+    linha_plano = next(l for l in conteudo.splitlines() if l.startswith("**Plano:**"))
+    assert "\\" not in linha_plano
+
+
+# --- laudo --motivo e alvo `dossiê` (TK-85a) --------------------------------------------------
+
+
+def test_laudo_motivo_grava_secao_com_linha_por_dimensao(tmp_path):
+    """TF da TK-85a: `--motivo DIMENSAO LINHA` grava a seção `## Motivo das dimensões fora de
+    conforme` com a linha `| dimensão | nível | motivo |` da dimensão fora de `conforme`."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(
+        _argv_laudo(laudos_dir, **{"criterio-de-pronto": "parcial"})
+        + ["--motivo", "criterio-de-pronto", "falta o modo validate"]
+    )
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "## Motivo das dimensões fora de conforme" in conteudo
+    assert "| criterio-de-pronto | parcial | falta o modo validate |" in conteudo
+
+
+def test_laudo_motivo_recusa_dimensao_conforme(tmp_path):
+    """TR da TK-85a: `--motivo` para dimensão em `conforme` é recusado, sem escrever laudo."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(_argv_laudo(laudos_dir) + ["--motivo", "escopo", "x"])
+
+    assert exit_code != 0
+    assert not laudos_dir.exists() or list(laudos_dir.glob("*.md")) == []
+
+
+def test_laudo_motivo_recusa_dimensao_desconhecida_e_linha_invalida(tmp_path):
+    """TR da TK-85a: dimensão fora das sete, linha vazia e linha com `|` são recusadas."""
+    rdo = _load_rdo()
+    casos = {
+        "dimensao": ["--motivo", "qualidade", "x"],
+        "vazia": ["--motivo", "testes", "  "],
+        "pipe": ["--motivo", "testes", "a | b"],
+    }
+    for nome, extra in casos.items():
+        laudos_dir = tmp_path / nome
+        exit_code = rdo.main(_argv_laudo(laudos_dir, testes="parcial") + extra)
+        assert exit_code != 0, nome
+        assert not laudos_dir.exists() or list(laudos_dir.glob("*.md")) == [], nome
+
+
+def test_laudo_motivo_secao_existe_com_nenhum_sem_a_flag(tmp_path):
+    """TR da TK-85a: sem `--motivo`, a seção existe sempre, com corpo `nenhum`, antes do achado."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(_argv_laudo(laudos_dir))
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "## Motivo das dimensões fora de conforme\n\nnenhum\n" in conteudo
+    assert conteudo.index("## Motivo das dimensões") < conteudo.index("## Achado de processo")
+
+
+def test_laudo_achado_dossie_acentuado(tmp_path):
+    """TF da TK-85a: `--achado-processo dossiê` é sinônimo de `dossie`; a tabela imprime `dossiê`."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+
+    exit_code = rdo.main(
+        _argv_laudo(laudos_dir) + ["--achado-processo", "dossiê", "linha do achado"]
+    )
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert "| dossiê | linha do achado |" in conteudo

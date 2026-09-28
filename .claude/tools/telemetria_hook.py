@@ -19,10 +19,22 @@ de turnos); `tool_uses` = contagem de blocos `type == "tool_use"` no `message.co
 exatamente uma entrada, nunca repetido); `duracao_s` = diferença, em segundos, entre o primeiro e
 o último `timestamp` do transcript.
 
-**Filtro** (`DP-S` `### 23.3` item 4): o hook só age quando `agent_type` é papel do kit —
-convenção de nome `pantonic-*`. Fora do filtro, ou sem estado gravado (despacho fora do loop),
-é silêncio: exit 0, sem escrever nada e **sem consumir o estado** (ele fica para o despacho real
-consumir depois). O estado só é apagado depois de a linha ser escrita com sucesso.
+**Filtro** (`DP-S` `### 23.3` item 4; generalizado na `DAF-15`/`DAF-25`): o hook age para todo
+`agent_type` iniciado por `pantonic-` — cada papel do kit grava a própria rodada, com o papel no
+identificador da tarefa. Fora do filtro (`agent_type` que não começa por `pantonic-`, ou vazio),
+ou sem `agent_transcript_path` legível, é silêncio: exit 0, sem escrever nada. O estado
+`tarefa-corrente.json` **não se apaga mais** — ele vale até o despacho seguinte do executor, que
+o sobrescreve; só o executor depende dele para a própria linha (sem estado, o executor fica em
+silêncio, como antes).
+
+**Papel da linha:** `pantonic-executor` grava `estado["tarefa"]`; `pantonic-reviewer` grava
+`<tarefa>-revisao`; `pantonic-consultant` grava `<tarefa>-consultor-<n>` (`<n>` = 1 + linhas da
+série cuja `tarefa` já começa por `<tarefa>-consultor-`); `pantonic-planner` grava
+`<P-n>-planejador`; `pantonic-model-designer` grava `<P-n>-modelador`; `pantonic-scout` grava
+`<P-n>-scout`; outro `pantonic-<nome>` grava `<P-n>-<nome>`. `<tarefa>` vem de `estado["tarefa"]`;
+`<P-n>` vem da primeira ocorrência de `P-` seguido de dígitos no texto da primeira entrada
+`type == "user"` do transcript. Sem o id que o papel pede, a linha grava `sem-id-<sufixo>` em vez
+de ficar em silêncio.
 
 **Cuidado:** este hook é **cliente** do CLI que a `T7` entregou
 (`.claude/tools/telemetria.py append`) — chamado via subprocess, nunca reimplementa validação de
@@ -41,11 +53,24 @@ from __future__ import annotations
 
 import datetime
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
 
-_AGENT_TYPE_PREFIX_KIT = "pantonic-"  # DP-S §23.3 item 4 — "agent_type é papel do kit"
+_AGENT_TYPE_EXECUTOR = "pantonic-executor"  # papel com regra própria de tarefa/modelo/projeto
+
+_SUFIXO_POR_AGENT_TYPE = {
+    "pantonic-reviewer": "revisao",
+    "pantonic-consultant": "consultor",
+    "pantonic-planner": "planejador",
+    "pantonic-model-designer": "modelador",
+    "pantonic-scout": "scout",
+}
+
+_PAPEIS_POR_TAREFA_DO_ESTADO = {"pantonic-reviewer", "pantonic-consultant"}
+
+_RE_ID_PLANO = re.compile(r"P-\d+")
 
 
 def calcular_consumo(linhas: list[str]) -> tuple[float, int, float]:
@@ -135,6 +160,119 @@ def ler_estado(caminho: Path) -> dict | None:
     return dados
 
 
+def _sufixo_do_papel(agent_type: str) -> str:
+    """Sufixo de identificador do papel: os nomeados de `_SUFIXO_POR_AGENT_TYPE`, ou o nome
+    depois de `pantonic-` para qualquer outro papel do kit."""
+    return _SUFIXO_POR_AGENT_TYPE.get(agent_type, agent_type[len("pantonic-"):])
+
+
+def _primeiro_texto_de_usuario(linhas: list[str]) -> str | None:
+    """Texto (ou concatenação dos blocos `text`) da primeira entrada `type == "user"` do
+    transcript, ou `None` quando não há nenhuma."""
+    for linha in linhas:
+        linha_strip = linha.strip()
+        if not linha_strip:
+            continue
+        try:
+            entrada = json.loads(linha_strip)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if not isinstance(entrada, dict) or entrada.get("type") != "user":
+            continue
+        mensagem = entrada.get("message")
+        if not isinstance(mensagem, dict):
+            continue
+        conteudo = mensagem.get("content")
+        if isinstance(conteudo, str):
+            return conteudo
+        if isinstance(conteudo, list):
+            textos = [
+                bloco.get("text", "")
+                for bloco in conteudo
+                if isinstance(bloco, dict) and bloco.get("type") == "text"
+            ]
+            return "\n".join(textos)
+        return None
+    return None
+
+
+def _id_plano_da_primeira_mensagem(linhas: list[str]) -> str | None:
+    """`<P-n>` — primeira ocorrência de `P-` seguido de dígitos no texto da primeira entrada
+    `type == "user"` do transcript."""
+    texto = _primeiro_texto_de_usuario(linhas)
+    if not texto:
+        return None
+    encontrado = _RE_ID_PLANO.search(texto)
+    return encontrado.group(0) if encontrado else None
+
+
+def _ultimo_modelo_assistant(linhas: list[str]) -> str | None:
+    """`message.model` da última entrada `assistant` do transcript que o carrega, ou `None`."""
+    modelo: str | None = None
+    for linha in linhas:
+        linha_strip = linha.strip()
+        if not linha_strip:
+            continue
+        try:
+            entrada = json.loads(linha_strip)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if not isinstance(entrada, dict) or entrada.get("type") != "assistant":
+            continue
+        mensagem = entrada.get("message")
+        if not isinstance(mensagem, dict):
+            continue
+        valor = mensagem.get("model")
+        if valor:
+            modelo = valor
+    return modelo
+
+
+def _normalizar_modelo_de_papel(bruto: str | None) -> str:
+    """Normaliza `message.model` do transcript: contém `opus`/`sonnet`/`haiku` vira a palavra
+    solta; outro texto vira ele mesmo em minúsculas; ausente vira `nao-informado`."""
+    if not bruto:
+        return "nao-informado"
+    minusculo = bruto.lower()
+    for nome in ("opus", "sonnet", "haiku"):
+        if nome in minusculo:
+            return nome
+    return minusculo
+
+
+def _contar_linhas_com_prefixo(tsv_path: Path, prefixo: str) -> int:
+    """Número de linhas da série cuja coluna `tarefa` começa por `prefixo` — usado para numerar
+    `<tarefa>-consultor-<n>`."""
+    if not tsv_path.is_file():
+        return 0
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    if not linhas:
+        return 0
+    colunas = linhas[0].split("\t")
+    try:
+        indice_tarefa = colunas.index("tarefa")
+    except ValueError:
+        return 0
+    total = 0
+    for linha in linhas[1:]:
+        if not linha.strip():
+            continue
+        valores = linha.split("\t")
+        if len(valores) <= indice_tarefa:
+            continue
+        if valores[indice_tarefa].startswith(prefixo):
+            total += 1
+    return total
+
+
+def _tsv_para_contagem(tsv_path: Path | None, estado_path: Path) -> Path:
+    """Série do hook — lida para contar `<n>` do consultor e escrita por `processar`: `tsv_path`
+    quando dado; senão `docs/telemetria.tsv` a partir de `estado_path.parents[2]`."""
+    if tsv_path is not None:
+        return tsv_path
+    return estado_path.parents[2] / "docs" / "telemetria.tsv"
+
+
 def montar_args_append(
     estado: dict, tokens_k: float, tool_uses: int, duracao_s: float, data: str
 ) -> list[str]:
@@ -161,14 +299,11 @@ def processar(
     data: str | None = None,
 ) -> bool:
     """Núcleo testável do hook — recebe payload e caminhos já resolvidos, nunca lê stdin nem
-    `sys.argv`. Devolve `True` quando escreveu (e consumiu o estado), `False` em qualquer ramo de
-    silêncio previsto (sem nenhum efeito colateral nesse caso)."""
+    `sys.argv`. Devolve `True` quando escreveu, `False` em qualquer ramo de silêncio previsto
+    (sem nenhum efeito colateral nesse caso). O estado nunca é apagado por este hook — só o
+    despacho seguinte do executor o sobrescreve."""
     agent_type = payload.get("agent_type") or ""
-    if not agent_type.startswith(_AGENT_TYPE_PREFIX_KIT):
-        return False
-
-    estado = ler_estado(estado_path)
-    if estado is None:
+    if not agent_type.startswith("pantonic-"):
         return False
 
     agent_transcript_path = payload.get("agent_transcript_path")
@@ -178,19 +313,47 @@ def processar(
     if not transcript.exists():
         return False
 
+    estado = ler_estado(estado_path)
     linhas = transcript.read_text(encoding="utf-8", errors="ignore").splitlines()
+
+    if agent_type == _AGENT_TYPE_EXECUTOR:
+        if estado is None:
+            return False
+        tarefa = str(estado.get("tarefa", ""))
+        modelo = str(estado.get("modelo", ""))
+        projeto = str(estado.get("projeto", ""))
+    else:
+        sufixo = _sufixo_do_papel(agent_type)
+        if agent_type in _PAPEIS_POR_TAREFA_DO_ESTADO:
+            tarefa_base = estado.get("tarefa") if estado is not None else None
+            if not tarefa_base:
+                tarefa = f"sem-id-{sufixo}"
+            elif agent_type == "pantonic-consultant":
+                serie = _tsv_para_contagem(tsv_path, estado_path)
+                n = 1 + _contar_linhas_com_prefixo(serie, f"{tarefa_base}-consultor-")
+                tarefa = f"{tarefa_base}-consultor-{n}"
+            else:
+                tarefa = f"{tarefa_base}-{sufixo}"
+        else:
+            id_plano = _id_plano_da_primeira_mensagem(linhas)
+            tarefa = f"{id_plano}-{sufixo}" if id_plano else f"sem-id-{sufixo}"
+        modelo = _normalizar_modelo_de_papel(_ultimo_modelo_assistant(linhas))
+        projeto = str(estado.get("projeto", "")) if estado is not None else estado_path.parents[2].name
+
     tokens_k, tool_uses, duracao_s = calcular_consumo(linhas)
 
     args = montar_args_append(
-        estado, tokens_k, tool_uses, duracao_s, data or datetime.date.today().isoformat()
+        {"projeto": projeto, "tarefa": tarefa, "modelo": modelo},
+        tokens_k, tool_uses, duracao_s, data or datetime.date.today().isoformat(),
     )
-    if tsv_path is not None:
-        args = args + ["--file", str(tsv_path)]
+    # `AE-5` do `P-0753`: o destino é sempre explícito e é a série de onde a contagem do
+    # consultor lê (`_tsv_para_contagem`) — sem `tsv_path`, a do repositório do estado, nunca o
+    # default do CLI, que é a série real do kit mesmo quando o estado é de fixture.
+    args = args + ["--file", str(_tsv_para_contagem(tsv_path, estado_path))]
 
     comando = [sys.executable, str(telemetria_cli), *args]
     subprocess.run(comando, check=False, capture_output=True)
 
-    estado_path.unlink(missing_ok=True)
     return True
 
 

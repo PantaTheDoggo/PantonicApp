@@ -6,12 +6,12 @@
 
 ### 1.1 Objetos
 
-| objeto | o que é | propriedades | contrato | origem |
-|---|---|---|---|---|
-| objeto base | objeto usado normalmente pela primeira operação | estado | um registro simples | externo |
-| objeto sem uso | objeto externo que nenhuma operação cita | estado | um registro não usado | externo |
-| objeto orfão | objeto cuja origem aponta para uma operação inexistente | estado | um registro órfão | OP-9 |
-| objeto válido segundo | objeto produzido pela primeira operação | estado | um registro validado | OP-1 |
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| objeto base | objeto usado normalmente pela primeira operação | estado | um registro simples | externo | lastro sintético da fixture |
+| objeto sem uso | objeto externo que nenhuma operação cita | estado | um registro não usado | externo | lastro sintético da fixture |
+| objeto orfão | objeto cuja origem aponta para uma operação inexistente | estado | um registro órfão | OP-9 | lastro sintético da fixture |
+| objeto válido segundo | objeto produzido pela primeira operação | estado | um registro validado | OP-1 | lastro sintético da fixture |
 
 ### 1.2 Fluxo de operações
 

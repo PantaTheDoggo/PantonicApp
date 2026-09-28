@@ -33,7 +33,7 @@ sobre leituras integrais — a mesma lógica de progressive disclosure usada por
    Read integral é proibido nessa faixa de tamanho.
 
 6. **Varreduras amplas.** Quando só a conclusão importa (muitos arquivos, busca exploratória sem
-   alvo certo) — delegar ao subagente `context-scout` (roda em Haiku; critérios de corte na skill
+   alvo certo) — delegar ao subagente `context-scout` (critérios de corte na skill
    [[context-prep]]) em vez de ler tudo no contexto principal.
 
 ## Aceitação

@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T15",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T16:14:52+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/checks/ratchet_piso.py",
+      "exit": 0,
+      "saida": "ratchet_piso: OK - piso intacto sob 'D:\\workspaces\\PantonicApp' (D:\\workspaces\\PantonicApp\\tests\\piso_comportamental.txt).",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/conformance -q",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed in 0.19s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"import subprocess,sys;from pathlib import Path;p=Path('tests/piso_comportamental.txt');c=subprocess.run([sys.executable,'-m','pytest','--co','-q'],capture_output=True,text=True).stdout.splitlines();tr=sorted(x.strip() for x in c if '::test_tr_' in x);print('ausente' if not p.exists() else ('iguais' if sorted(l.split(' — ')[0].strip() for l in p.read_text(encoding='utf-8').splitlines() if l.strip() and not l.startswith('#'))==tr else 'diferentes'))\"",
+      "exit": 0,
+      "saida": "iguais",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 43%]\n........................................................................ [ 58%]\n........................................................................ [ 73%]\n........................................................................ [ 87%]\n............................................................             [100%]\n492 passed in 50.12s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

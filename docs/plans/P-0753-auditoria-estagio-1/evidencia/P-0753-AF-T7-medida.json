@@ -1,0 +1,36 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T7",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T13:38:47+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/tools/card_check.py --plano tests/fixtures/card_check/P-0-pasta/plano.md --tarefa CP-T1",
+      "exit": 0,
+      "saida": "card_check: OK - tarefa 'CP-T1' fecha.",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_card_check.py -q -k \"estado_tsv\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 20 deselected in 0.16s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 45%]\n........................................................................ [ 61%]\n........................................................................ [ 76%]\n........................................................................ [ 91%]\n......................................                                   [100%]\n470 passed in 42.02s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-89b",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T02:09:52+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(t.count('sete itens'),t.count('oito itens'))\"",
+      "exit": 0,
+      "saida": "0 1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print(sum(1 for l in t.splitlines() if l.startswith('| ') and 'B3' in l[:8] and 'card_check' in l))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;print(Path('docs/RUBRICA_DE_REVISAO.md').read_text(encoding='utf-8').count('contra a linha citada'))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh .claude/checks/kit_check.ps1",
+      "exit": 0,
+      "saida": "kit_check: OK - 10 agente(s), 13 skill(s) e 27 entrada(s) canonica(s) validados; VERSION == KIT_VERSION ('0.0.0').",
+      "bate": true
+    }
+  ]
+}

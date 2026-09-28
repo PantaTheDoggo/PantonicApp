@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T5c",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T14:33:07+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;fs=['.claude/agents/pantonic-executor.md','.claude/skills/scrum-master/SKILL.md'];print(sum(Path(f).read_text(encoding='utf-8').count('<plano>-<ID>-medida.json') for f in fs))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;fs=['.claude/agents/pantonic-executor.md','.claude/skills/scrum-master/SKILL.md'];print(all('<pasta>/evidencia' in Path(f).read_text(encoding='utf-8') and '<P-n>-<ID>-medida.json' in Path(f).read_text(encoding='utf-8') for f in fs))\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "pwsh .claude/checks/kit_check.ps1",
+      "exit": 0,
+      "saida": "kit_check: OK - 10 agente(s), 12 skill(s) e 27 entrada(s) canonica(s) validados; VERSION == KIT_VERSION ('0.0.0').",
+      "bate": true
+    }
+  ]
+}

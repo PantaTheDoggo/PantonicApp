@@ -1,0 +1,50 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T6",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T13:18:56+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_progresso_hook.py -q -k \"recomendacao\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 41 deselected in 0.05s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(sum(Path(p).read_text(encoding='utf-8').count('recomendacao=<') for p in ['.claude/agents/pantonic-reviewer.md','.claude/skills/scrum-master/SKILL.md']))\"",
+      "exit": 0,
+      "saida": "2",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;t=sum(Path(p).read_text(encoding='utf-8').count('recomendação <recomendação>') for p in ['.claude/tools/progresso_hook.py','.claude/skills/scrum-master/SKILL.md']);print(t)\"",
+      "exit": 0,
+      "saida": "2",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k \"tarefa_fecha_num_ato\"",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 24 deselected in 0.18s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 46%]\n........................................................................ [ 61%]\n........................................................................ [ 76%]\n........................................................................ [ 92%]\n....................................                                     [100%]\n468 passed in 40.82s",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

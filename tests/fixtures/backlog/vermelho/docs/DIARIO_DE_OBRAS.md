@@ -18,3 +18,6 @@
 
 ## TK-2 — Tiquete narrativa
 - **Status:** `backlog` · 2026-01-01
+
+### TK-2a — Card de fixture [Sonnet · classe mecanica]
+- **Status:** `ready` · 2026-01-01

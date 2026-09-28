@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T5b",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T13:44:18+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_card_check.py -q -k cauda_da_saida",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 18 deselected in 0.13s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(Path('.claude/tools/card_check.py').read_text(encoding='utf-8').count('[:400]'))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 35%]\n........................................................................ [ 52%]\n........................................................................ [ 70%]\n........................................................................ [ 87%]\n...................................................                      [100%]\n411 passed in 34.18s",
+      "bate": true
+    }
+  ]
+}

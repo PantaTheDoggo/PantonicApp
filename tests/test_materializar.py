@@ -611,8 +611,8 @@ def test_tf_hook_modelo_por_fase_executavel_stdin_utf8_classifica_a_fase(tmp_pat
 
     # (i) produto reparado dá a mesma saída nos dois mundos
     assert reparado_hostil.stdout == reparado_seguro.stdout
-    assert len(reparado_hostil.stdout.strip()) == 470
     saida = json.loads(reparado_hostil.stdout.decode("utf-8"))
+    assert "Fase intelectual" in saida["systemMessage"]
     assert saida["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
     # (iii) o valor acentuado chega íntegro ao observável no mundo hostil — a asserção acima
     # já prova: a saída do mundo hostil é igual à do mundo seguro, byte a byte.

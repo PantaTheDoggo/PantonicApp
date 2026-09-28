@@ -8,12 +8,12 @@
 
 ### 1.1 Objetos
 
-| objeto | o que é | propriedades | contrato | origem |
-|---|---|---|---|---|
-| insumo externo | dado de entrada do fluxo de exemplo | status | um registro por rodada | externo |
-| resultado um | o produto da primeira operação | status | um registro validado | OP-1 |
-| resultado dois | o produto da segunda operação | status | um relatório derivado | OP-2 |
-| registro auxiliar | apoio usado só pela terceira operação | status | uma nota de apoio | externo |
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo externo | dado de entrada do fluxo de exemplo | status | um registro por rodada | externo | lastro sintético da fixture |
+| resultado um | o produto da primeira operação | status | um registro validado | OP-1 | lastro sintético da fixture |
+| resultado dois | o produto da segunda operação | status | um relatório derivado | OP-2 | lastro sintético da fixture |
+| registro auxiliar | apoio usado só pela terceira operação | status | uma nota de apoio | externo | lastro sintético da fixture |
 
 ### 1.2 Fluxo de operações
 

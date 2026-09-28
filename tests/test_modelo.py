@@ -12,7 +12,7 @@ plano)"): cabeçalho `**Estado do modelo:**`, `### 1.1 Objetos` (com `propriedad
 e estado final` e `### 1.4 Registro de versões`. A versão pendente nasce como o bloco irmão
 `## 1A. Modelo conceitual — versão pendente de validação`.
 
-`check` julga a seção contra o vocabulário fechado de violações `V1`..`V20` (`### 16` do plano) e
+`check` julga a seção contra o vocabulário fechado de violações `V1`..`V21` (`### 16` do plano) e
 `show` deriva a leitura do dono a partir do andamento real das tarefas — nunca gravado (`M-3`) —,
 com `--pendente` para o bloco `## 1A` e `--drift` para a diferença entre as duas versões. Ambos
 carregam `backlog.py` por caminho (`importlib.util.spec_from_file_location`) e chamam
@@ -44,6 +44,10 @@ _PLANO_SEM_ESTADO = _FIXTURES / "plano-sem-estado.md"
 _FLUXO_VALIDO = _FIXTURES / "fluxo-valido.md"
 _FLUXO_CONCLUIDO = _FIXTURES / "fluxo-concluido.md"
 _FLUXO_PENDENTE = _FIXTURES / "fluxo-pendente.md"
+_FLUXO_PENDENTE_CONTRATO = _FIXTURES / "fluxo-pendente-contrato.md"
+_PLANO_SEM_LASTRO = _FIXTURES / "plano-sem-lastro.md"
+_PLANO_COM_LASTRO = _FIXTURES / "plano-com-lastro.md"
+_PLANO_TERMINAL_SEM_LASTRO = _FIXTURES / "plano-terminal-sem-lastro.md"
 
 
 def _load_modelo():
@@ -57,8 +61,10 @@ def _load_modelo():
     return modulo
 
 
-def _plano_stub(tarefas):
-    return SimpleNamespace(id="P-TESTE", titulo="Plano de teste sintético", tarefas=tarefas)
+def _plano_stub(tarefas, status="in-progress"):
+    return SimpleNamespace(
+        id="P-TESTE", titulo="Plano de teste sintético", tarefas=tarefas, status=status
+    )
 
 
 def _tarefa_stub(id_, texto=""):
@@ -137,6 +143,79 @@ def test_tf_check_invalido_lista_catorze_violacoes_na_ordem(capsys):
     posicoes_b = [saida_b.err.index(linha) for linha in esperado_b_na_ordem]
     assert posicoes_b == sorted(posicoes_b)
     assert "modelo: FALHOU — 4 violação(ões)" in saida_b.err
+
+
+def test_tf_check_v21_objeto_sem_lastro_declarado(capsys):
+    """`plano-sem-lastro.md` tem dois objetos sem a sexta coluna de `### 1.1` — `check` acusa
+    `V21` uma vez por objeto e sai 1 (`DLS-1`, `DLS-17`)."""
+    modelo = _load_modelo()
+
+    codigo = modelo.main(["check", "--plano", str(_PLANO_SEM_LASTRO), "--root", str(_ROOT)])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "V21 objeto — objeto sem lastro declarado insumo do teste" in saida.err
+    assert "V21 objeto — objeto sem lastro declarado resultado do teste" in saida.err
+    assert "modelo: FALHOU — 2 violação(ões)" in saida.err
+
+
+def test_tf_check_v21_cabecalho_qualificado_nao_acusa_sai_zero(capsys):
+    """`plano-com-lastro.md` declara a coluna sob o cabeçalho qualificado `lastro na §0` — o
+    casamento é por prefixo (`DLS-15`), `check` não acusa `V21` e sai 0."""
+    modelo = _load_modelo()
+
+    codigo = modelo.main(["check", "--plano", str(_PLANO_COM_LASTRO), "--root", str(_ROOT)])
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "modelo: OK" in saida.out
+
+
+def test_tf_check_v21_nao_alcanca_status_terminal_sai_zero(capsys):
+    """`plano-terminal-sem-lastro.md` está `done` — a violação `V21` não alcança plano em status
+    terminal (`DLS-12`), mesmo sem a coluna de lastro."""
+    modelo = _load_modelo()
+
+    codigo = modelo.main(
+        ["check", "--plano", str(_PLANO_TERMINAL_SEM_LASTRO), "--root", str(_ROOT)]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "modelo: OK" in saida.out
+
+
+def test_tf_check_operacao_com_e_sem_campo_lastro_mesmo_conjunto():
+    """A linha de máquina de `### 1.2` é lida com e sem o quarto campo `lastro:` — as duas formas
+    produzem o mesmo conjunto de `precisa_de`/`altera`/`tarefas` (`F-17`)."""
+    modelo = _load_modelo()
+
+    linhas_sem = _FLUXO_VALIDO.read_text(encoding="utf-8").splitlines()
+    linhas_com = _PLANO_COM_LASTRO.read_text(encoding="utf-8").splitlines()
+    modelo_sem = modelo.extrair_modelo(linhas_sem, modelo._HEADING_VIGENTE)
+    modelo_com = modelo.extrair_modelo(linhas_com, modelo._HEADING_VIGENTE)
+
+    assert len(modelo_sem.operacoes) == 3
+    assert len(modelo_com.operacoes) == 1
+    op = modelo_com.operacoes[0]
+    assert op.precisa_de == ["insumo com lastro"]
+    assert op.altera == ["resultado com lastro.status"]
+    assert op.tarefas == ["LT2-T1"]
+
+
+def test_tf_check_estado_tres_e_quatro_colunas_mesmo_conjunto():
+    """`### 1.3` com três colunas (`fluxo-valido.md`) e com quatro (`plano-com-lastro.md`)
+    produzem o mesmo conjunto de propriedades com estado (`F-17`)."""
+    modelo = _load_modelo()
+
+    linhas_tres = _FLUXO_VALIDO.read_text(encoding="utf-8").splitlines()
+    linhas_quatro = _PLANO_COM_LASTRO.read_text(encoding="utf-8").splitlines()
+    modelo_tres = modelo.extrair_modelo(linhas_tres, modelo._HEADING_VIGENTE)
+    modelo_quatro = modelo.extrair_modelo(linhas_quatro, modelo._HEADING_VIGENTE)
+
+    assert len(modelo_tres.estado) == 4
+    assert len(modelo_quatro.estado) == 2
+    assert ("resultado com lastro.status", "rascunho", "validado") in modelo_quatro.estado
 
 
 def test_tf_check_sem_cabecalho_v13(capsys):
@@ -266,6 +345,65 @@ def test_tf_check_pendente_fora_de_sequencia_v20():
     violacoes = modelo.validar(modelo_vigente, plano, modelo_pendente)
 
     assert any(v.startswith("V20 secao") for v in violacoes)
+
+
+def test_tf_check_objeto_sem_lastro_v21():
+    """Objeto com `lastro` vazio dispara `V21`, com o plano em status não terminal."""
+    modelo = _load_modelo()
+
+    objeto = modelo.Objeto(
+        nome="objeto sem lastro", contrato="c", origem="externo", propriedades=["estado"]
+    )
+    modelo_sintetico = modelo.Modelo(
+        versao=1,
+        data="2026-09-22",
+        objetos=[objeto],
+        estado=[("objeto sem lastro.estado", "i", "f")],
+    )
+    plano = _plano_stub([], status="in-progress")
+
+    violacoes = modelo.validar(modelo_sintetico, plano)
+
+    assert any(
+        v.startswith("V21 objeto — objeto sem lastro declarado") for v in violacoes
+    )
+
+
+def test_tf_check_objeto_sem_lastro_nao_alcanca_status_terminal_v21():
+    """A mesma ausência de lastro, com o plano em status terminal (`done`), não dispara `V21`
+    (`DLS-12`)."""
+    modelo = _load_modelo()
+
+    objeto = modelo.Objeto(
+        nome="objeto sem lastro", contrato="c", origem="externo", propriedades=["estado"]
+    )
+    modelo_sintetico = modelo.Modelo(
+        versao=1,
+        data="2026-09-22",
+        objetos=[objeto],
+        estado=[("objeto sem lastro.estado", "i", "f")],
+    )
+    plano = _plano_stub([], status="done")
+
+    violacoes = modelo.validar(modelo_sintetico, plano)
+
+    assert not any(v.startswith("V21") for v in violacoes)
+
+
+def test_tf_check_pendente_roda_o_vocabulario(capsys):
+    """`fluxo-pendente-contrato.md` tem, no bloco `## 1A`, a `OP-3` citando o objeto inexistente
+    `objeto fantasma` — `check` passa a julgar a versão pendente pelo mesmo vocabulário da
+    vigente (`OP-14`) e sai 1 com a violação prefixada `1A: ` (a regra de hoje, que não julga a
+    pendente, sairia 0)."""
+    modelo = _load_modelo()
+
+    codigo = modelo.main(
+        ["check", "--plano", str(_FLUXO_PENDENTE_CONTRATO), "--root", str(_ROOT)]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "1A: V5 OP-3 — objeto inexistente objeto fantasma" in saida.err
 
 
 def test_tf_check_forma_anterior_sai_dois(capsys):
@@ -452,3 +590,37 @@ def test_tf_show_drift_sem_diferenca():
     resultado = modelo.montar_drift(vigente, pendente)
 
     assert resultado == "sem drift"
+
+
+def test_tf_drift_mostra_contrato_alterado(capsys):
+    """`fluxo-pendente-contrato.md` muda o contrato de `resultado um` entre vigente e pendente,
+    sem mudar as propriedades — `--drift` acrescenta a linha de contrato (`OP-14`; a regra de
+    hoje não imprime linha de objeto nenhuma para ele, porque as propriedades não mudaram)."""
+    modelo = _load_modelo()
+
+    codigo = modelo.main(
+        ["show", "--plano", str(_FLUXO_PENDENTE_CONTRATO), "--drift", "--root", str(_ROOT)]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert (
+        "[~] resultado um — contrato: um registro validado => um registro validado e datado"
+        in saida.out
+    )
+
+
+def test_tf_check_plano_inexistente_sai_2_sem_traceback(tmp_path, capsys):
+    """TF da TK-74b: `check` com `--plano` que não é arquivo sai em uma linha com exit `2`."""
+    codigo = _load_modelo().main(["check", "--plano", "TK-74", "--root", str(tmp_path)])
+
+    assert codigo == 2
+    assert "modelo: plano não encontrado 'TK-74'" in capsys.readouterr().out
+
+
+def test_tf_show_plano_inexistente_sai_2_sem_traceback(tmp_path, capsys):
+    """TF da TK-74b: `show` com `--plano` que não é arquivo sai em uma linha com exit `2`."""
+    codigo = _load_modelo().main(["show", "--plano", "TK-74", "--root", str(tmp_path)])
+
+    assert codigo == 2
+    assert "modelo: plano não encontrado 'TK-74'" in capsys.readouterr().out

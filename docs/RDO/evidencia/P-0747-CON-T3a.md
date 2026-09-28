@@ -1,0 +1,191 @@
+# Evidência de revisão — P-0747 CON-T3a
+
+## Diff (`git diff --stat`)
+```
+.claude/README.md                               |    2 +-
+ .claude/agents/pantonic-consultant.md           |   23 +-
+ .claude/agents/pantonic-fora-da-caixa.md        |    2 +-
+ .claude/agents/pantonic-model-designer.md       |   54 +-
+ .claude/agents/pantonic-planner.md              |  135 +-
+ .claude/global/CLAUDE.md                        |   21 +-
+ .claude/skills/bootstrap-pantonic/SKILL.md      |    2 +-
+ .claude/skills/diario-de-obras/SKILL.md         |   56 +-
+ .claude/skills/modelo-por-fase/SKILL.md         |    2 +-
+ .claude/skills/scrum-master/SKILL.md            |   32 +-
+ .claude/tools/modelo.py                         |   31 +-
+ GOVERNANCA.md                                   |  227 ++--
+ README.md                                       |   85 +-
+ docs/CUSTO_DO_PICKUP.md                         |  113 ++
+ docs/DIARIO_DE_OBRAS.md                         |  905 ++++++++++---
+ docs/DIARIO_HISTORICO.md                        |  154 +++
+ docs/DOC_MAP.md                                 |   91 +-
+ docs/RDO/INDEX.md                               |   22 +
+ docs/RESIDENCIA_DOUTRINA.md                     |    4 +-
+ docs/consultant-spec.md                         |   41 +-
+ docs/plans/P-0745-planejador-modelo-operacao.md | 1584 ++++++++++++++++++++---
+ docs/plans/_INBOX.md                            |    3 +-
+ docs/plans/_INBOX_HISTORICO.md                  |    3 +
+ docs/telemetria.tsv                             |   93 ++
+ tests/fixtures/modelo/fluxo-concluido.md        |   12 +-
+ tests/fixtures/modelo/fluxo-pendente.md         |   20 +-
+ tests/fixtures/modelo/fluxo-valido.md           |   12 +-
+ tests/fixtures/modelo/plano-invalido-2.md       |   10 +-
+ tests/fixtures/modelo/plano-invalido.md         |   12 +-
+ tests/fixtures/modelo/plano-sem-cabecalho.md    |    8 +-
+ tests/fixtures/modelo/plano-sem-estado.md       |    8 +-
+ tests/test_modelo.py                            |  127 +-
+ 32 files changed, 3265 insertions(+), 629 deletions(-)
+```
+
+## Arquivos tocados
+- `.claude/README.md` — atribuição: alheio; estado git: ` M`
+- `.claude/agents/pantonic-consultant.md` — atribuição: alheio; estado git: ` M`
+- `.claude/agents/pantonic-fora-da-caixa.md` — atribuição: alheio; estado git: ` M`
+- `.claude/agents/pantonic-model-designer.md` — atribuição: alheio; estado git: ` M`
+- `.claude/agents/pantonic-planner.md` — atribuição: alheio; estado git: ` M`
+- `.claude/global/CLAUDE.md` — atribuição: alheio; estado git: ` M`
+- `.claude/skills/bootstrap-pantonic/SKILL.md` — atribuição: alheio; estado git: ` M`
+- `.claude/skills/diario-de-obras/SKILL.md` — atribuição: alheio; estado git: ` M`
+- `.claude/skills/modelo-por-fase/SKILL.md` — atribuição: alheio; estado git: ` M`
+- `.claude/skills/scrum-master/SKILL.md` — atribuição: da entrega; estado git: ` M`
+- `.claude/tools/modelo.py` — atribuição: alheio; estado git: ` M`
+- `GOVERNANCA.md` — atribuição: alheio; estado git: ` M`
+- `README.md` — atribuição: alheio; estado git: ` M`
+- `docs/ACIONAMENTOS_CONSULTOR.tsv` — atribuição: alheio; estado git: `??`
+- `docs/CUSTO_DO_PICKUP.md` — atribuição: alheio; estado git: ` M`
+- `docs/DIARIO_DE_OBRAS.md` — atribuição: alheio; estado git: ` M`
+- `docs/DIARIO_HISTORICO.md` — atribuição: alheio; estado git: ` M`
+- `docs/DOC_MAP.md` — atribuição: alheio; estado git: ` M`
+- `docs/OPERACOES_AS_IS.md` — atribuição: alheio; estado git: `??`
+- `docs/OPERACOES_AS_IS_P-0745.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/DIARIO_DE_OBRAS-TK-54b-a-fonte-da-bimodalidade.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/DIARIO_DE_OBRAS-TK-76a-as-tabelas-do-modelo-em-frases-curtas-para-o-dono.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/INDEX.md` — atribuição: alheio; estado git: ` M`
+- `docs/RDO/P-0745-PLN-T1-o-agregado-medido-da-atuacao-do-planejador.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T2-a-norma-da-unidade-de-trabalho-e-dos-limites.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T3-a-gramatica-do-card-a-tarefa-e-a-materializacao-de-uma-opera.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T4-o-protocolo-do-planejador-modelo-primeiro-um-card-por-operac.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T4a-o-ponteiro-sobrevivente-da-tabela-aposentada-nos-fatos-estav.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T5-o-modelador-diante-do-plano-sem-cards-e-o-lastro-que-e-do-pl.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T5a-a-frase-que-governa-o-gate-do-modelador-e-a-enumeracao-que-e.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T6-a-especificacao-do-agente-de-planejamento.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T7-o-indice-de-documentos-e-a-revisao-do-readme.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0745-PLN-T7a-o-readme-deixa-de-defender-a-regua-que-ele-mesmo-aposenta.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T1-o-criterio-de-admissao-do-modelo-e-as-duas-vias-do-enunciado.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T3-a-residencia-do-requisito-secundario.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T5-o-instrumento-afere-lastro-declarado.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T6-a-reaplicacao-ao-p-0745.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T7-a-restricao-de-decomposicao-o-que-e-objeto-e-o-que-e-proprie.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T8-a-residencia-da-declaracao-de-lastro-na-gramatica.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0746-LST-T9-a-residencia-se-identifica-por-rotulo-e-o-caso-medido-se-des.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0747-CON-T1-o-consultor-entra-na-doutrina-de-governanca.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0747-CON-T2-a-definicao-de-conduta-do-consultor-sem-estatuto-provisorio.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/P-0747-CON-T3-o-loop-leva-toda-parada-ao-consultor.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T1.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T2.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T3.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T4.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T4a.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T5.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T5a.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T6.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T7.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0745-PLN-T7a.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T1.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T3.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T5.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T6.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T7.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T8.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0746-LST-T9.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0747-CON-T1.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0747-CON-T2.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/P-0747-CON-T3.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/TK-54-TK-54b.md` — atribuição: alheio; estado git: `??`
+- `docs/RDO/evidencia/TK-76-TK-76a.md` — atribuição: alheio; estado git: `??`
+- `docs/RESIDENCIA_DOUTRINA.md` — atribuição: alheio; estado git: ` M`
+- `docs/consultant-spec.md` — atribuição: alheio; estado git: ` M`
+- `docs/planner-spec.md` — atribuição: alheio; estado git: `??`
+- `docs/plans/P-0745-planejador-modelo-operacao.md` — atribuição: alheio; estado git: ` M`
+- `docs/plans/P-0746-lastro-do-modelo.md` — atribuição: alheio; estado git: `??`
+- `docs/plans/P-0747-consultor-de-plano.md` — atribuição: alheio; estado git: `??`
+- `docs/plans/_INBOX.md` — atribuição: alheio; estado git: ` M`
+- `docs/plans/_INBOX_HISTORICO.md` — atribuição: alheio; estado git: ` M`
+- `docs/plans/_VEREDITO-procedimentos-2026-09-22.md` — atribuição: alheio; estado git: `??`
+- `docs/telemetria.tsv` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/fluxo-concluido.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/fluxo-pendente.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/fluxo-valido.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/plano-com-lastro.md` — atribuição: alheio; estado git: `??`
+- `tests/fixtures/modelo/plano-invalido-2.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/plano-invalido.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/plano-sem-cabecalho.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/plano-sem-estado.md` — atribuição: alheio; estado git: ` M`
+- `tests/fixtures/modelo/plano-sem-lastro.md` — atribuição: alheio; estado git: `??`
+- `tests/fixtures/modelo/plano-terminal-sem-lastro.md` — atribuição: alheio; estado git: `??`
+- `tests/test_doutrina_unidade.py` — atribuição: alheio; estado git: `??`
+- `tests/test_modelo.py` — atribuição: alheio; estado git: ` M`
+
+## Escopo
+- Recorte: desde `d75e7a656fe73d398263dde88dce8f29535d8dcb`
+- Arquivos-alvo declarados: `.claude/skills/scrum-master/SKILL.md`
+- Arquivos tocados: `.claude/README.md`, `.claude/agents/pantonic-consultant.md`, `.claude/agents/pantonic-fora-da-caixa.md`, `.claude/agents/pantonic-model-designer.md`, `.claude/agents/pantonic-planner.md`, `.claude/global/CLAUDE.md`, `.claude/skills/bootstrap-pantonic/SKILL.md`, `.claude/skills/diario-de-obras/SKILL.md`, `.claude/skills/modelo-por-fase/SKILL.md`, `.claude/skills/scrum-master/SKILL.md`, `.claude/tools/modelo.py`, `GOVERNANCA.md`, `README.md`, `docs/ACIONAMENTOS_CONSULTOR.tsv`, `docs/CUSTO_DO_PICKUP.md`, `docs/DIARIO_DE_OBRAS.md`, `docs/DIARIO_HISTORICO.md`, `docs/DOC_MAP.md`, `docs/OPERACOES_AS_IS.md`, `docs/OPERACOES_AS_IS_P-0745.md`, `docs/RDO/DIARIO_DE_OBRAS-TK-54b-a-fonte-da-bimodalidade.md`, `docs/RDO/DIARIO_DE_OBRAS-TK-76a-as-tabelas-do-modelo-em-frases-curtas-para-o-dono.md`, `docs/RDO/INDEX.md`, `docs/RDO/P-0745-PLN-T1-o-agregado-medido-da-atuacao-do-planejador.md`, `docs/RDO/P-0745-PLN-T2-a-norma-da-unidade-de-trabalho-e-dos-limites.md`, `docs/RDO/P-0745-PLN-T3-a-gramatica-do-card-a-tarefa-e-a-materializacao-de-uma-opera.md`, `docs/RDO/P-0745-PLN-T4-o-protocolo-do-planejador-modelo-primeiro-um-card-por-operac.md`, `docs/RDO/P-0745-PLN-T4a-o-ponteiro-sobrevivente-da-tabela-aposentada-nos-fatos-estav.md`, `docs/RDO/P-0745-PLN-T5-o-modelador-diante-do-plano-sem-cards-e-o-lastro-que-e-do-pl.md`, `docs/RDO/P-0745-PLN-T5a-a-frase-que-governa-o-gate-do-modelador-e-a-enumeracao-que-e.md`, `docs/RDO/P-0745-PLN-T6-a-especificacao-do-agente-de-planejamento.md`, `docs/RDO/P-0745-PLN-T7-o-indice-de-documentos-e-a-revisao-do-readme.md`, `docs/RDO/P-0745-PLN-T7a-o-readme-deixa-de-defender-a-regua-que-ele-mesmo-aposenta.md`, `docs/RDO/P-0746-LST-T1-o-criterio-de-admissao-do-modelo-e-as-duas-vias-do-enunciado.md`, `docs/RDO/P-0746-LST-T3-a-residencia-do-requisito-secundario.md`, `docs/RDO/P-0746-LST-T5-o-instrumento-afere-lastro-declarado.md`, `docs/RDO/P-0746-LST-T6-a-reaplicacao-ao-p-0745.md`, `docs/RDO/P-0746-LST-T7-a-restricao-de-decomposicao-o-que-e-objeto-e-o-que-e-proprie.md`, `docs/RDO/P-0746-LST-T8-a-residencia-da-declaracao-de-lastro-na-gramatica.md`, `docs/RDO/P-0746-LST-T9-a-residencia-se-identifica-por-rotulo-e-o-caso-medido-se-des.md`, `docs/RDO/P-0747-CON-T1-o-consultor-entra-na-doutrina-de-governanca.md`, `docs/RDO/P-0747-CON-T2-a-definicao-de-conduta-do-consultor-sem-estatuto-provisorio.md`, `docs/RDO/P-0747-CON-T3-o-loop-leva-toda-parada-ao-consultor.md`, `docs/RDO/evidencia/P-0745-PLN-T1.md`, `docs/RDO/evidencia/P-0745-PLN-T2.md`, `docs/RDO/evidencia/P-0745-PLN-T3.md`, `docs/RDO/evidencia/P-0745-PLN-T4.md`, `docs/RDO/evidencia/P-0745-PLN-T4a.md`, `docs/RDO/evidencia/P-0745-PLN-T5.md`, `docs/RDO/evidencia/P-0745-PLN-T5a.md`, `docs/RDO/evidencia/P-0745-PLN-T6.md`, `docs/RDO/evidencia/P-0745-PLN-T7.md`, `docs/RDO/evidencia/P-0745-PLN-T7a.md`, `docs/RDO/evidencia/P-0746-LST-T1.md`, `docs/RDO/evidencia/P-0746-LST-T3.md`, `docs/RDO/evidencia/P-0746-LST-T5.md`, `docs/RDO/evidencia/P-0746-LST-T6.md`, `docs/RDO/evidencia/P-0746-LST-T7.md`, `docs/RDO/evidencia/P-0746-LST-T8.md`, `docs/RDO/evidencia/P-0746-LST-T9.md`, `docs/RDO/evidencia/P-0747-CON-T1.md`, `docs/RDO/evidencia/P-0747-CON-T2.md`, `docs/RDO/evidencia/P-0747-CON-T3.md`, `docs/RDO/evidencia/TK-54-TK-54b.md`, `docs/RDO/evidencia/TK-76-TK-76a.md`, `docs/RESIDENCIA_DOUTRINA.md`, `docs/consultant-spec.md`, `docs/planner-spec.md`, `docs/plans/P-0745-planejador-modelo-operacao.md`, `docs/plans/P-0746-lastro-do-modelo.md`, `docs/plans/P-0747-consultor-de-plano.md`, `docs/plans/_INBOX.md`, `docs/plans/_INBOX_HISTORICO.md`, `docs/plans/_VEREDITO-procedimentos-2026-09-22.md`, `docs/telemetria.tsv`, `tests/fixtures/modelo/fluxo-concluido.md`, `tests/fixtures/modelo/fluxo-pendente.md`, `tests/fixtures/modelo/fluxo-valido.md`, `tests/fixtures/modelo/plano-com-lastro.md`, `tests/fixtures/modelo/plano-invalido-2.md`, `tests/fixtures/modelo/plano-invalido.md`, `tests/fixtures/modelo/plano-sem-cabecalho.md`, `tests/fixtures/modelo/plano-sem-estado.md`, `tests/fixtures/modelo/plano-sem-lastro.md`, `tests/fixtures/modelo/plano-terminal-sem-lastro.md`, `tests/test_doutrina_unidade.py`, `tests/test_modelo.py`
+- Atribuídos a outra tarefa do mesmo plano: `.claude/README.md` → `CON-T8`, `.claude/agents/pantonic-consultant.md` → `CON-T2`, `.claude/agents/pantonic-model-designer.md` → `CON-T5`, `.claude/agents/pantonic-planner.md` → `CON-T5`, `.claude/global/CLAUDE.md` → `CON-T5`, `.claude/skills/diario-de-obras/SKILL.md` → `CON-T5`, `GOVERNANCA.md` → `CON-T1`, `README.md` → `CON-T8`, `docs/ACIONAMENTOS_CONSULTOR.tsv` → `CON-T2`, `docs/DOC_MAP.md` → `CON-T6`, `docs/consultant-spec.md` → `CON-T6`
+- Registro da orquestração (não atribuível a tarefa): `docs/DIARIO_DE_OBRAS.md`, `docs/RDO/DIARIO_DE_OBRAS-TK-54b-a-fonte-da-bimodalidade.md`, `docs/RDO/DIARIO_DE_OBRAS-TK-76a-as-tabelas-do-modelo-em-frases-curtas-para-o-dono.md`, `docs/RDO/INDEX.md`, `docs/RDO/P-0745-PLN-T1-o-agregado-medido-da-atuacao-do-planejador.md`, `docs/RDO/P-0745-PLN-T2-a-norma-da-unidade-de-trabalho-e-dos-limites.md`, `docs/RDO/P-0745-PLN-T3-a-gramatica-do-card-a-tarefa-e-a-materializacao-de-uma-opera.md`, `docs/RDO/P-0745-PLN-T4-o-protocolo-do-planejador-modelo-primeiro-um-card-por-operac.md`, `docs/RDO/P-0745-PLN-T4a-o-ponteiro-sobrevivente-da-tabela-aposentada-nos-fatos-estav.md`, `docs/RDO/P-0745-PLN-T5-o-modelador-diante-do-plano-sem-cards-e-o-lastro-que-e-do-pl.md`, `docs/RDO/P-0745-PLN-T5a-a-frase-que-governa-o-gate-do-modelador-e-a-enumeracao-que-e.md`, `docs/RDO/P-0745-PLN-T6-a-especificacao-do-agente-de-planejamento.md`, `docs/RDO/P-0745-PLN-T7-o-indice-de-documentos-e-a-revisao-do-readme.md`, `docs/RDO/P-0745-PLN-T7a-o-readme-deixa-de-defender-a-regua-que-ele-mesmo-aposenta.md`, `docs/RDO/P-0746-LST-T1-o-criterio-de-admissao-do-modelo-e-as-duas-vias-do-enunciado.md`, `docs/RDO/P-0746-LST-T3-a-residencia-do-requisito-secundario.md`, `docs/RDO/P-0746-LST-T5-o-instrumento-afere-lastro-declarado.md`, `docs/RDO/P-0746-LST-T6-a-reaplicacao-ao-p-0745.md`, `docs/RDO/P-0746-LST-T7-a-restricao-de-decomposicao-o-que-e-objeto-e-o-que-e-proprie.md`, `docs/RDO/P-0746-LST-T8-a-residencia-da-declaracao-de-lastro-na-gramatica.md`, `docs/RDO/P-0746-LST-T9-a-residencia-se-identifica-por-rotulo-e-o-caso-medido-se-des.md`, `docs/RDO/P-0747-CON-T1-o-consultor-entra-na-doutrina-de-governanca.md`, `docs/RDO/P-0747-CON-T2-a-definicao-de-conduta-do-consultor-sem-estatuto-provisorio.md`, `docs/RDO/P-0747-CON-T3-o-loop-leva-toda-parada-ao-consultor.md`, `docs/RDO/evidencia/P-0745-PLN-T1.md`, `docs/RDO/evidencia/P-0745-PLN-T2.md`, `docs/RDO/evidencia/P-0745-PLN-T3.md`, `docs/RDO/evidencia/P-0745-PLN-T4.md`, `docs/RDO/evidencia/P-0745-PLN-T4a.md`, `docs/RDO/evidencia/P-0745-PLN-T5.md`, `docs/RDO/evidencia/P-0745-PLN-T5a.md`, `docs/RDO/evidencia/P-0745-PLN-T6.md`, `docs/RDO/evidencia/P-0745-PLN-T7.md`, `docs/RDO/evidencia/P-0745-PLN-T7a.md`, `docs/RDO/evidencia/P-0746-LST-T1.md`, `docs/RDO/evidencia/P-0746-LST-T3.md`, `docs/RDO/evidencia/P-0746-LST-T5.md`, `docs/RDO/evidencia/P-0746-LST-T6.md`, `docs/RDO/evidencia/P-0746-LST-T7.md`, `docs/RDO/evidencia/P-0746-LST-T8.md`, `docs/RDO/evidencia/P-0746-LST-T9.md`, `docs/RDO/evidencia/P-0747-CON-T1.md`, `docs/RDO/evidencia/P-0747-CON-T2.md`, `docs/RDO/evidencia/P-0747-CON-T3.md`, `docs/RDO/evidencia/TK-54-TK-54b.md`, `docs/RDO/evidencia/TK-76-TK-76a.md`, `docs/plans/P-0745-planejador-modelo-operacao.md`, `docs/plans/P-0746-lastro-do-modelo.md`, `docs/plans/P-0747-consultor-de-plano.md`, `docs/plans/_INBOX.md`, `docs/plans/_INBOX_HISTORICO.md`, `docs/plans/_VEREDITO-procedimentos-2026-09-22.md`, `docs/telemetria.tsv`
+- Ato do dono, fora do ciclo de tarefa: `.claude/agents/pantonic-fora-da-caixa.md`
+- Fato: 21 arquivo(s) fora dos alvos e sem atribuição: `.claude/skills/bootstrap-pantonic/SKILL.md`, `.claude/skills/modelo-por-fase/SKILL.md`, `.claude/tools/modelo.py`, `docs/CUSTO_DO_PICKUP.md`, `docs/DIARIO_HISTORICO.md`, `docs/OPERACOES_AS_IS.md`, `docs/OPERACOES_AS_IS_P-0745.md`, `docs/RESIDENCIA_DOUTRINA.md`, `docs/planner-spec.md`, `tests/fixtures/modelo/fluxo-concluido.md`, `tests/fixtures/modelo/fluxo-pendente.md`, `tests/fixtures/modelo/fluxo-valido.md`, `tests/fixtures/modelo/plano-com-lastro.md`, `tests/fixtures/modelo/plano-invalido-2.md`, `tests/fixtures/modelo/plano-invalido.md`, `tests/fixtures/modelo/plano-sem-cabecalho.md`, `tests/fixtures/modelo/plano-sem-estado.md`, `tests/fixtures/modelo/plano-sem-lastro.md`, `tests/fixtures/modelo/plano-terminal-sem-lastro.md`, `tests/test_doutrina_unidade.py`, `tests/test_modelo.py`
+- Veredito mecânico: (aberto — depende de declaração de desvio na entrega, não coletada por este script; ver docs/RUBRICA_DE_REVISAO.md:63-77)
+
+## Trechos de diff dos arquivos-alvo (teto 4000 caracteres)
+
+### `.claude/skills/scrum-master/SKILL.md`
+```
+diff --git a/.claude/skills/scrum-master/SKILL.md b/.claude/skills/scrum-master/SKILL.md
+index 8cd7d64..81429fe 100644
+--- a/.claude/skills/scrum-master/SKILL.md
++++ b/.claude/skills/scrum-master/SKILL.md
+@@ -24,7 +24,7 @@ Três contadores, e só três.
+ Além deles: **plano corrente**, **tarefa corrente** e **fila corrente** (ordem do plano,
+ **reordenada em execução** por `A3a`). Nada mais entra. Fonte normativa:
+ `docs/plans/P-0734-execucao-autonoma.md` `### DP-B` (retentativa/precedência do bloco A);
+-`GOVERNANCA.md` §4.3 e `### DP-Q` (encerramento); `### DP-G` item 3 (reordenação da fila).
++`GOVERNANCA.md` §4.3 e `### DP-Q` (encerramento); `### DP-G` item 3 (reordenação da fila); `docs/plans/P-0747-consultor-de-plano.md` `DCS-3`..`DCS-6` (triagem de toda parada pelo consultor e rota devolvida).
+ 
+ ## Fluxo
+ 
+@@ -151,6 +151,7 @@ Dez passos, nesta ordem.
+ - **Entrada:** `status`, `veredito`, `bloqueante`, `recomendação`, contador de retentativas.
+ - **Ação:** aplicar a tabela do bloco A **em ordem de precedência** — a primeira regra que casa
+   vence.
++- **Triagem:** toda regra que escala ao consultor (`A3a`, `A3b`, `A3c`, `A6a`, `A7`, `B1` e o gate do modelo do passo 9) recebe de volta a linha `rota=<resolve|modelador|planejador>` — e, quando o consultor classificar o impedimento como estratégico, a linha `estrategico=<uma frase>` logo abaixo dela — e despacha por ela: `estrategico=` presente — **PARA** em qualquer rota, e a frase vai ao relatório de encerramento (`G-NOASK`); `rota=resolve` sem `estrategico=` — o reparo já está gravado no plano, e a janela segue; `rota=modelador` — despacha o `pantonic-model-designer` com o dossiê `Ato de modelo` de `emenda` que o consultor devolveu, sem parar a janela: a versão pendente coexiste com a vigente até o marco, onde o pedido de validar ou recusar o drift sobe ao dono (`GOVERNANCA.md` §3.2), e com a recusa o caso volta ao consultor para resolver preservando o modelo; `rota=planejador` — materializa o plano como `blocked`, e a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17): **PARA**.
+ - **Saída:** "segue" (vai ao passo 9) ou "PARA" (vai ao relatório de encerramento). Se a
+   linha de retorno do reviewer trouxer um dossiê `Ato de modelo`, despache o
+   `pantonic-model-designer` com esse dossiê **antes** de seguir ao passo 9: o texto do modelo
+@@ -212,9 +213,7 @@ Dez passos, nesta ordem.
+ 
+ ## Tabelas de roteamento
+ 
+-Forma operacional das regras; fonte normativa em `docs/plans/P-0734-execucao-autonoma.md` —
+-`### DP-A`, `### DP-B` (com `### DP-Q`), `### DP-G` item 4, `### DP-K` §14.4. Divergência entre
+-esta tabela e essas seções resolve a favor da seção.
++Forma operacional das regras; fonte normativa em `docs/plans/P-0734-execucao-autonoma.md` — `### DP-A`, `### DP-B` (com `### DP-Q`), `### DP-G` item 4, `### DP-K` §14.4 — e, para a triagem de toda parada pelo consultor, em `docs/plans/P-0747-consultor-de-plano.md` `DCS-3`..`DCS-6`, que prevalecem sobre o `P-0734` no que dispõem. Divergência entre esta tabela e essas seções resolve a favor da seção.
+ 
+ ### Bloco A — o que fazer com a tarefa
+ 
+@@ -222,12 +221,12 @@ esta tabela e essas seções resolve a favor da seção.
+ |---|---|---|
+ | `A1` | queda do subagente (notificação sem bloco `<usage>`) | uma retomada por `SendMessage` ao mesmo `agentId` com "o que falta"; registra `PARCIAL — trecho pré-queda não medido`. Retomou: segue por `A2`..`A9`. Não retomou: **PARA** |
+ | `A2` | retorno ausente ou inválido (campo faltando, teto de campo estourado, linha fora da gramática) | um reenvio de **formato** ao mesmo executor; **não** consome a retentativa de conteúdo. Inválido de novo: **PARA** |
+-| `A3a` | `status=blocked` com `motivo=dependencia` | reordena a fila para que a bloqueada suceda a que a bloqueia e materializa `blocked` com a razão; **não** despacha o `reviewer`, **não** escreve RDO, **não** consome a retentativa e **não** incrementa o contador de tarefas fechadas: segue para a próx
+```
+[truncado em 4000 caracteres]
+
+## Guardas (bateria de `GOVERNANCA.md` §3)
+- `pytest` (`python -m pytest -q`): exit 0
+- `dead_code` (`python .claude/checks/dead_code.py`): exit 0
+- `ratchet_piso` (`python .claude/checks/ratchet_piso.py`): exit 0
+- `kit_check_validate` (`pwsh .claude/checks/kit_check.ps1 -Mode validate`): exit 0
+- `kit_check_check_drift` (`pwsh .claude/checks/kit_check.ps1 -Mode check-drift`): exit 0
+- `check_readme` (`pwsh .claude/checks/check-readme.ps1`): exit 0
+- Veredito mecânico (`guardas`): conforme
+- Veredito mecânico (`testes`): conforme

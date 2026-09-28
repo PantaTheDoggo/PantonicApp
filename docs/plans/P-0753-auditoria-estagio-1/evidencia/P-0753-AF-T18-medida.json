@@ -1,0 +1,36 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T18",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T16:56:18+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('README.md').read_text(encoding='utf-8');print(t.count('em sete verbos'),t.count('em oito verbos'),t.count('em cinco verbos'),t.count('prevoo.py'),t.count('Quem escreve a linha é o hook'))\"",
+      "exit": 0,
+      "saida": "0 1 1 1 1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "pwsh -NoProfile -File .claude/checks/check-readme.ps1",
+      "exit": 0,
+      "saida": "check-readme: OK - 10 agente(s), 13 skill(s), 20 guardrail(s), versão '0.0.0', 14 seção(ões) com Fonte da verdade válida; frases de contagem de 'Os guardrails' conferidas: 'regras mínimas obrigatórias'=True, 'regras falham como teste executável'=True.",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 43%]\n........................................................................ [ 57%]\n........................................................................ [ 72%]\n........................................................................ [ 86%]\n..................................................................       [100%]\n498 passed in 52.36s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

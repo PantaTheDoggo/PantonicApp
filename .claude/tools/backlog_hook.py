@@ -18,6 +18,18 @@ import sys
 import unicodedata
 from pathlib import Path
 
+
+def _carregar_caminhos():
+    caminho = Path(__file__).resolve().parent / "caminhos.py"
+    spec = importlib.util.spec_from_file_location("caminhos", caminho)
+    modulo = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = modulo
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_caminhos = _carregar_caminhos()
+
 _GATILHO = "proximo passo"
 
 
@@ -49,7 +61,7 @@ def _texto_next(modulo, repo: Path) -> str:
     modelo = modulo.carregar(repo)
     selecao = modulo.selecionar_next(modelo)
     if selecao.exit_code == 0:
-        inbox_planos = repo / "docs" / "plans" / "_INBOX.md"
+        inbox_planos = _caminhos.inbox_planos(repo)
         return modulo.renderizar_next(modelo, selecao, inbox_planos=inbox_planos)
     return selecao.mensagem or ""
 

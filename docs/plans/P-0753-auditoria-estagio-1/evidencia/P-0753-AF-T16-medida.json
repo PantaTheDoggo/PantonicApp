@@ -1,0 +1,36 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T16",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T16:23:32+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import subprocess;r=subprocess.run(['pwsh','-NoProfile','-File','.claude/checks/check-readme.ps1'],capture_output=True);print(r.stdout.decode('utf-8','replace').count(chr(65533))>0)\"",
+      "exit": 0,
+      "saida": "False",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;s='[Console]::OutputEncoding = [Text.Encoding]::UTF8';print(Path('.claude/checks/kit_check.ps1').read_text(encoding='utf-8').count(s),Path('.claude/checks/check-readme.ps1').read_text(encoding='utf-8').count(s))\"",
+      "exit": 0,
+      "saida": "1 1",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 43%]\n........................................................................ [ 58%]\n........................................................................ [ 73%]\n........................................................................ [ 87%]\n............................................................             [100%]\n492 passed in 46.19s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

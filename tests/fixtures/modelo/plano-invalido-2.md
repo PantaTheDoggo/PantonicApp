@@ -8,11 +8,11 @@
 
 ### 1.1 Objetos
 
-| objeto | o que é | propriedades | contrato | origem |
-|---|---|---|---|---|
-| objeto zero | insumo externo usado pelas duas primeiras operações | estado | um registro de entrada | externo |
-| objeto de OP-1 | produto legítimo da primeira operação | estado | um registro validado | OP-1 |
-| objeto de OP-5 | produto legítimo da quinta operação, citado cedo demais | estado | um registro adiantado | OP-5 |
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| objeto zero | insumo externo usado pelas duas primeiras operações | estado | um registro de entrada | externo | lastro sintético da fixture |
+| objeto de OP-1 | produto legítimo da primeira operação | estado | um registro validado | OP-1 | lastro sintético da fixture |
+| objeto de OP-5 | produto legítimo da quinta operação, citado cedo demais | estado | um registro adiantado | OP-5 | lastro sintético da fixture |
 
 ### 1.2 Fluxo de operações
 

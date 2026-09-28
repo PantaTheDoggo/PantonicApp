@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T2",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T11:48:33+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import importlib.util as u;from pathlib import Path;s=u.spec_from_file_location('r',Path('.claude/tools/review_evidence.py'));m=u.module_from_spec(s);s.loader.exec_module(m);print(m._eh_registro_orquestracao('docs/audits/AUDITORIA_X.md'))\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;c=chr(96);t=Path('.claude/tools/review_evidence.py').read_text(encoding='utf-8');print(t.count(c+'docs/RDO/'+c+')'),t.count(c+'docs/RDO/'+c+', '+c+'docs/audits/'+c+')'),t.count('plano, RDO, relatório de auditoria'))\"",
+      "exit": 0,
+      "saida": "0 1 1",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"auditoria\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 61 deselected in 3.14s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".......................................... [ 47%]\n........................................................................ [ 63%]\n........................................................................ [ 78%]\n........................................................................ [ 94%]\n........................                                                 [100%]\n456 passed in 87.61s (0:01:27)",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

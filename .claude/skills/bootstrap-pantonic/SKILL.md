@@ -31,7 +31,7 @@ novo nasce em `contracts/`. O caso de uso de cada plugin vira classe própria (`
 manifesto declarando o nome reconhecido pelo dono.
 
 ### 4. Sprint Plan (`docs/SPRINT_PLAN.md` → diário de obras)
-Organizar o Spec em checklists de tarefas atômicas (skill `diario-de-obras`), ordenados para
+Organizar o Spec em checklists de cards, um por operação do modelo (skill `diario-de-obras`), ordenados para
 entregáveis rapidamente testáveis pelo usuário. Definir os TF-* de cada tarefa. A ordem de
 implementação do core segue ARQUITETURA_PANTONICA §14:
 
@@ -42,7 +42,7 @@ serviços de expressão → 4. superfície de entrada mínima → 5. PluginRegis
 ### 5. Estrutura inicial do repositório
 ```
 docs/            PRD, ARCHITECTURE, SPEC, DIARIO_DE_OBRAS, AS-IS (baseline), LICOES_APRENDIDAS
-docs/plans/      P-NNNN-<slug>.md (planos completos) + _INBOX.md (append-only, drenado
+docs/plans/      P-<n>-<slug>/ (uma pasta por plano, P-0 primeiro) + _INBOX.md (append-only, drenado
                  para o diário pela skill diario-de-obras) — destino de planos de agentes
                  paralelos, nunca escritos direto no diário (GOVERNANCA §4.2)
 infracore/  contracts/src/contracts/  services/
@@ -57,6 +57,6 @@ CLAUDE.md        ≤ 200 linhas, só regras que mudam comportamento
 
 - Os 4 artefatos existem, com rastreabilidade PRD → Architecture → Spec → Sprint Plan.
 - Diário de obras criado com o primeiro sprint em `ready`, diretiva de priorização vazia.
-- `docs/plans/_INBOX.md` criado vazio.
+- `docs/plans/_INBOX.md` criado com uma linha só: `**Próximo id de plano: P-0.**`.
 - Docs separados ATIVO × HISTÓRICO; DOC_MAP planejado para quando um doc passar de 500 linhas.
 - Kit agêntico copiado e ajustado (fatos estáveis apontando para os paths do projeto).

@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T8a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T15:18:57+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;print(Path('docs/RUBRICA_DE_REVISAO.md').read_text(encoding='utf-8').count('ARMADILHAS_DE_FERRAMENTA'))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;l=Path('docs/RUBRICA_DE_REVISAO.md').read_text(encoding='utf-8').splitlines();print([x.startswith('> Fonte da verdade') for x in l if 'ARMADILHAS_DE_FERRAMENTA' in x]==[True])\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    }
+  ]
+}

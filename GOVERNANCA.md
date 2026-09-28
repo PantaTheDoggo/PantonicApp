@@ -75,9 +75,9 @@ de regressão, contexto limpo e validação por sprint (§4.5) existem por isso 
 processo, não inspeções do resultado. A **rota** vem em segundo: decidida no planejamento e mantida
 fiel na execução (§7 itens 9 e 12), porque processo bom com rota errada entrega, com esmero, o
 produto errado. O **custo** é o terceiro: **restrição de projeto**, não razão de ser. Modelo por
-fase, orçamento de turnos e economia de contexto tornam a qualidade **sustentável** — nunca a
-compram mais barata. Quando os três colidem, a ordem decide: nenhuma economia justifica abrir mão
-de um guardrail, e nenhuma rota se muda para caber no orçamento.
+fase, dimensionamento pela operação do modelo e economia de contexto tornam a qualidade
+**sustentável** — nunca a compram mais barata. Quando os três colidem, a ordem decide: nenhuma
+economia justifica abrir mão de um guardrail, e nenhuma rota se muda para caber no custo.
 
 **Matriz de responsabilidades — lugar canônico.** Quem responde pelo quê num projeto Pantonic* é
 declarado **aqui e só aqui**; qualquer outra seção deste documento, agente ou skill **aponta** para
@@ -88,25 +88,18 @@ adequado ao seu custo — a coluna *Modelo* é a tabela vinculante do **modelo p
 | Papel | Modelo | Responde por | Não faz |
 |---|---|---|---|
 | **Dono / gerente** | humano | Última instância e **fonte da doutrina de produto**: decide o quê e o porquê, ratifica decisões (`DR-`/`DP-`), valida cada sprint (§4.5), aceita release, autoriza saída do piso de regressão (§4.4) e comando destrutivo (§7 item 13) | Não desempata, no meio de uma execução, o que o plano deveria ter decidido — a pergunta que chega até ele em execução é sintoma de plano não-pronto (§7 itens 11 e 12) |
-| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição em checklists de **tarefas atômicas fechadas** (G-PLANREADY, §7 item 11), cada uma com objetivo, arquivos-alvo, verificação e critério de pronto; **o dimensionamento de cada tarefa** sob a *Diretriz de dimensionamento de tarefa* desta seção — coesão, autossuficiência em contexto e ocupação estimada, exercidas no recorte, não publicadas no card; **a revisão de plano, com exclusividade** — indício de que o plano precisa mudar chega aqui e só aqui, e o planejador decide por si o que for **técnico ou tático**, escalando ao dono o que for **estratégico ou alterar escopo**; **a revisão do README ao encerrar cada sprint** — tarefa nomeada do próprio plano, com o guarda executável como instrumento e o veredito do dono como aceite (G-README dever 2, §7 item 14); sprint planejada sem essa tarefa é plano incompleto; **o risco de interrupção de cada card** — plano em que um executor frio pararia por dúvida sem contingência fechada não se libera (G-NOASK, §7 item 18); **o dossiê de ato de modelo** (§3.2): o planejador não escreve a seção do modelo — devolve o dossiê de autoria junto com o plano gravado, e o de emenda em rodada de replanejamento | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
-| **Orquestração** | Melhor custo-benefício (Sonnet); o loop roda no contexto principal, onde o dono interrompe sem derrubar a sessão, e **para para pedir `/model`** quando a fase exige outro modelo | Conduzir um plano do começo ao fim: despachar cada tarefa ao papel competente com o dossiê fechado, rotear a linha de retorno do executor e o laudo do `reviewer` (aprovado segue, reprovado volta ao mesmo escopo, escalado sobe ao dono), registrar a telemetria medida e arquivar o resultado; roda `modelo.py check` antes de despachar e antes de fechar cada tarefa, abre o relatório e cada marco com `modelo.py show` e **despacha o modelador** ao receber um dossiê de ato de modelo (§3.2) | Não implementa, não julga a entrega — o veredito é da revisão — e não decide arquitetura: obstáculo à rota e dossiê não fechado sobem ao **planejamento** (G-REPLAN e G-NOASK, §7 itens 17 e 18), nunca viram improviso do loop nem pergunta ao dono no meio da janela — ao dono chega, no relatório de encerramento, só o que o planejador classificar como estratégico. **Não revisa plano** — roteia a escalada ao planejamento, não replaneja |
-| **Execução** | Melhor custo-benefício (Sonnet) | **Executar a tarefa — responsabilidade única**: implementar **uma** tarefa do checklist por vez, em contexto limpo, sob TDD (§4.4), entregando-a **tecnicamente correta** — testes da área tocada, conformance e piso de regressão verdes — e **sinalizando** o resultado (`review`, ou `blocked` com razão tipada) | Não decide, não pergunta ao dono, **não fica com dúvida** — dúvida é sinal de parada, não objeto de deliberação —, não replaneja escopo e não substitui a rota aprovada (G-EXECREADY, G-PLANFIDELITY e G-NOASK, §7 itens 12, 9 e 18): plano não-pronto, obstáculo à rota ou dúvida → para, registra o fato, sinaliza `blocked` e encerra; a escalada é ao planejamento, nunca direta ao dono. **Não se ocupa de teto nem de orçamento** — nem de turnos, nem de contexto: estouro se registra no corpo da tarefa como insumo do planejador, nunca vira decisão sua. **Não revisa plano.** Não escreve no diário de obras, não registra o resultado da própria entrega e não afere a própria aceitação — o veredito é da revisão |
+| **Planejamento** | O mais poderoso disponível (Opus; Fable só sob solicitação explícita do dono) | PRD, arquitetura, specs, decisões de rota e decomposição do modelo em **cards fechados, um por operação** (G-PLANREADY, §7 item 11; §3.2), cada um com objetivo copiado da operação, arquivos-alvo, verificação e critério de pronto derivado do estado final das propriedades que a operação altera; **o dimensionamento de cada tarefa** sob a *Diretriz de dimensionamento de tarefa* desta seção — uma operação inteira, coesão e autossuficiência em contexto, exercidas no recorte, não publicadas no card; **a revisão de plano na rota `planejador` da triagem** — indício de que o plano precisa mudar chega primeiro ao consultor (linha *Consultoria*) e aqui só quando a triagem devolve a rota `planejador`: emenda aceita do modelo que cria ou remove operação, ou premissa caída por inteiro; o planejador decide por si o que for **técnico ou tático**, escalando ao dono o que for **estratégico ou alterar escopo**; **a revisão do README ao encerrar cada sprint** — tarefa nomeada do próprio plano, com o guarda executável como instrumento e o veredito do dono como aceite (G-README dever 2, §7 item 14); sprint planejada sem essa tarefa é plano incompleto; **o risco de interrupção de cada card** — plano em que um executor frio pararia por dúvida sem contingência fechada não se libera (G-NOASK, §7 item 18); **o dossiê de ato de modelo** (§3.2): o planejador não escreve a seção do modelo — grava o esqueleto do plano sem a §1 e sem os cards, devolve o dossiê de autoria e só decompõe depois de a seção existir (Fase 3a e 3b do protocolo dele); em rodada de replanejamento devolve o de emenda. A lista `tarefas:` de cada operação é lastro, não modelo, e é ele quem a mantém depois da autoria, ao lado do consultor, que apensa o id do card corretivo `T<n>a` da mesma operação | Não executa: não implementa, não fecha tarefa, não transforma dúvida própria em pergunta ao executor |
+| **Consultoria** | O mais poderoso disponível (Opus) | **A triagem de toda parada de executor** — `blocked` com motivo `premissa`, `dependencia` ou `ferramenta` — e de todo laudo com pendência substantiva: avalia o motivo, que é evidência e não rota, e devolve ao loop **uma** rota entre `resolve`, `modelador` e `planejador` (`pantonic-consultant`). Na rota `resolve` fecha sozinho o técnico e o tático — reescreve card, reordena fila, repara instrumento, toma decisão nova com id, autora o card corretivo `T<n>a` da mesma operação e apensa o id à lista `tarefas:` dela —, sem validação do dono. Na rota `modelador`, quando a resolução altera objeto, operação ou estado final da `## 1`, devolve o dossiê `Ato de modelo` de `emenda` junto com o reparo, e o loop despacha o modelador sem parar a janela: a versão pendente coexiste com a vigente até o marco, onde o pedido de validar ou recusar o drift sobe ao dono (§3.2). Na rota `planejador`, quando emenda aceita cria ou remove operação ou a premissa caiu por inteiro. No marco, valida a versão pendente do modelo antes do dono (§3.2). Apensa uma linha por acionamento a `docs/ACIONAMENTOS_CONSULTOR.tsv`; causa raiz pelo vocabulário da §3.3 | Não reabre o objetivo do plano, não escreve a `## 1` de plano nenhum, não implementa a entrega do card, não julga entrega, não commita e não fala com o dono — ao dono sobe só, no marco, o pedido de validar o drift do modelo; não é acionado por outro agente — recebe despacho de quem conduz a sessão |
+| **Orquestração** | Melhor custo-benefício (Sonnet); o loop roda no contexto principal, onde o dono interrompe sem derrubar a sessão, e **nunca para para rebaixar o modelo**, porque só orquestra e o modelo de cada tarefa viaja no despacho; para para pedir `/model` só quando o modelo ativo está abaixo do que a fase exige | Conduzir um plano do começo ao fim: despachar cada tarefa ao papel competente com o dossiê fechado, rotear a linha de retorno do executor e o laudo do `reviewer` (aprovado segue, reprovado volta ao mesmo escopo, escalado vai à triagem do consultor), registrar a telemetria medida e arquivar o resultado; roda `modelo.py check` antes de despachar e antes de fechar cada tarefa, abre o relatório e cada marco com `modelo.py show` e **despacha o modelador** ao receber um dossiê de ato de modelo (§3.2) | Não implementa, não julga a entrega — o veredito é da revisão — e não decide arquitetura: parada de executor e laudo com pendência substantiva vão à **triagem do consultor**, e dossiê não fechado volta ao **planejamento** (G-REPLAN e G-NOASK, §7 itens 17 e 18); o loop despacha a rota que o consultor devolve, e nada disso vira improviso do loop nem pergunta ao dono no meio da janela — ao dono chega só, no marco, o pedido de validar o drift do modelo e, no relatório de encerramento, o que for estratégico. **Não revisa plano** — roteia a parada à triagem, não replaneja |
+| **Execução** | Melhor custo-benefício (Sonnet) | **Executar a tarefa — responsabilidade única**: implementar **uma** tarefa do checklist por vez, em contexto limpo, sob TDD (§4.4), entregando-a **tecnicamente correta** — testes da área tocada, conformance e piso de regressão verdes — e **sinalizando** o resultado (`review`, ou `blocked` com razão tipada) | Não decide, não pergunta ao dono, **não fica com dúvida** — dúvida é sinal de parada, não objeto de deliberação —, não replaneja escopo e não substitui a rota aprovada (G-EXECREADY, G-PLANFIDELITY e G-NOASK, §7 itens 12, 9 e 18): plano não-pronto, obstáculo à rota ou dúvida → para, registra o fato, sinaliza `blocked` e encerra; a parada vai à triagem do consultor, nunca direta ao dono. **Não se ocupa de teto nem de orçamento** — nem de turnos, nem de contexto: estouro se registra no corpo da tarefa como insumo do planejador, nunca vira decisão sua. **Não revisa plano.** Não escreve no diário de obras, não registra o resultado da própria entrega e não afere a própria aceitação — o veredito é da revisão |
 | **Revisão** | O mais poderoso disponível (Opus) — as dimensões de maior peso do laudo são juízo puro, e reviewer no mesmo modelo de quem executou tende a ratificar; é o único gate entre a entrega e o `done` sem round-trip humano | Julgar a entrega de **uma** tarefa contra o dossiê dela e emitir o laudo, em contexto próprio e com a escrita restrita ao caminho do laudo — independência imposta pela lista de ferramentas. Onde a camada mecânica (guardas, conformance, piso, escopo) mediu vermelho, o laudo acompanha a medição; **não escreve no modelo de domínio** do plano (§3.2) — divergência entre a entrega e o texto de uma operação vira achado de alvo `modelo`, e a escrita é do modelador | Não corrige o que aponta, não replaneja e não fecha tarefa: o laudo é o veredito, e o encaminhamento do que ele aponta é da orquestração |
-| **Modelagem** | O mais poderoso disponível (Opus) — escrever o modelo de domínio de um plano é julgamento de domínio, e a consistência entre planos é o que um agente único compra | **Todo** ato sobre o modelo de domínio do plano (§3.2): escrever a seção na autoria, emendá-la quando uma decisão muda o que o plano entrega, resolver conflito entre o texto e a entrega e explicar o contexto do modelo a quem pergunta; devolve a seção literal e a linha do registro de versões que registra o ato (`pantonic-model-designer`) | Não planeja, não executa, não julga entrega e não escreve nenhuma outra linha do plano; não é acionado por outro agente — recebe despacho de quem conduz a sessão |
-| **Coleta** | O mais barato (Haiku ou equivalente) | Search, grep, leitura de codebase/documentos/prompts; filtra e devolve só o pertinente para o contexto dos agentes mais caros | Não edita, não conclui tarefa, não emite juízo sobre o que coletou |
+| **Modelagem** | O mais poderoso disponível (Opus) — escrever o modelo de domínio de um plano é julgamento de domínio, e a consistência entre planos é o que um agente único compra | **Todo** ato sobre o modelo de domínio do plano (§3.2): escrever a seção na autoria, emendá-la quando uma decisão muda o que o plano entrega, resolver conflito entre o texto e a entrega e explicar o contexto do modelo a quem pergunta; devolve o ponteiro da seção, a linha do registro de versões que registra o ato, a saída do `check` e os achados fora da seção (`pantonic-model-designer`) | Não planeja, não executa, não julga entrega e não escreve nenhuma outra linha do plano; não é acionado por outro agente — recebe despacho de quem conduz a sessão |
+| **Coleta** | O mais poderoso disponível (Opus) — a coleta alimenta toda decisão seguinte, e erro de contagem ou de escopo nela passa em silêncio | Search, grep, leitura de codebase/documentos/prompts e comando de consulta que a pergunta traz pronto; filtra e devolve só o pertinente, protegendo o contexto de quem pediu. Read de âncora já conhecida ou Grep de string exata, quem precisa do dado faz direto | Não edita, não conclui tarefa, não emite juízo sobre o que coletou; não roda comando que escreva na árvore |
 | **Auditoria** | Melhor custo-benefício (Sonnet) | Medir aderência **sem alterar código**, em duas frentes permanentes: **clean architecture + DDD** (`pantonic-auditor-arch`) e **clean code** (`pantonic-auditor-cleancode`) | Não corrige o que aponta — cada apontamento vira item no diário de obras, priorizado pelo dono |
 | **Redesenho** | O mais poderoso disponível (Opus) — separar complexidade acidental de essencial é juízo puro | Varrer a codebase pelo sweep mecânico, identificar procedimentos que ficaram complexos por acúmulo de correções e extensões e propor o redesenho **"do zero, hoje"** dentro das quatro camadas, cada proposta com o que **elimina** e o que **preserva**, riscos, os `TR-*` que protegem e a migração em passos atômicos, no relatório próprio (`pantonic-fora-da-caixa`) | Não implementa o que propõe e não altera código; não redesenha POC validada (`plugins/*/adhoc/`) e não sai das camadas — alvo cuja complexidade é **essencial** é declarado como tal em vez de virar proposta |
 | **Benchmarking** | O mais barato (Haiku ou equivalente) | Descrever **um** repositório público já confirmado no esquema fixo de 16 dimensões (`D1..D16`), toda afirmação ancorada na URL exata do arquivo de onde saiu ou marcada `NÃO ENCONTRADO`, no relatório próprio (`pantonic-benchmarker`) | Não julga o PantonicApp e não escreve prosa de recomendação — a comparação é de outro estágio; não responde de memória de treino, não trata dois repositórios no mesmo contexto e não altera nenhum outro arquivo do repositório |
 
-**Escada de revisão de plano.** Quem **suspeita** de que o plano precisa mudar é quem esbarra no
-indício — quase sempre a execução, eventualmente a revisão ou a orquestração. Quem suspeita **não
-revisa plano**: marca a tarefa como `blocked` com a razão tipada `premissa`, registra o indício
-no corpo da tarefa e encerra. Quem **recebe** é o **planejador**, e só ele. Ele decide por si o que for
-**técnico** (rota, decomposição, dimensionamento, arquivos-alvo, ordem das tarefas) e o que for
-**tático** (fatiar, fundir, adiar ou reordenar tarefas dentro do plano vigente). Sobe ao **dono** o
-que for **estratégico** — mudar o objetivo, a prioridade ou a doutrina — ou o que **altere o
-escopo** acordado do plano. A orquestração roteia essa escalada; não a resolve. A forma da rodada que o planejador conduz —
-entrada, saída e posição na fila — é o `G-REPLAN` (§7 item 17).
+**Escada de revisão de plano.** Quem **suspeita** de que o plano precisa mudar é quem esbarra no indício — quase sempre a execução, eventualmente a revisão ou a orquestração. Quem suspeita **não revisa plano**: marca a tarefa como `blocked` com a razão tipada, registra o indício no corpo da tarefa e encerra. Quem **recebe** é o **consultor**, ponto de triagem de toda parada de executor (linha *Consultoria*). Ele decide por si o que for **técnico** (rota, decomposição, dimensionamento, arquivos-alvo, ordem das tarefas) e o que for **tático** (fatiar, fundir, adiar ou reordenar tarefas dentro do plano vigente), sem validação do dono. Havendo **drift** do modelo, devolve o dossiê de emenda com o reparo, e o pedido de validar ou recusar o drift sobe ao **dono** no marco (§3.2), sem parar a janela. Vai ao **planejador** só quando emenda aceita cria ou remove operação ou quando a premissa cai por inteiro. Sobe ao **dono** também o que for **estratégico** — mudar o objetivo, a prioridade ou a doutrina — ou o que **altere o escopo** acordado do plano. A orquestração roteia a parada à triagem e despacha a rota devolvida; não a resolve. A forma da rodada que o planejador conduz na rota `planejador` — entrada, saída e posição na fila — é o `G-REPLAN` (§7 item 17).
 
 Regras de operação:
 
@@ -125,7 +118,10 @@ Regras de operação:
 - **Gatilho operacional do modelo por fase:** a regra acima é vinculante, mas precisa de gatilho —
   a skill `modelo-por-fase` **do kit versionado** (`.claude/skills/modelo-por-fase/`; `DM-7`,
   2026-07-30, rebaseia `DP-G3` — skill que só existisse em `~/.claude` não viajaria no subtree)
-  detecta a fase da tarefa e o modelo ativo, **para** e pede o `/model` correto ao dono (fato
+  detecta a fase da tarefa e o modelo ativo e, só quando o ativo está **abaixo** do que a fase
+  exige, **para** e pede ao dono o `/model` do modelo melhor — acima do exigido segue e anota a
+  divergência em uma linha, porque o contexto principal só orquestra e o modelo de cada tarefa
+  viaja no despacho (linha *Orquestração* acima); o gate **nunca para para rebaixar o modelo** (fato
   técnico medido: um agente não troca o próprio modelo — só o dono, via `/model`, ou o harness,
   via hook global). A **regra** mora aqui, versionada (§3.1); a skill é o gatilho e o **hook** é o
   enforcement, canônico no kit e projetado no ponto de carga que o harness lê — nenhum dos dois é
@@ -134,15 +130,25 @@ Regras de operação:
   o consumo total.** O subagente parte frio e paga de novo CLAUDE.md + definição do agente +
   skills carregadas em todos os seus turnos. Tarefa pequena (< ~15 turnos estimados) prefere
   execução inline a abrir um subagente.
-- **A unidade de trabalho é o módulo coeso.** O card despachado cobre uma **disciplina fechada** —
-  um tema, com os seus verbos, os seus testes e a sua verificação ponta a ponta no mesmo despacho —,
+- **Rodada de replanejamento abre instância fria do planejador**, sem retomá-lo por mensagem: a
+  retomada relê, a cada mensagem, o contexto carregado das rodadas anteriores, e no corpus medido
+  esse custo somou mais que a partida da instância fria, mesmo supondo que ela recrie todo o
+  contexto carregado (`docs/CUSTO_DO_PICKUP.md`, seção *Retomada do planejador por mensagem*).
+- **A unidade de trabalho é o módulo coeso, e módulo coeso é a
+  materialização de uma operação do modelo** (§3.2). O card despachado cobre uma **disciplina
+  fechada** — um tema, com os seus verbos, os seus testes e a sua verificação ponta a ponta no
+  mesmo despacho —,
   e não um fragmento do tema partido para caber num contexto. Três consequências, e valem juntas:
   **(i) coesão é critério de aceite, não só de recorte** — divergência interna do módulo (forma de
   mensagem, contrato de erro, exit code) é defeito da entrega ainda que cada parte passe no seu
   próprio teste, e a revisão exercita o módulo ponta a ponta, não só as partes; **(ii) o que não é
   do tema continua fora** — módulo coeso é o oposto de tarefa grande: informação transversal,
   matéria alheia ao tema ou "aproveitando que estou aqui" seguem proibidas, e card que as exija é
-  card defeituoso (G-EXECREADY, §7 item 12); **(iii) divide-se por tema, nunca por volume** — o teto
+  card defeituoso (G-EXECREADY, §7 item 12); **(iii) divide-se por tema, nunca por volume — e o tema
+  é a operação:** um card por operação na autoria, card corretivo de replanejamento somado à
+  operação que repara, e nunca uma operação partida em dois cards, porque operação que não cabe
+  num card coeso é defeito do modelo (operação com propriedade embutida, §3.2) e volta ao
+  modelador; o teto
   de regiões editadas do gate de delegação deixa de valer como limite de volume e passa a valer como
   limite de **tema**: divide-se quando o card cruza dois assuntos, nunca quando cruza muitas regiões
   do mesmo assunto, e a contagem de regiões volta a ser o que sempre foi, medida informativa de quem
@@ -161,58 +167,35 @@ Regras de operação:
   - **Bullet de `Status`:** `- **Status:**` seguido do estado **entre crases**, obrigatório e em
     minúsculas; `· AAAA-MM-DD` e a razão são **opcionais**; tudo que vier depois de ` — ` é **cauda
     em prosa**, lida e preservada, nunca interpretada. A escrita pelo instrumento reescreve só o
-    prefixo de máquina — estado, data e razão — e preserva a cauda.
+    prefixo de máquina — estado, data e razão — e preserva a cauda. Tarefa de plano em pasta não tem este bullet: o estado dela é a linha dela em `estado.tsv`.
 - **Diretriz de dimensionamento de tarefa (do planejador).** Quem planeja delimita o escopo de
-  cada tarefa, e a delimita para satisfazer três critérios: **(a)** caber num contexto
-  **coerente e coeso**; **(b)** ser **autossuficiente em contexto para a execução** — o dossiê
-  entrega tudo de que a execução precisa, sem leitura ad hoc no meio dela; **(c)** respeitar uma
-  estimativa de **50% de ocupação da janela, com tolerância até 60%**. O número não é arbitrário
-  nem constante mágica: vem da literatura sobre **decaimento de desempenho de agentes em função do
-  enchimento do contexto**, e **é revisável** — cai, e esta diretriz se reescreve, se a literatura
-  indicar outro valor. A diretriz é de quem dimensiona e só dele: quem executa não se ocupa de
-  teto, de orçamento nem de ocupação — a responsabilidade do executor é executar a tarefa.
-  Capacidade **nunca interrompe tarefa em curso** (§4.3); estouro de teto, de orçamento ou de
-  contexto é **registrado no corpo da tarefa** e vira insumo para revisão do plano e para eventual
-  reexecução da tarefa, havendo suspeita de degradação acentuada por enchimento de contexto.
-- **Orçamento de turnos por tarefa atômica — régua interna de quem dimensiona, nunca gate.**
-  Subordinado à diretriz acima e endereçado ao **planejador**: os números abaixo dimensionam a
-  tarefa antes de ela ser delegada e alimentam a série medida; **não recusam entrega, não roteiam
-  e não encerram tarefa nem janela**. Esta tabela é a **única** residência de número de teto —
-  nenhum dossiê de tarefa carrega teto. O teto único de
-  ~≤40 tool uses tratava tarefas de naturezas diferentes como se custassem o mesmo. Cada classe tem
-  número próprio, calibrado pela série medida das linhas `Consumo:` deste repositório (26 registros
-  em 2026-08-01), nunca por estimativa:
-
-  | Classe de tarefa | Teto | Como reconhecer |
-  |---|---|---|
-  | Mecânica / pontual | **≤15** | 1 write-cluster, arquivo(s) já conhecido(s), sem contrato novo |
-  | Implementação padrão | **≤40** | vários write-clusters numa camada; contrato novo mas verificação direta |
-  | Comportamental multi-camada | **≤60**, com **partição por ramo**: ramo que não cabe no número vira outra tarefa | muda contrato ou fluxo; ciclo editar-rodar-depurar (sync→async, timing de teste) |
-  | Investigação / mapeamento | **sem default** — o teto é régua interna de quem dimensiona; o dossiê prescreve o **método de sondagem** | o entregável é descoberta, não mudança de código |
-  | Redação de doutrina / planejamento | **≤30** | edita `GOVERNANCA.md`/plano/skill; o custo é decisão, não build |
-  | Rodada de replanejamento | **≤50** | fechar a decisão e reescrever os dossiês que ela invalida, no mesmo contexto |
-
-  A **classe é escolhida antes de delegar** e fica registrada. Cruzar o número da classe é
-  **alarme para quem dimensiona, nunca bloqueio**: nenhuma entrega para, é recusada ou fica
-  incompleta por ter cruzado o número, e nenhum ramo de roteamento se abre por causa dele — quem
-  executa sequer se ocupa dele. Escolher classe mais generosa **depois** de cruzar o número é
-  falsificação da série: vale a classe registrada antes da delegação.
-
-  O **≤30** da última classe é correção da série sobre a estimativa inicial de ≤25: das 7 tarefas de
-  redação já medidas, 5 estouravam ≤25 e só 2 estouram ≤30. Quando série medida e estimativa
-  divergem, manda a série.
-
-  **Rodada de replanejamento** — o caso em que fechar a decisão e reescrever os dossiês que ela
-  invalida acontecem no mesmo contexto — tem linha própria na tabela. A série medida
-  dessas rodadas (19, 21, 39, 43 e 48 tool uses) não cabe em ≤30, e três das cinco o cruzam;
-  parti-la entre contextos obrigaria a repagar a leitura da decisão em cada fatia, que é justamente
-  o custo que a divisão existe para evitar. O **≤30** continua valendo para redação ou planejamento
-  de entregável único. **Custo e consumo são informativos e não têm valor em isolamento** — só
-  rendem insight analisados em conjunto, na série medida —, e por isso o controle real não é o
-  número: é dividir antes de delegar. O registro **qualitativo** por tarefa — o que o número
-  sozinho não diz — reside no card **"Lições aprendidas na tarefa"** do laudo de revisão, e é
-  preenchido quando houver o que observar; sem observação, o número isolado daquela tarefa se
-  desconsidera.
+  cada tarefa, e a delimita para satisfazer três critérios: **(a)** materializar **uma operação
+  inteira do modelo** (§3.2) — os objetos de que a operação precisa e as propriedades que ela
+  altera são a fronteira do card, e o estado final dessas propriedades é o aceite dele;
+  **(b)** caber num contexto **coerente e coeso** — o que não pertence à operação fica fora, e
+  operação que não cabe num card coeso é defeito do modelo (operação com propriedade embutida),
+  que volta ao modelador por dossiê, nunca partição do planejador; **(c)** ser
+  **autossuficiente em contexto para a execução** — o dossiê entrega tudo de que a execução
+  precisa, sem leitura ad hoc no meio dela. **Nenhum percentual de ocupação e nenhum número de
+  turnos entram no dimensionamento:** a janela de 1M tokens deixou de limitar a granularidade
+  (medido em 2026-09-18, `docs/CUSTO_DO_PICKUP.md` `## 13`) e o critério de admissão de matéria
+  num card é coesão, não custo (diretiva do dono de 2026-09-19, `DM-30` do `P-0740`; aposentado
+  o percentual em 2026-09-21, `DPN-3` do `P-0745`). O único número de ocupação que permanece
+  governa a **janela de orquestração** (§4.3), nunca a tarefa. A diretriz é de quem dimensiona e
+  só dele: quem executa não se ocupa de teto, de orçamento nem de ocupação — a responsabilidade
+  do executor é executar a tarefa. Capacidade **nunca interrompe tarefa em curso** (§4.3);
+  estouro de contexto numa tarefa é **registrado no corpo da tarefa** e vira insumo para revisão
+  do modelo — sinal de operação mal recortada, não de card grande.
+- **Classe do card — natureza, não teto.** A classe do cabeçalho
+  (`mecanica|implementacao|comportamental|investigacao|redacao`, *Gramática do card* abaixo)
+  declara a natureza do trabalho e calibra a profundidade de quem executa; **nenhum número de
+  teto de turnos acompanha a classe**. A tabela de tetos por classe, calibrada em 2026-08-01
+  sobre o recorte atômico numa janela de 200k, foi aposentada em 2026-09-21 junto com esse
+  recorte (`docs/plans/P-0745-planejador-modelo-operacao.md`, `DPN-3`). O consumo continua
+  medido em `docs/telemetria.tsv`, por tarefa, e se lê **em conjunto, na série**, nunca como
+  aceite de uma entrega; o registro **qualitativo** — o que o número sozinho não diz — reside
+  no card "Lições aprendidas na tarefa" do laudo de revisão. A classe é escolhida antes de
+  delegar e fica registrada; trocá-la depois da entrega é falsificação da série.
 - **Decisão que escolhe mecanismo de plataforma exige sonda de viabilidade junto da
   recomendação, não só depois.** Medido na iniciativa do hub único de governança (`P-0721`/
   `P-0725`, 2026-07): três premissas caíram por sondagem curta demais antes de escolher o
@@ -231,10 +214,11 @@ Regras de operação:
 - **Disciplina de coleta** — `git status --short`/`git log --oneline` no lugar dos completos;
   listagem de diretório nunca recursiva sem excluir `build/`, `.venv/`, `node_modules/`; arquivo
   > 500 linhas via Grep + Read com `offset`/`limit`, nunca leitura integral; comando verboso
-  não-teste redireciona a saída para arquivo e lê só o fim.
+  não-teste redireciona a saída para arquivo e lê só o fim; armadilhas de ferramenta medidas:
+  `docs/ARMADILHAS_DE_FERRAMENTA.md` — consultar antes de escrever linha de Verificação.
 - **Batching de chamadas independentes** — leituras/greps sem dependência entre si vão na mesma
   mensagem; N leituras em 1 turno custam 1 reenvio de contexto, em N turnos custam N reenvios.
-- **Disciplina de instrumento** — cinco regras de método, medidas na janela de 2026-09-16
+- **Disciplina de instrumento** — oito regras de método, as cinco primeiras medidas na janela de 2026-09-16
   (`docs/plans/_CARD-revisao-critica-pickup-opus.md`, achados 2-4: seis turnos perdidos). **(a)**
   `--help` antes do primeiro uso de um instrumento do kit numa janela — flag chutada custa um turno
   de correção. **(b)** Sonda que escreve (laudo, RDO, linha de série) aponta o destino para o
@@ -245,6 +229,12 @@ Regras de operação:
   `grep` sem match sai 1 e derruba a checagem seguinte, que então custa outra chamada. **(e)**
   Instrumento antes de protocolo — rodar o instrumento primeiro e ler o protocolo de quem o consome
   só se ele produzir; protocolo lido antes de evidência que não veio é leitura paga sem uso.
+  **(f)** Medida publicada nomeia o objeto medido — registro, texto renderizado e texto-fonte do
+  mesmo artefato têm comprimentos diferentes, e o rótulo errado sobrevive à recontagem. **(g)**
+  Contagem publicada traz a regra de enumeração do corpus — o que conta e o que se descarta —,
+  sem a qual o `n` não se reconcilia por quem refaz a medida. **(h)** Efeito publicado vem com a
+  dispersão do controle pareado — sessão gêmea, mesmo dia, mesma árvore —, e efeito dentro da
+  faixa do controle não é efeito.
 
 ### 3.1 Residência e precedência da doutrina
 
@@ -335,7 +325,11 @@ objetos precisa e que propriedades altera; o **estado inicial e o estado final**
 plano entrega, **em que estágio está** e o que mudou desde a última leitura. Por isso o texto de
 uma operação não carrega crase, barra, caminho de arquivo, sigla nem identificador técnico — o
 instrumento recusa crase e barra (`V12`); o resto é dever de autoria. Máximo de 40 operações por
-plano.
+plano. O mesmo vale para as células descritivas das três tabelas — objetos, estados e o contrato de
+cada objeto: são escritas **human-friendly**, em frases curtas e ilustrativas do conteúdo real, e a
+especificidade que o executor precisa (residências, arquivos, exclusões, comandos) mora nas seções
+do plano escritas para a máquina — fatos, decisões e os campos do card (`TK-76`, ato do dono de
+2026-09-23). A aferição é do marco, não do instrumento.
 
 **Estágio, não status.** O andamento é **derivado e nunca gravado**. Uma operação está `concluída`
 quando todas as tarefas que a materializam estão `done` ou `cancelled`; está `em curso` quando
@@ -351,6 +345,61 @@ propriedade. Operação não possui propriedade** — operação é o que **alte
 objeto. Propriedade que aparece numa operação é sinal de operação mal recortada, e a operação
 **decompõe-se em um objeto mais uma operação nova**. É assim que objetos e operações se descobrem:
 identificam-se as propriedades, e deles caem por decomposição — não por intuição.
+**Uma operação, uma oração.** Operação escrita com mais de uma oração — cada uma com o seu verbo
+e o seu lastro — é operação mal recortada: cada oração vira operação própria, com a sua
+propriedade e o seu card. A guarda é o Marco 1, que lê operação a operação contra a `## 0`;
+nenhuma validação a apanha, porque a conjunção também aparece dentro de uma oração só.
+
+**Lastro no enunciado, e as duas vias de leitura.** Todo objeto, toda operação e toda propriedade do
+modelo tem **lastro declarado**: uma âncora num trecho do enunciado do problema
+(`## 0. O problema, verbatim`) ou do prompt que originou o plano. Elemento sem esse lastro **não
+entra no modelo** — o modelo descreve o que foi pedido, não o que o modelador imaginou. O enunciado pode ser composto — uma frase do dono mais atos dele registrados em datas diferentes, transcritos na `## 0`, cada ato com a data e o ponteiro ao registro —, e o lastro vale igual para cada parte. E o
+enunciado alimenta o modelo por **duas vias declaradas**: a **via de estado**, o trecho que descreve
+como as coisas estão ou como deverão estar, que popula `### 1.3 Estado inicial e estado final`; e a
+**via de operação**, o trecho que pede ação, que é o que o plano faz diante do vão entre os dois
+estados e popula `### 1.2 Fluxo de operações`. Ler o enunciado pelas duas vias é o que separa o
+estado do plano do trabalho do plano: trecho lido pela via errada produz operação sem lastro, ou
+estado final sem operação que o alcance.
+
+**A decomposição do enunciado: objeto e propriedade.** Antes de virar modelo, o enunciado se
+decompõe em **objeto** e **propriedade**, nesta ordem: **o que o plano constrói é objeto** — o que
+ele entrega, faz existir ou torna conforme, e que não existia ou não estava conforme quando o plano
+começou —, e o que **converge de um estado inicial a um estado final distinto é propriedade** desse
+objeto. Daí que **descrição de estado não vira objeto próprio**: o retrato de como as coisas estão,
+ou de como deverão estar, é leitura pela via de estado e popula
+`### 1.3 Estado inicial e estado final` como propriedade — o objeto é quem a possui, e a operação é
+o ato que a altera. Propriedade escrita como objeto próprio é **promoção indevida**, o defeito que
+infla `### 1.1 Objetos` com entradas que nenhuma operação constrói. Caso medido em 2026-09-21: no
+marco de validação, o dono recusou a versão 1 de **dois modelos distintos** — o de um plano e o do
+próprio plano que instituía esta regra, este último porque quatro propriedades estavam escritas
+como objetos, quando o enunciado comportava **um** objeto. E essa recusa é sempre
+de julgamento: nenhuma validação decide se um substantivo do enunciado é objeto ou propriedade — a
+promoção indevida não é aferível por instrumento, e a guarda dela é o marco.
+
+**Objeto de escopo, objeto externo e objeto de medição.** Decomposto o enunciado, nem todo objeto
+que sobra é objeto que o plano trabalha, e a tabela `### 1.1 Objetos` declara qual é qual na coluna
+`tipo`. **Objeto de escopo** é o que o plano transforma: é nele que as operações agem, e por isso
+ele é o **limite da atuação do plano** — o que não é objeto de escopo está fora do que o plano pode
+mudar. **Objeto externo** é o que gera insumo ou evento para essa transformação, caracterizando-a,
+sem ser transformado por ela. **Objeto de medição** é o que porta a propriedade pela qual a
+transformação se afere — a que se observa antes e depois, e que **prova** que o objeto de escopo
+mudou, ou que valida uma ação. Objeto externo e objeto de medição são **constantes durante todo o
+plano**: nenhuma operação altera propriedade deles. Tarefa que preveja alterá-los é **colateral** —
+não se executa por conta própria e se escala, como todo obstáculo que ameaça a rota aprovada.
+
+**As duas colunas não perguntam a mesma coisa.** `origem` diz **quem produz** o objeto — `externo`,
+ou a `OP-<n>` que o faz existir —; `tipo` diz **o que o plano faz com ele**. Coerência esperada, e
+não aferida por instrumento: objeto de escopo tem origem numa operação; objeto externo e objeto de
+medição têm origem `externo`. Classificar um objeto é **juízo sobre o enunciado**, como a promoção
+indevida: a guarda é o marco, não o `check`.
+
+**Exemplo ditado pelo dono em 2026-09-22**, sobre o modelo do `P-0745`: o *agente de planejamento* é
+objeto de **escopo** — o plano existe para levá-lo de um estado anterior a um estado atualizado; o
+*agente model designer* é objeto **externo** — ele gera os insumos que caracterizam aquela
+transformação, e o plano não visa alterá-lo, de modo que tarefa que o alterasse seria colateral a
+escalar; e a *tarefa* é objeto de **medição** — antes da transformação ela ainda nasce sob os
+padrões obsoletos, depois dela nasce sob os vigentes, e é essa diferença que prova que o agente de
+planejamento foi transformado.
 
 **Estado inicial, estado final e o aceite do plano.** O **estado inicial** é o retrato do começo do
 plano, antes de ele ser implementado, e serve para **calibrar as tarefas**: tarefa escrita sem
@@ -367,7 +416,9 @@ primeiro o consultor; validando ele, o dono — porque mudar a versão do modelo
 Aceita, a pendente passa a vigente e a anterior passa a **obsoleta**; o conteúdo da obsoleta **não
 fica no plano**, cuja residência de histórico é o versionador, e o plano guarda só a linha que
 registra qual versão ficou obsoleta, quando e por aceite de qual versão. Recusada, a pendente é
-**eliminada** e a vigente permanece, sem marca.
+**eliminada** e a vigente permanece, sem marca — e o plano **retroage ao ponto do drift**: o que
+foi entregue sob a versão recusada é refeito, sob a vigente, por card corretivo da operação
+afetada, porque `done` é terminal e não se reabre. O plano não é cancelado.
 
 **Medição e drift não são a mesma coisa.** **Medição** é o confronto dos **resultados do processo**
 contra o modelo; **drift** é a **variação do modelo** em si. À medida que o modelo varia, as
@@ -377,7 +428,9 @@ informações originais se perdem ou se modificam, e é por isso que o drift imp
 **O contrato chega ao card.** Todo card carrega o campo `Operação do modelo` com as operações que
 materializa, o texto de cada uma copiado e a linha `precisa de` trazendo cada objeto com o contrato
 dele, copiado da tabela de objetos. É por esse campo que o executor sabe, sem abrir o plano, em que
-estágio está e do que precisa.
+estágio está e do que precisa. O contrato copiado se limita ao que **esta** operação usa: a
+partição que é de outra operação fica fora, e lista de residências entra por ponteiro ao fato da
+`## 2` que é a residência única dela, nunca copiada card a card.
 
 **Quem escreve.** Um agente único — `pantonic-model-designer` — é dono de **todo** ato sobre o
 modelo: autoria, emenda, resolução de conflito entre o texto e a entrega, e explicação de contexto.
@@ -385,9 +438,9 @@ Nenhum outro papel escreve na seção `## 1. Modelo conceitual`.
 
 | papel | o que faz diante do modelo |
 |---|---|
-| modelador | escreve a seção inteira, em todo ato; devolve a seção literal e a linha do ato em `### 1.4 Registro de versões` |
-| planejador | escreve o plano sem a seção do modelo e devolve o dossiê `Ato de modelo` de autoria junto com o plano gravado; o plano não vai ao Marco 1 sem a seção escrita pelo modelador e sem `modelo.py check` exit `0` |
-| consultor | devolve o dossiê `Ato de modelo` de emenda junto com o reparo do escalonamento, quando a decisão muda o que o plano entrega |
+| modelador | escreve a seção inteira, em todo ato, inclusive sobre plano que ainda não tem cards — na autoria preenche a lista `tarefas:` de cada operação pela convenção `<prefixo>-T<n>` para `OP-<n>`; devolve o ponteiro da seção, a linha do ato em `### 1.4 Registro de versões`, a saída do `check` e os achados fora da seção; a lista `tarefas:` depois da autoria não é dele |
+| planejador | grava o esqueleto do plano sem a seção do modelo e sem os cards e devolve o dossiê `Ato de modelo` de autoria; com a seção na árvore, escreve um card por operação e **mantém a lista `tarefas:` de cada operação** — lastro, não modelo — na decomposição e em toda rodada de replanejamento, ao lado do consultor, que a estende com o card corretivo `T<n>a` que autora; o plano não vai ao Marco 1 sem a seção escrita pelo modelador, sem os cards e sem `modelo.py check` exit `0` |
+| consultor | devolve o dossiê `Ato de modelo` de emenda junto com o reparo do escalonamento, quando a decisão muda o que o plano entrega; apensa à lista `tarefas:` da operação o id do card corretivo `T<n>a` que autora; no marco, valida a versão pendente antes do dono; não escreve outra linha da seção |
 | revisor | **não escreve**; divergência entre a entrega e o texto de uma operação vira achado de processo de alvo `modelo` (`docs/RUBRICA_DE_REVISAO.md` §6) |
 | executor | **não escreve**; lê a operação e o contrato no card |
 | orquestração | **não escreve**; despacha o modelador ao receber um dossiê `Ato de modelo`, roda `modelo.py check` antes de despachar e antes de fechar cada tarefa (exit `1` bloqueia; exit `2` = forma anterior, segue com nota) e abre o relatório de encerramento e cada marco com `modelo.py show` |
@@ -398,11 +451,41 @@ própria linha de retorno**; quem conduz a sessão o despacha. O dossiê é fech
 `Plano`, `Ato` (`autoria`, `emenda`, `conflito` ou `leitura`), `Motivo` com o identificador da
 decisão ou do achado, `Fato novo` em uma frase, `Restrição` e `Devolver`.
 
+**Lastro.** A lista `tarefas:` de uma operação diz quais cards a materializam. É **lastro**, não
+modelo: não descreve o que o plano entrega, descreve quem o entrega. Por isso é a única linha
+da seção que não é do modelador depois da autoria — é do planejador, que a preenche na
+decomposição e a estende em rodada de replanejamento, e do consultor, que a estende com o card corretivo `T<n>a` que autora na rota `resolve`. As violações `V1`
+(lista vazia) e `V3` (id que não existe) são do lastro: sobre plano ainda sem cards elas
+disparam por construção, o modelador as devolve como saída literal e quem conduz a sessão as
+roteia à decomposição.
+
+**Rascunho antes do Marco 1.** A regra de versão acima governa modelo **validado**. Entre a
+autoria e o primeiro `go`, a `## 1` é rascunho: o planejador que, ao decompor, encontra
+operação que não cabe num card coeso devolve novo dossiê de `autoria`, e o modelador substitui
+a versão 1 **no lugar**, sem bloco irmão e sem linha nova no registro. Versionar só começa no
+Marco 1. O rascunho carrega `situação: vigente` porque essa é a forma da `## 1`, não porque
+vigore: **o modelo só vigora depois de validado pelo dono**, e antes disso não obriga nenhuma das
+partes. Rascunho recusado e reescrito continua rascunho — substitui-se no lugar —, e
+`situação: pendente` só existe na `## 1A`, depois do Marco 1.
+
 **Retroatividade.** Plano sem a seção `## 1. Modelo conceitual`, plano com a seção na **forma
 anterior** — frases `M-<n>` com estado gravado — e plano com a seção sem
 `### 1.3 Estado inicial e estado final` são forma anterior: `modelo.py check` sai `2` para eles e o
 loop segue. Nenhum plano é migrado. Caso medido de origem: diretiva do dono de 2026-09-20 sobre o
 Marco 2 do `P-0741`.
+
+### 3.3 Vocabulário de causa raiz
+
+| token | o que é | o que o pega |
+|---|---|---|
+| `valor-reutilizado` | valor reutilizado em vez de medido | conferência da régua: o literal da âncora no card_check e o aviso de número gravado sem comando |
+| `premissa-nao-sondada` | premissa não sondada na autoria | conferência da régua: o card_check no ensaio da autoria e no despacho |
+| `auto-relato` | auto-relato aceito | conferência da régua: o arquivo de medida do executor, lido pela evidência |
+| `regra-esquecida` | regra ou precedente esquecido | conferência da régua: os achados roteados ao card, colados no dossiê de despacho |
+| `semantica-de-ferramenta` | semântica de ferramenta | nenhuma conferência da régua: a lista docs/ARMADILHAS_DE_FERRAMENTA.md, consultada no ponto de uso |
+| `contexto-presumido` | contexto presumido com o dono | nenhuma conferência da régua: o checklist da mensagem-ao-dono, que chama a skill fatos-frescos, medida em prosa |
+
+A parcela de linhas com causa fora de `-` por plano fechado é a medida deste vocabulário; linha de base: 25 de 40 acionamentos em 2026-09-26 (`P-0752` F-10).
 
 ## 4. Fluxo de desenvolvimento
 
@@ -416,8 +499,8 @@ uma equipe humana com memória entre reuniões. Daí as modulações — e só e
 | Prática Scrum | Como fica em programação agêntica |
 |---|---|
 | Product/sprint backlog | **diário de obras** — índice, status por item e priorização explícita (§4.2); planos completos em `docs/plans/` |
-| Sprint com entregável ao fim | **plano** (`P-NNNN`) com tarefas na ordem de execução; o entregável passa pelo gate de validação antes de a sprint seguinte começar (§4.5) |
-| Item de backlog / história | **tarefa atômica** — uma por contexto (§4.3); quem a dimensiona é o **planejador**, sob a *Diretriz de dimensionamento de tarefa* (§3) |
+| Sprint com entregável ao fim | **plano** (`P-<n>`) com tarefas na ordem de execução; o entregável passa pelo gate de validação antes de a sprint seguinte começar (§4.5) |
+| Item de backlog / história | **card** — a materialização de uma operação do modelo (§3.2), uma por contexto de execução (§4.3); quem a dimensiona é o **planejador**, sob a *Diretriz de dimensionamento de tarefa* (§3) |
 | Time auto-organizado | **papéis fixos e não intercambiáveis** — matriz de responsabilidades (§3) |
 | Cerimônias (daily, planning, review) | **atos escritos**: dossiê de tarefa, registro de fechamento e veredito de validação no diário — o que só existe em conversa não sobrevive à troca de contexto e, portanto, não existe |
 | Definition of done | **critério de pronto** no dossiê + guardrails executáveis (§7), gate de conformance e piso de regressão (§4.4) |
@@ -430,20 +513,24 @@ tarefa — decidir é fase do planejamento (§3, §7 itens 9 e 12).
 
 ### 4.1 Regra básica
 
-Todo procedimento mais complexo **invoca o agente de planejamento** para criar um **checklist de
-tarefas atômicas**, descritivo o suficiente para que o agente de execução **não precise fazer
-buscas transversais** à tarefa (o custo de contexto da exploração é pago uma vez, no
-planejamento — com apoio do agente de coleta).
+Todo procedimento mais complexo **invoca o agente de planejamento** para criar, a partir do
+modelo de domínio do plano (§3.2), um **checklist de cards — um por operação do modelo** —,
+descritivo o suficiente para que o agente de execução **não precise fazer buscas transversais**
+à tarefa (o custo de contexto da exploração é pago uma vez, no planejamento — com apoio do
+agente de coleta).
 
-Uma tarefa atômica bem escrita contém: objetivo, arquivos-alvo (caminho exato), contratos/classes
-envolvidos, testes que devem passar ao final e critério de pronto.
+Um card bem escrito contém: a operação que materializa (texto e contrato copiados do modelo),
+objetivo, arquivos-alvo (caminho exato), contratos/classes envolvidos, testes que devem passar
+ao final e critério de pronto derivado do estado final das propriedades que a operação altera.
 
 ### 4.2 Diário de obras
 
 Todo planejamento é arquivado num documento centralizado, o **diário de obras**, que funciona
 também como um kanban adaptado:
 
-- Recebe planejamentos completos (sprints) e tíquetes avulsos.
+- Recebe planejamentos completos (sprints) e tíquetes avulsos. O tíquete entra já com o card que o
+  executa, e só fica fora da fila por bloqueio real — decisão do dono ou dependência de outro item
+  (skill `diario-de-obras`, seção "Tíquete nasce executável").
 - Cada item de trabalho carrega um **status**. A lista de valores, a máquina de transições e o
   alcance de cada estado por objeto (tarefa, plano/iniciativa, tíquete) têm **residência única** —
   skill `diario-de-obras`, seção "Status — residência única". Nenhum outro artefato reenuncia a
@@ -460,7 +547,7 @@ também como um kanban adaptado:
   - **`reprovado` não é desfecho de registro de tarefa.** O registro canônico nasce só na transição
     `review` → `done`; `blocked` e `cancelled` não o disparam. Entrega reprovada depois da última
     retentativa materializa `blocked` com razão `premissa` — o que caiu foi a premissa de que o card
-    é executável como está — e a matéria vai ao replanejamento (G-REPLAN, §7 item 17).
+    é executável como está — e a matéria vai à triagem do consultor (G-REPLAN, §7 item 17).
   - **Regra nenhuma manda fazer o que o instrumento de fechamento recusa.** Divergência entre uma
     regra de roteamento e o instrumento que materializa o fechamento resolve-se **fechando a regra
     ao instrumento**, nunca abrindo no instrumento um ramo que o fluxo não prevê — ramo sem entrada
@@ -477,8 +564,15 @@ também como um kanban adaptado:
   inferida de uma conversa que não persistiu a decisão, para sobreviver à troca de contexto.
 - **Entrada de planos paralelos** — quando múltiplos agentes de planejamento rodam em paralelo,
   nenhum escreve plano completo direto no diário (risco de conflito de edição). Cada um grava seu
-  plano em `docs/plans/P-<MMDD>-<slug>.md` e apensa **uma linha** a `docs/plans/_INBOX.md`
+  plano em `docs/plans/P-<n>-<slug>/plano.md` e apensa **uma linha** a `docs/plans/_INBOX.md`
   (append-only). O inbox é drenado para o índice do diário na próxima sessão que o utilizar.
+- **Pasta do plano** — plano novo nasce em `docs/plans/P-<n>-<slug>/`, com tudo o que é dele
+  dentro: `plano.md` (seções e cards), `estado.tsv` (estado de máquina do plano e das tarefas;
+  esquema na skill `diario-de-obras`), `rdo/<tarefa>.md`, `laudos/<tarefa>.md`,
+  `evidencia/<tarefa>.md` e, quando existirem, `campanha.md`, `cenario.md`, `veredito.md`,
+  `viabilidade.md`, `operacoes.md` (documento de encerramento) e `entrega.md` (entrega aceita).
+  O planejador grava `estado.tsv` ao registrar o plano; depois só `backlog.py` o escreve. Plano
+  legado (`docs/plans/P-NNNN-<slug>.md`, arquivo único) segue lido como está; nada dele se move.
 - **Dossiê de tarefa aponta e verifica.** "Arquivos-alvo" carrega `caminho:linha`; "Verificação"
   carrega o **comando**, copiado do terminal, não a intenção de verificar. `caminho:linha` é
   ponteiro de leitura — envelhece e **não** se mantém; tratá-lo como contrato custa mais do que
@@ -487,18 +581,51 @@ também como um kanban adaptado:
   entregável fica registrada (aprovada/reprovada, com data). A regra do gate mora na §4.5; aqui
   ficam só os vereditos. Sprint sem veredito escrito conta como **não validada**.
 - **Fronteira de registro — três artefatos, nenhum repetindo o outro.** O **diário** é o kanban:
-  índice, status, diretiva de priorização e ponteiro. O **RDO** (`docs/RDO/<plano>-<tarefa>-<slug>.md`,
+  índice, status, diretiva de priorização e ponteiro. O **RDO** (`docs/plans/P-<n>-<slug>/rdo/<tarefa>.md`; plano legado e tíquete em `docs/RDO/`,
   um arquivo por tarefa) é o **registro canônico da tarefa**: dossiê recebido, laudo, desdobramento e
-  ponteiros para os artefatos tocados. O `docs/telemetria.tsv` é a fonte única do número de consumo.
+  ponteiros para os artefatos tocados, em **três seções** de leitor distinto — `# Humano` (o resumo
+  em linguagem corrente, título da tarefa no lugar da sigla, ≤ 8 linhas: o que o dono lê),
+  `# Máquina` (o dossiê verbatim, o pacote do laudo e o consumo, verboso e preciso: o que o próximo
+  agente lê) e `# Histórico` (as linhas do painel do gerente para a tarefa, na ordem do loop). O
+  relatório de entrega do plano (`entrega.md` da pasta; `docs/plans/_ENTREGA-<id>.md` no legado)
+  tem as mesmas três seções. O `docs/telemetria.tsv` é a fonte única do número de consumo.
   Quem precisa do detalhe de uma tarefa abre o RDO dela; o diário guarda a linha de status que aponta
   para lá. Duplicar conteúdo entre os três cria fontes que divergem na primeira edição.
 - **Fechamento enxuto** — o detalhe da execução mora no RDO da tarefa, e o relatório final ao
-  orquestrador é ponteiro + deltas. **Achado de execução tem um registro só:** bloqueio, obstáculo
+  orquestrador é ponteiro + deltas. **O fechamento é um comando, não uma sequência:**
+  `.claude/tools/encerrar.py tarefa` fecha a tarefa em `review` — gate do modelo, `done`
+  projetado, RDO nas três seções com o pacote **transcrito** do laudo, linha de telemetria
+  garantida, achados com rota — e `encerrar.py plano` fecha o plano sem tarefa aberta — `done` do
+  plano, relatório de entrega, uma linha no diário. Os dois **reportam**; quem **entrega** é o
+  terceiro verbo, `encerrar.py handover`: o que quem vem depois espera da tarefa — `Entregue`,
+  `Contrato`, `Não refazer`, `Pendente` —, inteiramente de máquina, registrado no próprio card
+  como campo `- **Handover:**`, que `backlog.py next` devolve à sucessora sob `=== HANDOVER DE
+  <ID>` junto com o dossiê dela. Os três recusam sem escrever quando falta insumo; regra nenhuma
+  manda fazer à mão o que eles recusam (skill `diario-de-obras`, operação *Passar o bastão, fechar
+  tarefa, fechar plano*; skill `scrum-master`, Passo 9). **Achado de execução tem um registro só:** bloqueio, obstáculo
   ou fato que contradiz o plano é escrito uma vez, como entrada `AE-<n>` em `## Achados da
   execução` do plano; nota da tarefa, `Fila corrente` e célula do índice recebem apenas `AE-<n>` +
-  `caminho:linhas`, e o handover ao dono cabe em ≤ 8 linhas com o ponteiro. O mesmo fato escrito
+  `caminho:linhas`, e o handover ao dono cabe em ≤ 8 linhas com o ponteiro (aplicação de *Artefato de humano mínimo*, abaixo). O mesmo fato escrito
   cinco vezes numa janela — um terço dela gasto no fechamento de um bloqueio (caso medido,
   2026-09-16) — é o defeito que esta regra fecha.
+- **Artefato de humano mínimo** — artefato **de máquina** é o que um instrumento ou um agente lê
+  por gramática (TSV, card); artefato **de humano** é o que o dono lê (§0, §1 e §3 do plano,
+  rodada de decisões, handover, diretiva e índice do diário, documento de encerramento). Todo
+  artefato de humano é o menor possível: (a) não repete dado cuja residência é artefato de máquina
+  — no máximo o ponteiro; (b) não narra o que o git, o RDO ou um TSV já registram; (c) frase que
+  não serve a decisão ou validação do dono sai. O card segue `G-EXECREADY`: a autossuficiência do
+  executor frio prevalece sobre (a)–(c). Os limites locais de tamanho (handover, célula do índice)
+  são aplicações desta regra.
+- **Mensagem legível ao dono** — toda mensagem ao dono (conversa, handover, relatório de janela,
+  rodada de decisões) se entende sozinha: (a) o que o dono precisa para decidir ou validar vem no
+  corpo — caminho de arquivo é complemento, nunca substituto; (b) nenhuma sigla chega sozinha: o
+  objeto vai pelo título entre aspas duplas, como no painel do gerente (skill `scrum-master`,
+  *Repertório de mensagens ao gerente*), e a sigla só o acompanha, entre parênteses, quando o dono
+  precisa digitá-la para agir; sem título achado, a sigla vai com uma frase que diga o que ela
+  nomeia; (c) a glosa se escreve no idioma da conversa. Pergunta do dono sobre o que algo significa
+  ou onde está é falha medida: quem a recebeu apensa uma linha a `docs/FALHAS_COMUNICACAO.tsv`
+  antes de responder. Procedimento: skill `mensagem-ao-dono`. A superfície agente↔agente (dossiê,
+  retorno do executor, laudo, `passagem-de-bastao`) fica fora: ali a sigla crua é o contrato.
 - **Telemetria pela notificação, não pelo auto-relato** — o consumo de uma tarefa é registrado
   pelo **orquestrador** como uma linha em `docs/telemetria.tsv`, lendo o bloco `<usage>` da
   notificação de conclusão do subagente (dado medido) — nunca copiando a estimativa que o próprio
@@ -517,6 +644,19 @@ também como um kanban adaptado:
   desta regra ficam como estão: são registro histórico, já espelhado na série. **`contado` exige
   contagem efetiva** — chamadas contadas no transcript, não estimadas de memória; contagem não
   feita entra como `nao_medido` (caso medido, 2026-09-16: `contado` = 14 contra 29 reais).
+  **Tarefa sem medida fecha declarando a ausência:** tarefa sem `<usage>` — executada na sessão
+  principal, fora do loop — fecha com `encerrar.py tarefa --nao-medido "<razão>"`, que apensa à
+  série a linha `nao_medido` com as células de consumo vazias e escreve no RDO "não medido —
+  <razão>"; número estimado nunca entra, e medida existente não se descarta (o instrumento recusa
+  `--nao-medido` quando a série já mede a tarefa). Quem executa fora do loop captura a ref do
+  ponto de partida (`git stash create`, ou `git rev-parse HEAD` com a árvore limpa) antes da
+  primeira edição e grava a medida do executor (`card_check --gravar`), para a evidência do
+  revisor sair com `--desde`. O `.claude/estado/tarefa-corrente.json` se grava só no despacho do
+  executor e vale até o despacho seguinte; o hook `SubagentStop` grava a rodada de todo papel
+  `pantonic-*`, com o papel no identificador da tarefa: `<ID>` do executor, `<ID>-revisao` do
+  revisor, `<ID>-consultor-<n>` do consultor, `<P-n>-planejador`, `<P-n>-modelador` e
+  `<P-n>-scout` pelo primeiro id de plano da primeira mensagem do subagente, e
+  `sem-id-<papel>` quando não há id a derivar.
 
 ### 4.3 Execução em contexto limpo
 
@@ -539,7 +679,7 @@ também como um kanban adaptado:
     (§3, *Diretriz de dimensionamento de tarefa*) e **nunca interrompe tarefa em curso**. Quem
     executa não para, não parte a entrega e não devolve trabalho por ocupação de janela.
 - **Para quem executa, uma tarefa por contexto.** Para quem orquestra, conduzir um plano **é** uma
-  tarefa: o contexto atravessa várias tarefas atômicas, porque o cenário é o mesmo, e encerra na
+  tarefa: o contexto atravessa várias tarefas, porque o cenário é o mesmo, e encerra na
   troca de plano ou iniciativa — troca de cenário — ou, de forma planejada, na ocupação da janela,
   o que vier antes. Esse encerramento é ato da **orquestração, entre tarefas** — nunca dentro de
   uma tarefa, nunca do executor. O hook `PreToolUse` `.claude/tools/ocupacao.py`, que lê o
@@ -597,6 +737,22 @@ Todo desenvolvimento segue TDD, garantindo prioritariamente dois tipos de teste:
 **Cadência de testes** — Tier 1 roda no máximo 2× por tarefa (após implementar, após corrigir),
 nunca a cada micro-edição; tier superior só no fechamento (`.claude/global/CLAUDE.md` Regra 7;
 skill `test-tiers`).
+
+**Teste que discrimina.** Teste verde só prova algo se ficaria vermelho sem o que ele protege.
+Quatro regras, cada uma com caso medido de teste que passou pelo motivo errado:
+
+1. **Asserção afirma relação, nunca magnitude.** O teste compara mundos: o produto certo dá a
+   mesma saída nos dois, o produto revertido dá saídas diferentes, e a saída do mundo hostil não
+   é vazia. A magnitude medida vai para o docstring, com a data e o mundo da medida.
+2. **Executável que lê `stdin` se testa em mundo hostil construído, não herdado.** Os mundos são
+   ambiente mínimo com `PYTHONIOENCODING` de byte único e ambiente mínimo com `PYTHONUTF8=1`. O
+   payload acentuado tem de chegar a um canal observável — a saída, ou o efeito colateral do
+   executável silencioso —; sem canal que o carregue, o fato se declara e o teste não se escreve.
+   O par negativo é o próprio produto revertido por substituição textual da fonte, nunca um stub.
+3. **Teste de instrumento roda sobre fixture copiada, nunca sobre o diário ou os planos vivos** —
+   o estado vivo torna o teste instável e leva conteúdo alheio ao contexto de quem roda a suíte.
+4. **Fixture não carrega nome que o harness descobre** — `SKILL.md`, `CLAUDE.md`, `AGENTS.md`,
+   `settings.json`, `settings.local.json` —, porque o harness passa a tratá-la como artefato real.
 
 **Piso de regressão — comportamentos trancados, nunca percentual.** O piso é o conjunto de
 **comportamentos** que o projeto já garante e não pode perder. Ele **não é** percentual de
@@ -773,12 +929,15 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    cita o spike e reconcilia qualquer achado contraditório.
 11. **G-PLANREADY — plano só é executável quando fechado** (dever do **planejador**) — antes de um
    plano ser registrado como pronto, cinco condições:
-   1. **Nomenclatura sequencial.** `P-NNNN-<slug>.md`, com `NNNN` contador global monotônico
-      (não a data), zero-padded, **nunca reusado**; próximo id = maior registrado no `_INBOX.md` + 1.
+   1. **Nomenclatura sequencial.** `P-<n>-<slug>/plano.md`, com `<n>` contador monotônico do
+      repositório (não a data), começando em `0` no projeto novo, sem zeros à esquerda, **nunca
+      reusado**; próximo id = maior registrado no `_INBOX.md` + 1. O hub segue o contador legado
+      (`P-0750`…), na largura que ele já tem.
       A data de origem vira campo de cabeçalho. Motivo: `P-<MMDD>` colide — houve dois `P-0722` no
       mesmo dia.
-   2. **Tarefas `T1..Tn` sequenciais**, em ordem de dependência, cada uma com objetivo, "pronto
-      quando" e modelo da fase. Uma tarefa por contexto.
+   2. **Tarefas `T1..Tn` sequenciais**, em ordem de dependência, **uma por operação do modelo**
+      (§3.2), cada uma com objetivo copiado da operação, "pronto quando" derivado do estado final
+      e modelo da fase. Uma tarefa por contexto.
    3. **Todas as decisões tomadas no fechamento — nada postergado.** Nenhuma escolha owner-gated
       fica "a resolver na execução": decisão adiada acaba tomada pelo executor, no modelo mais
       barato e sem o contexto de quem decidiu — a fase intelectual vazando para a fase de execução.
@@ -854,8 +1013,8 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    derrubado lado a lado, que é o sinal de poluição da Regra 2 (§4.3). *Enforcement:* gate de
    planejamento — a rodada que fecha a decisão estruturante emite os cards de regularização, e o
    plano não avança sem eles — somado ao gate de review.
-17. **G-REPLAN — bloqueio por premissa é gatilho de revisão do plano, não pendência do dono**
-   (dever do **planejador**; roteamento da **orquestração**). Tarefa devolvida `blocked` com razão
+17. **G-REPLAN — parada de executor é gatilho de triagem, e de revisão do plano só na rota `planejador`; nunca pendência do dono**
+   (triagem do **consultor**; dever do **planejador** na rota `planejador`; roteamento da **orquestração**). Toda parada de executor — `blocked` com motivo `premissa`, `dependencia` ou `ferramenta` — e todo laudo com pendência substantiva vão primeiro ao **consultor** (`pantonic-consultant`), que devolve uma rota entre `resolve`, `modelador` e `planejador`; o motivo é evidência, não rota. Na rota `resolve` o consultor fecha a parada sozinho, com as saídas (a) a (d) abaixo, e o card corretivo `T<n>a` é ato dele. O que segue é a rota `planejador`, devolvida só quando emenda aceita do modelo cria ou remove operação ou quando a premissa caiu por inteiro: tarefa devolvida `blocked` com razão
    `premissa` (card defeituoso, rota inviável, fato que contradiz o plano) **não** fica parada
    esperando o dono e **não** é contornada despachando a tarefa seguinte do mesmo plano: ela abre,
    no mesmo ato, uma **rodada de replanejamento** — item de classe *Rodada de replanejamento* (§3),
@@ -888,7 +1047,7 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    seja o objeto, é `superseded`; e segundo bloqueio **de aceite** sobre a **mesma** verificação já
    reescrita por uma rodada anterior também é `superseded` — errar duas vezes o mesmo aceite não é
    corrigir redação, é descobrir que não se sabe o que o card exige. *Enforcement:* roteamento
-   `A3b` da skill `scrum-master` (escala ao planejador, não ao dono); guardrail da `scrum-master`
+   `A3b` da skill `scrum-master` (escala ao consultor, que devolve a rota; nunca ao dono); guardrail da `scrum-master`
    (tarefa `blocked premissa` no plano priorizado → a próxima tarefa é a rodada, nunca outra do
    plano); seção "Rodada de replanejamento" do agente `pantonic-planner`; ledger
    `docs/telemetria.tsv` (a rodada é medida na classe própria).
@@ -903,7 +1062,7 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    caminhos possíveis), **para, registra o fato** (`AE-<n>` em `## Achados da execução` do plano),
    **bloqueia** (`blocked` razão `premissa`) **e encerra**. Não classifica a dúvida ("é do dono?",
    "é evento intrínseco?") — ponderar já é decidir; não pergunta; não escolhe "o óbvio". **(2) O
-   destino do bloqueio é o planejamento** (G-REPLAN): a rodada decide o que é técnico ou tático e
+   destino do bloqueio é a triagem do consultor** (G-REPLAN): ele decide o que é técnico ou tático sem validação do dono, e ao dono sobe só, no marco, o pedido de validar o drift do modelo; na rota `planejador`, a rodada decide o que é técnico ou tático e
    leva ao dono, em uma rodada, só o estratégico. Ao dono, durante a janela, não chega pergunta
    nenhuma; a orquestração fala com ele **só no relatório de encerramento**, e toda opção de rota
    apresentada ali — ou na rodada de decisões do planejador — inclui a alternativa **registrar e
@@ -916,14 +1075,15 @@ code, impedindo violação de camadas e princípios. Mínimo obrigatório em tod
    com ponto de interrupção sem contingência é plano aberto (G-PLANREADY condição 5).
    *Enforcement:* instrução nos agentes `pantonic-executor` (parada por dúvida) e
    `pantonic-planner` (teste de interrupção, fase 4); `scrum-master` e `passagem-de-bastao` (nenhuma
-   pergunta ao dono entre o despacho e o relatório de encerramento; `B1` roteia ao planejador);
+   pergunta ao dono entre o despacho e o relatório de encerramento; `B1` roteia ao consultor);
    gate de review — decisão tomada pela entrega que o card não fechou, e parada por dúvida que o
    card não previu, são achado de processo de alvo `dossiê`.
 
 19. **G-MODULO — a unidade de trabalho é o módulo coeso, e a coesão dele é critério de aceite**
    (dever do **planejador** na autoria; dever da **revisão** no julgamento). O card despachado cobre
    uma **disciplina fechada** — um tema, com os seus verbos, os seus testes e a sua verificação
-   ponta a ponta no mesmo despacho (§3, *A unidade de trabalho é o módulo coeso*). Três deveres.
+   ponta a ponta no mesmo despacho (§3, *A unidade de trabalho é o módulo coeso* — e módulo coeso
+   é a materialização de uma operação do modelo, §3.2). Três deveres.
    **(1) Recorte por tema, não por volume:** divide-se quando o card cruza dois assuntos, nunca
    quando cruza muitas regiões do mesmo assunto; contagem de regiões editadas é medida de
    dimensionamento, não gatilho de divisão, e o que não é do tema continua fora. **(2) Coesão como
@@ -958,7 +1118,7 @@ Um framework que só adiciona regra apodrece: o custo de ler a doutrina cresce a
 trabalho e nenhuma regra jamais sai. Esta seção é a **porta de saída** — a única forma legítima de
 remover um guardrail de §7.
 
-**Gatilho.** A revisão pendura-se no **fechamento de um plano** — a linha do plano (`P-NNNN`) indo
+**Gatilho.** A revisão pendura-se no **fechamento de um plano** — a linha do plano (`P-<n>`) indo
 a `done` no índice de `docs/DIARIO_DE_OBRAS.md` —, nunca em calendário e nunca em número de versão.
 Data no calendário vira cerimônia executada sem material novo para julgar; o fechamento de um plano
 é exatamente o momento em que há material novo para julgar. Cada fechamento abre uma **rodada** de
@@ -1001,13 +1161,13 @@ arquitetura mora no consumidor, não no hub — o hub não tem código de produ�
 regras só pelo registro dele responde "não" por construção.
 
 **Resultado.** Sem caso citável, a guardrail é marcada **`OBSOLETA desde <rodada>`** no próprio
-item, identificada a rodada pelo plano que a disparou (`P-NNNN`); ela **permanece em vigor** por
+item, identificada a rodada pelo plano que a disparou (`P-<n>`); ela **permanece em vigor** por
 **uma rodada** de transição e é **removida na rodada seguinte** — a remoção é uma tarefa nomeada
 como qualquer outra, com registro no diário. Um único caso citável
 durante a transição desfaz a marcação. **Zero marcações numa rodada é resultado legítimo; não
 registrar a rodada não é** — revisão sem registro não aconteceu.
 
-**Registro das rodadas.** Cada rodada entra na lista abaixo sob o rótulo `<P-NNNN> — <AAAA-MM-DD>`,
+**Registro das rodadas.** Cada rodada entra na lista abaixo sob o rótulo `P-<n> — <AAAA-MM-DD>`,
 com o plano cujo fechamento a disparou, as guardrails avaliadas, as que ficaram fora por idade e o
 resultado item a item.
 
@@ -1058,6 +1218,45 @@ resultado item a item.
   suíte mas nunca declarou o arquivo de piso, e nenhum consumidor materializa o kit de checks, de modo
   que o check passa por vacuidade em toda parte. Não isentou o guardrail nesta rodada porque o caso
   citável veio do registro, não do check.
+- **`P-0750` — 2026-09-26** (segunda rodada do regime por fechamento de plano, `EBK-T14`): disparada
+  pelos catorze planos fechados como `done` no índice de `docs/DIARIO_DE_OBRAS.md` depois de
+  2026-08-08 — `P-0732`, `P-0735`, `P-0736`, `P-0738`, `P-0739`, `P-0740`, `P-0741`, `P-0743`,
+  `P-0745`, `P-0746`, `P-0747`, `P-0748`, `P-0749` e `P-0750`. 20 guardrails em §7, **13 em escopo**:
+  o registro ainda não tem duas rodadas deste regime, então a `1.4.0` segue como penúltima e o
+  escopo repete o da rodada `P-0731` — regra de dependência, ACL, egress G6, namespace de estado,
+  gate de conformance, allowlist de subcomandos destrutivos, piso de regressão, disciplina de
+  contexto, **G-DEADCODE**, **G-PLANFIDELITY**, **G-PREMISE**, **G-PLANREADY** e **G-EXECREADY**.
+  **7 fora por idade:** **G-README**, **G-SCOPE**, **G-SURFACE**, **G-REPLAN**, **G-NOASK**,
+  **G-MODULO** e **G-TOOLDENY**.
+  **Seis isentas por enforcement executável, re-confirmadas nesta data e não herdadas:** regra de
+  dependência → `tests/conformance/test_layer_imports.py`; ACL →
+  `tests/conformance/test_acl_no_external_in_plugins.py`; egress G6 →
+  `tests/conformance/test_filesystem_egress.py`; namespace de estado →
+  `tests/boundary/test_state_writer_namespacing.py` — os quatro rodados juntos no consumidor
+  `PantonicVideo` com `python -m pytest <os quatro> -q -rs`, sumário `17 passed in 9.62s`, nenhum
+  `skip`/`xfail`; gate de conformance → a mesma suíte bloqueante no consumidor, mais
+  `python -m pytest -q` no hub, sumário `376 passed in 36.57s`; allowlist de subcomandos destrutivos
+  → `permissions.deny` em `.claude/settings.json`, 6 entradas ativas. Nenhum check morto.
+  **Sete na pergunta, todas com caso citável entre 2026-08-08 e 2026-09-26:** piso de regressão →
+  `docs/DIARIO_DE_OBRAS.md`, `CTX-T1d` (2026-08-23: a remoção do campo de teto não foi partida em
+  fatias porque qualquer partição deixaria a suíte vermelha entre elas) e `AE-18` → `DM-23` de
+  `docs/plans/P-0740-loop-de-modulos.md` (cinco correções manuais de piso em sete despachos fizeram
+  do piso uma relação re-medida no despacho); disciplina de contexto → `docs/DIARIO_DE_OBRAS.md`,
+  `TK-55`, nota de técnica do escalonamento 7 (2026-09-20: o transcript que carregava dossiê de
+  plano de outra janela foi auditado só por estrutura, chaves e comprimentos, sem extrair valores,
+  para não poluir o contexto); **G-DEADCODE** → `docs/DIARIO_HISTORICO.md`, `EXA-T14` (2026-08-19:
+  sem identidade de tarefa no payload do harness, nenhum `telemetria_hook.py`, nenhuma entrada em
+  `.claude/projecoes.json` e nenhum teste novo foram escritos) e `TK-29` (parâmetro morto medido na
+  fronteira da regra); **G-PLANFIDELITY** → `docs/DIARIO_HISTORICO.md`, `EXA-T19` `blocked` (o
+  executor não fechou as duas lacunas do dossiê — a origem do `status` e o ramo `A3` omitido — e o
+  devolveu ao planejamento, indexado em `TK-28`); **G-PREMISE** →
+  `docs/plans/P-0738-contexto-esgotado.md`, `DX-7` (2026-08-22: a divergência entre a forense de
+  janela e a soma por arquivo do `P-0736` entra como achado reconciliado, nunca como refutação
+  silenciosa); **G-PLANREADY** → `docs/DIARIO_HISTORICO.md`, rodada de decisão da `EXA-T16`
+  (2026-08-20: o pickup parou no gate antes de qualquer delegação); **G-EXECREADY** →
+  `docs/DIARIO_DE_OBRAS.md`, `LM-T1` do `P-0740` (2026-09-18, `AE-2`: devolvida `blocked` razão
+  `premissa`, nenhum arquivo tocado).
+  **Resultado da rodada: 0 marcações.**
 
 ## 8. Documentação mínima de um projeto Pantonic*
 

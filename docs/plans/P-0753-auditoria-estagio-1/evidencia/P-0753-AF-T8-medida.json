@@ -1,0 +1,50 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T8",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T13:54:18+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/tools/backlog.py check --repo tests/fixtures/backlog/esqueleto",
+      "exit": 0,
+      "saida": "check: OK — nenhuma violação.",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_backlog.py -q -k \"esqueleto\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 116 deselected in 0.09s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;c=chr(96);t=Path('.claude/agents/pantonic-planner.md').read_text(encoding='utf-8');print(t.count('no mesmo ato, '+c+'estado.tsv'+c),t.count('a linha do plano já está lá desde a Fase 3a'))\"",
+      "exit": 0,
+      "saida": "1 1",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/diario-de-obras/SKILL.md').read_text(encoding='utf-8');print(t.count('O planejador grava o arquivo ao registrar'),t.count('O planejador grava o arquivo na Fase 3a'))\"",
+      "exit": 0,
+      "saida": "0 1",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 45%]\n........................................................................ [ 61%]\n........................................................................ [ 76%]\n........................................................................ [ 91%]\n........................................                                 [100%]\n472 passed in 40.92s",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

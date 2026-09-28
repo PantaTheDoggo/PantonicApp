@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0752-fato-no-ponto-de-uso.md",
+  "tarefa": "FPU-T4a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T14:40:32+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_crenca_hook.py -q -k sobrepostos",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 4 deselected in 0.02s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"import sys;sys.path.insert(0,'.claude/tools');import crenca_hook as c;q=chr(96);print(c.contar_crencas('antes '+q+'397 passed'+q+', depois '+q+'401 passed'+q))\"",
+      "exit": 0,
+      "saida": "2",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 34%]\n........................................................................ [ 51%]\n........................................................................ [ 68%]\n........................................................................ [ 85%]\n............................................................             [100%]\n420 passed in 34.10s",
+      "bate": true
+    }
+  ]
+}

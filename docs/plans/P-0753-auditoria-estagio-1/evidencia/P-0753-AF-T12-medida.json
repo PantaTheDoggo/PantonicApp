@@ -1,0 +1,36 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T12",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T15:22:38+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/tools/encerrar.py marco --help",
+      "exit": 0,
+      "saida": "inha `| **Marco <n>** |` da tabela\n                        de marcos).\n  --resultado {go,no-go}\n                        Veredito do dono sobre o marco.\n  --veredito VEREDITO   Frase do dono, verbatim.\n  --aceita-versao ACEITA_VERSAO\n                        Versão pendente (## 1A) que o dono aceitou.\n  --recusa-versao RECUSA_VERSAO\n                        Versão pendente (## 1A) que o dono recusou.",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k \"marco\"",
+      "exit": 0,
+      "saida": "....                                                                     [100%]\n4 passed, 25 deselected in 0.12s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 44%]\n........................................................................ [ 59%]\n........................................................................ [ 74%]\n........................................................................ [ 89%]\n..................................................                       [100%]\n482 passed in 46.71s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

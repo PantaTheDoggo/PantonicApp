@@ -1,0 +1,36 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-88c",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T00:56:13+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_progresso_hook.py tests/test_rdo.py -q -k \"propria_invocacao or plano_em_barra\"",
+      "exit": 0,
+      "saida": "....                                                                     [100%]\n4 passed, 103 deselected in 0.21s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"import re;from pathlib import Path;print(sum(len(re.findall('a tarefa '+chr(34)+'[A-Z][A-Za-z0-9-]*-revisao'+chr(34),p.read_text(encoding='utf-8'))) for p in Path('docs').rglob('*.md'))>0)\"",
+      "exit": 0,
+      "saida": "False",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;print(sum(1 for p in Path('docs').rglob('*.md') for l in p.read_text(encoding='utf-8').splitlines() if l.startswith(chr(42)*2+'Plano:') and chr(92) in l)>0)\"",
+      "exit": 0,
+      "saida": "False",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 49%]\n........................................................................ [ 65%]\n........................................................................ [ 82%]\n........................................................................ [ 98%]\n.......                                                                  [100%]\n439 passed in 43.80s",
+      "bate": true
+    }
+  ]
+}

@@ -285,7 +285,7 @@ processo de alvo `modelo`, e o texto fica como está até o modelador agir.
 
 ## 8. Rubrica de criação de tarefa
 
-> Fonte da verdade: régua de **autoria** do card, aplicada **antes** do despacho — a §1..§7 julga a entrega, esta julga o dossiê que a pediu.
+> Fonte da verdade: régua de **autoria** do card, aplicada **antes** do despacho — a §1..§7 julga a entrega, esta julga o dossiê que a pediu. Armadilhas de ferramenta medidas: `docs/ARMADILHAS_DE_FERRAMENTA.md` — consultar antes de escrever linha de Verificação.
 > Medida que a originou (`P-0740`, `ESC-9`..`ESC-14`): oito defeitos de autoria numa janela, três cards seguidos parados por linha de aceite
 > quebrada, e 867k tk em cinco passagens de consultor contra quatro tarefas fechadas.
 
@@ -325,15 +325,22 @@ Checklist lido pelo autor não fecha defeito de autoria; o que fecha é comando 
 
 **Passo mecânico, e o ciclo:** `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>`. **Card cujo `card_check` não sai 0 não se despacha.**
 
-**Nota (2026-09-19):** o gate está **suspenso em efeito** desde 2026-09-19, por decisão do loop
-endossada pelo consultor (`DM-39` (ii), `DM-40` (i)); a conferência dos três elementos segue
-**manual**, como esta seção já prescreve para o período sem instrumento; **o vermelho do
-`card_check` não é evidência** enquanto o `AE-33` item 1 estiver aberto — ele produz **item
-fantasma** sobre card conforme; o ponteiro é o `AE-33` no `P-0740`, e a reativação do gate depende
-dele.
+**Forma A (bloco cercado)** — a forma acima: comando em bloco cercado, esperado na linha `→`,
+medido antes no literal `**Medido antes: <valor>**`.
 
-Enquanto o instrumento não existir — ele é a `LM-T5b`, e em 2026-09-19 não estava na árvore —, o passo é a conferência **manual** dos três
-elementos, item a item, por quem despacha.
+**Forma B (inline)** — item cujo resto da linha do marcador, depois de `N.`, começa por crase
+simples: `` N. `<comando>` → <esperado>[ — antes `<a>`, depois `<b>`] ``. `→ <esperado>` e o par
+` — antes …, depois …` são opcionais, cada um; esperado é o texto entre `→` e ` — antes` (ou o fim
+do item, quando não há par). O mundo comparado deriva do status do card: `done` compara `depois`
+— ou, sem par, o conteúdo da primeira crase do esperado —; qualquer outro status compara `antes`
+(ausente: `sem valor antes`; esperado sem `→`: `sem valor esperado`; esperado sem crase: `esperado
+sem literal`) (DFP-2, emendada por DFP-14).
+
+Toda ocorrência `` `<caminho>:<linha>` `` em `Arquivos-alvo` e `Passos` é âncora: o literal é o
+texto entre crases logo após ` — ` ou `: ` na mesma linha, desescapado e com `strip()`, e confere
+quando está contido em alguma linha (`strip()`) da faixa `linha..fim`; âncora sem literal e literal fora da linha são falhas nomeadas, e âncora
+sem literal só passa se o mesmo texto de âncora tiver literal noutra ocorrência do card — a
+conferência roda só com mundo `antes` (DFP-4, emendada por DFP-16).
 
 ### 8.2 Julgamento dos cards do `P-0740` (2026-09-19)
 

@@ -1,0 +1,36 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-89a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T01:58:49+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import sys;sys.path.insert(0,'.claude/tools');import review_evidence as r,rdo;from pathlib import Path;d=rdo.extrair_dossie(Path('docs/plans/P-0752-fato-no-ponto-de-uso.md'),'FPU-T2',esquema_legado=False,modelo_legado=None,classe_legado=None);print(len(r.extrair_arquivos_alvo(d.campos)))\"",
+      "exit": 0,
+      "saida": "5",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k alvo_ancorado_com_literal",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 56 deselected in 0.10s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".......................................... [ 48%]\n........................................................................ [ 64%]\n........................................................................ [ 81%]\n........................................................................ [ 97%]\n............                                                             [100%]\n444 passed in 65.13s (0:01:05)",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k literais_nao_caminho_lista",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 56 deselected in 0.05s",
+      "bate": true
+    }
+  ]
+}

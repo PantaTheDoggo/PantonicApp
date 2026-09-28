@@ -51,7 +51,7 @@ Escolha **no máximo 3–5 alvos** por auditoria — profundidade vale mais que 
 3. **Confronto:** liste o que o redesenho **elimina** (rotinas, flags, estados, caminhos
    especiais) e o que ele **preserva** (comportamentos trancados por TR-* que continuam valendo).
 4. **Ponte:** proponha o caminho de migração em passos seguros (strangler fig: novo ao lado do
-   velho, testes primeiro, corte final) — cada passo virando tarefa atômica candidata.
+   velho, testes primeiro, corte final) — cada passo virando card candidato, a materializar por uma operação do modelo do plano que o adotar.
 
 ## Saída — `docs/audits/REDESIGN_<AAAA-MM-DD>.md`
 

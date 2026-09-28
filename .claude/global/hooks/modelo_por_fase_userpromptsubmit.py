@@ -77,21 +77,25 @@ _NUDGE = {
         "\U0001F7E1 Fase intelectual (planejar/arquitetar/auditar/decidir) — "
         "Opus e o modelo certo. Se voce estiver em Sonnet/Haiku, `/model opus`.",
         "Gate modelo-por-fase: este prompt e trabalho intelectual (Regra 7). "
-        "Se o modelo ativo NAO for Opus, PARE e peca ao dono `/model opus` antes de "
-        "prosseguir (anuncie a troca — Regra 5). Se ja estiver em Opus, ignore.",
+        "Se o modelo ativo for Sonnet ou Haiku, PARE e peca ao dono `/model opus` antes de "
+        "prosseguir (anuncie a troca — Regra 5). Em Opus ou Fable, ignore: o modelo "
+        "da sessao e escolha do dono.",
     ),
     "execution": (
         "\U0001F7E1 Fase de execucao (implementar/editar/testar) — Sonnet basta. "
         "Rodar em Opus e desperdicio (Regra 7): considere `/model sonnet`.",
-        "Gate modelo-por-fase: este prompt e execucao mecanica (Regra 7). Se o modelo "
-        "ativo for Opus, recomende ao dono `/model sonnet` antes de implementar "
-        "(anuncie — Regra 5), salvo tarefa de alto risco com racional registrado.",
+        "Nota modelo-por-fase: este prompt e execucao mecanica (Regra 7); o modelo "
+        "indicado e Sonnet. Se o ativo for Opus, NAO pare e NAO peca `/model` ao dono "
+        "(rebaixar a tela principal nunca interrompe o trabalho): siga e anote a "
+        "divergencia em uma linha no fim da resposta. So pare para pedir "
+        "`/model sonnet` se o ativo for Haiku.",
     ),
     "reading": (
-        "\U0001F7E1 Fase de leitura/varredura — Haiku basta, ou delegue ao "
-        "context-scout. Considere `/model haiku`.",
-        "Gate modelo-por-fase: este prompt e leitura/varredura (Regra 7). Prefira "
-        "delegar ao subagente context-scout (Haiku) a ler tudo no modelo caro.",
+        "\U0001F7E1 Fase de leitura/varredura — leitura pontual, faça direto; "
+        "varredura ampla, delegue ao context-scout.",
+        "Gate modelo-por-fase: este prompt e leitura/varredura (Regra 7). Leitura "
+        "pontual (ancora conhecida, grep exato): faca direto. Varredura ampla: delegue "
+        "ao subagente context-scout, para proteger o contexto.",
     ),
 }
 

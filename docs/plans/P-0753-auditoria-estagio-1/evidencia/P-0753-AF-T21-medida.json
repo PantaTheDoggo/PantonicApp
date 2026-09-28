@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T21",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T17:15:01+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/agents/pantonic-planner.md').read_text(encoding='utf-8');print(t.count('Profundidade pela classe do plano'),t.count('plano de origem se derivado, classe do plano)'))\"",
+      "exit": 0,
+      "saida": "1 1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 43%]\n........................................................................ [ 57%]\n........................................................................ [ 72%]\n........................................................................ [ 86%]\n..................................................................       [100%]\n498 passed in 58.74s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 ---
 name: context-prep
-description: Fragmenta a carga inicial de contexto de uma tarefa — delega greps/varreduras exploratórias ao subagente context-scout (Haiku) e entrega ao modelo principal só um dossiê compacto. Usar no início de tarefas que exigem explorar o repositório antes da fase de análise/implementação, ou quando o usuário pedir "preparação de contexto barata".
+description: Fragmenta a carga inicial de contexto de uma tarefa — delega greps/varreduras exploratórias ao subagente context-scout e entrega ao modelo principal só um dossiê compacto, protegendo o contexto dele. Usar no início de tarefas que exigem explorar o repositório antes da fase de análise/implementação, ou quando o usuário pedir "preparação de contexto barata".
 ---
 
-# context-prep — exploração no Haiku, inteligência no modelo principal
+# context-prep — exploração em subagente, inteligência no modelo principal
 
 A saída de greps e leituras exploratórias entra no contexto do modelo que as executa e é
 cobrada na tarifa dele (e recobrada via cache a cada turno seguinte). Esta skill move essa
-fase para o subagente [[context-scout]] (`model: haiku`), preservando o contexto e o custo do
+fase para o subagente [[context-scout]], preservando o contexto do
 modelo principal para a fase intelectual. Complementa [[onboard]] (que cobre docs/planejamento);
 esta cobre a exploração de código específica da tarefa.
 
@@ -27,7 +27,7 @@ esta cobre a exploração de código específica da tarefa.
 
 1. Formule **uma pergunta de exploração fechada** por spawn (não "explore o projeto"), incluindo
    o objetivo da tarefa para o scout priorizar.
-2. Spawn: `Agent` com `subagent_type: context-scout` (o agente já fixa `model: haiku`).
+2. Spawn: `Agent` com `subagent_type: context-scout` (o agente já fixa o modelo).
    Perguntas independentes → múltiplos spawns em paralelo na mesma mensagem.
    **Todo prompt de spawn deve repetir o cap e o formato do dossiê** — encerre o prompt com:
    "Responda com um dossiê de ≤ 40 linhas: resposta direta, arquivos relevantes

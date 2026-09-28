@@ -14,6 +14,34 @@ mais barato.
 plano foi aprovado e está pronto para execução, sem chamar ferramentas de edição/execução. Só
 prossiga com a implementação em uma nova mensagem/turno iniciada pelo usuário.
 
+### Controle 1.1 — Persistir o plano **é** encerramento do planejamento, não execução
+
+Ao sair do Plan Mode com plano aprovado, **grave o plano no repositório antes de encerrar o
+turno**: em projeto Pantonic*, `docs/plans/P-<MMDD>-<slug>.md` + uma linha apensada a
+`docs/plans/_INBOX.md`. Isso **não** é execução e a Regra 1 **não** o proíbe — o que a Regra 1
+proíbe é começar a implementar. Só depois de gravado o turno encerra.
+
+**Motivo:** em Plan Mode o agente não pode escrever arquivo; depois da aprovação a Regra 1 manda
+parar. Lido literalmente, o arquivamento não tem onde morar, e o plano só existe no contexto da
+sessão — que o `/clear` seguinte destrói. Defeito medido em 2026-09-04 (PantonicVideo): dois
+planos aprovados no mesmo dia, nenhum gravado em `docs/plans/`, nenhum no `_INBOX.md`; a retomada
+seguinte de backlog encontrou fila vazia e reportou "nada a fazer" com dois planos aprovados
+pendurados. O harness salva uma cópia em `~/.claude/plans/<slug-aleatório>.md`, mas esse nome não
+é rastreável a partir do backlog — não substitui o arquivamento canônico.
+
+### Controle 1.2 — Não abrir sessão de planejamento sobre alvo que já tem plano aprovado
+
+Antes de entrar em Plan Mode para um tíquete/iniciativa, verifique se ele já tem plano vivo
+(`docs/plans/`, `_INBOX.md`, índice do diário). Se já tiver, **não replaneje**: ou executa o que
+está aprovado, ou emenda o plano existente por decisão explícita do dono. Planejar duas vezes o
+mesmo alvo produz dois planos vivos disputando a mesma rota — que é exatamente o que a regra de
+convergência de uma iniciativa proíbe (skill `diario-de-obras`, "Planos derivados").
+
+**Motivo:** mesmo incidente de 2026-09-04 — a segunda sessão custou um contexto inteiro de Opus e
+produziu um artefato descartado pelo dono. A causa dela foi o Controle 1.1: como o primeiro plano
+não estava gravado em lugar nenhum rastreável, a sessão seguinte não tinha como saber que ele
+existia.
+
 ## Regra 2 — Integridade do contexto
 
 Um contexto sustenta **um cenário coerente**: ele segue enquanto tudo que entra pertence a esse
@@ -30,10 +58,11 @@ começar.
   **contexto limpo para a reexecução**.
 - **Capacidade** — mesmo coeso, o desempenho cai conforme o contexto enche. A capacidade não
   interrompe trabalho em curso: ela **dimensiona o trabalho antes de começar**. Quem planeja
-  delimita cada tarefa para caber num contexto coerente e coeso, autossuficiente em contexto para
-  a execução, dentro de uma estimativa de **50% de ocupação da janela, com tolerância até 60%**. O
-  número não é constante mágica: vem da literatura sobre decaimento de desempenho de agentes em
-  função do enchimento do contexto, e é revisto se a literatura indicar outro valor.
+  delimita cada tarefa como a **materialização de uma operação inteira do modelo do plano**,
+  coesa e autossuficiente em contexto para a execução; **nenhum percentual de ocupação entra
+  no dimensionamento** — a janela de 1M tokens deixou de limitar a granularidade, e o critério
+  de admissão de matéria numa tarefa é coesão, não custo. A ocupação é aviso da janela de
+  orquestração, entre tarefas, nunca critério de tarefa.
 
 **Sinais de poluição** (checagem obrigatória, lista não exaustiva): material de outra tarefa,
 outro plano ou outra iniciativa entrou no contexto; premissa que sustentava o trabalho foi
@@ -46,7 +75,7 @@ contradição é fatal quando atinge o **cenário** (premissa, rota, contrato), 
 um **detalhe** que o próprio contexto já substituiu.
 
 **Consequências práticas:** para quem executa, vale **uma tarefa por contexto**, inalterado. Para
-quem orquestra, conduzir um plano **é** uma tarefa: o contexto atravessa várias tarefas atômicas
+quem orquestra, conduzir um plano **é** uma tarefa: o contexto atravessa várias tarefas
 sem violar nada, porque o cenário é o mesmo, e encerra na **troca de plano ou iniciativa** (troca
 de cenário) ou na capacidade, o que vier antes.
 
@@ -136,11 +165,11 @@ custo solta (caso medido: `GOVERNANCA.md` §3, kit Pantonic).
   corrigir) — nunca a cada micro-edição; tier superior só no fechamento.
 - **Sem re-leitura de verificação**: Edit/Write falham ruidosamente; reler o arquivo editado "para
   conferir" é um turno inteiro desperdiçado.
-- **Orçamento por tarefa atômica**: há um teto por classe de tarefa, calibrado pela série medida —
-  não um número único aqui; a tabela de tetos é autoridade do kit (`GOVERNANCA.md` §3, em projeto
-  Pantonic*). Estourar não é punição — é sinal de tarefa mal decomposta (replanejar) ou de método
-  ruim (thrashing editar-testar-editar sem plano interno); reportar no handover, não simplesmente
-  continuar.
+- **Classe do card é natureza, não teto**: nenhum número de turnos ou de ocupação dimensiona a
+  tarefa — a unidade é a operação do modelo do plano (`GOVERNANCA.md` §3, kit Pantonic).
+  Estourar não é punição — é sinal de operação mal recortada (volta ao modelador) ou de método
+  ruim (thrashing editar-testar-editar sem plano interno); reportar no handover, não
+  simplesmente continuar.
 - **Plano interno antes da primeira edição** — esboçar a sequência de mudanças reduz turnos de
   retrabalho.
 - **Fechamento enxuto**: um único registro canônico; relatório final ao orquestrador é ponteiro +
@@ -160,6 +189,22 @@ obstáculo técnico faz a fase intelectual vazar para a fase barata, sem o conte
   pendente, bloco a preencher, ramo condicional não resolvido, insumo que ainda não existe), o
   plano está incompleto — devolve ao planejamento e **não performa**.
 - **Rota é do dono:** ao bater num obstáculo que ameaça a rota aprovada, o executor **para**,
-  registra o achado e escala para replanejamento — nunca substitui a arquitetura por uma
+  registra o achado e devolve `blocked` à triagem do plano, que decide o destino da parada — nunca substitui a arquitetura por uma
   alternativa própria na mesma execução. Bifurcar rota exige decision record aprovado **antes** de
   codar a alternativa.
+
+## Regra 9 — A mensagem ao dono se entende sozinha
+
+**Motivo:** o dono não participou do ato que criou uma sigla. Mensagem que o obriga a abrir outro
+documento ou a gastar um prompt perguntando o que algo significa é falha medida — já custou
+prompts ao dono e o levou a inventar siglas que não existem.
+
+**Como aplicar:**
+- O que o dono precisa para decidir ou validar vem no corpo da mensagem; caminho de arquivo é
+  complemento, nunca substituto.
+- Nenhuma sigla chega sozinha: o objeto vai pelo título entre aspas duplas; a sigla só o acompanha,
+  entre parênteses, quando o dono precisa digitá-la para agir.
+- A glosa se escreve no idioma da conversa.
+- Em projeto Pantonic*, a regra mora em `GOVERNANCA.md` §4.2 (*Mensagem legível ao dono*), o
+  procedimento na skill `mensagem-ao-dono`, e a falha medida vira linha em
+  `docs/FALHAS_COMUNICACAO.tsv`.

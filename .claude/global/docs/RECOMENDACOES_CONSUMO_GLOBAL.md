@@ -38,7 +38,7 @@ de preferência (`feedback_opus_default`), contradizendo frontalmente o racional
 - Planejamento, auditoria, arquitetura → modelo caro (Opus) se o dono quiser.
 - Execução (implementar, testar, editar) → modelo de execução (Sonnet), salvo tarefa
   individualmente marcada como de alto risco.
-- Exploração/varredura → modelo barato (Haiku, ex.: context-scout).
+- Exploração/varredura ampla → subagente de coleta (context-scout, Opus), para proteger o contexto; leitura pontual, direto no modelo ativo.
 
 Toda exceção é explícita no arquivo do agente **com o racional de custo confrontado com a
 Regra 1**, nunca herdada de uma preferência genérica.

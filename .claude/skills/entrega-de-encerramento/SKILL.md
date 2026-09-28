@@ -8,7 +8,7 @@ description: Produz o documento de encerramento de um plano Pantonic* — o mode
 **Todo plano entregue gera este documento.** Ele é o artefato de validação: o dono não dá veredito
 sobre um plano lendo o plano — dá lendo o modelo **as-is** das operações que o plano deixou.
 
-**Residência:** `docs/OPERACOES_AS_IS.md` quando o plano é o primeiro a produzir um; a partir do
+**Residência:** `docs/plans/P-<n>-<slug>/operacoes.md`, na pasta do plano. Plano legado: `docs/OPERACOES_AS_IS.md` quando o plano é o primeiro a produzir um; a partir do
 segundo, `docs/OPERACOES_AS_IS_<PLANO>.md`, ou uma seção nova no documento existente quando o plano
 altera operações já descritas nele. A decisão é do `scrum-master` no fechamento, e o critério é um
 só: **um leitor que abra o documento tem de encontrar o estado corrente, não a união de estados
@@ -151,24 +151,13 @@ aponta para a pendência da segunda, pelo número.
    erra: numa redação de referência, o autor contou "quatro categorias" onde o código tinha cinco.
 3. **Colha saídas reais.** Rode os comandos e copie a saída. Onde a saída já existe no registro da
    execução, cite-a de lá.
-4. **Escreva as seções por tarefa**, aplicando os três testes da regra de leitura.
+4. **Escreva as seções por tarefa** sobre o esqueleto que `python .claude/tools/encerrar.py operacoes --plano <plano>` gera (uma seção por tarefa viva, com os quatro blocos vazios), aplicando os três testes da regra de leitura.
 5. **Classifique cada defeito e cada pendência** pelos três estados.
-6. **Verifique a cobertura por comando**, não por leitura — todo card do plano citado no documento:
-
-   ```
-   python - <<'EOF'
-   import re
-   from pathlib import Path
-   doc = Path('<documento>').read_text(encoding='utf-8')
-   plano = Path('<plano>').read_text(encoding='utf-8')
-   cards = set(re.findall(r'^### (\S+-T\S+) ', plano, re.M))
-   citados = set(re.findall(r'`(\S+-T[0-9]+[a-z]?)`', doc))
-   print('nao citados:', sorted(cards - citados) or 'nenhum')
-   EOF
-   ```
-
-7. **Verifique a estrutura por comando** — toda seção de tarefa com os quatro blocos obrigatórios.
-8. **Apresente ao dono** e colha o veredito.
+6. **Verifique a cobertura e a estrutura por comando**, não por leitura — todo card do plano citado
+   no documento, toda tarefa viva com a sua seção e toda seção de tarefa com os quatro blocos
+   obrigatórios: `python .claude/tools/encerrar.py operacoes --plano <plano> --checar`, exit `0`
+   com as linhas `nao citados: nenhum`, `sem seção: nenhum` e `sem os quatro blocos: nenhum`.
+7. **Apresente ao dono** e colha o veredito.
 
 ---
 

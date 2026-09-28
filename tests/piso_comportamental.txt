@@ -1,0 +1,135 @@
+# Piso comportamental do hub — um comportamento trancado por linha (GOVERNANCA.md §4.4); gerado pela AF-T15 do P-0753.
+tests/conformance/test_camadas_do_kit.py::test_tr_camada_acusa_import_de_tests_e_de_caminhos — camada acusa import de tests e de caminhos
+tests/test_backlog.py::test_tr_c10_contador_do_inbox_aponta_para_id_livre_nao_dispara — c10 contador do inbox aponta para id livre nao dispara
+tests/test_backlog.py::test_tr_check_esqueleto_com_linha_de_tarefa_segue_acusando_c10 — check esqueleto com linha de tarefa segue acusando c10
+tests/test_backlog.py::test_tr_check_plano_legado_blocked_no_contador_segue_acusando_c10 — check plano legado blocked no contador segue acusando c10
+tests/test_backlog.py::test_tr_c12_depende_de_com_ids_de_tarefa_nao_dispara — c12 depende de com ids de tarefa nao dispara
+tests/test_backlog.py::test_tr_resolver_citacao_secao_nao_casa_por_substring — resolver citacao secao nao casa por substring
+tests/test_backlog.py::test_tr_resolver_citacao_secao_item5_arquivo_ausente_ou_ambiguo_devolve_none — resolver citacao secao item5 arquivo ausente ou ambiguo devolve none
+tests/test_backlog.py::test_tr_resolver_citacao_secao_dominio_um_nivel — resolver citacao secao dominio um nivel
+tests/test_backlog.py::test_tr_show_de_tiquete_nao_muda — show de tiquete nao muda
+tests/test_backlog.py::test_tr_carregar_nunca_abre_historico — carregar nunca abre historico
+tests/test_backlog.py::test_tr_saida_do_next_cabe_no_teto — saida do next cabe no teto
+tests/test_backlog.py::test_tr_card_inteiro_notas_de_execucao_seguem_com_teto — card inteiro notas de execucao seguem com teto
+tests/test_backlog.py::test_tr_linha_dos_tres_contadores_segue_identica — linha dos tres contadores segue identica
+tests/test_backlog.py::test_tr_bloco_fila_nao_cresce_com_plano_terminal — bloco fila nao cresce com plano terminal
+tests/test_backlog.py::test_tr_diretiva_sem_id_descartado_mensagem_igual_a_hoje — diretiva sem id descartado mensagem igual a hoje
+tests/test_backlog.py::test_tr_bkl_grupos_posicionais — bkl grupos posicionais
+tests/test_backlog.py::test_tr_status_canonico_continua_lido — status canonico continua lido
+tests/test_backlog.py::test_tr_round_trip_blocked_ready_preserva_a_cauda — round trip blocked ready preserva a cauda
+tests/test_backlog.py::test_tr_historico_do_inbox_so_cresce — historico do inbox so cresce
+tests/test_backlog.py::test_tr_main_reconfigure_apos_parse_args_falha_no_ambiente_hostil — main reconfigure apos parse args falha no ambiente hostil
+tests/test_backlog.py::test_tr_tk88_plano_com_tarefa_aberta_nao_fecha_e_tarefa_segue_a_tabela — tk88 plano com tarefa aberta nao fecha e tarefa segue a tabela
+tests/test_backlog.py::test_tr_despachar_recusa_no_primeiro_gate_sem_escrever — despachar recusa no primeiro gate sem escrever
+tests/test_card_check.py::test_tr_card_integro_sai_zero — card integro sai zero
+tests/test_card_check.py::test_tr_pipe_dentro_de_argumento_citado_executa — pipe dentro de argumento citado executa
+tests/test_card_check.py::test_tr_card_sem_ancora_nao_muda — card sem ancora nao muda
+tests/test_card_check.py::test_tr_estado_tsv_ready_compara_antes — estado tsv ready compara antes
+tests/test_crenca_hook.py::test_tr_payload_invalido_sai_zero — payload invalido sai zero
+tests/test_dead_code.py::test_tr_orphan_symbol_is_flagged — orphan symbol is flagged
+tests/test_dead_code.py::test_tr_undeclared_framework_virtual_is_flagged — undeclared framework virtual is flagged
+tests/test_encerrar.py::test_tr_achado_do_laudo_repetido_nao_duplica — achado do laudo repetido nao duplica
+tests/test_encerrar.py::test_tr_nao_medido_com_medida_na_serie_recusa — nao medido com medida na serie recusa
+tests/test_encerrar.py::test_tr_nao_medido_com_trio_recusa — nao medido com trio recusa
+tests/test_encerrar.py::test_tr_tarefa_trio_repetido_recusa_sem_escrever — tarefa trio repetido recusa sem escrever
+tests/test_encerrar.py::test_tr_tarefa_recusa_sem_escrever[status-nao-review] — tarefa recusa sem escrever
+tests/test_encerrar.py::test_tr_tarefa_recusa_sem_escrever[sem-laudo] — tarefa recusa sem escrever
+tests/test_encerrar.py::test_tr_tarefa_recusa_sem_escrever[reprovado] — tarefa recusa sem escrever
+tests/test_encerrar.py::test_tr_tarefa_recusa_sem_escrever[sem-consumo] — tarefa recusa sem escrever
+tests/test_encerrar.py::test_tr_checar_close_recusa_antes_do_done — checar close recusa antes do done
+tests/test_encerrar.py::test_tr_plano_recusa_sem_escrever[tarefa-aberta] — plano recusa sem escrever
+tests/test_encerrar.py::test_tr_plano_recusa_sem_escrever[sem-operacoes] — plano recusa sem escrever
+tests/test_encerrar.py::test_tr_plano_recusa_sem_escrever[achado-sem-rota] — plano recusa sem escrever
+tests/test_encerrar.py::test_tr_plano_recusa_sem_escrever[done-sem-rdo] — plano recusa sem escrever
+tests/test_encerrar.py::test_tr_handover_recusa_tarefa_sem_entrega — handover recusa tarefa sem entrega
+tests/test_encerrar.py::test_tr_marco_no_go_nao_muda_status — marco no go nao muda status
+tests/test_encerrar.py::test_tr_marco_recusa_sem_linha_do_marco_sem_escrever — marco recusa sem linha do marco sem escrever
+tests/test_encerrar.py::test_tr_marco_regravar_celula_com_pipe_escapado_nao_deixa_resto — marco regravar celula com pipe escapado nao deixa resto
+tests/test_encerrar.py::test_tr_marco_go_com_transicao_recusada_nao_escreve — marco go com transicao recusada nao escreve
+tests/test_encerrar.py::test_tr_esqueleto_de_operacoes_nao_sobrescreve — esqueleto de operacoes nao sobrescreve
+tests/test_encerrar.py::test_tr_esqueleto_de_operacoes_checar_secao_apagada — esqueleto de operacoes checar secao apagada
+tests/test_fixtures_higiene.py::test_tr_ebk_6_fixtures_reais_nao_carregam_nome_de_descoberta — ebk 6 fixtures reais nao carregam nome de descoberta
+tests/test_materializar.py::test_tr_apply_reescreve_destino_com_diferenca_semantica_real — apply reescreve destino com diferenca semantica real
+tests/test_materializar.py::test_tr_apply_substitui_entrada_de_kit_relativa_antiga_por_absoluta_unica — apply substitui entrada de kit relativa antiga por absoluta unica
+tests/test_materializar.py::test_tr_check_falha_quando_comando_aponta_arquivo_inexistente — check falha quando comando aponta arquivo inexistente
+tests/test_materializar.py::test_tr_drift_falha_com_destino_ausente_e_mensagem_traz_remedio — drift falha com destino ausente e mensagem traz remedio
+tests/test_materializar.py::test_tr_drift_falha_com_hook_de_kit_ausente_do_canonico — drift falha com hook de kit ausente do canonico
+tests/test_materializar.py::test_tr_drift_projeto_ok_no_repositorio_real_depois_do_apply — drift projeto ok no repositorio real depois do apply
+tests/test_ocupacao.py::test_tr_calcular_ocupacao_usa_a_ultima_entrada_nao_a_primeira — calcular ocupacao usa a ultima entrada nao a primeira
+tests/test_ocupacao.py::test_tr_calcular_ocupacao_ignora_entrada_com_type_diferente_de_assistant — calcular ocupacao ignora entrada com type diferente de assistant
+tests/test_ocupacao.py::test_tr_calcular_ocupacao_ignora_linha_json_malformada_e_usa_a_seguinte_valida — calcular ocupacao ignora linha json malformada e usa a seguinte valida
+tests/test_ocupacao.py::test_tr_avaliar_nao_cruza_abaixo_do_limiar — avaliar nao cruza abaixo do limiar
+tests/test_ocupacao.py::test_tr_avaliar_janela_zero_nao_cruza_e_nao_lanca_zerodivisionerror — avaliar janela zero nao cruza e nao lanca zerodivisionerror
+tests/test_ocupacao.py::test_tr_janela_tokens_default_e_sobrescrita_por_variavel_de_ambiente — janela tokens default e sobrescrita por variavel de ambiente
+tests/test_ocupacao.py::test_tr_janela_tokens_aceita_sufixo_e_ignora_lixo — janela tokens aceita sufixo e ignora lixo
+tests/test_progresso_hook.py::test_tr_m7_revisor_sem_recomendacao_diz_nao_informada — m7 revisor sem recomendacao diz nao informada
+tests/test_progresso_hook.py::test_tr_literal_em_argumento_nao_e_propria_invocacao — literal em argumento nao e propria invocacao
+tests/test_progresso_hook.py::test_tr_opcao_do_interpretador_sem_valor_segue_gerando_m2 — opcao do interpretador sem valor segue gerando m2
+tests/test_rdo.py::test_tr_laudo_escalar_domina_recomendacao_mesmo_com_veredito_aprovado — laudo escalar domina recomendacao mesmo com veredito aprovado
+tests/test_rdo.py::test_tr_laudo_recusa_recomendacao_percentual_e_veredito_como_argumento — laudo recusa recomendacao percentual e veredito como argumento
+tests/test_rdo.py::test_tr_laudo_card_licoes_aprendidas_vazio_e_legitimo_sem_flag — laudo card licoes aprendidas vazio e legitimo sem flag
+tests/test_rdo.py::test_tr_laudo_recusa_conforme_contra_vermelho_mecanico — laudo recusa conforme contra vermelho mecanico
+tests/test_rdo.py::test_tr_laudo_recusa_nao_se_aplica_em_dimensao_que_nao_admite — laudo recusa nao se aplica em dimensao que nao admite
+tests/test_rdo.py::test_tr_close_sem_trio_nem_nao_medido_recusa — close sem trio nem nao medido recusa
+tests/test_rdo.py::test_tr_close_tokens_k_inteiro_grava_uma_casa_decimal_sempre — close tokens k inteiro grava uma casa decimal sempre
+tests/test_rdo.py::test_tr_close_consumo_valido_segue_igual — close consumo valido segue igual
+tests/test_rdo.py::test_tr_extrair_dossie_cabecalho_historico_com_teto_e_aceito_e_descartado — extrair dossie cabecalho historico com teto e aceito e descartado
+tests/test_rdo.py::test_tr_close_recusa_cada_campo_do_pacote_ausente[--veredito] — close recusa cada campo do pacote ausente
+tests/test_rdo.py::test_tr_close_recusa_cada_campo_do_pacote_ausente[--percentual] — close recusa cada campo do pacote ausente
+tests/test_rdo.py::test_tr_close_recusa_cada_campo_do_pacote_ausente[--bloqueante] — close recusa cada campo do pacote ausente
+tests/test_rdo.py::test_tr_close_recusa_cada_campo_do_pacote_ausente[--recomendacao] — close recusa cada campo do pacote ausente
+tests/test_rdo.py::test_tr_close_recusa_cada_campo_do_pacote_ausente[--pendencia-laudo] — close recusa cada campo do pacote ausente
+tests/test_rdo.py::test_tr_close_recusa_veredito_fora_do_dominio — close recusa veredito fora do dominio
+tests/test_rdo.py::test_tr_close_recusa_percentual_fora_de_0_100 — close recusa percentual fora de 0 100
+tests/test_rdo.py::test_tr_close_recusa_new_e_laudos_dir_fora_da_cli — close recusa new e laudos dir fora da cli
+tests/test_rdo.py::test_tr_close_recusa_pendencia_de_duas_linhas — close recusa pendencia de duas linhas
+tests/test_rdo.py::test_tr_close_card_licoes_aprendidas_ausente_nao_e_obrigatorio — close card licoes aprendidas ausente nao e obrigatorio
+tests/test_rdo.py::test_tr_close_recusa_fechar_a_mesma_tarefa_duas_vezes — close recusa fechar a mesma tarefa duas vezes
+tests/test_rdo.py::test_tr_laudo_recusa_plano_e_tarefa_em_forma_de_caminho — laudo recusa plano e tarefa em forma de caminho
+tests/test_rdo.py::test_tr_extrair_dossie_id_casa_por_igualdade_exata — extrair dossie id casa por igualdade exata
+tests/test_rdo.py::test_tr_laudo_achado_de_processo_nao_muda_veredito_nem_recomendacao — laudo achado de processo nao muda veredito nem recomendacao
+tests/test_rdo.py::test_tr_laudo_secao_achado_de_processo_existe_com_nenhum_sem_a_flag — laudo secao achado de processo existe com nenhum sem a flag
+tests/test_rdo.py::test_tr_laudo_recusa_alvo_fora_dos_tres_e_linha_com_pipe — laudo recusa alvo fora dos tres e linha com pipe
+tests/test_rdo.py::test_tr_rdo_2campos — rdo 2campos
+tests/test_rdo.py::test_tr_campo_multilinha_continua_valendo — campo multilinha continua valendo
+tests/test_rdo.py::test_tr_san_19_close_com_rdo_dir_sobre_plano_em_pasta_vence_a_flag — san 19 close com rdo dir sobre plano em pasta vence a flag
+tests/test_review_evidence.py::test_tr_extrair_arquivos_alvo_ignora_texto_sem_barra_e_referencia_de_linha — extrair arquivos alvo ignora texto sem barra e referencia de linha
+tests/test_review_evidence.py::test_tr_comando_guarda_vermelho_trava_guardas_sem_travar_testes — comando guarda vermelho trava guardas sem travar testes
+tests/test_review_evidence.py::test_tr_pytest_vermelho_trava_testes_e_guardas — pytest vermelho trava testes e guardas
+tests/test_review_evidence.py::test_tr_bateria_sem_comando_pytest_trava_testes_nao_conforme — bateria sem comando pytest trava testes nao conforme
+tests/test_review_evidence.py::test_tr_extrair_literais_nao_caminho_lista_o_descartado — extrair literais nao caminho lista o descartado
+tests/test_review_evidence.py::test_tr_alvo_sem_ancora_nao_muda — alvo sem ancora nao muda
+tests/test_review_evidence.py::test_tr_extrair_arquivos_alvo_recusa_id_de_tarefa_e_de_decisao — extrair arquivos alvo recusa id de tarefa e de decisao
+tests/test_review_evidence.py::test_tr_relatorio_de_auditoria_alvo_do_card_segue_coberto — relatorio de auditoria alvo do card segue coberto
+tests/test_review_evidence.py::test_tr_arquivo_sem_atribuicao_continua_fora_dos_alvos_com_veredito_aberto — arquivo sem atribuicao continua fora dos alvos com veredito aberto
+tests/test_review_evidence.py::test_tr_tarefa_com_dossie_invalido_e_pulada_pela_atribuicao — tarefa com dossie invalido e pulada pela atribuicao
+tests/test_review_evidence.py::test_tr_arquivo_em_claude_fora_de_agents_continua_sem_atribuicao — arquivo em claude fora de agents continua sem atribuicao
+tests/test_review_evidence.py::test_tr_agente_declarado_como_alvo_do_card_fica_no_balde_de_cobertura — agente declarado como alvo do card fica no balde de cobertura
+tests/test_review_evidence.py::test_tr_atribuicao_de_arquivos_tocados_cobre_os_quatro_baldes_alheios_de_confrontar_escopo — atribuicao de arquivos tocados cobre os quatro baldes alheios de confrontar escopo
+tests/test_review_evidence.py::test_tr_atribuir_nao_monta_dossie — atribuir nao monta dossie
+tests/test_review_evidence.py::test_tr_estado_da_arvore_de_trabalho_vence — estado da arvore de trabalho vence
+tests/test_review_evidence.py::test_tr_sem_desde_nada_muda — sem desde nada muda
+tests/test_review_evidence.py::test_tr_dossie_com_plano_inexistente_nao_muda — dossie com plano inexistente nao muda
+tests/test_review_evidence.py::test_tr_atribuir_com_tarefa_inexistente_continua_igual — atribuir com tarefa inexistente continua igual
+tests/test_review_evidence.py::test_tr_diff_stat_desde_sem_tocados_sai_sem_diferencas — diff stat desde sem tocados sai sem diferencas
+tests/test_review_evidence.py::test_tr_evidencia_sem_medida_diz_ausente — evidencia sem medida diz ausente
+tests/test_telemetria.py::test_tr_fonte_invalida_falha_ruidosa_sem_escrever — fonte invalida falha ruidosa sem escrever
+tests/test_telemetria.py::test_tr_campo_numerico_nao_numerico_falha_ruidosa_sem_escrever — campo numerico nao numerico falha ruidosa sem escrever
+tests/test_telemetria.py::test_tr_celula_vazia_recusada_com_fonte_usage — celula vazia recusada com fonte usage
+tests/test_telemetria.py::test_tr_serie_existente_nao_reescrita — serie existente nao reescrita
+tests/test_telemetria_hook.py::test_tr_calcular_consumo_sem_entradas_assistant_e_zero_em_tudo — calcular consumo sem entradas assistant e zero em tudo
+tests/test_telemetria_hook.py::test_tr_calcular_consumo_mesma_mensagem_duas_entradas_nao_dobra — calcular consumo mesma mensagem duas entradas nao dobra
+tests/test_telemetria_hook.py::test_tr_calcular_consumo_tool_uses_e_duracao_ficam_intocados — calcular consumo tool uses e duracao ficam intocados
+tests/test_telemetria_hook.py::test_tr_processar_sem_estado_e_silencio_sem_escrita — processar sem estado e silencio sem escrita
+tests/test_telemetria_hook.py::test_tr_processar_agent_type_fora_do_filtro_e_silencio_e_preserva_o_estado — processar agent type fora do filtro e silencio e preserva o estado
+tests/test_telemetria_hook.py::test_tr_hook_sem_id_derivavel_grava_sem_id_papel — hook sem id derivavel grava sem id papel
+tests/test_prevoo.py::test_tr_prevoo_simbolo_definido_diz_onde — prevoo simbolo definido diz onde
+tests/test_prevoo.py::test_tr_prevoo_citacao_em_crase_e_pontuada — prevoo citacao em crase e pontuada
+tests/test_prevoo.py::test_tr_prevoo_chamada_com_parenteses_fechados — prevoo chamada com parenteses fechados
+tests/test_prevoo.py::test_tr_prevoo_flag_com_pontuacao — prevoo flag com pontuacao
+tests/test_encerrar.py::test_tr_esqueleto_de_operacoes_plano_relativo — esqueleto de operacoes plano relativo
+tests/test_review_evidence.py::test_tr_acionamentos_do_consultor_sai_como_registro_da_orquestracao — acionamentos do consultor sai como registro da orquestracao
+tests/test_telemetria_hook.py::test_tr_processar_sem_tsv_path_grava_na_serie_do_repo_do_estado — processar sem tsv path grava na serie do repo do estado
+tests/test_backlog.py::test_tr_despachar_mundo_depois_redespacha_tarefa_ja_aplicada — despachar mundo depois redespacha tarefa ja aplicada
+tests/test_review_evidence.py::test_tr_diff_stat_desde_tocados_vazio_com_arvore_diferente_nao_resume_a_arvore — diff stat desde tocados vazio com arvore diferente nao resume a arvore
+tests/test_backlog.py::test_tr_show_achados_truncados_apontam_a_secao_de_achados — show achados truncados apontam a secao de achados

@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T1",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T11:30:04+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"diff_stat_desde\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 59 deselected in 3.68s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".......................................... [ 47%]\n........................................................................ [ 63%]\n........................................................................ [ 79%]\n........................................................................ [ 95%]\n......................                                                   [100%]\n454 passed in 91.31s (0:01:31)",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

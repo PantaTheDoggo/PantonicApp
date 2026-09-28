@@ -18,7 +18,7 @@ aberto; nunca resolve sozinha para `parcial`.
 
 Forma canônica do campo `Arquivos-alvo` (`P-0739` `DB-26`/`DB-27`): um caminho por bullet, o
 caminho como primeiro literal entre crases do bullet, com sufixo opcional `:<linha>`. A extração
-é mecânica e por **literal**, não por linha — `_parsear_campos` (`.claude/tools/rdo.py:151-183`)
+é mecânica e por **literal**, não por linha — `_parsear_campos_com_linhas` (`.claude/tools/rdo.py:212-272`)
 junta as linhas de um campo com espaço, e a estrutura de bullets não chega até aqui. Todo literal
 entre crases é candidato; vira alvo só quando casa `_CAMINHO_RE` e tem extensão, barra ou termina
 em `/`. Literal descartado (trecho de regex, cabeçalho de seção) sai na seção `## Escopo` como
@@ -48,14 +48,25 @@ repositório. Ausência de `--desde` preserva o comportamento anterior integralm
 
 A seção `## Escopo` classifica o arquivo tocado em cinco baldes (`P-0739` `DB-25`): coberto
 pelos alvos do card; alvo declarado por outra tarefa do mesmo plano; registro da orquestração
-(`docs/DIARIO_DE_OBRAS.md`, `docs/telemetria.tsv`, `docs/plans/`, `docs/RDO/`); ato do dono fora
+(`docs/DIARIO_DE_OBRAS.md`, `docs/telemetria.tsv`, `docs/ACIONAMENTOS_CONSULTOR.tsv`, `docs/plans/`,
+`docs/RDO/`, `docs/audits/`); ato do dono fora
 do ciclo de tarefa (`.claude/agents/`); fora dos alvos
 sem atribuição. Só o último resolve o veredito — `git` não sabe qual tarefa tocou qual arquivo,
-e o plano sabe qual tarefa declarou qual alvo."""
+e o plano sabe qual tarefa declarou qual alvo.
+
+`--capturar-ref` (`TK-93a`) imprime o `<ref>` do despacho (`capturar_ref`) e sai, sem exigir
+`--plano` nem `--tarefa`: um commit cuja árvore é a árvore de trabalho inteira no instante da
+captura, rastreados e não rastreados não ignorados, sem alterar árvore, índice real nem lista de
+stash. Com `--desde <esse ref>`, o não rastreado que já existia na árvore dele é julgado por
+conteúdo (linha a linha, fim de linha normalizado) em vez de por `st_mtime`, e o trecho dele é o
+diff unificado contra o conteúdo em `<ref>` — nunca o de `git diff <ref>`, que o daria como
+apagado por estar fora do índice atual."""
 from __future__ import annotations
 
 import argparse
+import difflib
 import importlib.util
+import json
 import os
 import re
 import subprocess
@@ -63,8 +74,25 @@ import sys
 import tempfile
 from pathlib import Path
 
+
+def _carregar_caminhos():
+    caminho = Path(__file__).resolve().parent / "caminhos.py"
+    spec = importlib.util.spec_from_file_location("caminhos", caminho)
+    modulo = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = modulo
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+_caminhos = _carregar_caminhos()
+
 _BACKTICK_RE = re.compile(r"`([^`]+)`")
+_STATUS_DESPACHADO = frozenset({"in-progress", "review", "done"})
 _LINHA_REF_RE = re.compile(r":\d+(-\d+)?$")
+_SECAO_REF_RE = re.compile(r"\s+§\S*$")
+_LITERAL_APOS_ANCORA_RE = re.compile(
+    r"(`[^`\s]+:\d+(?:-\d+)?`)\s*(?:—|:)\s*`(?:\\`|[^`\\])+`"
+)
 
 
 class ReviewEvidenceValidationError(ValueError):
@@ -115,11 +143,12 @@ def _classificar_campo_alvos(campos: dict) -> tuple[list[str], list[str]]:
     """Parte o campo `Arquivos-alvo`/`Entregável` em (alvos, literais descartados), por literal
     entre crases (`DB-27`). Descartado é fato impresso, nunca bloqueio (`DB-19`)."""
     texto = campos.get("arquivos-alvo") or campos.get("entregavel") or ""
+    texto = _LITERAL_APOS_ANCORA_RE.sub(r"\1", texto)
     alvos: dict[str, None] = {}
     descartados: list[str] = []
     for match in _BACKTICK_RE.finditer(texto):
         bruto = match.group(1).strip()
-        candidato = _LINHA_REF_RE.sub("", bruto)
+        candidato = _LINHA_REF_RE.sub("", _SECAO_REF_RE.sub("", bruto))
         if _eh_caminho(candidato):
             alvos.setdefault(candidato, None)
         else:
@@ -147,10 +176,15 @@ def _forcar_utf8(stream) -> None:
         reconfigure(encoding="utf-8", errors="replace")
 
 
-def _git(args: list[str], root: Path) -> str:
+def _git(args: list[str], root: Path, env: dict[str, str] | None = None) -> str:
     try:
         resultado = subprocess.run(
-            ["git", *args], cwd=str(root), capture_output=True, text=True, encoding="utf-8"
+            ["git", *args],
+            cwd=str(root),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            env=env,
         )
     except FileNotFoundError as exc:
         raise ReviewEvidenceValidationError("git: executável não encontrado no PATH") from exc
@@ -170,8 +204,60 @@ def _diff(args_sem_head: list[str], root: Path) -> str:
         return _git(["diff", *args_sem_head], root)
 
 
-def coletar_diff_stat(root: Path) -> str:
-    return _diff(["--stat"], root).strip()
+def capturar_ref(root: Path) -> str:
+    """`<ref>` do despacho (`TK-93a`, flag `--capturar-ref`): commit cujo pai é `HEAD` (sem pai em
+    repositório sem commit ainda) e cuja árvore é a árvore de trabalho inteira — rastreados e não
+    rastreados não ignorados —, gravado por um índice temporário (`GIT_INDEX_FILE`); a árvore de
+    trabalho, o índice real e a lista de stash saem exatamente como entraram, porque nada aqui
+    escreve nele."""
+    fd, indice_tmp = tempfile.mkstemp(prefix=".review-evidence-index-", suffix=".tmp")
+    os.close(fd)
+    Path(indice_tmp).unlink()
+    env = dict(os.environ)
+    env["GIT_INDEX_FILE"] = indice_tmp
+    try:
+        _git(["add", "-A"], root, env=env)
+        arvore = _git(["write-tree"], root, env=env).strip()
+        try:
+            pai = _git(["rev-parse", "--verify", "HEAD"], root).strip()
+        except ReviewEvidenceValidationError:
+            pai = None
+        args_commit = ["commit-tree", arvore, "-m", "review_evidence: captura de <ref> (TK-93a)"]
+        if pai is not None:
+            args_commit += ["-p", pai]
+        return _git(args_commit, root, env=env).strip()
+    finally:
+        Path(indice_tmp).unlink(missing_ok=True)
+
+
+def coletar_diff_stat(root: Path, desde: str | None = None) -> str:
+    """Sem `desde`: `git diff HEAD --stat` (comportamento de sempre). Com `desde=<ref>` (`AF-T1`,
+    `TK-94a`): recorta o resumo para o mesmo conjunto que `coletar_arquivos_tocados(root, desde)`
+    devolve — rastreados e não rastreados da entrega, nunca o trabalho em andamento de outra
+    tarefa na mesma árvore. Sem tocado nenhum, devolve string vazia (o chamador já renderiza
+    `(sem diferenças)` para diff vazio); com tocado, grava a árvore de trabalho num índice
+    temporário (`GIT_INDEX_FILE`, mesmo molde de `capturar_ref`) para obter o hash da árvore
+    inteira — rastreados e não rastreados —, e roda `git diff --stat <desde> <árvore> --
+    <tocados>` fora do índice temporário (comparação de dois tree-ish, não precisa mais dele).
+    Árvore de trabalho, índice real e lista de stash saem como entraram: nada aqui escreve
+    neles. Nunca roda `git diff --stat` sem caminho quando `tocados` é vazio — sem `--`, ele
+    devolveria a árvore inteira."""
+    if desde is None:
+        return _diff(["--stat"], root).strip()
+    tocados = coletar_arquivos_tocados(root, desde)
+    if not tocados:
+        return ""
+    fd, indice_tmp = tempfile.mkstemp(prefix=".review-evidence-index-", suffix=".tmp")
+    os.close(fd)
+    Path(indice_tmp).unlink()
+    env = dict(os.environ)
+    env["GIT_INDEX_FILE"] = indice_tmp
+    try:
+        _git(["add", "-A"], root, env=env)
+        arvore = _git(["write-tree"], root, env=env).strip()
+    finally:
+        Path(indice_tmp).unlink(missing_ok=True)
+    return _git(["diff", "--stat", desde, arvore, "--", *tocados], root).strip()
 
 
 def _extrair_caminho_status(linha: str) -> str:
@@ -179,6 +265,46 @@ def _extrair_caminho_status(linha: str) -> str:
     if " -> " in caminho:
         caminho = caminho.split(" -> ", 1)[1]
     return caminho.strip().strip('"')
+
+
+def _existe_no_ref(root: Path, ref: str, caminho: str) -> bool:
+    """`git cat-file -e <ref>:<caminho>` — existe como blob na árvore do commit `<ref>`."""
+    return (
+        subprocess.run(
+            ["git", "cat-file", "-e", f"{ref}:{caminho}"],
+            cwd=str(root),
+            capture_output=True,
+        ).returncode
+        == 0
+    )
+
+
+def _eh_nao_rastreado(root: Path, caminho: str) -> bool:
+    """`??` no `git status` de hoje para este caminho — fora do índice atual, mesmo que presente
+    na árvore do commit de `--capturar-ref` (que grava não rastreados também)."""
+    saida = _git(["status", "--porcelain=v1", "--untracked-files=all", "--", caminho], root)
+    return saida.startswith("??")
+
+
+def _texto_do_ref(root: Path, ref: str, caminho: str) -> str:
+    return _git(["show", f"{ref}:{caminho}"], root)
+
+
+def _texto_do_disco(root: Path, caminho: str) -> str | None:
+    try:
+        return (root / caminho).read_text(encoding="utf-8")
+    except (FileNotFoundError, UnicodeDecodeError):
+        return None
+
+
+def _nao_rastreado_mudou_desde_ref(root: Path, ref: str, caminho: str) -> bool:
+    """Julgamento por conteúdo (linha a linha, fim de linha normalizado por `str.splitlines`) do
+    não rastreado que já existia na árvore de `<ref>` — em vez do recorte por `st_mtime` usado
+    para o não rastreado ausente de `<ref>` (esse permanece intocado)."""
+    texto_atual = _texto_do_disco(root, caminho)
+    if texto_atual is None:
+        return True
+    return _texto_do_ref(root, ref, caminho).splitlines() != texto_atual.splitlines()
 
 
 def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
@@ -191,8 +317,14 @@ def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
     Com `desde=<ref>` (AUT-T5b): recorta o conjunto de rastreados para só os alterados **desde**
     `<ref>` (`git diff <ref> --name-only`), em vez da árvore de trabalho inteira — necessário
     quando outras tarefas têm mudanças soltas, não commitadas, no mesmo repositório. Untracked
-    nunca é "desde um ref" (não existe no histórico), então as entradas `??` do `git status`
-    entram sempre, com ou sem `desde`."""
+    presente na árvore de `<ref>` (`TK-93a`: `<ref>` de `--capturar-ref` grava não rastreados
+    também) é julgado por conteúdo (`_nao_rastreado_mudou_desde_ref`), não por data — ele não
+    aparece em `git diff <ref> --name-only` (que o dá como apagado, já que está fora do índice
+    atual). Untracked ausente de `<ref>` (ex.: `<ref>` de `git stash create`, que não grava
+    não rastreados) segue pelo recorte por data: a entrada `??` cujo arquivo tem `st_mtime` menor
+    que a data de commit de `<ref>` (`%ct`) fica de fora; a de data igual ou maior entra, e também
+    a que não existe no disco como veio do `git status` (nome entre aspas com escape octal, por
+    exemplo)."""
     saida_status = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
     tocados: dict[str, None] = {}
     if desde is None:
@@ -202,14 +334,27 @@ def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
             tocados.setdefault(_extrair_caminho_status(linha), None)
         return sorted(tocados.keys())
 
+    corte = int(_git(["show", "-s", "--format=%ct", desde], root).strip())
+    nao_rastreados: set[str] = set()
     for linha in saida_status.splitlines():
         if not linha.startswith("??"):
             continue
-        tocados.setdefault(_extrair_caminho_status(linha), None)
+        caminho = _extrair_caminho_status(linha)
+        nao_rastreados.add(caminho)
+        if _existe_no_ref(root, desde, caminho):
+            if _nao_rastreado_mudou_desde_ref(root, desde, caminho):
+                tocados.setdefault(caminho, None)
+            continue
+        arquivo = root / caminho
+        if arquivo.exists() and arquivo.stat().st_mtime < corte:
+            continue
+        tocados.setdefault(caminho, None)
     saida_diff = _git(["diff", desde, "--name-only"], root)
     for linha in saida_diff.splitlines():
         linha = linha.strip()
-        if linha:
+        # não rastreado presente em <ref> sai como apagado aqui (está fora do índice atual); o
+        # julgamento dele já foi feito acima, por conteúdo — este loop não o reintroduz (TK-93a).
+        if linha and linha not in nao_rastreados:
             tocados.setdefault(linha, None)
     return sorted(tocados.keys())
 
@@ -258,14 +403,16 @@ def _eh_alvo_diretorio(root: Path, alvo: str) -> bool:
 _REGISTRO_ORQUESTRACAO = (
     "docs/DIARIO_DE_OBRAS.md",
     "docs/telemetria.tsv",
+    "docs/ACIONAMENTOS_CONSULTOR.tsv",
     "docs/plans/",
     "docs/RDO/",
+    "docs/audits/",
 )
 
 
 def _eh_registro_orquestracao(caminho: str) -> bool:
     """Balde (3) da `DB-25` (`P-0739`): arquivo que a orquestração escreve por ofício — kanban,
-    telemetria, plano, RDO. Não é atribuível a tarefa nenhuma e por isso não pesa no veredito;
+    telemetria, acionamentos do consultor, plano, RDO, relatório de auditoria. Não é atribuível a tarefa nenhuma e por isso não pesa no veredito;
     aparece nomeado na seção `## Escopo`. Item terminado em `/` casa por prefixo."""
     alvo = _normalizar_separador(caminho)
     for item in _REGISTRO_ORQUESTRACAO:
@@ -289,12 +436,24 @@ def _eh_ato_do_dono(caminho: str) -> bool:
     return any(alvo.startswith(item) for item in _ATO_DO_DONO)
 
 
+def _status_do_dossie(dossie) -> str | None:
+    """Primeiro literal entre crases do par `Status` de `dossie.extras`; sem par ou sem literal →
+    `None`."""
+    for rotulo, conteudo in dossie.extras:
+        if rotulo.strip().lower() == "status":
+            m = _BACKTICK_RE.search(conteudo)
+            return m.group(1).strip() if m else None
+    return None
+
+
 def mapear_alvos_de_outras_tarefas(plano_path: Path, tarefa_id: str, root: Path) -> dict[str, str]:
     """Balde (2) da `DB-25`: `git` não sabe qual tarefa tocou qual arquivo, mas o plano sabe qual
     tarefa declarou qual alvo. Percorre os cabeçalhos `### <ID>` do mesmo plano com a gramática
     de ID que mora em `rdo.py` (residência única, `DB-22`), extrai o dossiê de cada tarefa que
     não seja `tarefa_id` e devolve `caminho -> primeiro ID que o declara`, na ordem do arquivo.
-    Tarefa cujo dossiê não extrai é pulada: atribuição ausente nunca bloqueia (`DB-19`)."""
+    Tarefa cujo dossiê não extrai é pulada: atribuição ausente nunca bloqueia (`DB-19`). Tarefa não
+    despachada (`status` fora de `in-progress`/`review`/`done`, ou ausente) é pulada, porque alvo
+    declarado sem despacho é previsão, não autoria (`TK-66`)."""
     rdo = _load_rdo(root)
     mapa: dict[str, str] = {}
     for linha in Path(plano_path).read_text(encoding="utf-8").splitlines():
@@ -311,9 +470,27 @@ def mapear_alvos_de_outras_tarefas(plano_path: Path, tarefa_id: str, root: Path)
             )
         except rdo.RdoValidationError:
             continue
+        if _status_do_dossie(dossie) not in _STATUS_DESPACHADO:
+            continue
         for caminho in extrair_arquivos_alvo(dossie.campos):
             mapa.setdefault(_normalizar_separador(caminho), m.group(1))
     return mapa
+
+
+def _tarefa_dona(tocado_norm: str, outros: dict[str, str], root: Path) -> str | None:
+    """Tarefa do mesmo plano que declarou `tocado_norm` como alvo (`TK-74`): o caminho exato vence;
+    sem ele, o alvo-diretório de prefixo mais longo; nenhum dos dois → `None`."""
+    exato = outros.get(tocado_norm)
+    if exato is not None:
+        return exato
+    melhor: tuple[int, str] | None = None
+    for chave, tarefa in outros.items():
+        if not _eh_alvo_diretorio(root, chave):
+            continue
+        prefixo = _normalizar_separador(chave).rstrip("/") + "/"
+        if tocado_norm.startswith(prefixo) and (melhor is None or len(prefixo) > melhor[0]):
+            melhor = (len(prefixo), tarefa)
+    return melhor[1] if melhor else None
 
 
 def confrontar_escopo(
@@ -330,7 +507,8 @@ def confrontar_escopo(
     desvio declarado na entrega, insumo que este script não recebe.
 
     Alvo-diretório (`_eh_alvo_diretorio`) casa por prefixo (AUT-T5b); a atribuição a outra tarefa
-    casa por caminho exato, depois de normalizar `\\`→`/` nos dois lados."""
+    casa por caminho exato e, sem ele, pelo alvo-diretório de prefixo mais longo (`TK-74`), depois
+    de normalizar `\\`→`/` nos dois lados."""
     alvo_set = set(arquivos_alvo)
     prefixos_dir = [
         _normalizar_separador(alvo).rstrip("/") + "/"
@@ -353,8 +531,9 @@ def confrontar_escopo(
         if coberto(tocado):
             continue
         tocado_norm = _normalizar_separador(tocado)
-        if tocado_norm in outros:
-            de_outra_tarefa[tocado] = outros[tocado_norm]
+        dona = _tarefa_dona(tocado_norm, outros, root)
+        if dona is not None:
+            de_outra_tarefa[tocado] = dona
         elif _eh_registro_orquestracao(tocado):
             registro.append(tocado)
         elif _eh_ato_do_dono(tocado):
@@ -399,7 +578,31 @@ def formatar_atribuicoes(tocados: list[str], escopo: dict) -> list[str]:
     return linhas
 
 
-def _diff_para_arquivo(root: Path, caminho_rel: str) -> str:
+def _diff_para_arquivo(root: Path, caminho_rel: str, desde: str | None = None) -> str:
+    if desde is not None:
+        if _eh_nao_rastreado(root, caminho_rel) and _existe_no_ref(root, desde, caminho_rel):
+            # TK-93a: `git diff <ref> -- caminho` daria este não rastreado como apagado (está fora
+            # do índice atual) — o diff unificado é montado à mão contra o conteúdo em `<ref>`.
+            texto_atual = _texto_do_disco(root, caminho_rel)
+            if texto_atual is None:
+                return "(arquivo binário ou não-UTF-8 — trecho omitido)"
+            linhas_ref = _texto_do_ref(root, desde, caminho_rel).splitlines()
+            linhas_atual = texto_atual.splitlines()
+            if linhas_ref == linhas_atual:
+                return f"(sem alteração desde `{desde}`)"
+            diff_linhas = difflib.unified_diff(
+                linhas_ref,
+                linhas_atual,
+                fromfile=f"{caminho_rel}@{desde}",
+                tofile=caminho_rel,
+                lineterm="",
+            )
+            return "\n".join(diff_linhas) + "\n"
+        texto = _git(["diff", desde, "--", caminho_rel], root)
+        if texto.strip():
+            return texto
+        if _existe_no_ref(root, desde, caminho_rel):
+            return f"(sem alteração desde `{desde}`)"
     texto = _diff(["--", caminho_rel], root)
     if texto.strip():
         return texto
@@ -413,7 +616,11 @@ def _diff_para_arquivo(root: Path, caminho_rel: str) -> str:
 
 
 def montar_trechos(
-    root: Path, arquivos_alvo: list[str], teto_chars: int, tocados: list[str] | None = None
+    root: Path,
+    arquivos_alvo: list[str],
+    teto_chars: int,
+    tocados: list[str] | None = None,
+    desde: str | None = None,
 ) -> dict[str, dict]:
     """Trecho de diff (ou conteúdo integral, se o arquivo é novo e sem diff registrável) de cada
     arquivo-alvo, truncado em `teto_chars` — truncamento sempre marcado na saída (nunca
@@ -430,14 +637,14 @@ def montar_trechos(
             for arquivo in tocados:
                 if not _normalizar_separador(arquivo).startswith(prefixo):
                     continue
-                texto = _diff_para_arquivo(root, arquivo)
+                texto = _diff_para_arquivo(root, arquivo, desde)
                 truncado = len(texto) > teto_chars
                 trechos[arquivo] = {
                     "texto": texto[:teto_chars] if truncado else texto,
                     "truncado": truncado,
                 }
             continue
-        texto = _diff_para_arquivo(root, caminho)
+        texto = _diff_para_arquivo(root, caminho, desde)
         truncado = len(texto) > teto_chars
         trechos[caminho] = {"texto": texto[:teto_chars] if truncado else texto, "truncado": truncado}
     return trechos
@@ -520,6 +727,47 @@ def _renderizar_guardas(
     return linhas
 
 
+def secao_medida_do_executor(caminho_json: Path) -> list[str]:
+    """`## Medida do executor` (`FPU-T5`, DFP-17): a medida que o executor gravou via
+    `card_check.py --gravar` (`verificar_tarefa` -> `medida`), incorporada como tabela — registro,
+    não prosa (a régua executável não aceita prosa como verde). Arquivo ausente ou JSON
+    ilegível/incompleto nomeia o fato como uma linha, sem lançar exceção."""
+    caminho_json = Path(caminho_json)
+    linhas: list[str] = ["## Medida do executor"]
+    if not caminho_json.is_file():
+        linhas.append(f"- ausente: {caminho_json} não existe")
+        return linhas
+
+    try:
+        dados = json.loads(caminho_json.read_text(encoding="utf-8"))
+        mundo = dados["mundo"]
+        gerado_em = dados["gerado_em"]
+        linhas_itens: list[str] = []
+        for item in dados["itens"]:
+            indice = item["indice"]
+            comando = item["comando"]
+            exit_valor = item["exit"]
+            bate = item["bate"]
+            if comando is not None:
+                comando_escapado = comando.replace("|", "\\|")
+                comando_txt = f"`{comando_escapado}`"
+            else:
+                comando_txt = "-"
+            exit_txt = "-" if exit_valor is None else str(exit_valor)
+            bate_txt = "true" if bate else "false"
+            linhas_itens.append(f"| {indice} | {comando_txt} | {exit_txt} | {bate_txt} |")
+    except (ValueError, KeyError, TypeError) as exc:
+        linhas.append(f"- ilegível: {caminho_json} ({exc})")
+        return linhas
+
+    linhas.append(f"- Arquivo: {caminho_json}; mundo: {mundo}; gerado em: {gerado_em}")
+    linhas.append("")
+    linhas.append("| item | comando | exit | bate |")
+    linhas.append("|---|---|---|---|")
+    linhas.extend(linhas_itens)
+    return linhas
+
+
 def _renderizar(
     *,
     plano_id: str,
@@ -537,6 +785,7 @@ def _renderizar(
     veredito_testes_valor: str,
     teto_guarda_chars: int,
     desde: str | None = None,
+    linhas_medida: list[str] | None = None,
 ) -> str:
     linhas: list[str] = []
     linhas.append(f"# Evidência de revisão — {plano_id} {tarefa_id}")
@@ -615,6 +864,9 @@ def _renderizar(
         if info["truncado"]:
             linhas.append(f"[truncado em {teto_diff_chars} caracteres]")
     linhas.append("")
+    if linhas_medida is not None:
+        linhas.extend(linhas_medida)
+        linhas.append("")
     linhas.extend(
         _renderizar_guardas(
             resultados_guardas, veredito_guardas_valor, veredito_testes_valor, teto_guarda_chars
@@ -633,6 +885,7 @@ def montar_documento(
     comandos_guardas: list[tuple[str, list[str]]] | None = None,
     teto_guarda_chars: int = 2000,
     desde: str | None = None,
+    dir_evidencia: Path | None = None,
 ) -> str:
     plano_path = Path(plano_path)
     _exigir_plano(plano_path)
@@ -651,18 +904,22 @@ def montar_documento(
 
     arquivos_alvo = extrair_arquivos_alvo(dossie.campos)
     literais_descartados = extrair_literais_nao_caminho(dossie.campos)
-    diff_stat = coletar_diff_stat(root)
+    diff_stat = coletar_diff_stat(root, desde)
     tocados = coletar_arquivos_tocados(root, desde)
     alvos_de_outras = mapear_alvos_de_outras_tarefas(plano_path, dossie.tarefa_id, root)
     escopo = confrontar_escopo(tocados, arquivos_alvo, root, alvos_de_outras)
     estado_git = coletar_estado_git(root, desde)
-    trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars, tocados)
+    trechos = montar_trechos(root, arquivos_alvo, teto_diff_chars, tocados, desde)
     resultados_guardas = rodar_bateria_guardas(root, comandos_guardas)
     veredito_guardas_valor = veredito_guardas(resultados_guardas)
     veredito_testes_valor = veredito_testes(resultados_guardas)
 
-    plano_id_match = re.match(r"^(P-\d{4})", plano_path.stem)
-    plano_id = plano_id_match.group(1) if plano_id_match else plano_path.stem
+    plano_id = _caminhos.id_do_plano(plano_path) or plano_path.stem
+
+    if dir_evidencia is not None:
+        caminho_medida = Path(dir_evidencia) / f"{plano_id}-{dossie.tarefa_id}-medida.json"
+    else:
+        caminho_medida = _caminhos.destino_medida(root, plano_path, dossie.tarefa_id)
 
     return _renderizar(
         plano_id=plano_id,
@@ -680,6 +937,7 @@ def montar_documento(
         veredito_testes_valor=veredito_testes_valor,
         teto_guarda_chars=teto_guarda_chars,
         desde=desde,
+        linhas_medida=secao_medida_do_executor(caminho_medida),
     )
 
 
@@ -692,8 +950,8 @@ def main(argv: list[str] | None = None) -> int:
             "mecânico e sem interpretação (EXA-T9a)."
         )
     )
-    parser.add_argument("--plano", required=True, type=Path, help="Caminho do .md do plano.")
-    parser.add_argument("--tarefa", required=True, help="Identificador da tarefa (ex.: T9a).")
+    parser.add_argument("--plano", type=Path, default=None, help="Caminho do .md do plano.")
+    parser.add_argument("--tarefa", default=None, help="Identificador da tarefa (ex.: T9a).")
     parser.add_argument(
         "--root", type=Path, default=_default_root(), help="Raiz do repositório (onde 'git' roda)."
     )
@@ -705,7 +963,10 @@ def main(argv: list[str] | None = None) -> int:
         help="Teto de caracteres por trecho de diff de arquivo-alvo (truncamento sempre visível).",
     )
     parser.add_argument(
-        "--out", type=Path, default=None, help="Também grava o documento neste caminho (escrita atômica)."
+        "--out",
+        type=Path,
+        default=None,
+        help="Também grava o documento neste caminho (escrita atômica); sem ele, plano em pasta grava em <pasta-do-plano>/evidencia/<tarefa>.md.",
     )
     parser.add_argument(
         "--desde",
@@ -723,7 +984,24 @@ def main(argv: list[str] | None = None) -> int:
             "confrontar_escopo e sai (LM-T2a); não monta nem grava o dossiê."
         ),
     )
+    parser.add_argument(
+        "--capturar-ref",
+        dest="capturar_ref",
+        action="store_true",
+        help=(
+            "Imprime o <ref> (SHA de um commit cuja árvore é a árvore de trabalho inteira, "
+            "rastreados e não rastreados, sem alterar árvore, índice nem lista de stash) e sai "
+            "(TK-93a); não exige --plano nem --tarefa."
+        ),
+    )
     args = parser.parse_args(argv)
+
+    if args.capturar_ref:
+        print(capturar_ref(args.root))
+        return 0
+
+    if args.plano is None or args.tarefa is None:
+        parser.error("--plano e --tarefa são obrigatórios (exceto com --capturar-ref).")
 
     if args.atribuir:
         rdo = _load_rdo(args.root)
@@ -747,6 +1025,11 @@ def main(argv: list[str] | None = None) -> int:
             print(linha)
         return 0
 
+    if args.out is None:
+        pasta_plano = _caminhos.pasta_do_plano(args.plano)
+        if pasta_plano is not None:
+            args.out = _caminhos.destino_evidencia(pasta_plano, args.tarefa)
+
     try:
         documento = montar_documento(
             args.plano,
@@ -754,6 +1037,7 @@ def main(argv: list[str] | None = None) -> int:
             args.root,
             teto_diff_chars=args.max_diff_chars,
             desde=args.desde,
+            dir_evidencia=args.out.parent if args.out is not None else None,
         )
     except ReviewEvidenceValidationError as exc:
         print(f"review_evidence: FALHOU - {exc}", file=sys.stderr)

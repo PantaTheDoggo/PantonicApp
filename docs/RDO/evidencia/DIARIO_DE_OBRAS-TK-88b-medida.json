@@ -1,0 +1,36 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-88b",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T00:34:31+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_encerrar.py tests/test_rdo.py tests/test_telemetria_hook.py -q -k \"nao_medido or so_executor\"",
+      "exit": 0,
+      "saida": "......                                                                   [100%]\n6 passed, 91 deselected in 0.48s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;print(sum(1 for l in Path('docs/telemetria.tsv').read_text(encoding='utf-8').splitlines() if l.split(chr(9))[2:3]==['TK-88a'] and l.endswith(chr(9)+'usage')))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;print(all('--nao-medido' in Path(f).read_text(encoding='utf-8') for f in ('GOVERNANCA.md','.claude/skills/scrum-master/SKILL.md','.claude/tools/encerrar.py','.claude/tools/rdo.py')))\"",
+      "exit": 0,
+      "saida": "True",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 49%]\n........................................................................ [ 66%]\n........................................................................ [ 82%]\n........................................................................ [ 99%]\n...                                                                      [100%]\n435 passed in 43.06s",
+      "bate": true
+    }
+  ]
+}

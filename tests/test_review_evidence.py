@@ -14,9 +14,13 @@ para não poluir a lista de arquivos tocados com o próprio arquivo de plano."""
 from __future__ import annotations
 
 import importlib.util
+import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
+
+import pytest
 
 _ROOT = Path(__file__).resolve().parents[1]
 _REVIEW_EVIDENCE_PATH = _ROOT / ".claude" / "tools" / "review_evidence.py"
@@ -57,6 +61,7 @@ def _init_repo_com_baseline(root: Path) -> None:
     destino_rdo = root / ".claude" / "tools" / "rdo.py"
     destino_rdo.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(_RDO_REAL_PATH, destino_rdo)
+    shutil.copy2(_RDO_REAL_PATH.parent / "caminhos.py", destino_rdo.parent / "caminhos.py")
     _run_git(["add", "-A"], root)
     _run_git(["commit", "-m", "baseline"], root)
 
@@ -228,6 +233,40 @@ def test_cli_main_reconhece_tk_subtarefa_de_ticket_e_recusa_id_fora_da_gramatica
     assert "review_evidence: FALHOU" in saida_falha.err
 
 
+def test_tf_san_15_evidencia_na_pasta_do_plano(tmp_path, capsys):
+    """TF da SAN-T3: sem `--out`, `main` sobre um plano em pasta grava a evidência dentro de
+    `<pasta-do-plano>/evidencia/<tarefa>.md`; sobre um plano legado (arquivo solto em
+    `docs/plans/`), nenhum arquivo é criado (o legado segue sem destino default até `--out`
+    explícito — só `docs/plans` ganha os dois planos usados neste teste, nada mais)."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    review_evidence.BATERIA_GUARDAS = _BATERIA_FAKE_VERDE
+
+    plano = tmp_path / "docs" / "plans" / "P-0-gama" / "plano.md"
+    plano.parent.mkdir(parents=True)
+    _escrever_plano(plano, "cria `src/a.py`.")
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+
+    codigo = review_evidence.main(["--plano", str(plano), "--tarefa", "T1", "--root", str(repo)])
+    capsys.readouterr()
+    assert codigo == 0
+    assert (plano.parent / "evidencia" / "T1.md").is_file()
+
+    plano_legado = tmp_path / "docs" / "plans" / "P-0749-legado.md"
+    _escrever_plano(plano_legado, "cria `src/a.py`.")
+
+    codigo2 = review_evidence.main(
+        ["--plano", str(plano_legado), "--tarefa", "T1", "--root", str(repo)]
+    )
+    capsys.readouterr()
+    assert codigo2 == 0
+    assert sorted(p.name for p in (tmp_path / "docs" / "plans").iterdir()) == [
+        "P-0-gama",
+        "P-0749-legado.md",
+    ]
+
+
 def test_tf_veredito_guardas_e_testes_travam_conforme_quando_bateria_toda_verde():
     """TF da EXA-T9b: veredito mecânico das dimensões `guardas` (`RUBRICA_DE_REVISAO.md:94-106`)
     e `testes` (`RUBRICA_DE_REVISAO.md:79-92`) resolve para `conforme` quando todos os comandos
@@ -342,8 +381,8 @@ def test_alvo_diretorio_casa_por_prefixo_com_arquivo_tocado_dentro(tmp_path):
 def test_desde_recorta_tocados_a_partir_da_referencia(tmp_path):
     """AUT-T5b: `--desde <ref>` recorta o conjunto de tocados — só arquivos rastreados alterados
     **depois** de `<ref>` entram; um arquivo que já divergia do HEAD anterior mas não mudou depois
-    do `<ref>` fica de fora. Untracked sempre entra, com ou sem `--desde` (não existe no histórico,
-    então nunca é "desde um ref")."""
+    do `<ref>` fica de fora. Untracked criado depois do `<ref>` entra (o anterior sai pela data —
+    TK-84a)."""
     review_evidence = _load_review_evidence()
     repo = tmp_path / "repo"
     _init_repo_com_baseline(repo)
@@ -360,6 +399,29 @@ def test_desde_recorta_tocados_a_partir_da_referencia(tmp_path):
     tocados = review_evidence.coletar_arquivos_tocados(repo, desde=ref)
 
     assert tocados == ["src/b.py", "src/d.py"]
+
+
+def test_coletar_nao_rastreado_anterior_ao_desde_sai_dos_tocados(tmp_path):
+    """TF da TK-84a: com `desde=<ref>`, o não rastreado com `st_mtime` anterior à data de commit
+    de `<ref>` sai dos tocados e o posterior entra; sem `desde`, o anterior continua na lista."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    ref = _run_git(["rev-parse", "HEAD"], repo).strip()
+    ct = int(_run_git(["show", "-s", "--format=%ct", ref], repo).strip())
+
+    velho = repo / "src" / "velho.py"
+    velho.write_text("def velho():\n    return 1\n", encoding="utf-8")
+    os.utime(velho, (ct - 60, ct - 60))
+    novo = repo / "src" / "novo.py"
+    novo.write_text("def novo():\n    return 2\n", encoding="utf-8")
+    os.utime(novo, (ct + 60, ct + 60))
+
+    tocados_desde = review_evidence.coletar_arquivos_tocados(repo, desde=ref)
+    assert "src/novo.py" in tocados_desde
+    assert "src/velho.py" not in tocados_desde
+
+    assert "src/velho.py" in review_evidence.coletar_arquivos_tocados(repo)
 
 
 def test_escopo_declara_recorte_arvore_inteira_sem_desde(tmp_path):
@@ -402,13 +464,32 @@ def test_tr_extrair_literais_nao_caminho_lista_o_descartado():
     review_evidence = _load_review_evidence()
     campos = {
         "arquivos-alvo": (
-            "- `.claude/tools/rdo.py:79` — `_ID_HEADER_RE = re.compile(x)` "
+            "- `.claude/tools/rdo.py` — `_ID_HEADER_RE = re.compile(x)` "
             "- `CHANGELOG.md` — uma linha sob `## [Não lançado]` (`CHANGELOG.md:17`)"
         )
     }
     resultado = review_evidence.extrair_literais_nao_caminho(campos)
     assert "## [Não lançado]" in resultado
     assert any("re.compile" in item for item in resultado)
+
+
+def test_tf_alvo_ancorado_com_literal_e_um_alvo():
+    """TF da TK-89a: âncora `caminho:linha` seguida do literal dela (mesmo com crase escapada
+    dentro do literal) é cortada antes da varredura por crase — o literal não vai para os
+    descartados e a âncora conta como um alvo só."""
+    review_evidence = _load_review_evidence()
+    campos = {"arquivos-alvo": "- `a/b.md:3` — `x \\` y` - `c/d.py`"}
+    resultado = review_evidence._classificar_campo_alvos(campos)
+    assert resultado == (["a/b.md", "c/d.py"], [])
+
+
+def test_tr_alvo_sem_ancora_nao_muda():
+    """Regressão da TK-89a: campo sem âncora `caminho:linha` (só caminhos entre crases e um
+    literal não caminho) não é afetado pelo corte — mesmo resultado de antes da TK-89a."""
+    review_evidence = _load_review_evidence()
+    campos = {"arquivos-alvo": "- `src/app.py` - `BKL-T9` - `docs/readme.md`"}
+    resultado = review_evidence._classificar_campo_alvos(campos)
+    assert resultado == (["src/app.py", "docs/readme.md"], ["BKL-T9"])
 
 
 def test_tr_extrair_arquivos_alvo_recusa_id_de_tarefa_e_de_decisao():
@@ -438,11 +519,17 @@ def test_tf_secao_escopo_lista_literais_nao_reconhecidos_como_caminho(tmp_path):
 
 
 def _escrever_plano_duas_tarefas(
-    caminho: Path, alvo_t1: str, alvo_t2: str, verificacao_t2: str | None = "bateria do §3."
+    caminho: Path,
+    alvo_t1: str,
+    alvo_t2: str,
+    verificacao_t2: str | None = "bateria do §3.",
+    status_t2: str | None = "done",
 ) -> None:
     """Plano sintético com duas tarefas; `verificacao_t2=None` omite um campo obrigatório de T2
-    para exercitar o ramo 'dossiê inválido é pulado' de `mapear_alvos_de_outras_tarefas`."""
+    para exercitar o ramo 'dossiê inválido é pulado' de `mapear_alvos_de_outras_tarefas`;
+    `status_t2=None` omite a linha `**Status:**` de T2."""
     linha_verificacao = f"- **Verificação:** {verificacao_t2}\n" if verificacao_t2 else ""
+    linha_status = f"- **Status:** `{status_t2}` · 2026-09-25\n" if status_t2 is not None else ""
     texto = (
         "# Plano de teste\n\n"
         "### T1 — Tarefa sintética de teste [Sonnet · classe implementacao]\n"
@@ -451,6 +538,7 @@ def _escrever_plano_duas_tarefas(
         "- **Verificação:** bateria do §3.\n"
         "- **Pronto quando:** o teste passa.\n\n"
         "### T2 — Outra tarefa sintética [Sonnet · classe implementacao]\n"
+        f"{linha_status}"
         "- **Objetivo:** ser a dona de outro arquivo.\n"
         f"- **Arquivos-alvo:** {alvo_t2}\n"
         f"{linha_verificacao}"
@@ -504,6 +592,71 @@ def test_tf_registro_da_orquestracao_sai_em_balde_proprio(tmp_path):
 
     assert "Registro da orquestração (não atribuível a tarefa)" in documento
     assert "Veredito mecânico: conforme" in documento
+
+
+def test_tf_relatorio_de_auditoria_sai_como_registro_da_orquestracao(tmp_path):
+    """TF da AF-T2: `docs/audits/` entra no balde de registro da orquestração — o relatório de
+    auditoria de quem conduz, tocado fora dos alvos do card, não pesa no veredito mecânico."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "edita `src/b.py`.")
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 9\n", encoding="utf-8")
+    (repo / "docs" / "audits").mkdir(parents=True, exist_ok=True)
+    (repo / "docs" / "audits" / "AUDITORIA_X.md").write_text("# Auditoria\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "Registro da orquestração (não atribuível a tarefa)" in documento
+    assert "Veredito mecânico: conforme" in documento
+
+
+def test_tr_acionamentos_do_consultor_sai_como_registro_da_orquestracao(tmp_path):
+    """TR (`AE-4` do `P-0753`): `docs/ACIONAMENTOS_CONSULTOR.tsv`, que o consultor apensa em cada
+    triagem, tocado fora dos alvos do card, sai no balde de registro da orquestração e não pesa no
+    veredito mecânico — antes saía `fora dos alvos e sem atribuição`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "edita `src/b.py`.")
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 9\n", encoding="utf-8")
+    (repo / "docs").mkdir(parents=True, exist_ok=True)
+    (repo / "docs" / "ACIONAMENTOS_CONSULTOR.tsv").write_text("linha\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "Registro da orquestração (não atribuível a tarefa): `docs/ACIONAMENTOS_CONSULTOR.tsv`" in documento
+    assert "Veredito mecânico: conforme" in documento
+
+
+def test_tr_relatorio_de_auditoria_alvo_do_card_segue_coberto(tmp_path):
+    """Regressão: quando `docs/audits/AUDITORIA_X.md` é o próprio alvo declarado do card, a
+    cobertura pelos `Arquivos-alvo` tem precedência sobre o balde de registro da orquestração —
+    a atribuição sai `da entrega`, nunca `registro da orquestração` (a regra concorrente, 'tudo em
+    `docs/audits/` é registro', daria registro da orquestração)."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `docs/audits/AUDITORIA_X.md`.")
+
+    (repo / "docs" / "audits").mkdir(parents=True, exist_ok=True)
+    (repo / "docs" / "audits" / "AUDITORIA_X.md").write_text("# Auditoria\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "- `docs/audits/AUDITORIA_X.md` — atribuição: da entrega; estado git: `" in documento
+    assert "Registro da orquestração" not in documento
 
 
 def test_tr_arquivo_sem_atribuicao_continua_fora_dos_alvos_com_veredito_aberto(tmp_path):
@@ -815,6 +968,84 @@ def test_tf_atribuir_alvo_diretorio_casa_por_prefixo(tmp_path, capsys):
     assert "sem-atribuicao" not in saida.out
 
 
+def test_tf_atribuir_alvo_diretorio_de_outra_tarefa_casa_por_prefixo(tmp_path, capsys):
+    """TF da TK-74a (`AE-22` do `P-0746`): arquivo tocado sob o alvo-diretório declarado por
+    **outra** tarefa do mesmo plano sai `alvo-de-outra-tarefa (<ID>)`. Par presença-ausência:
+    o arquivo fora de qualquer alvo segue `sem-atribuicao`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(plano, "edita `src/b.py`.", "cria `tests/fixtures/modelo/`.")
+
+    (repo / "tests" / "fixtures" / "modelo").mkdir(parents=True)
+    (repo / "tests" / "fixtures" / "outro").mkdir(parents=True)
+    (repo / "tests" / "fixtures" / "modelo" / "a.md").write_text("# a\n", encoding="utf-8")
+    (repo / "tests" / "fixtures" / "outro" / "b.md").write_text("# b\n", encoding="utf-8")
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--atribuir"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "atribuicao: tests/fixtures/modelo/a.md -> alvo-de-outra-tarefa (T2)" in saida.out
+    assert "atribuicao: tests/fixtures/outro/b.md -> sem-atribuicao" in saida.out
+
+
+def test_tf_tarefa_dona_exato_vence_e_prefixo_mais_longo_desempata(tmp_path):
+    """TF da TK-74a: na atribuição a outra tarefa, o caminho exato vence o alvo-diretório e, entre
+    alvos-diretório, o de prefixo mais longo desempata."""
+    review_evidence = _load_review_evidence()
+
+    escopo = review_evidence.confrontar_escopo(
+        ["tests/fixtures/modelo/a.md", "tests/fixtures/modelo/c.md", "tests/x.md"],
+        [],
+        tmp_path,
+        {"tests/": "T2", "tests/fixtures/modelo/": "T3", "tests/fixtures/modelo/a.md": "T4"},
+    )
+
+    assert escopo["de_outra_tarefa"] == {
+        "tests/fixtures/modelo/a.md": "T4",
+        "tests/fixtures/modelo/c.md": "T3",
+        "tests/x.md": "T2",
+    }
+
+
+@pytest.mark.parametrize(
+    ("status_t2", "esperado"),
+    [
+        ("in-progress", "alvo-de-outra-tarefa (T2)"),
+        ("review", "alvo-de-outra-tarefa (T2)"),
+        ("done", "alvo-de-outra-tarefa (T2)"),
+        ("ready", "sem-atribuicao"),
+        ("blocked", "sem-atribuicao"),
+        ("cancelled", "sem-atribuicao"),
+        (None, "sem-atribuicao"),
+    ],
+)
+def test_tf_atribuir_so_tarefa_despachada_casa(tmp_path, capsys, status_t2, esperado):
+    """TF da TK-66a (`AE-3` do `P-0743`): alvo declarado por tarefa não despachada é previsão,
+    não autoria — só tarefa em `in-progress`, `review` ou `done` recebe a atribuição."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano_duas_tarefas(
+        plano, "edita `src/b.py`.", "cria `src/a.py`.", status_t2=status_t2
+    )
+
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--atribuir"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert f"atribuicao: src/a.py -> {esperado}" in saida.out
+
+
 def test_tf_estado_git_de_arquivo_commitado_desde_a_ref(tmp_path):
     """LM-T3a: `coletar_estado_git(root, desde=<ref>)` compõe a evidência `git` de duas fontes —
     um arquivo alterado e **commitado** depois da `ref` sai marcado `M (commitado desde <ref>)`,
@@ -938,3 +1169,232 @@ def test_tr_atribuir_com_tarefa_inexistente_continua_igual(tmp_path, capsys):
 
     assert codigo == 1
     assert "review_evidence: FALHOU - tarefa: 'T-inexistente' não encontrada em" in saida.err
+
+
+def test_tf_alvo_com_sufixo_de_secao_e_caminho():
+    """TF da TK-78c: `extrair_arquivos_alvo` sobre um campo `arquivos-alvo` cujo único literal
+    entre crases é `docs/x.md §2.1` devolve `["docs/x.md"]` — sufixo de seção é removido do
+    caminho extraído, igual ao sufixo de referência de linha (`_LINHA_REF_RE`)."""
+    review_evidence = _load_review_evidence()
+    campos = {"arquivos-alvo": "edita `docs/x.md §2.1`."}
+    resultado = review_evidence.extrair_arquivos_alvo(campos)
+    assert resultado == ["docs/x.md"]
+
+
+def test_tf_trecho_desde_instantaneo_mostra_so_o_delta(tmp_path):
+    """TF da TK-78c: com `desde=<snap>` (instantâneo de `git stash create`), o trecho de diff de
+    um arquivo-alvo mostra só o que mudou depois do instantâneo — a edição anterior ao snapshot
+    não aparece."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    (repo / "a.md").write_text("linha-base\n", encoding="utf-8")
+    _run_git(["add", "-A"], repo)
+    _run_git(["commit", "-m", "a.md baseline"], repo)
+
+    (repo / "a.md").write_text("linha-base\nlinha-velha\n", encoding="utf-8")
+    snap = _run_git(["stash", "create"], repo).strip()
+
+    (repo / "a.md").write_text("linha-base\nlinha-velha\nlinha-nova\n", encoding="utf-8")
+
+    trechos = review_evidence.montar_trechos(repo, ["a.md"], 4000, desde=snap)
+
+    assert "+linha-nova" in trechos["a.md"]["texto"]
+    assert "+linha-velha" not in trechos["a.md"]["texto"]
+
+
+def test_tf_capturar_ref_carrega_nao_rastreado(tmp_path):
+    """TF da TK-93a: `capturar_ref` grava um commit cuja árvore inclui o não rastreado — `git show
+    <ref>:<arquivo>` devolve o conteúdo dele — sem alterar árvore de trabalho, índice real nem
+    lista de stash (`git status` e `git stash list` saem iguais aos de antes da captura)."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    (repo / "novo.txt").write_text("conteudo novo\n", encoding="utf-8")
+
+    status_antes = _run_git(["status", "--porcelain=v1", "--untracked-files=all"], repo)
+    stash_antes = _run_git(["stash", "list"], repo)
+
+    ref = review_evidence.capturar_ref(repo)
+
+    assert _run_git(["show", f"{ref}:novo.txt"], repo) == "conteudo novo\n"
+    assert _run_git(["status", "--porcelain=v1", "--untracked-files=all"], repo) == status_antes
+    assert _run_git(["stash", "list"], repo) == stash_antes
+
+
+def test_tf_nao_rastreado_no_ref_mostra_so_o_hunk(tmp_path):
+    """TF da TK-93a: não rastreado de 400 linhas já presente no `<ref>` (capturado por
+    `capturar_ref`), com uma linha editada depois — o trecho traz a linha nova com `+` e não é
+    truncado no teto de 4000, e `coletar_arquivos_tocados` devolve só ele; outro não rastreado, sem
+    mudança desde `<ref>`, fica de fora."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    linhas = [f"linha-{i}\n" for i in range(400)]
+    (repo / "grande.txt").write_text("".join(linhas), encoding="utf-8")
+    (repo / "estavel.txt").write_text("sem mudanca\n", encoding="utf-8")
+
+    ref = review_evidence.capturar_ref(repo)
+
+    linhas[200] = "linha-200-editada\n"
+    (repo / "grande.txt").write_text("".join(linhas), encoding="utf-8")
+
+    tocados = review_evidence.coletar_arquivos_tocados(repo, desde=ref)
+    assert tocados == ["grande.txt"]
+
+    trechos = review_evidence.montar_trechos(repo, ["grande.txt"], 4000, desde=ref)
+    texto = trechos["grande.txt"]["texto"]
+    assert "+linha-200-editada" in texto
+    assert "-linha-200" in texto
+    assert "linha-399" not in texto
+    assert trechos["grande.txt"]["truncado"] is False
+
+
+def test_tf_trecho_desde_sem_alteracao_nao_despeja_o_arquivo(tmp_path):
+    """TF da TK-78c: com `desde=<snap>`, um arquivo-alvo sem alteração desde o instantâneo não
+    despeja o conteúdo integral — o texto é exatamente a linha `(sem alteração desde <snap>)`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    (repo / "a.md").write_text("linha-base\n", encoding="utf-8")
+    _run_git(["add", "-A"], repo)
+    _run_git(["commit", "-m", "a.md baseline"], repo)
+
+    (repo / "a.md").write_text("linha-base\nlinha-velha\n", encoding="utf-8")
+    snap = _run_git(["stash", "create"], repo).strip()
+
+    trechos = review_evidence.montar_trechos(repo, ["a.md"], 4000, desde=snap)
+
+    assert trechos["a.md"]["texto"] == f"(sem alteração desde `{snap}`)"
+
+
+def test_tf_diff_stat_desde_recorta_como_os_tocados(tmp_path):
+    """TF da AF-T1 (`TK-94a`): com `desde=<ref>`, o bloco `## Diff` de `montar_documento` resume
+    só o recorte que `coletar_arquivos_tocados(..., desde=ref)` já dá para a `## Arquivos
+    tocados` — a entrega, rastreada e não rastreada —, nunca o trabalho alheio já embutido na
+    árvore de `<ref>` (a regra antiga, `git diff HEAD --stat`, citaria o alheio e não citaria o
+    não rastreado)."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "edita `src/c.py` e cria `src/novo.py`.")
+
+    (repo / "src" / "c.py").write_text("def c():\n    return 1\n", encoding="utf-8")
+    _run_git(["add", "-A"], repo)
+    _run_git(["commit", "-m", "add c.py"], repo)
+
+    (repo / "src" / "b.py").write_text("def b():\n    return 2\n", encoding="utf-8")
+    ref = review_evidence.capturar_ref(repo)
+
+    (repo / "src" / "c.py").write_text("def c():\n    return 2\n", encoding="utf-8")
+    (repo / "src" / "novo.py").write_text("def novo():\n    return 3\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, desde=ref, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    bloco = documento.split("## Diff (`git diff --stat`)")[1].split("## Arquivos tocados")[0]
+    assert "src/c.py" in bloco
+    assert "src/novo.py" in bloco
+    assert "src/b.py" not in bloco
+
+
+def test_tr_diff_stat_desde_sem_tocados_sai_sem_diferencas(tmp_path):
+    """TR da AF-T1: `<ref>` capturado e nada mudado depois — `coletar_diff_stat(repo, desde=ref)`
+    devolve string vazia (nunca roda `git diff --stat` sem caminho, que devolveria a árvore
+    inteira), e o bloco `## Diff` do documento traz `(sem diferenças)`, mesma convenção do diff
+    vazio sem `--desde`."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "edita `src/b.py`.")
+
+    ref = review_evidence.capturar_ref(repo)
+
+    assert review_evidence.coletar_diff_stat(repo, desde=ref) == ""
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, desde=ref, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+    bloco = documento.split("## Diff (`git diff --stat`)")[1].split("## Arquivos tocados")[0]
+    assert "(sem diferenças)" in bloco
+
+
+def test_tr_diff_stat_desde_tocados_vazio_com_arvore_diferente_nao_resume_a_arvore(
+    tmp_path, monkeypatch
+):
+    """TR (`AE-3` do `P-0753`): a árvore difere de `<ref>` e o recorte de tocados sai vazio —
+    `coletar_diff_stat` devolve string vazia. É o caso que discrimina a guarda "tocados vazio não
+    roda `git diff --stat` sem caminho": sem ela, `git diff --stat <ref> <árvore> --` resumiria a
+    árvore inteira (aqui, `src/b.py`); o TR acima (árvore igual a `<ref>`) sai vazio com ou sem a
+    guarda."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    ref = review_evidence.capturar_ref(repo)
+    (repo / "src" / "b.py").write_text("def b():\n    return 7\n", encoding="utf-8")
+    monkeypatch.setattr(review_evidence, "coletar_arquivos_tocados", lambda root, desde=None: [])
+
+    assert review_evidence.coletar_diff_stat(repo, desde=ref) == ""
+
+
+# --- FPU-T5 (DFP-17): o executor devolve a medida como arquivo, e a evidência a incorpora -------
+
+
+def test_tf_evidencia_incorpora_medida(tmp_path, capsys):
+    """`main` com `--out` deriva `<dir da evidência>` do pai de `--out`; quando
+    `<plano>-<ID>-medida.json` existe ali (`plano` sem id de plano → `stem`), a evidência gravada
+    incorpora `## Medida do executor` com a tabela do JSON."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+    review_evidence.BATERIA_GUARDAS = _BATERIA_FAKE_VERDE
+
+    pasta_ev = tmp_path / "ev"
+    pasta_ev.mkdir()
+    medida = {
+        "plano": str(plano),
+        "tarefa": "T1",
+        "mundo": "antes",
+        "gerado_em": "2026-09-26T00:00:00+00:00",
+        "itens": [
+            {"indice": 1, "comando": "python -c \"print('a')\"", "exit": 0, "saida": "a", "bate": True}
+        ],
+    }
+    (pasta_ev / "plano-T1-medida.json").write_text(
+        json.dumps(medida, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    destino_out = pasta_ev / "plano-T1.md"
+
+    codigo = review_evidence.main(
+        ["--plano", str(plano), "--tarefa", "T1", "--root", str(repo), "--out", str(destino_out)]
+    )
+    capsys.readouterr()
+
+    assert codigo == 0
+    conteudo = destino_out.read_text(encoding="utf-8")
+    assert "## Medida do executor" in conteudo
+    assert '| 1 | `python -c "print(\'a\')"` | 0 | true |' in conteudo
+
+
+def test_tr_evidencia_sem_medida_diz_ausente(tmp_path):
+    """Regressão: sem o JSON de medida no `<dir da evidência>` derivado, a seção `## Medida do
+    executor` diz `ausente`, nunca inventa nem lança exceção."""
+    review_evidence = _load_review_evidence()
+    repo = tmp_path / "repo"
+    _init_repo_com_baseline(repo)
+    plano = tmp_path / "plano.md"
+    _escrever_plano(plano, "cria `src/a.py`.")
+    (repo / "src" / "a.py").write_text("def a():\n    return 2\n", encoding="utf-8")
+
+    documento = review_evidence.montar_documento(
+        plano, "T1", repo, comandos_guardas=_BATERIA_FAKE_VERDE
+    )
+
+    assert "## Medida do executor" in documento
+    assert "ausente" in documento

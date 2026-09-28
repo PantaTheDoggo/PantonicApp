@@ -1,0 +1,50 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-86a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-26T22:24:06+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python .claude/tools/backlog.py check",
+      "exit": 0,
+      "saida": "check: OK — nenhuma violação.",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/tools/backlog.py').read_text(encoding='utf-8');print(t.count('_PISO_C11')-t.count('_PISO_C11_'))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest tests/test_backlog.py -q -k piso_c11_tsv",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 112 deselected in 0.21s",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest tests/test_backlog.py -q",
+      "exit": 0,
+      "saida": "........................................................................ [ 63%]\n..........................................                               [100%]\n114 passed in 3.08s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 33%]\n........................................................................ [ 50%]\n........................................................................ [ 67%]\n........................................................................ [ 84%]\n....................................................................     [100%]\n428 passed in 40.42s",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/tools/encerrar.py').read_text(encoding='utf-8');print(t.count('_PISO_C11')-t.count('_PISO_C11_'))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    }
+  ]
+}

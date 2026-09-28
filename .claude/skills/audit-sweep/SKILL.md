@@ -8,7 +8,7 @@ description: Pré-varredura mecânica das auditorias Pantonic* — executa a bat
 Os auditores rodam em Opus/Sonnet e, como subagentes, não podem delegar a ninguém: cada match
 de grep mecânico entraria no contexto do modelo caro. A detecção mecânica é determinística —
 não precisa de inteligência. Esta skill roda a bateria no contexto principal (delegando ao
-`pantonic-scout`, Haiku, pelos critérios da skill context-prep) e grava o resultado num dossiê
+`pantonic-scout`, pelos critérios da skill context-prep) e grava o resultado num dossiê
 que os auditores consomem pronto, gastando o modelo caro só na leitura confirmatória e no
 julgamento.
 

@@ -77,7 +77,7 @@ não do gatilho de aprovação — não é a mesma proposição, não há colis�
 
 | # | Item | Classe | Régua | Ação na `T17` |
 |---|---|---|---|---|
-| 2.1 | Integridade do contexto: coesão (poluição = parada fatal e imediata) e capacidade (~50% da janela) | `global` | **P1** — degradação de contexto é fato do harness, não do framework | nenhuma |
+| 2.1 | Integridade do contexto: coesão (poluição = parada fatal e imediata) e capacidade (dimensionamento pela operação do modelo, sem percentual — `P-0745` `DPN-3`) | `global` | **P1** — degradação de contexto é fato do harness, não do framework | nenhuma |
 
 *Colisão já resolvida:* `GOVERNANCA.md` §7 item 7 e §4.3 já carregam a versão **do framework**
 (handover, diário, contexto limpo) em forma condensada — é o padrão `DR-A`, sem duas cópias plenas.
@@ -139,7 +139,7 @@ O global mantém a Regra 3 com o motivo e o hook, apontando para o kit no detalh
 | 7.4 | Batching de chamadas independentes numa mensagem | `dividir` | **P1** para o princípio; **Prec-2** para o consumidor | fica no global; **desce cópia condensada** para §3 (hoje o kit não tem) |
 | 7.5 | Cadência de testes: Tier 1 no máx. 2× por tarefa; tier superior só no fechamento | `dividir` | **P1** (skill `test-tiers` é global); **P2** para o framework (§4.4 TDD) | fica no global; desce 1 linha para `GOVERNANCA.md` §4.4 amarrando cadência ao TDD |
 | 7.6 | Sem re-leitura de verificação após Edit/Write | `global` | **P1** — fato do harness (Edit/Write falham ruidosamente) | nenhuma |
-| 7.7 | **Orçamento por tarefa atômica: "~≤40 tool uses esperado"** | `Pantonic` — **contradição medida** | **Prec-1 + Prec-2 + Dup** — `GOVERNANCA.md` §3 (linhas 74-94) substituiu o teto único pela tabela de tetos por classe, calibrada por 26 registros `Consumo:`; o global ainda diz ≤40 para tudo | remover o número do global; global mantém só que o dimensionamento por tarefa atômica é **referência informativa** — cruzar o número é alarme, nunca bloqueio: não recusa entrega, não roteia e não encerra tarefa nem janela — e cita o kit |
+| 7.7 | **Orçamento por tarefa atômica: "~≤40 tool uses esperado"** | `Pantonic` — **aposentado** | **Prec-1 + Prec-2** — o teto único e a tabela de tetos por classe que o substituiu foram aposentados em 2026-09-21 (`GOVERNANCA.md` §3, *Classe do card — natureza, não teto*; `P-0745` `DPN-3`): a unidade de trabalho é a operação do modelo e nenhum número dimensiona tarefa | global e kit dizem o mesmo: classe é natureza, não teto; o número histórico fica só em `RECOMENDACOES_CONSUMO_GLOBAL.md` como medida de 2026-07 |
 | 7.8 | Plano interno antes da primeira edição | `global` | **P1** | nenhuma |
 | 7.9 | Fechamento enxuto: um único registro canônico; relatório = ponteiro + deltas | `dividir` | **P1** para o princípio; **P2** para "o registro canônico é o diário" | fica no global sem citar diário; desce 1 linha para §4.2 |
 | 7.10 | **Telemetria pela notificação, não pelo auto-relato** (linha `Consumo:`; orquestrador lê o `<usage>`; subestimativa medida ~35%) | `Pantonic` | **P2** — a linha `Consumo:` é escrita **no diário de obras**, artefato do framework; `BM-00` marcou como diferencial que não viaja | desce inteiro para `GOVERNANCA.md` §4.2 (ao lado do diário); global mantém 1 linha ("telemetria é medida, não auto-relatada") |

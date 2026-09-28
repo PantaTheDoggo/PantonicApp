@@ -1,0 +1,50 @@
+{
+  "plano": "docs/DIARIO_DE_OBRAS.md",
+  "tarefa": "TK-92a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T04:15:32+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import sys;sys.path.insert(0,'.claude/tools');import caminhos as c;from pathlib import Path;print(c.destino_medida(Path('.'),Path('docs/DIARIO_DE_OBRAS.md'),'TK-86a').as_posix())\"",
+      "exit": 0,
+      "saida": "docs/RDO/evidencia/DIARIO_DE_OBRAS-TK-86a-medida.json",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;fs=['.claude/agents/pantonic-executor.md','.claude/skills/scrum-master/SKILL.md'];print(sum(Path(f).read_text(encoding='utf-8').count('<P-n>-<ID>-medida.json') for f in fs))\"",
+      "exit": 0,
+      "saida": "0",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;fs=['.claude/agents/pantonic-executor.md','.claude/skills/scrum-master/SKILL.md'];print(sum(Path(f).read_text(encoding='utf-8').count('caminhos.destino_medida') for f in fs))\"",
+      "exit": 0,
+      "saida": "2",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest tests/test_caminhos.py tests/test_card_check.py -q -k \"destino_medida or gravar_sem_caminho\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 26 deselected in 0.15s",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": ".................................................... [ 48%]\n........................................................................ [ 64%]\n........................................................................ [ 80%]\n........................................................................ [ 96%]\n..................                                                       [100%]\n450 passed in 35.32s",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

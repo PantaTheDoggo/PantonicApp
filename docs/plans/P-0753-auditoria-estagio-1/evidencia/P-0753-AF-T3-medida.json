@@ -1,0 +1,43 @@
+{
+  "plano": "docs/plans/P-0753-auditoria-estagio-1/plano.md",
+  "tarefa": "AF-T3",
+  "mundo": "depois",
+  "gerado_em": "2026-09-27T12:17:13+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_progresso_hook.py -q -k \"opcao_do_interpretador\"",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 38 deselected in 0.32s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"import importlib.util as u;from pathlib import Path;s=u.spec_from_file_location('p',Path('.claude/tools/progresso_hook.py'));m=u.module_from_spec(s);s.loader.exec_module(m);print(m._programa(['python','-X','utf8','.claude/tools/backlog.py','status'])[0])\"",
+      "exit": 0,
+      "saida": "backlog.py",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;print(Path('docs/ARMADILHAS_DE_FERRAMENTA.md').read_text(encoding='utf-8').count('progresso_hook._programa'))\"",
+      "exit": 0,
+      "saida": "1",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -m pytest -q",
+      "exit": 0,
+      "saida": "......................................... [ 47%]\n........................................................................ [ 62%]\n........................................................................ [ 78%]\n........................................................................ [ 94%]\n...........................                                              [100%]\n459 passed in 176.35s (0:02:56)",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "pwsh -NoProfile -File .claude/checks/kit_check.ps1 -Mode check-drift",
+      "exit": 0,
+      "saida": "kit_check: check-drift OK - .claude/README.md == regenerado (10 agente(s), 13 skill(s)); materializacao do alvo 'projeto' == canonico.",
+      "bate": true
+    }
+  ]
+}

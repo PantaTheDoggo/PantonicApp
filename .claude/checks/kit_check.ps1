@@ -32,6 +32,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 
 if (-not $KitRoot) {
     # .claude/checks/kit_check.ps1 -> .claude/
@@ -195,6 +196,28 @@ foreach ($d in $skillDirs) {
     }
 }
 
+# --- 2b. Frontmatter é YAML válido --------------------------------------
+# TK-77a (`docs/DIARIO_DE_OBRAS.md` `### TK-77a`) — o frontmatter de agente ou skill que o YAML
+# estrito (`yaml.safe_load`) recusa também é motivo de falha aqui, mesma classe nas duas
+# famílias (o leitor de frontmatter acima, `Get-Frontmatter`, é um só para as duas).
+$frontmatterYamlScript = Join-Path $KitRoot 'checks/frontmatter_yaml.py'
+$frontmatterYamlTargets = [System.Collections.Generic.List[string]]::new()
+foreach ($f in $agentFiles) { $frontmatterYamlTargets.Add($f.FullName) }
+foreach ($d in $skillDirs) {
+    $skillMd = Join-Path $d.FullName 'SKILL.md'
+    if (Test-Path -LiteralPath $skillMd) { $frontmatterYamlTargets.Add($skillMd) }
+}
+$frontmatterYamlOutput = @(& python $frontmatterYamlScript @frontmatterYamlTargets 2>&1)
+$frontmatterYamlExit = $LASTEXITCODE
+if ($frontmatterYamlExit -eq 1) {
+    foreach ($line in $frontmatterYamlOutput) {
+        $errors.Add("frontmatter YAML: $line")
+    }
+}
+elseif ($frontmatterYamlExit -ne 0) {
+    $errors.Add("frontmatter YAML: saida nao interpretavel (exit $frontmatterYamlExit): $($frontmatterYamlOutput -join ' | ')")
+}
+
 # --- 3. Paridade de versão: VERSION (raiz) == .claude/KIT_VERSION --------
 $repoRoot = Split-Path -Parent $KitRoot
 $versionFile = Join-Path $repoRoot 'VERSION'
@@ -227,6 +250,7 @@ $materializarCheckOutput = @(& python $materializarScript check --alvo todos --k
 $materializarCheckExit = $LASTEXITCODE
 if ($materializarCheckExit -eq 1) {
     foreach ($line in $materializarCheckOutput) {
+        if ($line -match '^materializar: FALHOU - ') { continue }
         $errors.Add("materializar check: $line")
     }
 }
@@ -286,6 +310,10 @@ elseif ($Mode -eq 'generate') {
 }
 elseif ($Mode -eq 'check-drift') {
     $driftErrors = [System.Collections.Generic.List[string]]::new()
+    # Linhas de detalhe só para exibição — não entram na contagem de problemas
+    # (EBK-T5, docs/plans/P-0751-esgotar-backlog.md): uma divergência de README
+    # com N linhas diferentes conta 1 problema, não N+1.
+    $driftDetailLines = [System.Collections.Generic.List[string]]::new()
     $readmePath = Join-Path $KitRoot 'README.md'
     if (-not (Test-Path -LiteralPath $readmePath)) {
         Write-Host "kit_check: check-drift FALHOU - README.md não encontrado em: $readmePath"
@@ -307,7 +335,7 @@ elseif ($Mode -eq 'check-drift') {
         $driftErrors.Add("README.md diverge do regenerado ($($diff.Count) linha(s) diferente(s)):")
         foreach ($d in $diff) {
             $side = if ($d.SideIndicator -eq '<=') { 'versionado' } else { 'regenerado' }
-            $driftErrors.Add("  [$side] $($d.InputObject)")
+            $driftDetailLines.Add("    [$side] $($d.InputObject)")
         }
     }
 
@@ -319,6 +347,7 @@ elseif ($Mode -eq 'check-drift') {
     $materializarDriftExit = $LASTEXITCODE
     if ($materializarDriftExit -eq 1) {
         foreach ($line in $materializarDriftOutput) {
+            if ($line -match '^materializar: FALHOU - ') { continue }
             $driftErrors.Add("materializar drift: $line")
         }
     }
@@ -328,8 +357,13 @@ elseif ($Mode -eq 'check-drift') {
 
     if ($driftErrors.Count -gt 0) {
         Write-Host "kit_check: check-drift FALHOU ($($driftErrors.Count) problema(s)):"
-        foreach ($e in $driftErrors) {
-            Write-Host "  - $e"
+        for ($i = 0; $i -lt $driftErrors.Count; $i++) {
+            Write-Host "  - $($driftErrors[$i])"
+            if ($i -eq 0 -and $driftDetailLines.Count -gt 0) {
+                foreach ($d in $driftDetailLines) {
+                    Write-Host $d
+                }
+            }
         }
         exit 1
     }

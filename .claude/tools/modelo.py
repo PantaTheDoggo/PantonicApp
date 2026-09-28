@@ -10,7 +10,7 @@ plano)"): cabeçalho `**Estado do modelo:**`, tabela `### 1.1 Objetos` (coluna `
 quando existe, nasce como o bloco irmão `## 1A. Modelo conceitual — versão pendente de validação`,
 com a mesma estrutura de `### 1.1` a `### 1.3`.
 
-`check` julga a seção contra o vocabulário fechado de violações `V1`..`V20` (`### 16` do `P-0743`)
+`check` julga a seção contra o vocabulário fechado de violações `V1`..`V21` (`### 16` do `P-0743`)
 e `show` deriva a leitura do dono a partir do modelo real: ela abre pelo estágio atual, que é a
 primeira operação ainda não concluída, derivada do status das tarefas e não gravada por nenhum
 papel; com `--pendente` mostra o bloco `## 1A`, e com `--drift` mostra a diferença entre a versão
@@ -71,6 +71,7 @@ class Objeto:
     contrato: str
     origem: str
     propriedades: list[str] = field(default_factory=list)
+    lastro: str = ""
 
 
 @dataclass
@@ -104,9 +105,12 @@ _MSG_SEM_PENDENTE = "modelo: sem versão pendente"
 
 _MSG_SEM_DRIFT = "sem drift"
 
+_MSG_PLANO_AUSENTE = "modelo: plano não encontrado '{}' — sem modelo a julgar"
+
 _OPERACAO_HEADER_RE = re.compile(r"^- \*\*OP-(\d+)\*\* — (.+)$")
 _OPERACAO_LINHA_RE = re.compile(
-    r"^  - `precisa de: ([^`]*)` · `altera: ([^`]*)` · `tarefas: ([^`]*)`$"
+    r"^  - `precisa de: ([^`]*)` · `altera: ([^`]*)` · `tarefas: ([^`]*)`"
+    r"(?: · `lastro: ([^`]*)`)?$"
 )
 _SUBTITULO_RE = re.compile(r"^\*\*[A-Z]\. .+\*\*$")
 _CAMPO_OPERACAO_RE = re.compile(r"^- \*\*Operação do modelo:\*\* (.+)$", re.MULTILINE)
@@ -117,6 +121,7 @@ _ORIGEM_OP_RE = re.compile(r"^OP-(\d+)$")
 
 _STATUS_CONCLUSIVO = {"done", "cancelled"}
 _STATUS_EM_CURSO = {"in-progress", "review"}
+_STATUS_TERMINAL_PLANO = {"done", "cancelled", "superseded"}
 
 
 def _extrair_tabela(secao: list[str], heading: str) -> list[str]:
@@ -162,18 +167,36 @@ def _parse_linha_tabela(linha: str) -> list[str]:
     return [p.strip() for p in linha.strip().strip("|").split("|")]
 
 
+def _indice_coluna_lastro(tabela: list[str]) -> int | None:
+    """A coluna de lastro de `### 1.1` se reconhece pelo cabeçalho que **começa com** `lastro`
+    (`DLS-15`, `AE-10`) — casamento por prefixo, não por igualdade literal, para admitir
+    qualificação da âncora (`lastro na §0`, `lastro no prompt`)."""
+    if not tabela:
+        return None
+    campos_cabecalho = _parse_linha_tabela(tabela[0])
+    for i, campo in enumerate(campos_cabecalho):
+        if campo.startswith("lastro"):
+            return i
+    return None
+
+
 def _parse_objetos(tabela: list[str]) -> list[Objeto]:
     objetos: list[Objeto] = []
+    idx_lastro = _indice_coluna_lastro(tabela)
     for linha in tabela[2:]:
         campos = _parse_linha_tabela(linha)
         if len(campos) >= 5:
             propriedades = [p.strip() for p in campos[2].split(",") if p.strip()]
+            lastro = ""
+            if idx_lastro is not None and len(campos) > idx_lastro:
+                lastro = campos[idx_lastro].strip()
             objetos.append(
                 Objeto(
                     nome=campos[0],
                     contrato=campos[3],
                     origem=campos[4],
                     propriedades=propriedades,
+                    lastro=lastro,
                 )
             )
     return objetos
@@ -293,7 +316,9 @@ def _tem_subbullets(item_texto: str, op_id: str) -> bool:
     return False
 
 
-def validar(modelo: Modelo, plano, modelo_pendente: Modelo | None = None) -> list[str]:
+def validar(
+    modelo: Modelo, plano, modelo_pendente: Modelo | None = None, *, pendente: bool = False
+) -> list[str]:
     violacoes_op: list[str] = []
     violacoes_objeto: list[str] = []
     violacoes_id: list[str] = []
@@ -309,21 +334,22 @@ def validar(modelo: Modelo, plano, modelo_pendente: Modelo | None = None) -> lis
         not modelo.cabecalho_presente
         or not modelo.tabela_objetos
         or not modelo.tabela_estado
-        or not modelo.tabela_versoes
+        or (not pendente and not modelo.tabela_versoes)
     ):
         violacoes_op.append(
             "V13 secao — cabeçalho, objetos, estado ou registro de versões ausente"
         )
 
-    situacoes_versoes = [
-        _parse_linha_tabela(linha)[2] if len(_parse_linha_tabela(linha)) >= 3 else ""
-        for linha in modelo.versoes
-    ]
-    if situacoes_versoes.count("vigente") != 1:
-        violacoes_op.append("V19 secao — registro de versões sem vigente único")
+    if not pendente:
+        situacoes_versoes = [
+            _parse_linha_tabela(linha)[2] if len(_parse_linha_tabela(linha)) >= 3 else ""
+            for linha in modelo.versoes
+        ]
+        if situacoes_versoes.count("vigente") != 1:
+            violacoes_op.append("V19 secao — registro de versões sem vigente único")
 
-    if modelo_pendente is not None and modelo_pendente.versao != modelo.versao + 1:
-        violacoes_op.append("V20 secao — versão pendente fora de sequência")
+        if modelo_pendente is not None and modelo_pendente.versao != modelo.versao + 1:
+            violacoes_op.append("V20 secao — versão pendente fora de sequência")
 
     numeros_vistos: set[int] = set()
     for posicao, operacao in enumerate(modelo.operacoes, start=1):
@@ -362,9 +388,13 @@ def validar(modelo: Modelo, plano, modelo_pendente: Modelo | None = None) -> lis
             if propriedade not in propriedades_por_objeto.get(nome_objeto, set()):
                 violacoes_op.append(f"V16 OP-{operacao.numero} — propriedade inexistente {item}")
 
+    plano_terminal = plano.status in _STATUS_TERMINAL_PLANO
+
     for objeto in modelo.objetos:
         if not objeto.propriedades:
             violacoes_objeto.append(f"V15 objeto — objeto sem propriedade {objeto.nome}")
+        if not plano_terminal and not objeto.lastro:
+            violacoes_objeto.append(f"V21 objeto — objeto sem lastro declarado {objeto.nome}")
         for propriedade in objeto.propriedades:
             chave = f"{objeto.nome}.{propriedade}"
             if chave not in propriedades_com_estado:
@@ -378,17 +408,18 @@ def validar(modelo: Modelo, plano, modelo_pendente: Modelo | None = None) -> lis
             if mo is None or int(mo.group(1)) not in numeros_operacoes:
                 violacoes_objeto.append(f"V7 objeto — origem inexistente {objeto.nome}")
 
-    for item in plano.tarefas:
-        ops_citadas = campo_operacoes(item.texto)
-        if not ops_citadas:
-            violacoes_id.append(f"V2 {item.id} — tarefa sem operação")
-        for op_id in ops_citadas or []:
-            mo = _ORIGEM_OP_RE.match(op_id)
-            numero = int(mo.group(1)) if mo else None
-            if numero not in numeros_operacoes:
-                violacoes_id.append(f"V4 {item.id} — operação inexistente {op_id}")
-            if not _tem_subbullets(item.texto, op_id):
-                violacoes_id.append(f"V14 {item.id} — contrato ausente para {op_id}")
+    if not pendente:
+        for item in plano.tarefas:
+            ops_citadas = campo_operacoes(item.texto)
+            if not ops_citadas:
+                violacoes_id.append(f"V2 {item.id} — tarefa sem operação")
+            for op_id in ops_citadas or []:
+                mo = _ORIGEM_OP_RE.match(op_id)
+                numero = int(mo.group(1)) if mo else None
+                if numero not in numeros_operacoes:
+                    violacoes_id.append(f"V4 {item.id} — operação inexistente {op_id}")
+                if not _tem_subbullets(item.texto, op_id):
+                    violacoes_id.append(f"V14 {item.id} — contrato ausente para {op_id}")
 
     return violacoes_op + violacoes_objeto + violacoes_id
 
@@ -443,6 +474,8 @@ def _diff_objetos(vigente: Modelo, pendente: Modelo) -> list[str]:
                 f"[~] {nome} — {', '.join(objeto_v.propriedades)} => "
                 f"{', '.join(objeto_p.propriedades)}"
             )
+        if objeto_p is not None and objeto_v.contrato != objeto_p.contrato:
+            linhas.append(f"[~] {nome} — contrato: {objeto_v.contrato} => {objeto_p.contrato}")
     return linhas
 
 
@@ -532,6 +565,9 @@ def _checar_forma(linhas: list[str]) -> tuple[list[str] | None, int | None, str 
 def verbo_check(args: argparse.Namespace) -> int:
     root = Path(args.root)
     plano_path = _resolver_plano(args)
+    if not plano_path.is_file():
+        print(_MSG_PLANO_AUSENTE.format(args.plano))
+        return 2
     linhas = plano_path.read_text(encoding="utf-8").splitlines()
 
     _, exit_code, msg = _checar_forma(linhas)
@@ -548,6 +584,10 @@ def verbo_check(args: argparse.Namespace) -> int:
     backlog = _load_backlog(root)
     plano = backlog._parse_plano(plano_path, root)
     violacoes = validar(modelo, plano, modelo_pendente)
+    if modelo_pendente is not None:
+        violacoes = violacoes + [
+            f"1A: {linha}" for linha in validar(modelo_pendente, plano, pendente=True)
+        ]
     if violacoes:
         for linha in violacoes:
             print(linha, file=sys.stderr)
@@ -609,6 +649,9 @@ def _montar_show(modelo: Modelo, plano, status_por_id: dict[str, str | None]) ->
 def verbo_show(args: argparse.Namespace) -> int:
     root = Path(args.root)
     plano_path = _resolver_plano(args)
+    if not plano_path.is_file():
+        print(_MSG_PLANO_AUSENTE.format(args.plano))
+        return 2
     linhas = plano_path.read_text(encoding="utf-8").splitlines()
 
     _, exit_code, msg = _checar_forma(linhas)
@@ -654,7 +697,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "modelo.py (P-0743): check julga a seção '## 1. Modelo conceitual' de um plano "
-            "contra o vocabulário de violações V1..V20 (### 16); show deriva a leitura do dono "
+            "contra o vocabulário de violações V1..V21 (### 16); show deriva a leitura do dono "
             "a partir do modelo real, abrindo pelo estágio atual, com --pendente para o bloco "
             "'## 1A' e --drift para a diferença entre a versão vigente e a pendente."
         )

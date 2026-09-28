@@ -1,5 +1,11 @@
 # RDO — {{PLANO_ID}} · {{TAREFA_ID}}
 
+# Humano
+
+{{HUMANO}}
+
+# Máquina
+
 **Plano:** `{{PLANO_PATH}}`
 **Tarefa:** `{{TAREFA_ID}}` — {{TITULO}}
 **Modelo:** {{MODELO}} · **Classe:** {{CLASSE}}
@@ -23,7 +29,7 @@
 
 ## Execução
 
-**Consumo:** {{TOOL_USES}} tool uses, {{TOKENS_K}} k tokens, {{DURACAO_S}} s (fonte: `<usage>` do encerramento)
+**Consumo:** {{CONSUMO}}
 
 **Pendência para o dono:** {{PENDENCIA}}
 
@@ -44,3 +50,7 @@
 ## Fechamento
 
 **Desdobramento:** {{DESDOBRAMENTO}}
+
+# Histórico
+
+{{HISTORICO}}

@@ -14,6 +14,45 @@
                   "command": "python {KIT_ROOT}/tools/ocupacao.py"
                 }
               ]
+            },
+            {
+              "matcher": ".*",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/progresso_hook.py"
+                }
+              ]
+            },
+            {
+              "matcher": "Write|Edit",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/crenca_hook.py"
+                }
+              ]
+            }
+          ],
+          "PostToolUse": [
+            {
+              "matcher": ".*",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/progresso_hook.py"
+                }
+              ]
+            }
+          ],
+          "Stop": [
+            {
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/progresso_hook.py"
+                }
+              ]
             }
           ],
           "SubagentStop": [
@@ -32,6 +71,14 @@
                 {
                   "type": "command",
                   "command": "python {KIT_ROOT}/tools/backlog_hook.py"
+                }
+              ]
+            },
+            {
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "python {KIT_ROOT}/tools/progresso_hook.py"
                 }
               ]
             }
