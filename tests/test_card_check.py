@@ -351,8 +351,10 @@ def test_tf_gravar_sem_caminho_grava_no_destino_derivado(tmp_path, capsys):
     """`TK-92a` — `--gravar` sem caminho grava em `caminhos.destino_medida(--root, --plano,
     --tarefa)`: com `plano-corpus.md` copiado como `docs/DIARIO_DE_OBRAS.md` numa raiz
     temporária (que carrega uma cópia de `rdo.py`/`caminhos.py`, como `verificar_tarefa`
-    exige de qualquer `--root`), o destino é `docs/RDO/evidencia/DIARIO_DE_OBRAS-CX-T1-medida.json`,
-    dentro da própria raiz temporária — nada é gravado no repositório."""
+    exige de qualquer `--root`), o destino é
+    `docs/RDO/evidencia/DIARIO_DE_OBRAS-CX-T1-medida-antes.json`, dentro da própria raiz
+    temporária — nada é gravado no repositório. Desde a `RAF-T15` (`R-05`) o nome leva o mundo
+    efetivo da medida; `CX-T1` da fixture compara o mundo `antes`."""
     card_check = _load_card_check()
     ferramentas = tmp_path / ".claude" / "tools"
     ferramentas.mkdir(parents=True)
@@ -368,7 +370,7 @@ def test_tf_gravar_sem_caminho_grava_no_destino_derivado(tmp_path, capsys):
     capsys.readouterr()
 
     assert codigo == 0
-    destino = tmp_path / "docs" / "RDO" / "evidencia" / "DIARIO_DE_OBRAS-CX-T1-medida.json"
+    destino = tmp_path / "docs" / "RDO" / "evidencia" / "DIARIO_DE_OBRAS-CX-T1-medida-antes.json"
     dados = json.loads(destino.read_text(encoding="utf-8"))
     assert dados["tarefa"] == "CX-T1"
 
@@ -400,3 +402,343 @@ def test_tr_estado_tsv_ready_compara_antes(capsys):
 
     assert codigo == 0
     assert "card_check: OK" in saida.out
+
+
+# --- RAF-T13 (DRF-13 (i) e (ii)): mundo `depois` na forma 8.1 e literal com pontuação -----------
+
+
+def _plano_com_item(tmp_path: Path, item: str) -> Path:
+    plano = tmp_path / "plano.md"
+    plano.write_text(
+        "### RX-T1 — Card sintético do RAF-T13 [Sonnet · classe mecanica]\n"
+        "- **Objetivo:** fixture de `card_check` para os testes de mundo `depois` na forma 8.1 e "
+        "do par com pontuação no literal da forma inline.\n"
+        "- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.\n"
+        "- **Verificação:**\n"
+        f"{item}"
+        "- **Pronto quando:** fixture existe e `card_check.py --tarefa RX-T1` sai conforme o "
+        "teste.\n",
+        encoding="utf-8",
+    )
+    return plano
+
+
+def _bloco(valor_impresso: str, esperado: str, medido_antes: str) -> str:
+    return (
+        "  1. ```\n"
+        f"     python -c \"print('{valor_impresso}')\"\n"
+        "     ```\n"
+        f"     → {esperado}. **Medido antes: {medido_antes}**\n"
+    )
+
+
+def _rodar(card_check, plano: Path, mundo: str) -> int:
+    return card_check.main(
+        ["--plano", str(plano), "--tarefa", "RX-T1", "--root", str(_ROOT), "--mundo", mundo]
+    )
+
+
+def test_tf_bloco_cercado_mundo_depois_compara_com_o_esperado(tmp_path, capsys):
+    """Bloco cercado que imprime `a`, esperado `imprime **b**`, `Medido antes: a`: `--mundo
+    depois` compara com o literal do esperado (`b`), não com `Medido antes` — diverge e sai 1
+    (hoje sai 0, comparando `a`). O mesmo bloco imprimindo `b` bate com o esperado e sai 0."""
+    card_check = _load_card_check()
+
+    plano = _plano_com_item(tmp_path, _bloco("a", "imprime **b**", "a"))
+    codigo = _rodar(card_check, plano, "depois")
+    saida = capsys.readouterr()
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "divergencia - esperado (depois) declara 'b'" in saida.err
+
+    plano = _plano_com_item(tmp_path, _bloco("b", "imprime **b**", "a"))
+    codigo = _rodar(card_check, plano, "depois")
+    saida = capsys.readouterr()
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+
+def test_tr_bloco_cercado_mundo_antes_segue_com_o_medido(tmp_path, capsys):
+    """O mesmo bloco cercado de cima, comparado com `--mundo antes`, segue comparando com
+    `Medido antes` (comportamento de hoje, intocado pela regra nova)."""
+    card_check = _load_card_check()
+
+    plano = _plano_com_item(tmp_path, _bloco("a", "imprime **b**", "a"))
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+    plano = _plano_com_item(tmp_path, _bloco("b", "imprime **b**", "a"))
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "divergencia - Medido antes declara 'a'" in saida.err
+
+
+def test_tf_bloco_cercado_mundo_depois_sem_literal_falha(tmp_path, capsys):
+    """Esperado `imprime o valor`, sem negrito nem crase: `--mundo depois` não tem literal para
+    comparar — o item não roda e `card_check` nomeia `esperado sem literal`."""
+    card_check = _load_card_check()
+
+    plano = _plano_com_item(tmp_path, _bloco("a", "imprime o valor", "a"))
+    codigo = _rodar(card_check, plano, "depois")
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "item 1: esperado sem literal" in saida.err
+
+
+def test_tf_par_com_crase_depois_aceita_ponto(tmp_path, capsys):
+    """O par `antes`/`depois` com o literal inteiro entre crases aceita ponto dentro do valor
+    (hoje a regex sem crase corta o literal em `a` e sai 0 com `--mundo depois`)."""
+    card_check = _load_card_check()
+    item = (
+        "  1. `python -c \"print('a.txt: 2')\"` → `a.txt: 3` — antes `a.txt: 2`, "
+        "depois `a.txt: 3`\n"
+    )
+    plano = _plano_com_item(tmp_path, item)
+
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+    codigo = _rodar(card_check, plano, "depois")
+    saida = capsys.readouterr()
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "declara 'a.txt: 3'" in saida.err
+
+
+def test_tf_par_com_crase_antes_aceita_virgula(tmp_path, capsys):
+    """O par `antes`/`depois` com o literal inteiro entre crases aceita vírgula dentro do valor
+    `antes` (hoje a regex sem crase não fecha o par e sai 1 com `sem valor antes`)."""
+    card_check = _load_card_check()
+    item = "  1. `python -c \"print('x; z')\"` → `esperado` — antes `x, y`, depois `q`\n"
+    plano = _plano_com_item(tmp_path, item)
+
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "divergencia - valor do mundo (antes) declara 'x, y'" in saida.err
+
+    item2 = "  1. `python -c \"print('x, y')\"` → `esperado` — antes `x, y`, depois `q`\n"
+    plano2 = _plano_com_item(tmp_path, item2)
+    codigo2 = _rodar(card_check, plano2, "antes")
+    saida2 = capsys.readouterr()
+    assert codigo2 == 0
+    assert "card_check: OK" in saida2.out
+
+
+def test_tf_par_com_crase_so_depois_da_seta(tmp_path, capsys):
+    """O par `antes`/`depois` só é procurado no trecho que começa na primeira `→` depois do
+    comando: uma nota antes da seta com um par de crase próprio não pode ser lida no lugar do
+    par real (hoje lê o par da nota e sai 1)."""
+    card_check = _load_card_check()
+    item = (
+        "  1. `python -c \"print('a')\"` (nota: antes `z`, depois `z`) → `a` — antes `a`, "
+        "depois `a`\n"
+    )
+    plano = _plano_com_item(tmp_path, item)
+
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+
+def test_tr_par_com_crase_legado_sem_crase_segue_lido(tmp_path, capsys):
+    """Par `antes`/`depois` sem crase (forma legado da `DFP-14`) segue lido pela `_ANTES_DEPOIS_RE`
+    de sempre, intocada por esta tarefa."""
+    card_check = _load_card_check()
+    item = "  1. `python -c \"print(2)\"` → 3 — antes 2, depois 3\n"
+    plano = _plano_com_item(tmp_path, item)
+
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+    codigo = _rodar(card_check, plano, "depois")
+    saida = capsys.readouterr()
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+
+
+# --- RAF-T14 (DRF-13 (iii) e (iv), DRF-36): git de leitura, <ref> do despacho, invariância ------
+
+
+def _raiz_com_despacho(tmp_path: Path, tarefa: str, ref: str) -> Path:
+    ferramentas = tmp_path / ".claude" / "tools"
+    ferramentas.mkdir(parents=True)
+    shutil.copy2(_ROOT / ".claude" / "tools" / "rdo.py", ferramentas / "rdo.py")
+    shutil.copy2(_ROOT / ".claude" / "tools" / "caminhos.py", ferramentas / "caminhos.py")
+    estado = tmp_path / ".claude" / "estado"
+    estado.mkdir(parents=True)
+    (estado / "tarefa-corrente.json").write_text(
+        json.dumps({"tarefa": tarefa, "ref": ref}), encoding="utf-8"
+    )
+    return tmp_path
+
+
+def test_tf_git_leitura_roda_ls_files(tmp_path, capsys):
+    """`_COMANDOS_PERMITIDOS` ganha `git`, restrito aos subcomandos de leitura de `_GIT_LEITURA`:
+    `git ls-files tests/test_card_check.py` é um deles — `--mundo antes` sai 0 (hoje sai 1,
+    `primeiro token fora da lista fechada`, porque `git` não estava na lista)."""
+    card_check = _load_card_check()
+    item = (
+        "  1. `git ls-files tests/test_card_check.py` → `tests/test_card_check.py` — "
+        "antes `tests/test_card_check.py`, depois `tests/test_card_check.py`\n"
+    )
+    plano = _plano_com_item(tmp_path, item)
+
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+
+def test_tf_git_leitura_recusa_subcomando_de_escrita(tmp_path, capsys):
+    """`git commit` não está em `_GIT_LEITURA` — recusado com a razão nomeando o segundo token, e
+    o comando nunca roda (hoje a razão é `primeiro token fora da lista fechada`, sem nomear o
+    subcomando, porque `git` não estava na lista fechada)."""
+    card_check = _load_card_check()
+    item = "  1. `git commit -m x` → `x` — antes `x`, depois `x`\n"
+    plano = _plano_com_item(tmp_path, item)
+
+    codigo = _rodar(card_check, plano, "antes")
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "subcomando git 'commit' fora da lista de leitura" in saida.err
+
+
+def test_tf_ref_do_despacho_entra_no_comando(tmp_path, capsys):
+    """`<ref>` no comando é trocado pelo valor que o `despachar` gravou em
+    `.claude/estado/tarefa-corrente.json` para a mesma tarefa: raiz com `ref` `abc123` para
+    `RX-T1`, comando que imprime `<ref>` — `--mundo depois` compara com `abc123` e sai 0 (hoje
+    imprime o literal `<ref>` e sai 1)."""
+    card_check = _load_card_check()
+    raiz = _raiz_com_despacho(tmp_path, "RX-T1", "abc123")
+    plano = _plano_com_item(raiz, _bloco("<ref>", "imprime **abc123**", "<ref>"))
+
+    codigo = card_check.main(
+        ["--plano", str(plano), "--tarefa", "RX-T1", "--root", str(raiz), "--mundo", "depois"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "card_check: OK" in saida.out
+
+
+def test_tr_ref_do_despacho_de_outra_tarefa_falha(tmp_path, capsys):
+    """O `tarefa-corrente.json` é de outra tarefa (`OUTRA-T1`): `_ref_do_despacho` devolve `None`
+    para `RX-T1`, e o item com `<ref>` no comando falha nomeado, sem rodar."""
+    card_check = _load_card_check()
+    raiz = _raiz_com_despacho(tmp_path, "OUTRA-T1", "abc123")
+    plano = _plano_com_item(raiz, _bloco("<ref>", "imprime **abc123**", "<ref>"))
+
+    codigo = card_check.main(
+        ["--plano", str(plano), "--tarefa", "RX-T1", "--root", str(raiz), "--mundo", "depois"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "card_check: FALHOU" in saida.err
+    assert "item 1: <ref> sem recorte do despacho para 'RX-T1'" in saida.err
+
+
+def test_tf_invariancia_nao_medida_antes_e_medida_depois(tmp_path, capsys):
+    """Item de invariância (`(invariância)`, `DRF-36`) sem par `antes`/`depois`: `--mundo antes`
+    não roda o comando e grava `saida == 'não medida (invariância)'` sem falha (hoje sai 1, `sem
+    valor antes`); `--mundo depois` roda e o `exit 1` real não bate com o `exit 0` esperado."""
+    card_check = _load_card_check()
+    item = '  1. `python -c "import sys;sys.exit(1)"` → `exit 0` (invariância)\n'
+    plano = _plano_com_item(tmp_path, item)
+    destino = tmp_path / "medida.json"
+
+    codigo = card_check.main(
+        [
+            "--plano",
+            str(plano),
+            "--tarefa",
+            "RX-T1",
+            "--root",
+            str(_ROOT),
+            "--mundo",
+            "antes",
+            "--gravar",
+            str(destino),
+        ]
+    )
+    capsys.readouterr()
+
+    assert codigo == 0
+    dados = json.loads(destino.read_text(encoding="utf-8"))
+    assert dados["itens"][0]["saida"] == "não medida (invariância)"
+
+    codigo2 = card_check.main(
+        ["--plano", str(plano), "--tarefa", "RX-T1", "--root", str(_ROOT), "--mundo", "depois"]
+    )
+    capsys.readouterr()
+
+    assert codigo2 == 1
+
+
+# --- RAF-T15 (R-05): a medida gravada fica na pasta do plano da árvore medida, com o mundo no nome
+
+
+def test_tf_medida_gravada_com_o_mundo_na_pasta_da_raiz(tmp_path, capsys):
+    """`RAF-T15` (`R-05`) — plano em pasta (`P-0007-z`) numa árvore `real`; `--root` aponta para
+    uma árvore `copia` (com cópia de `rdo.py`/`caminhos.py`). `--gravar` sem caminho, rodado uma
+    vez com `--mundo antes` e outra com `--mundo depois`, grava os dois na pasta do plano dentro
+    de `copia`, cada um com o mundo no nome; `real` não ganha pasta de evidência — hoje grava um
+    arquivo só, sem mundo, na árvore `real`."""
+    card_check = _load_card_check()
+    real = tmp_path / "real"
+    copia = tmp_path / "copia"
+    ferramentas = copia / ".claude" / "tools"
+    ferramentas.mkdir(parents=True)
+    shutil.copy2(_ROOT / ".claude" / "tools" / "rdo.py", ferramentas / "rdo.py")
+    shutil.copy2(_ROOT / ".claude" / "tools" / "caminhos.py", ferramentas / "caminhos.py")
+    pasta_plano = real / "docs" / "plans" / "P-0007-z"
+    pasta_plano.mkdir(parents=True)
+    plano = pasta_plano / "plano.md"
+    plano.write_text(
+        "### RX-T1 — Card inline para medida com mundo [Sonnet · classe mecanica]\n"
+        "- **Status:** `ready`\n"
+        "- **Objetivo:** fixture de `card_check` para a `RAF-T15`.\n"
+        "- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.\n"
+        "- **Verificação:**\n"
+        "  1. `python -c \"print('a')\"` → `a` — antes `a`, depois `b`\n"
+        "- **Pronto quando:** fixture existe e `card_check.py --tarefa RX-T1` sai 0.\n",
+        encoding="utf-8",
+    )
+
+    card_check.main(
+        [
+            "--plano", str(plano), "--tarefa", "RX-T1", "--root", str(copia),
+            "--mundo", "antes", "--gravar",
+        ]
+    )
+    capsys.readouterr()
+    card_check.main(
+        [
+            "--plano", str(plano), "--tarefa", "RX-T1", "--root", str(copia),
+            "--mundo", "depois", "--gravar",
+        ]
+    )
+    capsys.readouterr()
+
+    pasta_evidencia = copia / "docs" / "plans" / "P-0007-z" / "evidencia"
+    assert sorted(p.name for p in pasta_evidencia.iterdir()) == [
+        "P-0007-RX-T1-medida-antes.json",
+        "P-0007-RX-T1-medida-depois.json",
+    ]
+    assert not (real / "docs" / "plans" / "P-0007-z" / "evidencia").exists()

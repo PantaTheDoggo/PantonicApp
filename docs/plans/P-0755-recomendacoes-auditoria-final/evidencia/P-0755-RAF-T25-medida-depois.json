@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T25",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T21:51:28+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/agents/pantonic-planner.md').read_text(encoding='utf-8');print('nova=%d'%t.count('**Card da operação nova**'))\"",
+      "exit": 0,
+      "saida": "nova=1",
+      "bate": true
+    }
+  ]
+}

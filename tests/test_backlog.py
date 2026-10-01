@@ -3146,3 +3146,441 @@ def test_tr_despachar_mundo_depois_redespacha_tarefa_ja_aplicada(tmp_path, capsy
     estado_tsv = (repo / "docs" / "plans" / "P-0-gama" / "estado.tsv").read_text(encoding="utf-8")
     linha_gam_t1 = next(l for l in estado_tsv.splitlines() if l.startswith("GAM-T1\t"))
     assert linha_gam_t1.split("\t")[2] == "in-progress"
+
+
+# --------------------------------------------------------------------------- #
+# RAF-T3 — o despacho grava o pacote da tarefa num arquivo fora do versionamento e
+# imprime só o recado ao executor.
+# --------------------------------------------------------------------------- #
+
+
+def test_tf_despachar_grava_o_pacote_na_pasta_do_plano(tmp_path, capsys):
+    """TF da RAF-T3: `despachar GAM-T1` grava o pacote da tarefa (card, handovers e âncoras
+    conferidas) em `<pasta do plano>/despacho/<ID>.md` — a regra de hoje não grava arquivo
+    nenhum."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    pacote = repo / "docs" / "plans" / "P-0-gama" / "despacho" / "GAM-T1.md"
+    texto = pacote.read_text(encoding="utf-8")
+    assert "### GAM-T1 — Primeira tarefa [Sonnet · classe implementacao]" in texto
+    assert "despacho: P-0 GAM-T1" in texto
+    assert "## Âncoras conferidas" in texto
+
+
+def test_tr_despachar_recusado_nao_grava_o_pacote(tmp_path, capsys):
+    """TR da RAF-T3: `GAM-T2` é recusado pelo gate `card_check` — a pasta `despacho/` não
+    existe, porque a gravação do pacote só acontece depois da última checagem passar."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    assert backlog.main(["despachar", "GAM-T2", "--repo", str(repo)]) == 1
+
+    pasta_despacho = repo / "docs" / "plans" / "P-0-gama" / "despacho"
+    assert not pasta_despacho.exists()
+
+
+def test_tf_gitignore_ignora_o_pacote_do_despacho():
+    """TF da RAF-T3: o pacote do despacho nunca se versiona, no layout de plano em pasta e no
+    de plano legado/tíquete — hoje `git check-ignore -q` sai 1 para os dois."""
+    caminhos = [
+        "docs/plans/P-0755-recomendacoes-auditoria-final/despacho/RAF-T1.md",
+        "docs/RDO/despacho/TK-1.md",
+    ]
+    for caminho in caminhos:
+        resultado = subprocess.run(
+            ["git", "check-ignore", "-q", caminho], cwd=str(_ROOT), capture_output=True
+        )
+        assert resultado.returncode == 0, caminho
+
+
+def test_tf_despachar_imprime_o_texto_pronto_ao_executor(tmp_path, capsys):
+    """TF da RAF-T3: a tela de quem despacha recebe só o recado pronto ao executor, não o card
+    inteiro — hoje o card inteiro sai na tela."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    linhas = capsys.readouterr().out.splitlines()
+    assert linhas[0] == "=== DESPACHO: GAM-T1 — Primeira tarefa"
+    assert linhas[1] == "despacho: P-0 GAM-T1"
+    assert "docs/plans/P-0-gama/despacho/GAM-T1.md" in linhas[2]
+    assert "GAM-T1 review" in linhas
+    assert "GAM-T1 review pendencia=<uma linha>" in linhas
+    assert (
+        "GAM-T1 blocked motivo=<dependencia|premissa|ferramenta> <uma linha de razão>" in linhas
+    )
+    assert linhas[-1].startswith("ref=")
+    assert "- **Objetivo:** fixture." not in "\n".join(linhas)
+
+
+def test_tf_despachar_confere_as_ancoras_do_card(tmp_path, capsys):
+    """TF da RAF-T3: o pacote traz cada âncora citada em `Arquivos-alvo`/`Passos` com o número
+    e o texto atuais da linha, e marca ausente o texto que já não está no arquivo — hoje o
+    despacho não confere nenhuma âncora."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    plano = repo / "docs" / "plans" / "P-0-gama" / "plano.md"
+    texto_original = plano.read_text(encoding="utf-8")
+    bloco_entregavel = "- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.\n"
+    bloco_ancoras = (
+        "- **Arquivos-alvo:**\n"
+        "  - `src/alvo.py`\n"
+        "- **Passos:**\n"
+        "  1. Editar `src/alvo.py:1` — `x = 1`.\n"
+        "  2. Trocar `return 1`.\n"
+        "- **Contratos/classes:**\n"
+        "  1. `src/alvo.py:2` — `texto que sumiu`.\n"
+    )
+    plano.write_text(texto_original.replace(bloco_entregavel, bloco_ancoras, 1), encoding="utf-8")
+
+    (repo / "src").mkdir(parents=True, exist_ok=True)
+    (repo / "src" / "alvo.py").write_text("x = 1\ndef alvo():\n    return 1\n", encoding="utf-8")
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    pacote = (repo / "docs" / "plans" / "P-0-gama" / "despacho" / "GAM-T1.md").read_text(
+        encoding="utf-8"
+    )
+    assert "- src/alvo.py:1 — x = 1" in pacote
+    assert "- src/alvo.py:3 — return 1" in pacote
+    assert "- âncora ausente: texto que sumiu" in pacote
+
+
+def test_tf_ancoras_nao_marcam_ausente_o_trecho_que_nao_cita_linha(tmp_path, capsys):
+    """TF da RAF-T3a (`AE-125`): comando, rótulo de campo e fragmento de crase dupla — trechos
+    entre crases que não citam linha — não entram no pacote como ausente; a regra de hoje os
+    marca ausentes."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    plano = repo / "docs" / "plans" / "P-0-gama" / "plano.md"
+    texto_original = plano.read_text(encoding="utf-8")
+    bloco_entregavel = "- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.\n"
+    bloco_ancoras = (
+        "- **Arquivos-alvo:**\n"
+        "  - `src/alvo.py`\n"
+        "- **Passos:**\n"
+        "  1. Rodar `python -m pytest -q` e preencher o campo `Testes`.\n"
+        "  2. Conferir ``campo `Testes` do card`` e trocar `return 1`.\n"
+    )
+    plano.write_text(texto_original.replace(bloco_entregavel, bloco_ancoras, 1), encoding="utf-8")
+
+    (repo / "src").mkdir(parents=True, exist_ok=True)
+    (repo / "src" / "alvo.py").write_text("x = 1\ndef alvo():\n    return 1\n", encoding="utf-8")
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    pacote = (repo / "docs" / "plans" / "P-0-gama" / "despacho" / "GAM-T1.md").read_text(
+        encoding="utf-8"
+    )
+    assert "- src/alvo.py:3 — return 1" in pacote
+    assert "- âncora ausente" not in pacote
+
+
+def test_tf_ancoras_leem_arquivo_sem_extensao_e_caminho_pelo_alvo(tmp_path, capsys):
+    """TF da RAF-T3a: linha citada resolve arquivo sem extensão sob `repo` e caminho citado só
+    pelo nome, pelo alvo cujo caminho termina nele — a regra de hoje marca os dois ausentes."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    plano = repo / "docs" / "plans" / "P-0-gama" / "plano.md"
+    texto_original = plano.read_text(encoding="utf-8")
+    bloco_entregavel = "- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.\n"
+    bloco_ancoras = (
+        "- **Arquivos-alvo:**\n"
+        "  - `src/alvo.py`\n"
+        "  - `.alvorc`\n"
+        "- **Passos:**\n"
+        "  1. Aplicar Contratos/classes.\n"
+        "- **Contratos/classes:**\n"
+        "  1. Editar `.alvorc:2` e `alvo.py:3`.\n"
+    )
+    plano.write_text(texto_original.replace(bloco_entregavel, bloco_ancoras, 1), encoding="utf-8")
+
+    (repo / "src").mkdir(parents=True, exist_ok=True)
+    (repo / "src" / "alvo.py").write_text("x = 1\ndef alvo():\n    return 1\n", encoding="utf-8")
+    (repo / ".alvorc").write_text("chave = 1\noutra = 2\n", encoding="utf-8")
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    pacote = (repo / "docs" / "plans" / "P-0-gama" / "despacho" / "GAM-T1.md").read_text(
+        encoding="utf-8"
+    )
+    assert "- .alvorc:2 — outra = 2" in pacote
+    assert "- src/alvo.py:3 — return 1" in pacote
+    assert "- âncora ausente" not in pacote
+
+
+def test_tr_ancoras_marcam_ausente_a_linha_citada_que_sumiu(tmp_path, capsys):
+    """TR da RAF-T3a (`AE-125`): trecho que cita `caminho:linha` cujo texto seguinte não bate
+    mais com o arquivo, e `caminho:linha` cujo número não existe, seguem marcados ausentes — a
+    regra concorrente, que não marcasse ausente trecho nenhum, falharia; a de hoje passa."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar(tmp_path)
+
+    plano = repo / "docs" / "plans" / "P-0-gama" / "plano.md"
+    texto_original = plano.read_text(encoding="utf-8")
+    bloco_entregavel = "- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.\n"
+    bloco_ancoras = (
+        "- **Arquivos-alvo:**\n"
+        "  - `src/alvo.py`\n"
+        "- **Passos:**\n"
+        "  1. Aplicar Contratos/classes.\n"
+        "- **Contratos/classes:**\n"
+        "  1. `src/alvo.py:2` — `texto que sumiu`; `src/alvo.py:9`.\n"
+    )
+    plano.write_text(texto_original.replace(bloco_entregavel, bloco_ancoras, 1), encoding="utf-8")
+
+    (repo / "src").mkdir(parents=True, exist_ok=True)
+    (repo / "src" / "alvo.py").write_text("x = 1\ndef alvo():\n    return 1\n", encoding="utf-8")
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    pacote = (repo / "docs" / "plans" / "P-0-gama" / "despacho" / "GAM-T1.md").read_text(
+        encoding="utf-8"
+    )
+    assert "- src/alvo.py:2 — def alvo():" in pacote
+    assert "- âncora ausente: texto que sumiu" in pacote
+    assert "- âncora ausente: src/alvo.py:9" in pacote
+
+
+_GAM_PLANO_COM_PENDENTE_TEXTO = """# P-0 — Plano gama
+
+**Prefixo das tarefas no diário:** `GAM-T<n>`
+
+## 1. Modelo conceitual
+
+**Estado do modelo:** versão 1 · 2026-01-01 · autor: modelador · 1 operações · 2 propriedades · situação: vigente
+
+### 1.1 Objetos
+
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo | dado de entrada | status | um registro por rodada | externo | lastro da fixture |
+| produto | o produto da primeira operação | status | um registro validado | OP-1 | lastro da fixture |
+
+### 1.2 Fluxo de operações
+
+- **OP-1** — Primeira operação da fixture.
+  - `precisa de: insumo` · `altera: produto.status` · `tarefas: GAM-T1, GAM-T2`
+
+### 1.3 Estado inicial e estado final
+
+| propriedade | estado inicial | estado final |
+|---|---|---|
+| insumo.status | lido | lido |
+| produto.status | rascunho | validado |
+
+### 1.4 Registro de versões
+
+| versão | data | situação | por |
+|---|---|---|---|
+| 1 | 2026-01-01 | vigente | modelador |
+| 2 | 2026-01-02 | pendente | modelador, emenda |
+
+## 1A. Modelo conceitual — versão pendente de validação
+
+**Estado do modelo:** versão 2 · 2026-01-02 · autor: modelador · 2 operações · 3 propriedades · situação: pendente
+
+### 1.1 Objetos
+
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo | dado de entrada | status | um registro por rodada | externo | lastro da fixture |
+| produto | o produto da primeira operação | status | um registro validado | OP-1 | lastro da fixture |
+| resultado | o produto da segunda operação | nível | um relatório derivado | OP-2 | lastro da fixture |
+
+### 1.2 Fluxo de operações
+
+- **OP-1** — Primeira operação da fixture.
+  - `precisa de: insumo` · `altera: produto.status` · `tarefas: GAM-T1, GAM-T2`
+- **OP-2** — Segunda operação, nova na versão pendente.
+  - `precisa de: produto` · `altera: resultado.nível` · `tarefas: `
+
+### 1.3 Estado inicial e estado final
+
+| propriedade | estado inicial | estado final |
+|---|---|---|
+| insumo.status | lido | lido |
+| produto.status | rascunho | validado |
+| resultado.nível | inicial | alto |
+
+## 5. Tarefas
+
+### GAM-T1 — Primeira tarefa [Sonnet · classe implementacao]
+- **Objetivo:** fixture.
+- **Operação do modelo:** `OP-1`
+  - OP-1: Primeira operação da fixture.
+  - precisa de: insumo — um registro por rodada
+- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.
+- **Verificação:**
+  1. `python -c "print('a')"` → `b` — antes `a`, depois `b`
+- **Pronto quando:** fixture existe.
+
+### GAM-T2 — Segunda tarefa [Sonnet · classe implementacao]
+- **Objetivo:** fixture.
+@OPERACAO_GAM_T2@- **Entregável:** nenhum — fixture sintética, não é card vivo de plano.
+- **Verificação:**
+  1. `python -c "print('a')"` → `b` — antes `a`, depois `b`
+- **Pronto quando:** fixture existe.
+"""
+
+_OPERACAO_GAM_T2 = """- **Operação do modelo:** `OP-1`
+  - OP-1: Primeira operação da fixture.
+  - precisa de: insumo — um registro por rodada
+"""
+
+
+def _montar_repo_despachar_com_pendente(tmp_path: Path, operacao_gam_t2: str) -> Path:
+    """RAF-T20 (`DRF-1`, `DRF-14`) — plano gama com uma `## 1A` pendente ao lado da `## 1`
+    vigente, para provar que `despachar` pede ao `modelo.py check` só o julgamento da versão
+    vigente (`--so-vigente`). Reaproveita `_montar_repo_despachar` e sobrescreve o
+    `plano.md` da cópia; o `modelo.py check` carrega o `backlog.py` da raiz dada por `--root`,
+    por isso a cópia também ganha o `backlog.py` do repositório (`_ROOT`)."""
+    repo = _montar_repo_despachar(tmp_path)
+    ferramentas = repo / ".claude" / "tools"
+    shutil.copy2(_ROOT / ".claude" / "tools" / "backlog.py", ferramentas / "backlog.py")
+    texto = _GAM_PLANO_COM_PENDENTE_TEXTO.replace("@OPERACAO_GAM_T2@", operacao_gam_t2)
+    (repo / "docs" / "plans" / "P-0-gama" / "plano.md").write_text(texto, encoding="utf-8")
+    _run_git_despachar(["add", "-A"], repo)
+    _run_git_despachar(["commit", "-m", "plano com versão pendente"], repo)
+    return repo
+
+
+def test_tf_despachar_versao_vigente_segue_com_pendente_incompleta(tmp_path, capsys):
+    """TF da RAF-T20: a `## 1A` pendente tem a `OP-2` sem tarefa e o `GAM-T2` (da `## 1`
+    vigente) tem `Operação do modelo` — `despachar GAM-T1` julga só a versão vigente e sai 0,
+    sem `despachar: recusado` no stderr (hoje sai 1 com `despachar: recusado — modelo: modelo:
+    FALHOU — 1 violação(ões)`, pela `1A: V1 OP-2 — operação sem tarefa`)."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar_com_pendente(tmp_path, _OPERACAO_GAM_T2)
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 0
+
+    erro = capsys.readouterr().err
+    assert "despachar: recusado" not in erro
+
+
+def test_tr_despachar_versao_vigente_recusa_defeito_da_vigente(tmp_path, capsys):
+    """TR da RAF-T20: o mesmo plano com `operacao_gam_t2` vazio — o `GAM-T2` da `## 1` vigente
+    fica sem `Operação do modelo` (`V2`) — `despachar GAM-T1` sai 1 com `despachar: recusado —
+    modelo:` no stderr; a regra concorrente, tirar o gate do modelo, sairia 0."""
+    backlog = _load_backlog()
+    repo = _montar_repo_despachar_com_pendente(tmp_path, "")
+
+    assert backlog.main(["despachar", "GAM-T1", "--repo", str(repo)]) == 1
+
+    erro = capsys.readouterr().err
+    assert "despachar: recusado — modelo:" in erro
+
+
+# --------------------------------------------------------------------------- #
+# RAF-T28 (`DRF-20`, `F-23` do `P-0755`) — `drain` avisa, no stderr, quando a diretiva de
+# priorização não cita nenhum id vivo nem o plano que acabou de sair da fila (`R-18`: a
+# auditoria achou a diretiva ainda apontando um plano já drenado).
+# --------------------------------------------------------------------------- #
+
+
+def _repo_drain_com_diretiva(tmp_path: Path, ids_da_diretiva: str) -> Path:
+    repo = _copiar_fixture(_FIXTURE_NEXT_TK90, tmp_path / "repo")
+    _escrever_plano(repo, "P-0800-alfa.md", "P-0800", "Plano alfa de teste", "ALF", "ready")
+    _inbox_com_linhas(repo, ["- docs/plans/P-0800-alfa.md — plano alfa de teste"])
+    _inserir_bloco_gerado(repo)
+    diario = repo / "docs" / "DIARIO_DE_OBRAS.md"
+    linhas = diario.read_text(encoding="utf-8").splitlines()
+    linhas.insert(1, f"**Diretiva de priorização:** {ids_da_diretiva} — texto da fixture.")
+    diario.write_text("\n".join(linhas) + "\n", encoding="utf-8")
+    return repo
+
+
+def test_tf_drain_aviso_diretiva_sem_id_vivo(tmp_path, capsys):
+    """TF da RAF-T28: diretiva com `` `P-0001` `` (id que não existe na fixture) — `drain`
+    sai 0 e o stderr traz o aviso nomeando o plano drenado (`P-0800`); hoje sai 0 em
+    silêncio."""
+    backlog = _load_backlog()
+    repo = _repo_drain_com_diretiva(tmp_path, "`P-0001`")
+
+    assert backlog.main(["drain", "--repo", str(repo), "--data", "2026-09-28"]) == 0
+
+    erro = capsys.readouterr().err
+    assert "drain: aviso — a diretiva de priorização não cita nenhum id vivo nem P-0800" in erro
+
+
+def test_tr_drain_aviso_diretiva_com_id_vivo_ou_drenado_cala(tmp_path, capsys):
+    """TR da RAF-T28: diretiva com um id vivo (`P-0090`, `ready` na fixture) e, em outra
+    cópia, com o próprio id drenado (`P-0800`) — os dois saem 0 sem `drain: aviso` no stderr;
+    a regra concorrente, avisar a cada drenagem, avisaria nos dois casos."""
+    backlog = _load_backlog()
+
+    repo_vivo = _repo_drain_com_diretiva(tmp_path / "vivo", "`P-0090`")
+    assert backlog.main(["drain", "--repo", str(repo_vivo), "--data", "2026-09-28"]) == 0
+    assert "drain: aviso" not in capsys.readouterr().err
+
+    repo_drenado = _repo_drain_com_diretiva(tmp_path / "drenado", "`P-0800`")
+    assert backlog.main(["drain", "--repo", str(repo_drenado), "--data", "2026-09-28"]) == 0
+    assert "drain: aviso" not in capsys.readouterr().err
+
+
+# --------------------------------------------------------------------------- #
+# RAF-T29 (`DRF-29`, `F-23`/`F-24` do `P-0755`) — `check` recusa o plano que declara o mesmo
+# `**Prefixo das decisões:**` já declarado por outro plano do corpus, nomeando o plano dono (o
+# de menor id); citar o prefixo de outro plano no corpo do texto continua permitido.
+# --------------------------------------------------------------------------- #
+
+
+def _repo_prefixos_de_decisao(tmp_path: Path, prefixo_beta: str, texto_beta: str = "") -> Path:
+    repo = _copiar_fixture(_FIXTURE_VERDE, tmp_path / "repo")
+    plans_dir = repo / "docs" / "plans"
+    alfa = (
+        "# P-0800 — Plano P-0800-alfa.md\n"
+        "\n"
+        "**Status:** `ready` · **Prefixo das tarefas no diário:** `ALF-T<n>` · "
+        "**Prefixo das decisões:** `DSA-<n>`\n"
+    )
+    (plans_dir / "P-0800-alfa.md").write_text(alfa, encoding="utf-8")
+    beta_linhas = [
+        "# P-0801 — Plano P-0801-beta.md",
+        "",
+        "**Status:** `ready` · **Prefixo das tarefas no diário:** `BET-T<n>` · "
+        f"**Prefixo das decisões:** `{prefixo_beta}-<n>`",
+        "",
+    ]
+    if texto_beta:
+        beta_linhas.append(texto_beta)
+    (plans_dir / "P-0801-beta.md").write_text("\n".join(beta_linhas) + "\n", encoding="utf-8")
+    return repo
+
+
+def test_tf_check_prefixo_de_decisao_repetido_recusa(tmp_path, capsys):
+    """TF da RAF-T29: `P-0801` declara `DSA`, o mesmo prefixo já declarado por `P-0800` — `check`
+    sai 1 com uma linha `C-18` no `P-0801` nomeando o dono `P-0800`; o dono não é acusado."""
+    backlog = _load_backlog()
+    repo = _repo_prefixos_de_decisao(tmp_path, "DSA")
+
+    assert backlog.main(["check", "--repo", str(repo)]) == 1
+
+    linhas = capsys.readouterr().out.splitlines()
+    assert any(
+        l.startswith("C-18 docs/plans/P-0801-beta.md:3 — ")
+        and "P-0801: prefixo de decisão 'DSA' já declarado por P-0800" in l
+        for l in linhas
+    )
+    assert not any(l.startswith("C-18 docs/plans/P-0800-alfa.md") for l in linhas)
+
+
+def test_tr_check_prefixo_de_decisao_citado_nao_e_colisao(tmp_path, capsys):
+    """TR da RAF-T29: `P-0801` declara `DSB` (prefixo próprio, sem colisão) e cita `` `DSA-3` ``
+    de `P-0800` no corpo — nenhuma linha `C-18`; a regra concorrente, contar ocorrência de
+    prefixo no texto, acusaria aqui."""
+    backlog = _load_backlog()
+    repo = _repo_prefixos_de_decisao(tmp_path, "DSB", texto_beta="Aplica a `DSA-3` do P-0800.")
+
+    backlog.main(["check", "--repo", str(repo)])
+
+    saida = capsys.readouterr().out
+    assert "C-18" not in saida

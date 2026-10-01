@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T15",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T15:27:32+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('README.md').read_text(encoding='utf-8');print('[%d-%d-%d]'%(t.count('do card de plano ou do tíquete do diário'),t.count('a evidência que o revisor recebe de cada tarefa'),t.count('A contingência do card faz parte dele')))\"",
+      "exit": 0,
+      "saida": "[1-1-1]",
+      "bate": true
+    }
+  ]
+}

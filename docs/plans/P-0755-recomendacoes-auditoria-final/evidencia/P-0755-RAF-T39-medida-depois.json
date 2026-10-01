@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T39",
+  "mundo": "depois",
+  "gerado_em": "2026-09-30T06:06:38+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print('marco=%d'%t.count('Quando a janela para num marco'))\"",
+      "exit": 0,
+      "saida": "marco=1",
+      "bate": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+id	tipo	status	razao	data	nota
+P-0754	plano	ready	-	2026-09-28	Marco 1 go em 2026-09-28
+AUF-T1	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T1.md`, veredito aprovado 100%
+AUF-T2	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T2.md`, veredito ressalva 91%
+AUF-T3	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T3.md`, veredito aprovado 100%
+AUF-T4	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T4.md`, veredito aprovado 100%
+AUF-T5	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T5.md`, veredito aprovado 100%
+AUF-T6	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T6.md`, veredito aprovado 100%
+AUF-T7	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T7.md`, veredito aprovado 100%
+AUF-T8	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T8.md`, veredito aprovado 100%
+AUF-T9	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T9.md`, veredito aprovado 100%
+AUF-T10	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T10.md`, veredito aprovado 100%
+AUF-T11	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T11.md`, veredito aprovado 100%
+AUF-T12	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T12.md`, veredito aprovado 100%
+AUF-T13	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T13.md`, veredito aprovado 100%
+AUF-T14	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T14.md`, veredito aprovado 100%
+AUF-T15	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T15.md`, veredito aprovado 100%
+AUF-T16	tarefa	done	-	2026-09-28	fechada por `encerrar.py`: RDO `docs/plans/P-0754-auditoria-final/rdo/AUF-T16.md`, veredito ressalva 90%

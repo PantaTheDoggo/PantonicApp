@@ -113,10 +113,10 @@ decisão para o executor, no modelo mais barato e sem o contexto de quem decidiu
 3. Números de aceite (piso, contagem de suíte, call sites) re-derivados por 1 comando barato agora —
    nunca copiados do plano (contagens envelhecem com a própria sprint). String destinada a assert é
    citação colada do output de verificação, nunca paráfrase — token negativo errado passa em
-   silêncio. Junto dos números vão as **âncoras** (arquivo, linha e texto do ponto a editar)
-   re-derivadas no ato e, quando a tarefa fecha em plano em andamento, o **range de linhas do bullet
-   de fechamento anterior**: sem isso o dossiê não é autossuficiente e quem executa precisa
-   redescobrir a localização — trabalho que a tarefa não pediu.
+   silêncio. As **âncoras** (arquivo, linha e texto do ponto a editar) da tarefa de plano chegam
+   conferidas no pacote do `despachar` (`scrum-master`, passo 3) e não se re-derivam à mão; só o
+   card de tíquete, despachado à mão, as leva re-derivadas no ato. Tarefa que fecha em plano em
+   andamento leva ainda o **range de linhas do bullet de fechamento anterior** (`scrum-master`, passo 4).
 4. Afirmação negativa de escopo ("não toca contracts/services") com campo novo persistido exige 1
    grep pelo gate de ESCRITA (`extra.*forbid`, validador) antes de ser afirmada. Rename/move de
    símbolo público: grep também em docs vivos (`docs/*.md`, excluindo históricos).
@@ -259,7 +259,10 @@ Residência única desta fronteira; quem precisar dela aponta para cá.
   não viram pergunta: viram `AE-<n>` em `## Achados da execução` do plano, tarefa `blocked` razão
   `premissa` e triagem do consultor, que devolve a rota (`G-NOASK`, `GOVERNANCA.md` §7 item 18).
 - **Decisão pendente é o próximo passo:** se a tarefa executada deixou ponto para o dono decidir, o
-  próximo passo é **a decisão**, não a próxima tarefa do backlog. Cada ponto é apresentado com (1) o
+  próximo passo é **a decisão**, não a próxima tarefa do backlog. Ponto do dono é só o estratégico
+  — o que altera o modelo que ele descreveu ou o prompt da demanda (`G-ESCALA`, `GOVERNANCA.md` §7
+  item 21); ponto operacional ou tático que a tarefa deixou é defeito de fechamento: vai ao
+  consultor ou se decide e registra no ato, e nunca vira próximo passo nem lista ao dono. Cada ponto é apresentado com (1) o
   **fato medido** que o originou, (2) o que **cada opção implica**, (3) o que **fica bloqueado ou
   nasce errado** sem resposta e (4) uma **recomendação** com o motivo. Toda opção de rota inclui
   **registrar e não agir** quando ela existir.

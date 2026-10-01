@@ -11,6 +11,11 @@
 .claude/estado/*
 !.claude/estado/.gitkeep
 
+# Pacote do despacho (`R-02`, `P-0755`): projeção regenerável do card, gravada por
+# `backlog.py despachar` a cada despacho — nunca se versiona.
+docs/plans/*/despacho/
+docs/RDO/despacho/
+
 # Bytecode do Python — a suíte do hub (`tests/`) carrega os verificadores de
 # `.claude/checks/` por caminho, e cada rodada grava `__pycache__/` ao lado deles
 __pycache__/

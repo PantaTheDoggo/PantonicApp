@@ -1373,3 +1373,31 @@ def test_laudo_achado_dossie_acentuado(tmp_path):
     assert exit_code == 0
     conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
     assert "| dossiê | linha do achado |" in conteudo
+
+
+# --- laudo · achado de processo, alvo instrumento (RAF-T30a do P-0755, `DRF-68`) --------------
+
+
+def test_tf_laudo_alvo_instrumento_chega_ao_aviso_b1_do_fechamento(tmp_path):
+    """TF (RAF-T30a, `DRF-68`): `--achado-processo instrumento "<linha>"` sai 0, o laudo tem a
+    linha `| instrumento | <linha> |`, e o `achados_do_laudo` do `encerrar.py` a devolve como o
+    achado que o aviso `B1` da `RAF-T30` casa — o caminho do gerador ao fechamento, que o card
+    da `RAF-T30` montava à mão. Hoje o alvo é recusado (exit 1) e nenhum laudo o escreve."""
+    rdo = _load_rdo()
+    laudos_dir = tmp_path / "laudos"
+    linha = "o card_check caiu com Traceback no item 2. Rota: tíquete"
+
+    exit_code = rdo.main(_argv_laudo(laudos_dir) + ["--achado-processo", "instrumento", linha])
+
+    assert exit_code == 0
+    conteudo = (laudos_dir / "P-TESTE-T1.md").read_text(encoding="utf-8")
+    assert f"| instrumento | {linha} |" in conteudo
+    spec = importlib.util.spec_from_file_location(
+        "encerrar_do_rdo", _ROOT / ".claude" / "tools" / "encerrar.py"
+    )
+    encerrar = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = encerrar
+    spec.loader.exec_module(encerrar)
+    textos = [texto for texto, _rota in encerrar.achados_do_laudo(conteudo)]
+    assert textos == ["achado de processo (instrumento): o card_check caiu com Traceback no item 2."]
+    assert encerrar._ACHADO_INSTRUMENTO_RE.search(textos[0])

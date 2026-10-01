@@ -113,6 +113,14 @@ própria na seção seguinte.
 
 Tabela com, no mínimo: `pendência | por que ficou aberta | o que a fecha | bloqueia algo?`.
 
+Pendência é só o que depende de **insumo que o agente não tem** ou de **ato do dono sobre
+questão estratégica** — a que altera o modelo que ele descreveu ou o prompt da demanda
+(`G-ESCALA`, `GOVERNANCA.md` §7 item 21). Decisão que o agente podia tomar — nomenclatura,
+algoritmo, controle que o modelo não cita, lacuna operacional do conceito, caso de borda irreal —
+**não é pendência**: toma-se antes de fechar o plano, registra-se com id na tabela de decisões e,
+se vira trabalho, nasce como card ou tíquete já executável. Tabela vazia é desfecho legítimo e
+esperado; item "para o dono decidir" que não seja estratégico é plano mal fechado.
+
 Feche com um **resumo honesto do estado**: o que o plano entregou, quantas pendências ficaram, e
 quais delas têm efeito **fora** do projeto.
 

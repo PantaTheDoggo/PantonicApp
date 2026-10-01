@@ -16,6 +16,18 @@
     Copies:
       kit/skills/<name>/   -> .claude/skills/<name>/   (full directory mirror)
       kit/agents/<name>.md -> .claude/agents/<name>.md
+      kit/tools/**, kit/checks/** -> .claude/tools/**, .claude/checks/**
+                                     (per file; __pycache__ ignored)
+      kit/projecoes.json, kit/KIT_VERSION -> .claude/
+
+    Then projects the kit hooks: `python .claude/tools/materializar.py apply
+    --alvo projeto` writes projecoes.json into .claude/settings.json, keeping
+    permissions and non-kit hooks (-Check runs `drift` instead). Without
+    python on PATH it only warns.
+
+    Doctrine documents (GOVERNANCA.md, ARQUITETURA_PANTONICA.md,
+    docs/RUBRICA_DE_REVISAO.md) live outside the `.claude/` prefix and do not
+    travel with the subtree.
 
     Exclusions: <child>/.claude/kit-exclude.txt, one entry per line.
       - Blank lines and lines whose first non-blank character is '#' are
@@ -27,7 +39,8 @@
         comment (e.g. an indented "# ..." line explaining the entry above)
         collapses to empty and is skipped the same way.
       - Normative entry format is "<namespace>/<name>", e.g.
-        "skills/guardrails-check", "agents/pantonic-executor". A bare name
+        "skills/guardrails-check", "agents/pantonic-executor",
+        "tools/backlog.py", "projecoes.json". A bare name
         ("guardrails-check") is also accepted for compatibility and matches
         either namespace, but namespaced entries are preferred — a bare
         name is ambiguous between skills/ and agents/.
@@ -347,10 +360,98 @@ foreach ($name in $agentNames) {
 }
 
 # ---------------------------------------------------------------------------
+# Runtime support files: tools/, checks/, projecoes.json, KIT_VERSION.
+# Skills and agents call `.claude/tools/*.py` and `.claude/checks/*` by path,
+# so these land at the same relative location they have in the hub. Managed
+# per file (key "<namespace>/<relative path>", or the bare file name for the
+# two root files): a consumer-local file whose name does not come from the
+# kit is never touched, and a file removed from the kit is left in place.
+# ---------------------------------------------------------------------------
+
+$supportFiles = New-Object System.Collections.Generic.List[object]
+foreach ($ns in @('tools', 'checks')) {
+    $nsSrc = Join-Path $kitRoot $ns
+    if (-not (Test-Path -LiteralPath $nsSrc -PathType Container)) { continue }
+    Get-ChildItem -LiteralPath $nsSrc -Recurse -File |
+        Where-Object { $_.FullName -notmatch '[\\/]__pycache__[\\/]' } |
+        ForEach-Object {
+            $rel = $_.FullName.Substring($nsSrc.Length).TrimStart('\', '/')
+            $supportFiles.Add([PSCustomObject]@{
+                Namespace = $ns
+                Name      = $_.Name
+                Key       = "$ns/$($rel -replace '\\', '/')"
+                Source    = $_.FullName
+                Dest      = Join-Path (Join-Path $claudeRoot $ns) $rel
+            })
+        }
+}
+foreach ($rootFile in @('projecoes.json', 'KIT_VERSION')) {
+    $rootSrc = Join-Path $kitRoot $rootFile
+    if (Test-Path -LiteralPath $rootSrc -PathType Leaf) {
+        $supportFiles.Add([PSCustomObject]@{
+            Namespace = ''
+            Name      = $rootFile
+            Key       = $rootFile
+            Source    = $rootSrc
+            Dest      = Join-Path $claudeRoot $rootFile
+        })
+    }
+}
+
+foreach ($f in $supportFiles) {
+    if ($excludedKeys.Contains($f.Key) -or
+        (Test-Excluded -Excluded $excludedKeys -Namespace $f.Namespace -Name $f.Name)) {
+        $skipped++
+        continue
+    }
+    if ($Check) {
+        if (Test-FileChanged -SourceFile $f.Source -DestFile $f.Dest) {
+            $diverging.Add($f.Key)
+        }
+    } else {
+        $dstDirPart = Split-Path $f.Dest -Parent
+        if (-not (Test-Path -LiteralPath $dstDirPart)) {
+            New-Item -ItemType Directory -Path $dstDirPart -Force | Out-Null
+        }
+        if (Test-FileChanged -SourceFile $f.Source -DestFile $f.Dest) {
+            Copy-Item -LiteralPath $f.Source -Destination $f.Dest -Force
+        }
+    }
+    $copied++
+}
+
+# ---------------------------------------------------------------------------
+# Hook projection: the materialized copy of materializar.py (under
+# <claudeRoot>/tools, not the one under kit/) projects projecoes.json into
+# <claudeRoot>/settings.json, so hook commands point at .claude/tools/ —
+# the same path the skills use. -Check runs the read-only `drift` instead.
+# ---------------------------------------------------------------------------
+
+function Invoke-Materializar {
+    param([string]$Command)
+
+    $script = Join-Path (Join-Path $claudeRoot 'tools') 'materializar.py'
+    if (-not (Test-Path -LiteralPath $script -PathType Leaf)) {
+        Write-Host "WARN: $script ausente - hooks do kit nao projetados em settings.json."
+        return $true
+    }
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $python) {
+        Write-Host "WARN: python fora do PATH - rode 'python .claude/tools/materializar.py $Command --alvo projeto'."
+        return $true
+    }
+    & $python.Source $script $Command --alvo projeto --kit-root $claudeRoot | Write-Host
+    return ($LASTEXITCODE -eq 0)
+}
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 
 if ($Check) {
+    if (-not (Invoke-Materializar -Command 'drift')) {
+        $diverging.Add('settings.json (hooks do kit)')
+    }
     if ($diverging.Count -gt 0) {
         Write-Host "sync-kit -Check: $($diverging.Count) managed artifact(s) diverge from the kit:"
         foreach ($d in $diverging) { Write-Host "  - $d" }
@@ -361,6 +462,11 @@ if ($Check) {
 }
 
 Write-Host "sync-kit: $copied copied, $skipped skipped by exclusion."
+
+if (-not (Invoke-Materializar -Command 'apply')) {
+    Write-Error "sync-kit: materializar apply falhou - settings.json nao reflete projecoes.json."
+    exit 1
+}
 
 # ---------------------------------------------------------------------------
 # Sync stamp (only reached on an effective sync: both -Check branches above

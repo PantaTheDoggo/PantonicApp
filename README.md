@@ -469,11 +469,11 @@ por transição — por exemplo `Tarefa "A porta de entrada diz como o dono acom
 painel". Passo: conferir os gates e preparar o despacho.` e `Agente revisor devolveu a tarefa "A
 porta de entrada diz como o dono acompanha a execução no painel": aprovado 100%, bloqueante
 nenhuma.` —, gerada por um gancho do kit (`.claude/tools/progresso_hook.py`) a partir do evento de
-cada transição do loop, com o título da tarefa no lugar da sigla e sem nenhuma saída de
+cada transição do loop, com o título da tarefa — do card de plano ou do tíquete do diário — no lugar da sigla e sem nenhuma saída de
 ferramenta entre duas linhas; as frases estão na seção *Repertório de mensagens ao gerente* da
 `scrum-master`. Para abrir o painel, no terminal integrado do VS Code, na raiz do repositório:
 `Get-Content -Path .claude/estado/progresso.txt -Wait -Tail 30 -Encoding utf8` (o arquivo nasce
-com a primeira linha gerada). No fim da janela, o gerente lê um relatório. A transição
+com a primeira linha gerada). No fim da janela, o gerente lê um relatório. O loop de um plano recém-planejado abre numa janela nova, com o plano gravado como único insumo: a janela que planejou encerra no Marco 1. A transição
 entre uma tarefa e a seguinte é maquinário interno do loop; os cinco passos abaixo são a parte dela
 que o gerente precisa conhecer para argumentar sobre o fluxo. FIFO aparece só no fim do segundo
 passo, como último desempate.
@@ -508,7 +508,7 @@ são **re-derivados por um comando barato agora**, nunca copiados do plano, porq
 dentro da própria sprint; string destinada a `assert` é citação colada do output, nunca paráfrase; e a
 divisão se decide **por assunto, não por volume** — um card se parte quando cruza dois assuntos, nunca
 quando cruza muitas regiões do mesmo assunto. O gate `G-PLANREADY` precede todas: tarefa de plano
-aberto é devolvida ao planejamento.
+aberto é devolvida ao planejamento. Passados os gates, o despacho grava o pacote da tarefa — o card, os handovers, a leitura do modelo e as âncoras conferidas no arquivo de hoje — num arquivo fora do versionamento, e quem conduz repassa ao executor só o texto pronto do despacho que o comando imprime, sem reconferir âncora à mão.
 
 **Passo 5 — fechar a tarefa e seguir, ou encerrar a janela.** Julgada a entrega, o loop registra o
 resultado no RDO da tarefa, apende a linha de consumo medido à série e passa ao próximo item da fila;
@@ -630,7 +630,9 @@ linha de motivo.
 3. **Todas as decisões tomadas no fechamento — nada postergado.** Nenhuma escolha que pertença ao
    dono fica "a resolver na execução".
 4. **Linear.** Sem referência para frente, sem ramo condicional não resolvido, sem "TBD". O executor
-   lê de cima a baixo e sabe o que fazer sem inferir.
+   lê de cima a baixo e sabe o que fazer sem inferir. A contingência do card faz parte dele: tem a
+   ação fechada, não contraria as restrições do próprio card e declara entre os alvos o arquivo que
+   escreve.
 5. **Gate de publicação.** Um plano só é registrado no `_INBOX.md` e no diário quando não tem questão
    pendente, bloco a preencher, nem tarefa cujo conteúdo dependa de artefato que ainda não existe.
 
@@ -688,13 +690,13 @@ secundário, declarado numa seção à parte e sob a responsabilidade inteira de
 
 O modelo **versiona, não se reescreve**: quando uma decisão muda o que o plano entrega, a versão
 nova nasce ao lado da vigente, marcada como pendente, e as duas coexistem até o marco seguinte, em
-que o dono aceita ou recusa. Quem escreve o modelo é um agente só, o `pantonic-model-designer`: ele
+que o dono aceita ou recusa; no aceite, o comando do marco promove a versão aceita, cobrando a linha de validação do consultor, e só chama o modelador quando encontra conflito. Quem escreve o modelo é um agente só, o `pantonic-model-designer`: ele
 escreve na autoria, emenda quando uma decisão muda o que o plano entrega e resolve conflito entre o
 texto e a entrega. Nenhum
 outro papel escreve ali; quem precisa de um ato de modelo devolve um dossiê fechado, e quem conduz
 a sessão o despacha. O instrumento `.claude/tools/modelo.py` confere a seção vigente e a versão
-pendente (`check`) e gera a leitura do dono (`show`), que abre pelo estágio atual e, com `--drift`,
-mostra o que muda entre as duas versões, contratos inclusive. Planos escritos antes desta doutrina não são
+pendente (`check`; com `--so-vigente`, que o despacho usa, só a vigente, e a pendente fica para o marco), recusa o card cujo texto copiado da operação difere do da versão que ele cita e gera a leitura do dono (`show`), que abre pelo estágio atual e, com `--drift`,
+mostra o que muda entre as duas versões — a operação nova, a renumerada e a alterada, e a propriedade que só uma delas tem —, contratos inclusive. Planos escritos antes desta doutrina não são
 migrados: o instrumento os reconhece como forma anterior e não bloqueia nada.
 
 ## 9. O fechamento de tarefa e uma tarefa por contexto
@@ -744,7 +746,7 @@ edita; a nota no diário é o canal vivo.
 **Relatório de encerramento.** A janela fala com o gerente **uma vez**, na parada: **ponteiro mais
 deltas**, nunca repetindo o que já foi escrito no registro canônico — tarefas fechadas e seus status,
 o que validar e como, iniciativa de origem, índice de conclusão do plano, próxima tarefa sem
-iniciá-la, e a recomendação explícita de contexto novo.
+iniciá-la, e a recomendação explícita de contexto novo. Na parada de marco, o relatório abre nomeando a entrega e o pedido do dono que a originou, com a data e um trecho verbatim das palavras dele.
 
 Existe uma variante para o caso em que o **plano** não acabou e a janela vai acabar antes dele: o
 **checkpoint intermediário**. Ele é ato de quem **orquestra**, entre tarefas, quando a janela de
@@ -880,7 +882,7 @@ duas falhas.
 | `guardrails-check` | Antes de marcar qualquer tarefa como concluída: camadas, ACL, padrão de apresentação, egress, namespace de estado, conformance, piso, kit e README. |
 | `integrar-poc` | Uma prova de conceito foi validada e precisa virar plugin, dissecada nas camadas da arquitetura. |
 | `modelo-por-fase` | Início de tarefa ou troca de fase: confere o modelo ativo contra a tabela vinculante; acima do exigido segue e anota, e só abaixo do exigido para para pedir o melhor. |
-| `checar-versao-kit` | Criação de um plano novo: compara a versão local do kit com a publicada no hub — e nunca atualiza sozinha. |
+| `checar-versao-kit` | Criação de um plano novo, rodada por quem conduz antes de despachar o planejador, que registra o resultado no cabeçalho do plano: compara a versão local do kit com a publicada no hub — e nunca atualiza sozinha. |
 | `audit-sweep` | Antes de invocar qualquer auditor: roda a fase mecânica de greps no modelo barato e grava o dossiê. |
 | `redacao-doc` | Autoria, reescrita ou revisão de documento publicado: proíbe narrativa de proveniência, citação de interlocutor e ID de processo no corpo. |
 | `mensagem-ao-dono` | Antes de enviar ao dono mensagem que cite sigla do kit ou aponte arquivo, e ao receber dele pergunta de esclarecimento: título entre aspas no lugar da sigla, o necessário para decidir no corpo, e a falha registrada em `docs/FALHAS_COMUNICACAO.tsv`. |
@@ -906,12 +908,12 @@ em vez de por leitura:
 - `.claude/tools/backlog.py` — o instrumento do diário de obras, em oito verbos: `next` seleciona a
   próxima tarefa de forma determinística e imprime o card inteiro, `show` devolve o card inteiro de
   um item, `check` faz o lint da gramática do diário e dos planos — o plano recém-esboçado, com o
-  estado registrado e ainda fora da fila, inclusive —, `status` e `start` transicionam uma tarefa e
+  estado registrado e ainda fora da fila, inclusive — e recusa o plano que declara o prefixo de decisões que outro plano já declarou (`C-18`), `status` e `start` transicionam uma tarefa e
   projetam a mudança nos registros derivados, `despachar` roda os gates do despacho, materializa
-  `in-progress`, grava a tarefa corrente com o ponto de partida e imprime o card (com
+  `in-progress`, grava a tarefa corrente com o ponto de partida, grava num arquivo da pasta do plano, fora do versionamento, o pacote da tarefa — o card, os handovers, a leitura do modelo, que ele julga só na versão vigente, e as âncoras conferidas — e imprime o texto pronto do despacho ao executor (com
   `--mundo depois`, redespacha a tarefa cuja entrega já está na árvore), `drain` leva o
-  inbox de planos ao índice, e `diretiva` reescreve a linha de priorização.
-- `.claude/tools/backlog_hook.py` — o hook do ponto de carga: quando o prompt traz o gatilho de
+  inbox de planos ao índice e avisa quando a diretiva de priorização não cita mais nenhum item vivo nem o plano que saiu, e `diretiva` reescreve a linha de priorização.
+- `.claude/tools/backlog_hook.py` — o hook do ponto de carga: quando o prompt do dono — nunca o relato de um subagente nem o aviso do sistema — traz o gatilho de
   retomada, injeta o dossiê da próxima tarefa como contexto adicional da sessão; sem o gatilho, não
   escreve nada e sai com zero.
 - `.claude/tools/encerrar.py` — o instrumento de fechamento, em cinco verbos: `handover` registra no
@@ -920,13 +922,30 @@ em vez de por leitura:
   devolve à sucessora; `tarefa` leva a tarefa em revisão a concluída num ato só — confere o modelo do
   plano, projeta o estado, escreve o registro da tarefa em três seções (humano, máquina, histórico)
   com o pacote transcrito do laudo, garante a linha de telemetria e registra com rota os achados,
-  inclusive cada achado de processo do laudo; `marco` grava o resultado que o dono deu num marco em
-  todos os lugares onde o marco aparece; `operacoes` gera o esqueleto do relatório de operações e
+  inclusive cada achado de processo do laudo, com a linha do laudo de onde ele veio como origem, que impede registrá-lo duas vezes, e avisa numa linha `encerrar: B1 —` o achado de instrumento que relata falha, que leva a tarefa ao consultor; `marco` grava o resultado que o dono deu num marco em
+  todos os lugares onde o marco aparece e, no aceite de uma versão pendente do modelo, exige a linha de validação do consultor (`--consultor`) e promove a versão aceita, acertando o texto da operação em cada card; `operacoes` gera o esqueleto do relatório de operações e
   confere a cobertura dele; `plano` fecha o plano sem tarefa aberta — estado, relatório de entrega
   nas mesmas três seções e uma linha no diário. Os cinco recusam sem escrever quando falta insumo.
+- `.claude/tools/review_evidence.py` — a evidência que o revisor recebe de cada tarefa: a partir do
+  ponto de partida gravado no despacho (`--capturar-ref`), mostra como diferença contra ele o que a
+  entrega mudou — o arquivo criado depois dele, marcado como novo; o versionado que a lista de
+  ignorados também cobre; o que não é texto, comparado pelo conteúdo bruto —, expande o alvo do card
+  escrito com curinga e conta como registro da condução o que quem conduz escreve nos próprios
+  registros, antes de procurar outra tarefa que o tenha declarado; o curinga do alvo casa como na linha de comando — a estrela numa pasta só, a estrela dupla alcançando as subpastas —, o nome de arquivo acentuado chega inteiro, e, para cada arquivo de teste entre os alvos, a evidência mostra as linhas que a entrega removeu.
 - `.claude/tools/prevoo.py` — o pré-voo do pedido: confere cada caminho, símbolo e flag que o texto
-  do dono cita e imprime a tabela `citado | existe | onde`, que abre o plano antes de qualquer
+  do dono cita e imprime a tabela `citado | existe | onde` — `sim`, `não`, ou `criar` para o caminho que o próprio pedido manda criar, que não derruba o resultado —, que abre o plano antes de qualquer
   campanha.
+- `.claude/tools/card_check.py` — a conferência da `Verificação` de um card: roda cada comando
+  publicado na árvore dada e compara a saída com o que o card escreve — no mundo `antes`, o valor
+  medido antes; no `depois`, o resultado da seta, também no bloco cercado —; lê o par
+  `antes`/`depois` entre crases, com pontuação no literal; roda o `git` só nos subcomandos de
+  leitura, troca `<ref>` pelo ponto de partida que o despacho gravou e mede a linha marcada
+  `(invariância)` só depois da entrega; com `--gravar`, grava a medida na pasta do plano da
+  árvore medida, com o mundo no nome, onde o revisor a lê.
+- `.claude/tools/custo_sessao.py` — o medidor de custo da sessão: `medir` lê a conversa gravada
+  de uma sessão e grava o contexto reenviado em cada turno; `passos` reparte os turnos por passo
+  do loop e por tarefa despachada, de qualquer plano ou tíquete, e informa zero numa janela sem
+  despacho.
 
 A declaração canônica das projeções vive em `.claude/projecoes.json`: ela nomeia o conteúdo canônico
 do kit e o ponto de carga que recebe cada cópia. `.claude/tools/materializar.py` é o comando que
@@ -991,11 +1010,11 @@ materialização, cujo remédio é rematerializar. Projeção nunca se edita no 
 cópias vivas se resolve no mesmo ato: quem aplica a regra apaga a cópia perdedora ou a reduz a
 ponteiro.
 
-**Telemetria.** `docs/telemetria.tsv` é append-only e é a **fonte única** da série de consumo, com as
-colunas `data`, `projeto`, `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s` e `fonte`. A coluna
+**Telemetria.** `docs/telemetria.tsv` é a **fonte única** da série de consumo, com as
+colunas `data`, `projeto`, `tarefa`, `modelo`, `tool_uses`, `tokens_k`, `duracao_s`, `fonte` e `agente`. A coluna
 `fonte` assume três valores e é o que torna a série auditável: `usage` (dado lido do bloco de uso da
 notificação de conclusão), `contado` (execução inline, sem bloco a ler) e `nao_medido` (consumo perdido
-com a sessão). Quem escreve a linha é o hook `SubagentStop`, a cada rodada de agente do kit, com o
+com a sessão). Quem escreve a linha é o hook `SubagentStop` (`.claude/tools/telemetria_hook.py`), uma por agente — a rodada seguinte do mesmo agente substitui a dele —, atribuída ao plano e à tarefa que a primeira linha do despacho declara (`despacho: <P-id> <ID>`), com o
 papel no identificador da tarefa (`<ID>`, `<ID>-revisao`, `<ID>-consultor-<n>`, `<P-n>-planejador`,
 `<P-n>-modelador`, `<P-n>-scout`); **o orquestrador** só a escreve no fechamento, quando o hook não
 disparou. O valor registrado sai do dado medido da
@@ -1028,7 +1047,13 @@ verificador do kit checa.
 partir dele por `git subtree`, nunca por cópia manual. `.claude/kit/` é o subtree do branch de
 distribuição; `sync-kit.ps1` aplica a versão publicada sobre a árvore local, respeitando os overrides
 declarados em `kit-exclude.txt`. Um override é de **arquivo inteiro**, sem merge parcial: o caminho
-listado fica sob controle do consumidor e o hub não o toca.
+listado fica sob controle do consumidor e o hub não o toca. O sync leva agentes, skills e as
+ferramentas que elas chamam (`tools/`, `checks/`), nos mesmos caminhos que têm no hub, e termina
+registrando os hooks do kit no `settings.json` do consumidor. A doutrina (`GOVERNANCA.md`,
+`ARQUITETURA_PANTONICA.md`, a rubrica de revisão) fica fora do subtree e chega por cópia no mesmo ato.
+Enquanto a branch de distribuição não for republicada a partir do estado corrente do hub, a
+atualização de um consumidor é uma cópia desse mesmo conjunto, iniciada pelo gerente, com os mesmos
+overrides respeitados (`GOVERNANCA.md` §9, "Regime transitório de distribuição").
 
 O versionamento é semântico, com significado declarado: **MAJOR** exige ação do consumidor (artefato
 removido ou renomeado, doutrina invertida, contrato que muda de formato); **MINOR** adiciona artefato

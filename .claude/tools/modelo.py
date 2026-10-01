@@ -316,8 +316,21 @@ def _tem_subbullets(item_texto: str, op_id: str) -> bool:
     return False
 
 
+def _texto_copiado(item_texto: str, op_id: str) -> str | None:
+    prefixo = f"  - {op_id}: "
+    for linha in item_texto.splitlines():
+        if linha.startswith(prefixo):
+            return " ".join(linha[len(prefixo) :].split())
+    return None
+
+
 def validar(
-    modelo: Modelo, plano, modelo_pendente: Modelo | None = None, *, pendente: bool = False
+    modelo: Modelo,
+    plano,
+    modelo_pendente: Modelo | None = None,
+    *,
+    pendente: bool = False,
+    so_vigente: bool = False,
 ) -> list[str]:
     violacoes_op: list[str] = []
     violacoes_objeto: list[str] = []
@@ -326,6 +339,22 @@ def validar(
     ids_tarefas = {t.id for t in plano.tarefas}
     nomes_objetos = {o.nome for o in modelo.objetos}
     numeros_operacoes = {op.numero for op in modelo.operacoes}
+    # DRF-37 (P-0755): operação que só existe na versão pendente ainda cobre a tarefa que a cita.
+    numeros_pendente = (
+        {op.numero for op in modelo_pendente.operacoes} if modelo_pendente is not None else set()
+    )
+    # RAF-T21 (P-0755): textos da operação, colapsados, para conferir o texto copiado no card —
+    # todos os de mesmo número (DRF-61: número duplicado numa versão conta cada texto, não só o
+    # último).
+    textos_vigente_por_numero: dict[int, list[str]] = {}
+    for op in modelo.operacoes:
+        textos_vigente_por_numero.setdefault(op.numero, []).append(" ".join(op.texto.split()))
+    textos_pendente_por_numero: dict[int, list[str]] = {}
+    if modelo_pendente is not None:
+        for op in modelo_pendente.operacoes:
+            textos_pendente_por_numero.setdefault(op.numero, []).append(
+                " ".join(op.texto.split())
+            )
     origem_por_objeto = {o.nome: o.origem for o in modelo.objetos}
     propriedades_por_objeto = {o.nome: set(o.propriedades) for o in modelo.objetos}
     propriedades_com_estado = {chave for chave, _, _ in modelo.estado}
@@ -348,7 +377,11 @@ def validar(
         if situacoes_versoes.count("vigente") != 1:
             violacoes_op.append("V19 secao — registro de versões sem vigente único")
 
-        if modelo_pendente is not None and modelo_pendente.versao != modelo.versao + 1:
+        if (
+            modelo_pendente is not None
+            and not so_vigente
+            and modelo_pendente.versao != modelo.versao + 1
+        ):
             violacoes_op.append("V20 secao — versão pendente fora de sequência")
 
     numeros_vistos: set[int] = set()
@@ -416,10 +449,26 @@ def validar(
             for op_id in ops_citadas or []:
                 mo = _ORIGEM_OP_RE.match(op_id)
                 numero = int(mo.group(1)) if mo else None
-                if numero not in numeros_operacoes:
+                if numero not in numeros_operacoes and numero not in numeros_pendente:
                     violacoes_id.append(f"V4 {item.id} — operação inexistente {op_id}")
                 if not _tem_subbullets(item.texto, op_id):
                     violacoes_id.append(f"V14 {item.id} — contrato ausente para {op_id}")
+                if numero in numeros_operacoes or numero in numeros_pendente:
+                    texto_copiado = _texto_copiado(item.texto, op_id)
+                    if texto_copiado is not None:
+                        textos_validos = []
+                        textos_validos.extend(textos_vigente_por_numero.get(numero, []))
+                        textos_validos.extend(textos_pendente_por_numero.get(numero, []))
+                        if texto_copiado not in textos_validos:
+                            versao_ref = (
+                                modelo.versao
+                                if numero in numeros_operacoes
+                                else modelo_pendente.versao
+                            )
+                            violacoes_id.append(
+                                f"V22 {item.id} — texto de OP-{numero} diverge da versão "
+                                f"{versao_ref}"
+                            )
 
     return violacoes_op + violacoes_objeto + violacoes_id
 
@@ -449,10 +498,6 @@ def _obj_por_nome(modelo: Modelo) -> dict[str, Objeto]:
     return {o.nome: o for o in modelo.objetos}
 
 
-def _op_por_numero(modelo: Modelo) -> dict[int, Operacao]:
-    return {op.numero: op for op in modelo.operacoes}
-
-
 def _estado_por_chave(modelo: Modelo) -> dict[str, tuple[str, str]]:
     return {chave: (inicial, final) for chave, inicial, final in modelo.estado}
 
@@ -480,26 +525,73 @@ def _diff_objetos(vigente: Modelo, pendente: Modelo) -> list[str]:
 
 
 def _diff_fluxo(vigente: Modelo, pendente: Modelo) -> list[str]:
-    ops_vigente = _op_por_numero(vigente)
-    ops_pendente = _op_por_numero(pendente)
+    """Compara o fluxo de operações entre duas versões do modelo (R-07, DRF-16 do `P-0755`): casa
+    em duas rodadas — primeiro por texto igual, na ordem; o que sobra casa por número — para que a
+    inserção de uma operação não apareça como uma cascata de alterações em cadeia. Para todo par
+    casado, depois da linha de texto (ou de nenhuma), compara `precisa_de` e `altera` — o contrato
+    da operação — e emite `[~] OP-<k> — precisa de: ...` / `[~] OP-<k> — altera: ...` quando a
+    lista muda, mesmo com texto e número iguais (AE-187, DRF-73 do `P-0755`)."""
+    pareada_de: dict[int, Operacao] = {}  # índice em pendente.operacoes -> operação vigente pareada
+    vigente_pareada: set[int] = set()  # índices em vigente.operacoes já pareados
+
+    for i, operacao_p in enumerate(pendente.operacoes):
+        for j, operacao_v in enumerate(vigente.operacoes):
+            if j in vigente_pareada:
+                continue
+            if operacao_v.texto == operacao_p.texto:
+                pareada_de[i] = operacao_v
+                vigente_pareada.add(j)
+                break
+
+    for i, operacao_p in enumerate(pendente.operacoes):
+        if i in pareada_de:
+            continue
+        for j, operacao_v in enumerate(vigente.operacoes):
+            if j in vigente_pareada:
+                continue
+            if operacao_v.numero == operacao_p.numero:
+                pareada_de[i] = operacao_v
+                vigente_pareada.add(j)
+                break
+
     linhas: list[str] = []
-    for numero, operacao in ops_pendente.items():
-        if numero not in ops_vigente:
-            linhas.append(f"[+] OP-{numero} — {operacao.texto}")
-    for numero, operacao in ops_vigente.items():
-        if numero not in ops_pendente:
-            linhas.append(f"[-] OP-{numero} — {operacao.texto}")
-    for numero, operacao_v in ops_vigente.items():
-        operacao_p = ops_pendente.get(numero)
-        if operacao_p is not None and operacao_v.texto != operacao_p.texto:
-            linhas.append(f"[~] OP-{numero} — {operacao_v.texto} => {operacao_p.texto}")
+    for i, operacao_p in enumerate(pendente.operacoes):
+        operacao_v = pareada_de.get(i)
+        if operacao_v is None:
+            linhas.append(f"[+] OP-{operacao_p.numero} — {operacao_p.texto}")
+        elif operacao_v.texto == operacao_p.texto and operacao_v.numero != operacao_p.numero:
+            linhas.append(f"[=] OP-{operacao_p.numero} (era OP-{operacao_v.numero})")
+        elif operacao_v.texto != operacao_p.texto:
+            linhas.append(
+                f"[~] OP-{operacao_p.numero} — {operacao_v.texto} => {operacao_p.texto}"
+            )
+        if operacao_v is not None and operacao_v.precisa_de != operacao_p.precisa_de:
+            linhas.append(
+                f"[~] OP-{operacao_p.numero} — precisa de: {', '.join(operacao_v.precisa_de)} "
+                f"=> {', '.join(operacao_p.precisa_de)}"
+            )
+        if operacao_v is not None and operacao_v.altera != operacao_p.altera:
+            linhas.append(
+                f"[~] OP-{operacao_p.numero} — altera: {', '.join(operacao_v.altera)} "
+                f"=> {', '.join(operacao_p.altera)}"
+            )
+    for j, operacao_v in enumerate(vigente.operacoes):
+        if j not in vigente_pareada:
+            linhas.append(f"[-] OP-{operacao_v.numero} — {operacao_v.texto}")
     return linhas
 
 
 def _diff_estado(vigente: Modelo, pendente: Modelo) -> list[str]:
+    # DRF-16 (P-0755): antes das alterações, a propriedade que só uma das versões tem.
     estado_vigente = _estado_por_chave(vigente)
     estado_pendente = _estado_por_chave(pendente)
     linhas: list[str] = []
+    for chave, _, final_p in pendente.estado:
+        if chave not in estado_vigente:
+            linhas.append(f"[+] {chave} — {final_p}")
+    for chave, _, final_v in vigente.estado:
+        if chave not in estado_pendente:
+            linhas.append(f"[-] {chave} — {final_v}")
     for chave, (_, final_v) in estado_vigente.items():
         par_pendente = estado_pendente.get(chave)
         if par_pendente is not None:
@@ -583,8 +675,8 @@ def verbo_check(args: argparse.Namespace) -> int:
 
     backlog = _load_backlog(root)
     plano = backlog._parse_plano(plano_path, root)
-    violacoes = validar(modelo, plano, modelo_pendente)
-    if modelo_pendente is not None:
+    violacoes = validar(modelo, plano, modelo_pendente, so_vigente=args.so_vigente)
+    if modelo_pendente is not None and not args.so_vigente:
         violacoes = violacoes + [
             f"1A: {linha}" for linha in validar(modelo_pendente, plano, pendente=True)
         ]
@@ -697,7 +789,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "modelo.py (P-0743): check julga a seção '## 1. Modelo conceitual' de um plano "
-            "contra o vocabulário de violações V1..V21 (### 16); show deriva a leitura do dono "
+            "contra o vocabulário de violações V1..V22 (### 16; V22 do P-0755); show deriva a "
+            "leitura do dono "
             "a partir do modelo real, abrindo pelo estágio atual, com --pendente para o bloco "
             "'## 1A' e --drift para a diferença entre a versão vigente e a pendente."
         )
@@ -707,6 +800,11 @@ def main(argv: list[str] | None = None) -> int:
     p_check = sub.add_parser("check")
     p_check.add_argument("--plano", required=True, help="Caminho do .md do plano.")
     p_check.add_argument("--root", default=_default_root(), help="Raiz do repositório.")
+    p_check.add_argument(
+        "--so-vigente",
+        action="store_true",
+        help="Julga só a '## 1' (versão vigente); a '## 1A' fica para o marco (R-04).",
+    )
     p_check.set_defaults(func=verbo_check)
 
     p_show = sub.add_parser("show")

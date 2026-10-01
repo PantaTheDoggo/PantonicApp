@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T11a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T09:12:39+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"removidas_de_teste and (curinga or hifens or diretorio)\"",
+      "exit": 0,
+      "saida": "....                                                                     [100%]\n4 passed, 96 deselected in 4.73s",
+      "bate": true
+    }
+  ]
+}

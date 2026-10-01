@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T4",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T14:17:45+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"escrita_da_conducao or fora_do_registro_segue\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 72 deselected in 0.52s",
+      "bate": true
+    }
+  ]
+}

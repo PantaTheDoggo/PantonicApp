@@ -40,7 +40,7 @@ diretório se preciso. `--vermelho-mecanico <dimensao>` (repetível) declara o q
 já reportou vermelho; marcar `conforme` contra uma dimensão declarada vermelha é recusado (`DA-7`).
 `--escalar "<uma linha>"` força `recomendacao=escalar` independentemente da tabela, e a linha
 gravada é a pendência que a regra `B1` consome. `--achado-processo <alvo> "<uma linha>"`
-(repetível; alvo em `dossie` — ou `dossiê` —, `doutrina`, `rubrica` ou `modelo`) grava a seção `## Achado de processo` e
+(repetível; alvo em `dossie` — ou `dossiê` —, `doutrina`, `rubrica`, `modelo` ou `instrumento`) grava a seção `## Achado de processo` e
 **não** altera percentual, veredito, bloqueante nem recomendação — invariante 1 de
 `docs/RUBRICA_DE_REVISAO.md` §6; `--escalar` fica reservado ao achado que invalida a rota (decisão
 de arquitetura ou de requisito). `--motivo <dimensao> "<uma linha>"` (repetível, só para dimensão
@@ -572,13 +572,18 @@ def calcular_laudo(
     )
 
 
-_ALVOS_ACHADO = {"dossie": "dossiê", "doutrina": "doutrina", "rubrica": "rubrica", "modelo": "modelo"}
+# O quinto alvo, `instrumento`, é o que o aviso `B1` do `encerrar.py tarefa` lê (RAF-T30a, `DRF-68`
+# do P-0755).
+_ALVOS_ACHADO = {
+    "dossie": "dossiê", "doutrina": "doutrina", "rubrica": "rubrica", "modelo": "modelo",
+    "instrumento": "instrumento",
+}
 # Grafia acentuada aceita na entrada e normalizada antes da validação (TK-85a).
 _SINONIMOS_ALVO = {"dossiê": "dossie"}
 
 
 def _formatar_achados_processo(pares: list[list[str]] | None) -> str:
-    """`docs/RUBRICA_DE_REVISAO.md` §6: campo próprio, quatro alvos. Invariante 1 — o achado não
+    """`docs/RUBRICA_DE_REVISAO.md` §6: campo próprio, cinco alvos. Invariante 1 — o achado não
     rebaixa dimensão de entrega e não muda recomendação; por isso nada disto passa por
     `calcular_laudo`. Sem achado, o corpo é `nenhum` (a seção existe sempre)."""
     if not pares:
@@ -997,8 +1002,8 @@ def main(argv: list[str] | None = None) -> int:
         metavar=("ALVO", "LINHA"),
         default=None,
         help=(
-            "Achado de processo (repetivel): ALVO e dossie (ou dossiê), doutrina, rubrica ou modelo, "
-            "seguido de uma linha. Nao altera percentual, veredito, bloqueante nem recomendacao "
+            "Achado de processo (repetivel): ALVO e dossie (ou dossiê), doutrina, rubrica, modelo "
+            "ou instrumento, seguido de uma linha. Nao altera percentual, veredito, bloqueante nem recomendacao "
             "(RUBRICA §6)."
         ),
     )

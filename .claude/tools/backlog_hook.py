@@ -31,6 +31,7 @@ def _carregar_caminhos():
 _caminhos = _carregar_caminhos()
 
 _GATILHO = "proximo passo"
+_PREFIXOS_NAO_DONO = ("<agent-message", "[SYSTEM NOTIFICATION")
 
 
 def _norm(text: str) -> str:
@@ -52,7 +53,11 @@ def _carregar_backlog():
 
 
 def _casa_gatilho(prompt) -> bool:
-    return isinstance(prompt, str) and _GATILHO in _norm(prompt)
+    if not isinstance(prompt, str):
+        return False
+    if prompt.lstrip().startswith(_PREFIXOS_NAO_DONO):
+        return False
+    return _GATILHO in _norm(prompt)
 
 
 def _texto_next(modulo, repo: Path) -> str:

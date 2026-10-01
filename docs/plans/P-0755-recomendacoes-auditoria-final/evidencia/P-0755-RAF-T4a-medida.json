@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T4a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T02:36:46+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/passagem-de-bastao/SKILL.md').read_text(encoding='utf-8');print('gate=%d-%d'%(t.count('Junto dos números vão as'),t.count('e não se re-derivam à mão; só o')))\"",
+      "exit": 0,
+      "saida": "gate=0-1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print('entrada=%d-%d'%(t.count('dossiê da tarefa copiado do plano'),t.count('(tíquete: dossiê à mão); modelo do cabeçalho')))\"",
+      "exit": 0,
+      "saida": "entrada=0-1",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;a=Path('.claude/skills/passagem-de-bastao/SKILL.md');b=Path('.claude/skills/scrum-master/SKILL.md');print('linhas=%d-%d cr=%d-%d'%(len(a.read_text(encoding='utf-8').splitlines()),len(b.read_text(encoding='utf-8').splitlines()),a.read_bytes().count(bytes([13])),b.read_bytes().count(bytes([13]))))\"",
+      "exit": 0,
+      "saida": "linhas=306-445 cr=0-0",
+      "bate": true
+    }
+  ]
+}

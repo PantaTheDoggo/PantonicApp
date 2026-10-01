@@ -72,6 +72,13 @@ _PAPEIS_POR_TAREFA_DO_ESTADO = {"pantonic-reviewer", "pantonic-consultant"}
 
 _RE_ID_PLANO = re.compile(r"P-\d+")
 
+# `R-16`, `DRF-18` do `P-0755`: a linha de abertura do despacho (`despacho: <P-id>[ <ID>]`) manda
+# sobre a prosa livre da mensagem na atribuição de plano e tarefa (`RAF-T31`).
+_RE_LINHA_DESPACHO = re.compile(
+    r"^despacho: (P-\d+)(?: ([A-Z][A-Z0-9]*-T\d+[a-z]?|TK-\d+[a-z]?))? *$",
+    re.MULTILINE,
+)
+
 
 def calcular_consumo(linhas: list[str]) -> tuple[float, int, float]:
     """`(tokens_k, tool_uses, duracao_s)` a partir das linhas cruas do `.jsonl` exclusivo do
@@ -196,6 +203,18 @@ def _primeiro_texto_de_usuario(linhas: list[str]) -> str | None:
     return None
 
 
+def _linha_de_despacho(linhas: list[str]) -> tuple[str, str | None] | None:
+    """`(P-id, ID ou None)` da primeira linha que casa `_RE_LINHA_DESPACHO` no texto da primeira
+    entrada `type == "user"` do transcript (`R-16`, `DRF-18` do `P-0755`); sem ela, `None`."""
+    texto = _primeiro_texto_de_usuario(linhas)
+    if not texto:
+        return None
+    encontrado = _RE_LINHA_DESPACHO.search(texto)
+    if not encontrado:
+        return None
+    return encontrado.group(1), encontrado.group(2)
+
+
 def _id_plano_da_primeira_mensagem(linhas: list[str]) -> str | None:
     """`<P-n>` — primeira ocorrência de `P-` seguido de dígitos no texto da primeira entrada
     `type == "user"` do transcript."""
@@ -240,9 +259,13 @@ def _normalizar_modelo_de_papel(bruto: str | None) -> str:
     return minusculo
 
 
-def _contar_linhas_com_prefixo(tsv_path: Path, prefixo: str) -> int:
+def _contar_linhas_com_prefixo(
+    tsv_path: Path, prefixo: str, excluir_agente: str | None = None
+) -> int:
     """Número de linhas da série cuja coluna `tarefa` começa por `prefixo` — usado para numerar
-    `<tarefa>-consultor-<n>`."""
+    `<tarefa>-consultor-<n>`. Quando o cabeçalho tem a coluna `agente` (`R-16`, `DRF-18` do
+    `P-0755`) e `excluir_agente` é dado, a linha cujo `agente` é ele não é contada — ela vai ser
+    substituída na mesma rodada, não apensada."""
     if not tsv_path.is_file():
         return 0
     linhas = tsv_path.read_text(encoding="utf-8").splitlines()
@@ -253,6 +276,7 @@ def _contar_linhas_com_prefixo(tsv_path: Path, prefixo: str) -> int:
         indice_tarefa = colunas.index("tarefa")
     except ValueError:
         return 0
+    indice_agente = colunas.index("agente") if "agente" in colunas else None
     total = 0
     for linha in linhas[1:]:
         if not linha.strip():
@@ -260,8 +284,16 @@ def _contar_linhas_com_prefixo(tsv_path: Path, prefixo: str) -> int:
         valores = linha.split("\t")
         if len(valores) <= indice_tarefa:
             continue
-        if valores[indice_tarefa].startswith(prefixo):
-            total += 1
+        if not valores[indice_tarefa].startswith(prefixo):
+            continue
+        if (
+            indice_agente is not None
+            and excluir_agente is not None
+            and len(valores) > indice_agente
+            and valores[indice_agente] == excluir_agente
+        ):
+            continue
+        total += 1
     return total
 
 
@@ -315,27 +347,39 @@ def processar(
 
     estado = ler_estado(estado_path)
     linhas = transcript.read_text(encoding="utf-8", errors="ignore").splitlines()
+    agente = Path(agent_transcript_path).stem
+    despacho = _linha_de_despacho(linhas)
 
     if agent_type == _AGENT_TYPE_EXECUTOR:
-        if estado is None:
+        id_despacho = despacho[1] if despacho else None
+        if estado is None and id_despacho is None:
             return False
-        tarefa = str(estado.get("tarefa", ""))
-        modelo = str(estado.get("modelo", ""))
-        projeto = str(estado.get("projeto", ""))
+        tarefa = id_despacho if id_despacho else str(estado.get("tarefa", ""))
+        if estado is not None and estado.get("tarefa") == tarefa:
+            modelo = str(estado.get("modelo", ""))
+        else:
+            modelo = _normalizar_modelo_de_papel(_ultimo_modelo_assistant(linhas))
+        projeto = str(estado.get("projeto", "")) if estado is not None else estado_path.parents[2].name
     else:
         sufixo = _sufixo_do_papel(agent_type)
         if agent_type in _PAPEIS_POR_TAREFA_DO_ESTADO:
-            tarefa_base = estado.get("tarefa") if estado is not None else None
+            id_despacho = despacho[1] if despacho else None
+            if id_despacho:
+                tarefa_base = id_despacho
+            else:
+                tarefa_base = estado.get("tarefa") if estado is not None else None
             if not tarefa_base:
                 tarefa = f"sem-id-{sufixo}"
             elif agent_type == "pantonic-consultant":
                 serie = _tsv_para_contagem(tsv_path, estado_path)
-                n = 1 + _contar_linhas_com_prefixo(serie, f"{tarefa_base}-consultor-")
+                n = 1 + _contar_linhas_com_prefixo(
+                    serie, f"{tarefa_base}-consultor-", excluir_agente=agente
+                )
                 tarefa = f"{tarefa_base}-consultor-{n}"
             else:
                 tarefa = f"{tarefa_base}-{sufixo}"
         else:
-            id_plano = _id_plano_da_primeira_mensagem(linhas)
+            id_plano = despacho[0] if despacho else _id_plano_da_primeira_mensagem(linhas)
             tarefa = f"{id_plano}-{sufixo}" if id_plano else f"sem-id-{sufixo}"
         modelo = _normalizar_modelo_de_papel(_ultimo_modelo_assistant(linhas))
         projeto = str(estado.get("projeto", "")) if estado is not None else estado_path.parents[2].name
@@ -349,7 +393,10 @@ def processar(
     # `AE-5` do `P-0753`: o destino é sempre explícito e é a série de onde a contagem do
     # consultor lê (`_tsv_para_contagem`) — sem `tsv_path`, a do repositório do estado, nunca o
     # default do CLI, que é a série real do kit mesmo quando o estado é de fixture.
-    args = args + ["--file", str(_tsv_para_contagem(tsv_path, estado_path))]
+    args = args + [
+        "--file", str(_tsv_para_contagem(tsv_path, estado_path)),
+        "--agente", agente,
+    ]
 
     comando = [sys.executable, str(telemetria_cli), *args]
     subprocess.run(comando, check=False, capture_output=True)

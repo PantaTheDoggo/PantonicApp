@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T1a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T01:23:56+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print('coluna0=%d aninhado=%d continua=%d'%(t.count('  gate.\\n- **Janela:** o loop de um plano recém-planejado abre numa janela nova'),t.count('   - **Janela:**'),sum(t.count('\\n  '+s) for s in ('planejou, com o plano gravado','despacha tarefa dele: encerra','recém-planejado abre em janela nova'))))\"",
+      "exit": 0,
+      "saida": "coluna0=1 aninhado=0 continua=3",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print('janela-nova=%d'%t.count('- **Janela:** o loop de um plano recém-planejado abre numa janela nova'))\"",
+      "exit": 0,
+      "saida": "janela-nova=1",
+      "bate": true
+    }
+  ]
+}

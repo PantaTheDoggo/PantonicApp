@@ -10,7 +10,7 @@ procedimento que a executa. Em caso de dúvida sobre a regra, §10 é a fonte, n
 
 ## Quando roda
 
-Na criação/registro de todo plano novo (skill `diario-de-obras`, operação "1. Registrar plano").
+Na criação de todo plano novo: quem conduz a sessão a roda antes de despachar o planejador (`pantonic-planner`) e passa o resultado no pedido a ele, e o planejador o registra no campo `**Checagem de versão do kit:**` do cabeçalho do plano — subagente, o planejador não invoca skill (`R-23` da auditoria final, `P-0755`). Plano registrado sem planejador roda a checagem no registro (skill `diario-de-obras`, operação "1. Registrar plano").
 Esse é o único gatilho de invocação — não roda a cada turno, nem a cada tarefa, só quando um plano
 é criado. Uma vez invocada, executa **duas** checagens independentes: a de versão (passos 1-3
 abaixo) e a de revisão da doutrina (última seção); as duas compartilham só o momento de invocação,

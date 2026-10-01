@@ -16,6 +16,9 @@ Hoje, **0/6 consumidores têm `.claude/kit/`** — nenhum foi instalado por
 subtree ainda, então todas as 6 linhas abaixo permanecerem semeadas é o
 resultado esperado, não falha.
 
+`PantonicVideo` e `PantonicScanlator` receberam o kit em 2026-09-30 pelo regime transitório de
+distribuição (`GOVERNANCA.md` §9), por cópia e sem subtree — por isso continuam semeados.
+
 | Consumidor | Versão instalada | Último sync | Modo |
 |---|---|---|---|
 | D:\workspaces\PantonicContainerForAWS | semeada — não verificada por sync | — | — |

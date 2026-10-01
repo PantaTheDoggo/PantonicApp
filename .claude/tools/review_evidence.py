@@ -11,7 +11,7 @@ um teto de caracteres (truncamento sempre visível na saída, nunca silencioso).
 
 Invariante (`DA-7`): a saída é fato com veredito mecânico, sem interpretação — a camada mecânica é
 autoridade sobre o que ela mede, quem interpreta é o reviewer. A dimensão `escopo`
-(`docs/RUBRICA_DE_REVISAO.md:63-77`) tem uma faixa `parcial` que depende de declaração de desvio
+(`docs/RUBRICA_DE_REVISAO.md` §4) tem uma faixa `parcial` que depende de declaração de desvio
 na entrega — insumo que este script não recebe. Por isso, quando há arquivo tocado fora
 dos alvos, a saída relata o **fato** ("N arquivo(s) fora dos alvos: ...") e deixa o veredito em
 aberto; nunca resolve sozinha para `parcial`.
@@ -30,9 +30,9 @@ A seção `## Guardas` (`EXA-T9b`) invoca a bateria de seis comandos de `GOVERNA
 mesma que fechou a `T9a`: `python -m pytest -q`, `dead_code.py`, `ratchet_piso.py`,
 `kit_check.ps1 -Mode validate`, `kit_check.ps1 -Mode check-drift`, `check-readme.ps1`), cola exit
 code e saída de cada um, e trava o veredito mecânico das dimensões `guardas`
-(`docs/RUBRICA_DE_REVISAO.md:94-106` — autoridade integral, sem faixa de juízo: qualquer comando
+(`docs/RUBRICA_DE_REVISAO.md` §4 — autoridade integral, sem faixa de juízo: qualquer comando
 fora de exit 0 resolve para `não conforme`, nunca para `parcial` sozinha) e `testes`
-(`docs/RUBRICA_DE_REVISAO.md:79-92` — evidência mecânica é o exit code do comando `pytest` da
+(`docs/RUBRICA_DE_REVISAO.md` §4 — evidência mecânica é o exit code do comando `pytest` da
 bateria). A bateria de produção (`BATERIA_GUARDAS`) é injetável (`comandos_guardas` em
 `montar_documento`/`rodar_bateria_guardas`) para permitir teste determinístico sem depender da
 infraestrutura real do hub num repositório de fixture.
@@ -121,7 +121,7 @@ def _load_rdo(root: Path):
     return modulo
 
 
-_CAMINHO_RE = re.compile(r"^[A-Za-z0-9_.][A-Za-z0-9_./\\-]*$")
+_CAMINHO_RE = re.compile(r"^[A-Za-z0-9_.*À-ÖØ-öø-ÿ][A-Za-z0-9_./\\*À-ÖØ-öø-ÿ-]*$")
 _EXTENSAO_RE = re.compile(r"\.[A-Za-z0-9]+$")
 
 
@@ -179,7 +179,7 @@ def _forcar_utf8(stream) -> None:
 def _git(args: list[str], root: Path, env: dict[str, str] | None = None) -> str:
     try:
         resultado = subprocess.run(
-            ["git", *args],
+            ["git", "-c", "core.quotepath=false", *args],
             cwd=str(root),
             capture_output=True,
             text=True,
@@ -204,30 +204,48 @@ def _diff(args_sem_head: list[str], root: Path) -> str:
         return _git(["diff", *args_sem_head], root)
 
 
-def capturar_ref(root: Path) -> str:
-    """`<ref>` do despacho (`TK-93a`, flag `--capturar-ref`): commit cujo pai é `HEAD` (sem pai em
-    repositório sem commit ainda) e cuja árvore é a árvore de trabalho inteira — rastreados e não
-    rastreados não ignorados —, gravado por um índice temporário (`GIT_INDEX_FILE`); a árvore de
-    trabalho, o índice real e a lista de stash saem exatamente como entraram, porque nada aqui
-    escreve nele."""
+def _gravar_arvore_de_trabalho(root: Path) -> str:
+    """Grava a árvore de trabalho inteira — rastreados e não rastreados não ignorados, e também o
+    rastreado que o `.gitignore` cobre (`AUF-T5`, `DAU-18`, `DAU-25`) — num índice temporário
+    (`GIT_INDEX_FILE`) e devolve o hash de `git write-tree`. Chamada por `capturar_ref` e por
+    `coletar_diff_stat`. O índice temporário nasce como o arquivo de `tempfile.mkstemp`, apagado
+    antes do uso e no `finally`; quando `git rev-parse --verify HEAD` sai 0, roda `git read-tree
+    HEAD` nesse índice antes do `git add -A` — sem isso, `git add -A` num índice vazio respeita o
+    `.gitignore` e nunca vê um rastreado ignorado. Sem commit ainda, o índice parte vazio como
+    antes. A árvore de trabalho, o índice real e a lista de stash saem exatamente como entraram,
+    porque nada aqui escreve neles."""
     fd, indice_tmp = tempfile.mkstemp(prefix=".review-evidence-index-", suffix=".tmp")
     os.close(fd)
     Path(indice_tmp).unlink()
     env = dict(os.environ)
     env["GIT_INDEX_FILE"] = indice_tmp
     try:
-        _git(["add", "-A"], root, env=env)
-        arvore = _git(["write-tree"], root, env=env).strip()
         try:
-            pai = _git(["rev-parse", "--verify", "HEAD"], root).strip()
+            _git(["rev-parse", "--verify", "HEAD"], root)
         except ReviewEvidenceValidationError:
-            pai = None
-        args_commit = ["commit-tree", arvore, "-m", "review_evidence: captura de <ref> (TK-93a)"]
-        if pai is not None:
-            args_commit += ["-p", pai]
-        return _git(args_commit, root, env=env).strip()
+            pass
+        else:
+            _git(["read-tree", "HEAD"], root, env=env)
+        _git(["add", "-A"], root, env=env)
+        return _git(["write-tree"], root, env=env).strip()
     finally:
         Path(indice_tmp).unlink(missing_ok=True)
+
+
+def capturar_ref(root: Path) -> str:
+    """`<ref>` do despacho (`TK-93a`, flag `--capturar-ref`): commit cujo pai é `HEAD` (sem pai em
+    repositório sem commit ainda) e cuja árvore é a árvore de trabalho inteira — rastreados e não
+    rastreados não ignorados —, gravada por `_gravar_arvore_de_trabalho`; a árvore de trabalho, o
+    índice real e a lista de stash saem exatamente como entraram, porque nada aqui escreve nele."""
+    arvore = _gravar_arvore_de_trabalho(root)
+    try:
+        pai = _git(["rev-parse", "--verify", "HEAD"], root).strip()
+    except ReviewEvidenceValidationError:
+        pai = None
+    args_commit = ["commit-tree", arvore, "-m", "review_evidence: captura de <ref> (TK-93a)"]
+    if pai is not None:
+        args_commit += ["-p", pai]
+    return _git(args_commit, root).strip()
 
 
 def coletar_diff_stat(root: Path, desde: str | None = None) -> str:
@@ -236,8 +254,8 @@ def coletar_diff_stat(root: Path, desde: str | None = None) -> str:
     devolve — rastreados e não rastreados da entrega, nunca o trabalho em andamento de outra
     tarefa na mesma árvore. Sem tocado nenhum, devolve string vazia (o chamador já renderiza
     `(sem diferenças)` para diff vazio); com tocado, grava a árvore de trabalho num índice
-    temporário (`GIT_INDEX_FILE`, mesmo molde de `capturar_ref`) para obter o hash da árvore
-    inteira — rastreados e não rastreados —, e roda `git diff --stat <desde> <árvore> --
+    temporário (mesmo molde de `capturar_ref`, via `_gravar_arvore_de_trabalho`) para obter o hash
+    da árvore inteira — rastreados e não rastreados —, e roda `git diff --stat <desde> <árvore> --
     <tocados>` fora do índice temporário (comparação de dois tree-ish, não precisa mais dele).
     Árvore de trabalho, índice real e lista de stash saem como entraram: nada aqui escreve
     neles. Nunca roda `git diff --stat` sem caminho quando `tocados` é vazio — sem `--`, ele
@@ -247,24 +265,58 @@ def coletar_diff_stat(root: Path, desde: str | None = None) -> str:
     tocados = coletar_arquivos_tocados(root, desde)
     if not tocados:
         return ""
-    fd, indice_tmp = tempfile.mkstemp(prefix=".review-evidence-index-", suffix=".tmp")
-    os.close(fd)
-    Path(indice_tmp).unlink()
-    env = dict(os.environ)
-    env["GIT_INDEX_FILE"] = indice_tmp
-    try:
-        _git(["add", "-A"], root, env=env)
-        arvore = _git(["write-tree"], root, env=env).strip()
-    finally:
-        Path(indice_tmp).unlink(missing_ok=True)
+    arvore = _gravar_arvore_de_trabalho(root)
     return _git(["diff", "--stat", desde, arvore, "--", *tocados], root).strip()
 
 
-def _extrair_caminho_status(linha: str) -> str:
-    caminho = linha[3:]
-    if " -> " in caminho:
-        caminho = caminho.split(" -> ", 1)[1]
-    return caminho.strip().strip('"')
+def _entradas_status(root: Path) -> list[tuple[str, str]]:
+    """`git status --porcelain=v1 -z --untracked-files=all` (RAF-T10, `DRF-32`, `R-31`): com `-z`,
+    cada campo (separado por NUL) chega cru, sem aspas nem escape octal, qualquer que seja o
+    `core.quotepath` da máquina. Devolve, na ordem do `git`, `(código XY, caminho)` de cada campo
+    com 4 caracteres ou mais (`campo[:2]`, `campo[3:]`); quando o código contém `R` ou `C`, o
+    campo seguinte (o caminho de origem da renomeação/cópia) se consome sem virar entrada."""
+    saida = _git(["status", "--porcelain=v1", "-z", "--untracked-files=all"], root)
+    campos = saida.split("\0")
+    entradas: list[tuple[str, str]] = []
+    i = 0
+    while i < len(campos):
+        campo = campos[i]
+        if len(campo) < 4:
+            i += 1
+            continue
+        codigo = campo[:2]
+        caminho = campo[3:]
+        entradas.append((codigo, caminho))
+        if "R" in codigo or "C" in codigo:
+            i += 2
+        else:
+            i += 1
+    return entradas
+
+
+def _entradas_diff(root: Path, ref: str) -> list[tuple[str, str]]:
+    """`git diff <ref> --name-status -z` (RAF-T10a, `DRF-52`): com `-z`, cada campo (separado por
+    NUL) chega cru, sem aspas nem escape octal, qualquer que seja o `core.quotepath` da máquina.
+    Devolve, na ordem do `git`, `(letra, caminho)` de cada arquivo; quando a letra começa por `R`
+    ou `C`, vêm dois caminhos (origem e destino) e o caminho da entrada é o segundo (o novo) — a
+    origem não vira entrada."""
+    saida = _git(["diff", ref, "--name-status", "-z"], root)
+    campos = saida.split("\0")
+    entradas: list[tuple[str, str]] = []
+    i = 0
+    while i < len(campos):
+        letra = campos[i]
+        if not letra:
+            i += 1
+            continue
+        if letra[0] in ("R", "C"):
+            caminho = campos[i + 2]
+            i += 3
+        else:
+            caminho = campos[i + 1]
+            i += 2
+        entradas.append((letra, caminho))
+    return entradas
 
 
 def _existe_no_ref(root: Path, ref: str, caminho: str) -> bool:
@@ -286,8 +338,11 @@ def _eh_nao_rastreado(root: Path, caminho: str) -> bool:
     return saida.startswith("??")
 
 
-def _texto_do_ref(root: Path, ref: str, caminho: str) -> str:
-    return _git(["show", f"{ref}:{caminho}"], root)
+def _texto_do_ref_ou_none(root: Path, ref: str, caminho: str) -> str | None:
+    try:
+        return _bytes_do_ref(root, ref, caminho).decode("utf-8")
+    except UnicodeDecodeError:
+        return None
 
 
 def _texto_do_disco(root: Path, caminho: str) -> str | None:
@@ -297,14 +352,30 @@ def _texto_do_disco(root: Path, caminho: str) -> str | None:
         return None
 
 
+def _bytes_do_ref(root: Path, ref: str, caminho: str) -> bytes:
+    resultado = subprocess.run(
+        ["git", "show", f"{ref}:{caminho}"], cwd=str(root), capture_output=True
+    )
+    return resultado.stdout
+
+
 def _nao_rastreado_mudou_desde_ref(root: Path, ref: str, caminho: str) -> bool:
     """Julgamento por conteúdo (linha a linha, fim de linha normalizado por `str.splitlines`) do
     não rastreado que já existia na árvore de `<ref>` — em vez do recorte por `st_mtime` usado
-    para o não rastreado ausente de `<ref>` (esse permanece intocado)."""
+    para o não rastreado ausente de `<ref>` (esse permanece intocado). Quando o arquivo não se lê
+    como texto (`_texto_do_disco` devolve `None`), o julgamento cai para os bytes brutos do
+    arquivo contra os de `<ref>` (AUF-T6)."""
     texto_atual = _texto_do_disco(root, caminho)
     if texto_atual is None:
+        try:
+            bytes_atuais = (root / caminho).read_bytes()
+        except FileNotFoundError:
+            return True
+        return _bytes_do_ref(root, ref, caminho) != bytes_atuais
+    texto_ref = _texto_do_ref_ou_none(root, ref, caminho)
+    if texto_ref is None:
         return True
-    return _texto_do_ref(root, ref, caminho).splitlines() != texto_atual.splitlines()
+    return texto_ref.splitlines() != texto_atual.splitlines()
 
 
 def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
@@ -315,31 +386,27 @@ def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
     arquivo dentro dele.
 
     Com `desde=<ref>` (AUT-T5b): recorta o conjunto de rastreados para só os alterados **desde**
-    `<ref>` (`git diff <ref> --name-only`), em vez da árvore de trabalho inteira — necessário
+    `<ref>` (`_entradas_diff`), em vez da árvore de trabalho inteira — necessário
     quando outras tarefas têm mudanças soltas, não commitadas, no mesmo repositório. Untracked
     presente na árvore de `<ref>` (`TK-93a`: `<ref>` de `--capturar-ref` grava não rastreados
     também) é julgado por conteúdo (`_nao_rastreado_mudou_desde_ref`), não por data — ele não
-    aparece em `git diff <ref> --name-only` (que o dá como apagado, já que está fora do índice
+    aparece como tocado de `_entradas_diff` (que o dá como apagado, já que está fora do índice
     atual). Untracked ausente de `<ref>` (ex.: `<ref>` de `git stash create`, que não grava
     não rastreados) segue pelo recorte por data: a entrada `??` cujo arquivo tem `st_mtime` menor
     que a data de commit de `<ref>` (`%ct`) fica de fora; a de data igual ou maior entra, e também
-    a que não existe no disco como veio do `git status` (nome entre aspas com escape octal, por
-    exemplo)."""
-    saida_status = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
+    a que não existe no disco como veio do `git status`."""
+    entradas = _entradas_status(root)
     tocados: dict[str, None] = {}
     if desde is None:
-        for linha in saida_status.splitlines():
-            if not linha:
-                continue
-            tocados.setdefault(_extrair_caminho_status(linha), None)
+        for _codigo, caminho in entradas:
+            tocados.setdefault(caminho, None)
         return sorted(tocados.keys())
 
     corte = int(_git(["show", "-s", "--format=%ct", desde], root).strip())
     nao_rastreados: set[str] = set()
-    for linha in saida_status.splitlines():
-        if not linha.startswith("??"):
+    for codigo, caminho in entradas:
+        if codigo != "??":
             continue
-        caminho = _extrair_caminho_status(linha)
         nao_rastreados.add(caminho)
         if _existe_no_ref(root, desde, caminho):
             if _nao_rastreado_mudou_desde_ref(root, desde, caminho):
@@ -349,41 +416,30 @@ def coletar_arquivos_tocados(root: Path, desde: str | None = None) -> list[str]:
         if arquivo.exists() and arquivo.stat().st_mtime < corte:
             continue
         tocados.setdefault(caminho, None)
-    saida_diff = _git(["diff", desde, "--name-only"], root)
-    for linha in saida_diff.splitlines():
-        linha = linha.strip()
+    for _letra, caminho in _entradas_diff(root, desde):
         # não rastreado presente em <ref> sai como apagado aqui (está fora do índice atual); o
         # julgamento dele já foi feito acima, por conteúdo — este loop não o reintroduz (TK-93a).
-        if linha and linha not in nao_rastreados:
-            tocados.setdefault(linha, None)
+        if caminho not in nao_rastreados:
+            tocados.setdefault(caminho, None)
     return sorted(tocados.keys())
 
 
 def coletar_estado_git(root: Path, desde: str | None = None) -> dict[str, str]:
-    """Código `XY` de `git status --porcelain=v1 --untracked-files=all` por caminho (mesma chave
-    que `coletar_arquivos_tocados` já extrai via `_extrair_caminho_status`) — a evidência `git`
+    """Código `XY` de `git status --porcelain=v1 -z --untracked-files=all` por caminho (mesma chave
+    que `coletar_arquivos_tocados` já extrai via `_entradas_status`) — a evidência `git`
     que comprova a atribuição de cada arquivo na seção `## Arquivos tocados` (`LM-T3`, `AE-13`).
     Não classifica nada: só devolve o estado bruto que o `git` já relata.
 
     Com `desde=<ref>` (`LM-T3a`): a árvore de trabalho vence sempre; na ausência dela, e só então,
-    entra a letra de `git diff <ref> --name-status`, marcada como commitada (`<letra> (commitado
+    entra a letra de `_entradas_diff`, marcada como commitada (`<letra> (commitado
     desde <ref>)`) via `setdefault` — é o `setdefault`, e não uma atribuição, que materializa essa
-    precedência. Para renomeação (`R100\t<velho>\t<novo>`), a chave é o último campo da linha e a
-    letra é o primeiro campo inteiro (`R100`)."""
-    saida_status = _git(["status", "--porcelain=v1", "--untracked-files=all"], root)
+    precedência. Para renomeação, a chave é o caminho novo e a letra é o campo inteiro (`R100`)."""
+    entradas = _entradas_status(root)
     estados: dict[str, str] = {}
-    for linha in saida_status.splitlines():
-        if not linha:
-            continue
-        estados.setdefault(_extrair_caminho_status(linha), linha[:2])
+    for codigo, caminho in entradas:
+        estados.setdefault(caminho, codigo)
     if desde is not None:
-        saida_diff = _git(["diff", desde, "--name-status"], root)
-        for linha in saida_diff.splitlines():
-            if not linha.strip():
-                continue
-            campos = linha.split("\t")
-            letra = campos[0]
-            caminho = campos[-1]
+        for letra, caminho in _entradas_diff(root, desde):
             estados.setdefault(caminho, f"{letra} (commitado desde {desde})")
     return estados
 
@@ -398,6 +454,44 @@ def _eh_alvo_diretorio(root: Path, alvo: str) -> bool:
     if _normalizar_separador(alvo).endswith("/"):
         return True
     return (root / alvo).is_dir()
+
+
+def _eh_alvo_curinga(alvo: str) -> bool:
+    """AUF-T3 (`DAU-22`): verdadeiro quando o alvo contém `*` — casa contra os tocados por
+    `_casa_curinga`, nunca por expansão contra a árvore inteira."""
+    return "*" in alvo
+
+
+def _curinga_para_regex(padrao: str) -> str:
+    """RAF-T9 (`DRF-31`): traduz o curinga do alvo para regex como a linha de comando o lê —
+    `**/` vira zero ou mais pastas, `**` sem `/` seguinte vira qualquer coisa, `*` fica preso a
+    uma pasta e `?` a um caractere dentro dela; o resto entra literal via `re.escape`."""
+    partes: list[str] = []
+    i = 0
+    n = len(padrao)
+    while i < n:
+        if padrao[i : i + 3] == "**/":
+            partes.append("(?:[^/]*/)*")
+            i += 3
+        elif padrao[i : i + 2] == "**":
+            partes.append(".*")
+            i += 2
+        elif padrao[i] == "*":
+            partes.append("[^/]*")
+            i += 1
+        elif padrao[i] == "?":
+            partes.append("[^/]")
+            i += 1
+        else:
+            partes.append(re.escape(padrao[i]))
+            i += 1
+    return "".join(partes)
+
+
+def _casa_curinga(caminho: str, padrao: str) -> bool:
+    """RAF-T9 (`DRF-31`): `caminho` casa com o curinga do alvo `padrao`, na tradução própria de
+    `_curinga_para_regex` (sem `fnmatch`, sem `glob`, sem `PurePath.full_match`)."""
+    return re.fullmatch(_curinga_para_regex(padrao), caminho) is not None
 
 
 _REGISTRO_ORQUESTRACAO = (
@@ -499,10 +593,10 @@ def confrontar_escopo(
     root: Path,
     alvos_de_outras_tarefas: dict[str, str] | None = None,
 ) -> dict:
-    """Veredito mecânico da dimensão `escopo` (`docs/RUBRICA_DE_REVISAO.md:63-77`) com os cinco
-    baldes da `DB-25` e da `DB-32`, nesta precedência: coberto pelos alvos do card > alvo de outra
-    tarefa do mesmo plano > registro da orquestração > ato do dono fora do ciclo de tarefa > fora
-    dos alvos sem atribuição. Só o último resolve o
+    """Veredito mecânico da dimensão `escopo` (`docs/RUBRICA_DE_REVISAO.md` §4) com os cinco
+    baldes da `DB-25` e da `DB-32`, nesta precedência: coberto pelos alvos do card > registro da
+    orquestração > alvo de outra tarefa do mesmo plano > ato do dono fora do ciclo de tarefa >
+    fora dos alvos sem atribuição. Só o último resolve o
     veredito: vazio → `conforme`; não vazio → `None` (aberto), porque a faixa `parcial` depende de
     desvio declarado na entrega, insumo que este script não recebe.
 
@@ -515,13 +609,18 @@ def confrontar_escopo(
         for alvo in arquivos_alvo
         if _eh_alvo_diretorio(root, alvo)
     ]
+    alvos_curinga = [
+        _normalizar_separador(alvo) for alvo in arquivos_alvo if _eh_alvo_curinga(alvo)
+    ]
     outros = alvos_de_outras_tarefas or {}
 
     def coberto(tocado: str) -> bool:
         if tocado in alvo_set:
             return True
         tocado_norm = _normalizar_separador(tocado)
-        return any(tocado_norm.startswith(prefixo) for prefixo in prefixos_dir)
+        if any(tocado_norm.startswith(prefixo) for prefixo in prefixos_dir):
+            return True
+        return any(_casa_curinga(tocado_norm, alvo) for alvo in alvos_curinga)
 
     de_outra_tarefa: dict[str, str] = {}
     registro: list[str] = []
@@ -531,11 +630,10 @@ def confrontar_escopo(
         if coberto(tocado):
             continue
         tocado_norm = _normalizar_separador(tocado)
-        dona = _tarefa_dona(tocado_norm, outros, root)
-        if dona is not None:
-            de_outra_tarefa[tocado] = dona
-        elif _eh_registro_orquestracao(tocado):
+        if _eh_registro_orquestracao(tocado):
             registro.append(tocado)
+        elif (dona := _tarefa_dona(tocado_norm, outros, root)) is not None:
+            de_outra_tarefa[tocado] = dona
         elif _eh_ato_do_dono(tocado):
             ato_do_dono.append(tocado)
         else:
@@ -586,7 +684,10 @@ def _diff_para_arquivo(root: Path, caminho_rel: str, desde: str | None = None) -
             texto_atual = _texto_do_disco(root, caminho_rel)
             if texto_atual is None:
                 return "(arquivo binário ou não-UTF-8 — trecho omitido)"
-            linhas_ref = _texto_do_ref(root, desde, caminho_rel).splitlines()
+            texto_ref = _texto_do_ref_ou_none(root, desde, caminho_rel)
+            if texto_ref is None:
+                return "(arquivo binário ou não-UTF-8 — trecho omitido)"
+            linhas_ref = texto_ref.splitlines()
             linhas_atual = texto_atual.splitlines()
             if linhas_ref == linhas_atual:
                 return f"(sem alteração desde `{desde}`)"
@@ -598,6 +699,21 @@ def _diff_para_arquivo(root: Path, caminho_rel: str, desde: str | None = None) -
                 lineterm="",
             )
             return "\n".join(diff_linhas) + "\n"
+        if _eh_nao_rastreado(root, caminho_rel):
+            # AUF-T1: não rastreado ausente de `<ref>` — criado depois do recorte do despacho —
+            # chega como diff unificado contra o vazio, no molde do bloco do TK-93a acima.
+            texto_atual = _texto_do_disco(root, caminho_rel)
+            marca = f"(arquivo novo — ausente em `{desde}`)\n"
+            if texto_atual is None:
+                return marca + "(arquivo binário ou não-UTF-8 — trecho omitido)"
+            diff_linhas = difflib.unified_diff(
+                [],
+                texto_atual.splitlines(),
+                fromfile=f"{caminho_rel}@{desde}",
+                tofile=caminho_rel,
+                lineterm="",
+            )
+            return marca + "\n".join(diff_linhas) + "\n"
         texto = _git(["diff", desde, "--", caminho_rel], root)
         if texto.strip():
             return texto
@@ -609,9 +725,14 @@ def _diff_para_arquivo(root: Path, caminho_rel: str, desde: str | None = None) -
     caminho_abs = root / caminho_rel
     if caminho_abs.is_file():
         try:
-            return caminho_abs.read_text(encoding="utf-8")
+            conteudo = caminho_abs.read_text(encoding="utf-8")
         except UnicodeDecodeError:
+            if _eh_nao_rastreado(root, caminho_rel):
+                return "(arquivo novo — ausente em `HEAD`)\n(arquivo binário ou não-UTF-8 — trecho omitido)"
             return "(arquivo binário ou não-UTF-8 — trecho omitido)"
+        if _eh_nao_rastreado(root, caminho_rel):
+            return "(arquivo novo — ausente em `HEAD`)\n" + conteudo
+        return conteudo
     return "(sem diferença coletável — arquivo ausente na árvore de trabalho)"
 
 
@@ -632,6 +753,27 @@ def montar_trechos(
     algum item de `arquivos_alvo` é diretório; alvo-arquivo comum segue o caminho de sempre."""
     trechos: dict[str, dict] = {}
     for caminho in arquivos_alvo:
+        if _eh_alvo_curinga(caminho):
+            alvo_norm = _normalizar_separador(caminho)
+            casados = [
+                arquivo
+                for arquivo in (tocados or [])
+                if _casa_curinga(_normalizar_separador(arquivo), alvo_norm)
+            ]
+            if not casados:
+                trechos[caminho] = {
+                    "texto": "(nenhum arquivo tocado casa com o curinga)",
+                    "truncado": False,
+                }
+                continue
+            for arquivo in casados:
+                texto = _diff_para_arquivo(root, arquivo, desde)
+                truncado = len(texto) > teto_chars
+                trechos[arquivo] = {
+                    "texto": texto[:teto_chars] if truncado else texto,
+                    "truncado": truncado,
+                }
+            continue
         if tocados and _eh_alvo_diretorio(root, caminho):
             prefixo = _normalizar_separador(caminho).rstrip("/") + "/"
             for arquivo in tocados:
@@ -686,7 +828,7 @@ def rodar_bateria_guardas(root: Path, comandos: list[tuple[str, list[str]]] | No
 
 
 def veredito_guardas(resultados: list[dict]) -> str:
-    """Veredito mecânico travado da dimensão `guardas` (`docs/RUBRICA_DE_REVISAO.md:94-106`) —
+    """Veredito mecânico travado da dimensão `guardas` (`docs/RUBRICA_DE_REVISAO.md` §4) —
     autoridade integral, sem faixa de juízo (`DA-7`): qualquer comando fora de exit 0 trava em
     `não conforme`; só quando todos os comandos fecham em exit 0 resolve para `conforme`. Nunca
     resolve para `parcial` sozinha (a faixa `parcial` da rubrica depende de julgar se a causa é
@@ -697,7 +839,7 @@ def veredito_guardas(resultados: list[dict]) -> str:
 
 
 def veredito_testes(resultados: list[dict]) -> str:
-    """Veredito mecânico travado da dimensão `testes` (`docs/RUBRICA_DE_REVISAO.md:79-92`) —
+    """Veredito travado da parte mecânica da dimensão `testes` (`docs/RUBRICA_DE_REVISAO.md` §4) —
     evidência mecânica é o exit code do comando `pytest` da bateria: exit 0 trava `conforme`,
     exit não-zero ou comando `pytest` ausente da bateria trava `não conforme` (nunca silêncio)."""
     pytest_resultado = next((r for r in resultados if r["nome"] == "pytest"), None)
@@ -768,6 +910,84 @@ def secao_medida_do_executor(caminho_json: Path) -> list[str]:
     return linhas
 
 
+def _eh_alvo_de_teste(alvo: str) -> bool:
+    """RAF-T11 (`DRF-33`): verdadeiro quando o alvo, com separador normalizado, começa por
+    `tests/` e o nome do arquivo começa por `test_` e termina em `.py`."""
+    caminho = _normalizar_separador(alvo)
+    nome = caminho.rsplit("/", 1)[-1]
+    return caminho.startswith("tests/") and nome.startswith("test_") and nome.endswith(".py")
+
+
+def _linhas_removidas_do_diff(texto: str) -> list[str]:
+    """RAF-T11a (`DRF-53`; `AE-149`): as linhas de `texto` que começam por `-` e vêm depois da
+    primeira linha que começa por `@@` (o cabeçalho `--- a/...`/`+++ b/...` fica antes do `@@` e
+    sai; a linha removida cujo conteúdo começa por `--` fica). Texto sem linha `@@` dá lista
+    vazia."""
+    linhas = texto.splitlines()
+    inicio = next((i for i, linha in enumerate(linhas) if linha.startswith("@@")), None)
+    if inicio is None:
+        return []
+    return [linha for linha in linhas[inicio + 1 :] if linha.startswith("-")]
+
+
+def linhas_removidas_de_teste(
+    root: Path,
+    arquivos_alvo: list[str],
+    desde: str | None = None,
+    tocados: list[str] | None = None,
+) -> dict[str, list[str]]:
+    """RAF-T11a (`DRF-53`; `AE-149` da `RAF-T11`; `DRF-33`; `F-17`; `R-12`): para cada alvo, na
+    ordem, os caminhos que ele cobre, pela mesma expansão de `montar_trechos`: alvo curinga
+    (`_eh_alvo_curinga`) cobre os `tocados` que casam por `_casa_curinga`; alvo diretório
+    (`tocados` não vazio e `_eh_alvo_diretorio`) cobre os `tocados` sob o prefixo `<alvo>/`; outro
+    alvo cobre a si mesmo, como veio. Cada caminho coberto que é de teste (`_eh_alvo_de_teste`) e
+    cuja forma normalizada (`_normalizar_separador`) ainda não tem chave ganha a chave do caminho
+    como veio e o valor `_linhas_removidas_do_diff` do diff do caminho — fato mecânico, sem julgar
+    se a remoção é legítima (isso é do revisor, `RAF-T12`)."""
+    removidas: dict[str, list[str]] = {}
+    vistos: set[str] = set()
+    for alvo in arquivos_alvo:
+        if _eh_alvo_curinga(alvo):
+            alvo_norm = _normalizar_separador(alvo)
+            cobertos = [
+                arquivo
+                for arquivo in (tocados or [])
+                if _casa_curinga(_normalizar_separador(arquivo), alvo_norm)
+            ]
+        elif tocados and _eh_alvo_diretorio(root, alvo):
+            prefixo = _normalizar_separador(alvo).rstrip("/") + "/"
+            cobertos = [
+                arquivo for arquivo in tocados if _normalizar_separador(arquivo).startswith(prefixo)
+            ]
+        else:
+            cobertos = [alvo]
+        for caminho in cobertos:
+            if not _eh_alvo_de_teste(caminho):
+                continue
+            chave_norm = _normalizar_separador(caminho)
+            if chave_norm in vistos:
+                continue
+            vistos.add(chave_norm)
+            removidas[caminho] = _linhas_removidas_do_diff(_diff_para_arquivo(root, caminho, desde))
+    return removidas
+
+
+def _renderizar_removidas_de_teste(removidas: dict[str, list[str]]) -> list[str]:
+    linhas: list[str] = ["## Linhas removidas dos testes"]
+    if not removidas:
+        linhas.append("- nenhum arquivo de teste entre os alvos")
+        return linhas
+    for caminho, linhas_removidas in removidas.items():
+        if not linhas_removidas:
+            linhas.append(f"### `{caminho}` — nenhuma linha removida")
+            continue
+        linhas.append(f"### `{caminho}` — {len(linhas_removidas)} linha(s) removida(s)")
+        linhas.append("```")
+        linhas.extend(linhas_removidas)
+        linhas.append("```")
+    return linhas
+
+
 def _renderizar(
     *,
     plano_id: str,
@@ -786,6 +1006,7 @@ def _renderizar(
     teto_guarda_chars: int,
     desde: str | None = None,
     linhas_medida: list[str] | None = None,
+    removidas_teste: dict[str, list[str]] | None = None,
 ) -> str:
     linhas: list[str] = []
     linhas.append(f"# Evidência de revisão — {plano_id} {tarefa_id}")
@@ -798,14 +1019,20 @@ def _renderizar(
     linhas.append("## Arquivos tocados")
     if arquivos_tocados:
         estados = estado_git or {}
+        registro = set(escopo.get("registro_orquestracao", []))
         alheio = (
             set(escopo.get("fora_dos_alvos", []))
             | set(escopo.get("de_outra_tarefa", {}).keys())
-            | set(escopo.get("registro_orquestracao", []))
+            | registro
             | set(escopo.get("ato_do_dono", []))
         )
         for caminho in arquivos_tocados:
-            atribuicao = "alheio" if caminho in alheio else "da entrega"
+            if caminho in registro:
+                atribuicao = "registro da orquestração"
+            elif caminho in alheio:
+                atribuicao = "alheio"
+            else:
+                atribuicao = "da entrega"
             codigo = estados.get(caminho)
             estado_txt = f"`{codigo}`" if codigo is not None else "(sem entrada em `git status`)"
             linhas.append(f"- `{caminho}` — atribuição: {atribuicao}; estado git: {estado_txt}")
@@ -849,7 +1076,7 @@ def _renderizar(
         )
         linhas.append(
             "- Veredito mecânico: (aberto — depende de declaração de desvio na entrega, "
-            "não coletada por este script; ver docs/RUBRICA_DE_REVISAO.md:63-77)"
+            "não coletada por este script; ver docs/RUBRICA_DE_REVISAO.md §4)"
         )
     linhas.append("")
     linhas.append(f"## Trechos de diff dos arquivos-alvo (teto {teto_diff_chars} caracteres)")
@@ -864,6 +1091,9 @@ def _renderizar(
         if info["truncado"]:
             linhas.append(f"[truncado em {teto_diff_chars} caracteres]")
     linhas.append("")
+    if removidas_teste is not None:
+        linhas.extend(_renderizar_removidas_de_teste(removidas_teste))
+        linhas.append("")
     if linhas_medida is not None:
         linhas.extend(linhas_medida)
         linhas.append("")
@@ -916,10 +1146,20 @@ def montar_documento(
 
     plano_id = _caminhos.id_do_plano(plano_path) or plano_path.stem
 
+    # RAF-T15 (R-05): a primeira que existir, nesta ordem — ao lado do --out (depois > antes >
+    # sem mundo) e só então na pasta do plano da raiz medida (mesma ordem de mundo); sem nenhuma,
+    # a primeira da lista (a de depois ao lado do --out, ou a de depois na pasta do plano quando
+    # dir_evidencia é None) vai para secao_medida_do_executor, que já imprime "ausente".
+    candidatos_medida: list[Path] = []
     if dir_evidencia is not None:
-        caminho_medida = Path(dir_evidencia) / f"{plano_id}-{dossie.tarefa_id}-medida.json"
-    else:
-        caminho_medida = _caminhos.destino_medida(root, plano_path, dossie.tarefa_id)
+        dir_evidencia = Path(dir_evidencia)
+        candidatos_medida.append(dir_evidencia / f"{plano_id}-{dossie.tarefa_id}-medida-depois.json")
+        candidatos_medida.append(dir_evidencia / f"{plano_id}-{dossie.tarefa_id}-medida-antes.json")
+        candidatos_medida.append(dir_evidencia / f"{plano_id}-{dossie.tarefa_id}-medida.json")
+    candidatos_medida.append(_caminhos.destino_medida(root, plano_path, dossie.tarefa_id, "depois"))
+    candidatos_medida.append(_caminhos.destino_medida(root, plano_path, dossie.tarefa_id, "antes"))
+    candidatos_medida.append(_caminhos.destino_medida(root, plano_path, dossie.tarefa_id, None))
+    caminho_medida = next((c for c in candidatos_medida if c.is_file()), candidatos_medida[0])
 
     return _renderizar(
         plano_id=plano_id,
@@ -938,6 +1178,7 @@ def montar_documento(
         teto_guarda_chars=teto_guarda_chars,
         desde=desde,
         linhas_medida=secao_medida_do_executor(caminho_medida),
+        removidas_teste=linhas_removidas_de_teste(root, arquivos_alvo, desde, tocados),
     )
 
 
@@ -1004,7 +1245,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--plano e --tarefa são obrigatórios (exceto com --capturar-ref).")
 
     if args.atribuir:
-        rdo = _load_rdo(args.root)
+        try:
+            rdo = _load_rdo(args.root)
+        except ReviewEvidenceValidationError as exc:
+            print(f"review_evidence: FALHOU - {exc}", file=sys.stderr)
+            return 1
         try:
             _exigir_plano(args.plano)
             dossie = rdo.extrair_dossie(

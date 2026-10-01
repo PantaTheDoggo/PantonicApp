@@ -23,6 +23,28 @@ reescritas nem revogadas.
 
 ## [Não lançado]
 
+- `GOVERNANCA.md` §3 (*Natureza da questão e escalação*), §3.1 item 3, §4.3 (*Acionamento do
+  dono*) e §7 item 21 (`G-ESCALA`): toda questão é operacional, tática ou estratégica, e só a
+  estratégica — a que altera o modelo explicitamente descrito pelo dono ou o prompt que iniciou a
+  demanda — sobe ao dono; dentro do modelo e do prompt, qualquer solução viável é decisão do
+  agente, registrada com id. Revoga "na dúvida, escala" e "escalar é o comportamento desejado"
+  (§4.3); nenhuma tarefa, janela ou plano encerra com pontos abertos por padrão, e relatório sem
+  pendência ao dono é o desfecho esperado. Lista do que não é estratégico: implementação de
+  conceito, lacuna operacional do conceito, nomenclatura, algoritmo, caso de borda irreal,
+  controle não citado no modelo. Propagado ao `pantonic-consultant` (critério da linha
+  `estrategico=`), ao `pantonic-planner` (Fase 2), à `scrum-master` (*Pendências ao dono*), à
+  `entrega-de-encerramento` (*Pendências abertas*) e à `passagem-de-bastao` (*Decisão pendente*).
+  O vocabulário "técnico" das naturezas passa a "operacional". Caso medido: nome de pasta
+  escalado ao dono (2026-09-30).
+
+- `.claude/sync-kit.ps1`: o sync passa a materializar também `tools/`, `checks/` (por arquivo,
+  com a mesma chave de exclusão `<namespace>/<arquivo>` do `kit-exclude.txt`), `projecoes.json` e
+  `KIT_VERSION`, nos caminhos relativos que as skills citam, e termina com
+  `materializar.py apply --alvo projeto` (`-Check` roda `drift`). Antes, só agentes e skills
+  pousavam no consumidor e toda skill que chama `.claude/tools/*.py` quebrava. `GOVERNANCA.md` §9
+  e o `README.md` descrevem o conjunto, declaram que a doutrina não viaja no subtree e registram o
+  regime transitório de distribuição por cópia enquanto a branch `kit` não for republicada.
+
 - `.claude/tools/backlog_hook.py`: hook `UserPromptSubmit` novo — injeta a saída de
   `backlog.py next` no prompt do dono quando ele pede o próximo passo, registrado em
   `.claude/projecoes.json` (alvo `projeto`); as skills `passagem-de-bastao` e `scrum-master`

@@ -1,1024 +1,1250 @@
-data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte
-2026-08-01	PantonicApp	V2B-T1	Sonnet	13	44	100	usage
-2026-08-01	PantonicApp	V2B-T2	Sonnet	20	57	128	usage
-2026-08-01	PantonicApp	V2B-T3	Sonnet	24	79	357	usage
-2026-08-01	PantonicApp	V2B-T4	Haiku	122	282	2300	usage
-2026-08-01	PantonicApp	V2B-T5	Haiku	28	40	201	usage
-2026-08-01	PantonicApp	V2B-T6	Haiku	12	190.5	390	usage
-2026-08-01	PantonicApp	V2B-T7	Haiku	136	310	11500	usage
-2026-08-01	PantonicApp	V2B-T8	Sonnet	67	159	810	usage
-2026-08-01	PantonicApp	V2B-T9	Sonnet	49	117	540	usage
-2026-08-01	PantonicApp	V2C-T1	Sonnet	28	111	305	usage
-2026-08-01	PantonicApp	V2C-T2	Sonnet	32	178	449	usage
-2026-08-01	PantonicApp	V2C-T3	Opus	37	183	698	usage
-2026-08-01	PantonicApp	V2C-T4	Opus	28			contado
-2026-08-01	PantonicApp	V2C-T5	Opus	12			contado
-2026-08-01	PantonicApp	V2C-T6	Opus	28			contado
-2026-08-01	PantonicApp	V2M-T1	Opus	40			nao_medido
-2026-08-01	PantonicApp	V2M-T2	Sonnet	25	78	2940	usage
-2026-08-01	PantonicApp	V2M-T3	Sonnet	29	71	11580	usage
-2026-08-01	PantonicApp	V2M-T4	Sonnet	24	55	446	usage
-2026-08-01	PantonicApp	V2M-T5	Sonnet	41	76	312	usage
-2026-08-01	PantonicApp	V2M-T5	Sonnet	31	94	1172	usage
-2026-08-01	PantonicApp	V2K-T1	Sonnet	17	55	2160	usage
-2026-08-01	PantonicApp	V2K-T2	Sonnet	33	101	24420	usage
-2026-08-01	PantonicApp	V2K-T3	Opus	18	49	180	usage
-2026-08-01	PantonicApp	V2K-T4	Opus	11	66	360	contado
-2026-08-01	PantonicApp	V2K-T5	Sonnet	21	65	396	usage
-2026-08-01	PantonicApp	V2K-T6	Opus	24			contado
-2026-08-01	PantonicApp	V2K-T7	Opus	14			contado
-2026-08-01	PantonicApp	V2K-T8	Sonnet	18	99	396	usage
-2026-08-01	PantonicApp	V2K-T9	Opus	30	120	720	contado
-2026-08-01	PantonicApp	V2K-T10	Opus	35	95	780	contado
-2026-08-01	PantonicApp	V2K-T11	Sonnet	47	104	6000	usage
-2026-08-01	PantonicApp	V2K-T12a	Sonnet	38	87	564	usage
-2026-08-01	PantonicApp	V2K-T12b	Sonnet	25	79	1029	usage
-2026-08-04	PantonicApp	V2K-T13	Sonnet	18	73	502	usage
-2026-08-04	PantonicApp	V2K-T14	Opus	15			contado
-2026-08-04	PantonicApp	V2K-T15	Sonnet	26	87	6960	usage
-2026-08-04	PantonicApp	V2K-T16	Opus	34			contado
-2026-08-04	PantonicApp	V2K-T17	Sonnet				nao_medido
-2026-08-04	PantonicApp	V2K-T18	Sonnet	34	135	449	usage
-2026-08-04	PantonicApp	V2K-T19	Sonnet				nao_medido
-2026-08-05	PantonicApp	V2D-T1	Opus	16			contado
-2026-08-05	PantonicApp	V2D-T2	Opus	25	96	427	usage
-2026-08-05	PantonicApp	V2D-T3	Sonnet	57	121	4512	usage
-2026-08-05	PantonicApp	V2D-T4	Sonnet	46	100	8061	usage
-2026-08-05	PantonicApp	V2D-T2r2	Opus	64	185	1084	usage
-2026-08-05	PantonicApp	V2I-T1	Sonnet	20	65	117	usage
-2026-08-05	PantonicApp	V2I-T2	Sonnet	15	54	140	usage
-2026-08-05	PantonicApp	V2I-T3	Opus	22			contado
-2026-08-05	PantonicApp	V2I-T4	Opus	32	61	258	usage
-2026-08-05	PantonicApp	V2I-T5	Opus	28	72	308	usage
-2026-08-05	PantonicApp	V2I-T6	Opus	25	87	317	usage
-2026-08-05	PantonicApp	V2I-T7	Opus	19	53	152	usage
-2026-08-05	PantonicApp	V2I-T8	Sonnet	48	99	383	usage
-2026-08-05	PantonicApp	V2I-T9	Sonnet	40	93	2743	usage
-2026-08-05	PantonicApp	V2I-T10	Sonnet	32	80	429	usage
-2026-08-06	PantonicApp	V2I-T11	Opus	39	95	405	usage
-2026-08-06	PantonicApp	V2I-T11b	Opus	34	104	316	usage
-2026-08-06	PantonicApp	V2I-T11c	Opus	66	199	1032	usage
-2026-08-06	PantonicApp	V2E-T1	Sonnet	39	76	11797	usage
-2026-08-06	PantonicApp	V2E-T2	Opus	70	83	327	usage
-2026-08-06	PantonicApp	V2E-T3a	Sonnet	49	112	520	usage
-2026-08-06	PantonicApp	V2E-T3b	Opus	19	54	179	usage
-2026-08-06	PantonicApp	V2E-T3c	Opus	21	49	147	usage
-2026-08-06	PantonicApp	V2E-T4a	Sonnet	33	110	671	usage
-2026-08-06	PantonicApp	V2E-T4b	Sonnet	27	91	468	usage
-2026-08-06	PantonicApp	V2E-T4c	Sonnet	31	97	514	usage
-2026-08-06	PantonicApp	V2E-T5a	Sonnet	27	87	588	usage
-2026-08-06	PantonicApp	V2E-T5b	Sonnet	46	108	1660	usage
-2026-08-07	PantonicApp	V2E-T6a	Opus	19	56	187	usage
-2026-08-07	PantonicApp	V2E-T6b	Opus	22	59	172	usage
-2026-08-07	PantonicApp	V2E-T7	Opus	13	44	433	usage
-2026-08-07	PantonicApp	V2E-T9-replan	Opus	48	110	823	usage
-2026-08-07	PantonicApp	V2E-T9-replan-r2	Opus	43	164	680	usage
-2026-08-07	PantonicApp	V2E-T9a	Opus	29	85	375	usage
-2026-08-07	PantonicApp	V2E-T9b	Opus	25	78	290	usage
-2026-08-07	PantonicApp	V2E-T9c	Sonnet	41	94	2002	usage
-2026-08-07	PantonicApp	V2E-T9d	Sonnet	32	76	332	usage
-2026-08-07	PantonicApp	V2E-T9e	Opus	29	70	193	usage
-2026-08-07	PantonicApp	V2E-T10-sweep-arch-reverse	Haiku	5	11	41	usage
-2026-08-07	PantonicApp	V2E-T10-sweep-arch-acl	Haiku	13	20	73	usage
-2026-08-07	PantonicApp	V2E-T10-sweep-arch-mirror	Haiku	15	28	114	usage
-2026-08-07	PantonicApp	V2E-T10-sweep-ddd-pureza	Haiku	3	10	17	usage
-2026-08-07	PantonicApp	V2E-T10-sweep-ddd-vo	Haiku	10	17	49	usage
-2026-08-07	PantonicApp	V2E-T10-sweep-ddd-usecase	Haiku	30	23	133	usage
-2026-08-07	PantonicApp	V2E-T10	Opus	57	131	498	usage
-2026-08-07	PantonicApp	V2E-T11	Opus	52	137	882	usage
-2026-08-07	PantonicApp	V2P-T1	Opus	32	85	413	usage
-2026-08-07	PantonicApp	V2P-T2	Opus	33	68	960	usage
-2026-08-08	PantonicApp	V2P-T3	Opus	34	85	302	usage
-2026-08-08	PantonicApp	V2P-T4	Opus	24	57	197	usage
-2026-08-08	PantonicApp	V2P-T5	Sonnet	41	111	472	usage
-2026-08-08	PantonicApp	V2P-T6	Sonnet	35	84	620	usage
-2026-08-08	PantonicApp	V2P-T7	Opus	68	84	160	contado
-2026-08-08	PantonicApp	V2P-T8	Opus	38	90	262	usage
-2026-08-08	PantonicApp	V2P-T9	Sonnet	31	79	279	usage
-2026-08-08	PantonicApp	DHB-T1	Sonnet	40	117	446	usage
-2026-08-08	PantonicApp	EXA-T1	Sonnet	26	148	1113	usage
-2026-08-08	PantonicApp	EXA-T2	Opus	25			contado
-2026-08-08	PantonicApp	EXA-T3	Opus	26			contado
-2026-08-08	PantonicApp	EXA-T4	Opus	34			contado
-2026-08-08	PantonicApp	EXA-T5	Opus	26	94	428	usage
-2026-08-08	PantonicApp	EXA-T6a	Opus	17	63	204	usage
-2026-08-08	PantonicApp	EXA-T6b	Opus	30	75	307	usage
-2026-08-08	PantonicApp	EXA-T7	Sonnet	35	99	1343	usage
-2026-08-08	PantonicApp	EXA-T8a	Sonnet	48	141	2103	usage
-2026-08-08	PantonicApp	EXA-T8b	Sonnet	26	102	1874	usage
-2026-08-08	PantonicApp	EXA-T8c	Sonnet	38	155	2139	usage
-2026-08-08	PantonicApp	EXA-T9a	Sonnet	37	138	1486	usage
-2026-08-08	PantonicApp	EXA-T9b	Sonnet	34	105	22129	usage
-2026-08-09	PantonicApp	EXA-T10	Opus	19	79	764	usage
-2026-08-10	PantonicApp	EXA-T11-retomada	Opus	8	103	179	usage
-2026-08-11	PantonicApp	EXA-T18	Sonnet	48	137	1960	usage
-2026-08-11	PantonicApp	EXA-T19	Sonnet	29	140	478	usage
-2026-08-11	PantonicApp	EXA-T19-replan	Opus	21	80	423	usage
-2026-08-11	PantonicApp	EXA-DPE-replan	Opus	19	78	550	usage
-2026-08-11	PantonicApp	EXA-T22	Opus	14	61	355	usage
-2026-08-11	PantonicApp	EXA-T23a	Opus	14	58	3101	usage
-2026-08-11	PantonicApp	EXA-T23b	Opus	19	63	237	usage
-2026-08-11	PantonicApp	EXA-DPG-replan	Opus	39			contado
-2026-08-11	PantonicApp	EXA-DPG-replan-followup	Opus	12			contado
-2026-08-11	PantonicApp	EXA-T28	Opus	21	54	406	usage
-2026-08-11	PantonicApp	EXA-DPH-replan	Opus	53	127	4637	usage
-2026-08-11	PantonicApp	EXA-DPK-replan	Opus	34	94	625	usage
-2026-08-11	PantonicApp	EXA-T19	Sonnet	41	168	964	usage
-2026-08-11	PantonicApp	EXA-T20	Opus	26	72	409	usage
-2026-08-11	PantonicApp	EXA-T31	Opus	15	53	151	usage
-2026-08-11	PantonicApp	EXA-TK32-insumo	Opus	44			contado
-2026-08-11	PantonicApp	EXA-T32	Opus	17	61	146	usage
-2026-08-11	PantonicApp	EXA-T21a	Opus	29	93	2594	usage
-2026-08-11	PantonicApp	EXA-T21b	Opus	27	115	12268	usage
-2026-08-11	PantonicApp	EXA-DPM-decisao	Opus	5			contado
-2026-08-11	PantonicApp	EXA-DPM-replan	Opus	39	117	829	usage
-2026-08-12	PantonicApp	EXA-T33	Opus	25	58	414	usage
-2026-08-12	PantonicApp	EXA-T35	Opus	23	60	187	usage
-2026-08-12	PantonicApp	EXA-T36	Opus	24	60	215	usage
-2026-08-12	PantonicApp	EXA-T37	Opus	23	58	274	usage
-2026-08-12	PantonicApp	EXA-T38	Sonnet	20	55	3871	usage
-2026-08-12	PantonicApp	EXA-T39	Opus	13	54	2033	usage
-2026-08-12	PantonicApp	EXA-T23b-fecho	Opus	24			contado
-2026-08-12	PantonicApp	EXA-T24	Opus	24	48	186	usage
-2026-08-12	PantonicApp	EXA-DPN-replan	Opus	20			contado
-2026-08-12	PantonicApp	EXA-DPO-replan	Opus	10			contado
-2026-08-12	PantonicApp	EXA-T40	Opus	9	41	383	usage
-2026-08-12	PantonicApp	EXA-T41	Opus	17	54	380	usage
-2026-08-12	PantonicApp	EXA-T42	Opus	7	45	78	usage
-2026-08-12	PantonicApp	EXA-T43	Opus	41	101	1601	usage
-2026-08-12	PantonicApp	EXA-T44	Opus	18	101	353	usage
-2026-08-13	PantonicApp	EXA-T25	Opus	24	73	179	usage
-2026-08-13	PantonicApp	EXA-T45	Opus	17	72	745	usage
-2026-08-13	PantonicApp	EXA-T46	Opus	12	46	171	usage
-2026-08-13	PantonicApp	EXA-T47	Opus	28	113	393	usage
-2026-08-13	PantonicApp	EXA-T48	Opus	46	133	2741	usage
-2026-08-13	PantonicApp	EXA-T49	Opus	38	76	352	usage
-2026-08-13	PantonicApp	EXA-T50	Opus	36	88	1082	usage
-2026-08-13	PantonicApp	EXA-T51a	Sonnet	26	76	446	usage
-2026-08-13	PantonicApp	EXA-T51b	Opus	48	118	547	usage
-2026-08-13	PantonicApp	EXA-T52	Sonnet	52	113	533	usage
-2026-08-15	PantonicApp	EXA-T13	Sonnet	35	131	15599	usage
-2026-08-15	PantonicApp	EXA-T13-laudo	Opus	17	72	254	usage
-2026-08-15	PantonicApp	EXA-DPR-replan	Opus	58	122	707	usage
-2026-08-15	PantonicApp	RPC-P0735-planejamento	Opus	64	183	994	usage
-2026-08-15	PantonicApp	RPC-T1	Opus	14	56	103	usage
-2026-08-17	PantonicApp	RPC-T2	Sonnet	25	127	6082	usage
-2026-08-17	PantonicApp	RPC-T3	Sonnet	21	63	164	usage
-2026-08-17	PantonicApp	RPC-T4	Sonnet	24	86	225	usage
-2026-08-17	PantonicApp	RPC-T10	Sonnet	18	64	816	usage
-2026-08-17	PantonicApp	RPC-T5	Sonnet				nao_medido
-2026-08-17	PantonicApp	RPC-T6	Sonnet	17	52	136	usage
-2026-08-18	PantonicApp	RPC-T11	Sonnet	23	79	23259	usage
-2026-08-18	PantonicApp	RPC-T7a	Opus	18	60	616	usage
-2026-08-18	PantonicApp	RPC-T7b	Opus	9	46	1939	usage
-2026-08-18	PantonicApp	RPC-T7c	Opus	15	44	1341	usage
-2026-08-19	PantonicApp	RPC-T8	Sonnet	17	61	106	usage
-2026-08-19	PantonicApp	RPC-T9	Opus	28			contado
-2026-08-19	PantonicApp	EXA-T14	Sonnet	23	81	351	usage
-2026-08-19	PantonicApp	EXA-T15	Sonnet	43	129.1	1505	usage
-2026-08-19	PantonicApp	EXA-DPS-replan	Opus	27			contado
-2026-08-19	PantonicApp	EXA-T55	Sonnet	49	125.3	2558	usage
-2026-08-22	PantonicApp	P-0736-autoria	Opus	13	57	353	usage
-2026-08-22	PantonicApp	CPK-T1	sonnet	31	98.8	457	usage
-2026-08-22	PantonicApp	CPK-T2	sonnet				nao_medido
-2026-08-22	PantonicApp	CPK-T3	Opus	17	100	0	contado
-2026-08-22	PantonicApp	P-0737-autoria	opus	11	134.1	158	usage
-2026-08-22	PantonicApp	AUT-T1	sonnet	32	105.7	255	usage
-2026-08-22	PantonicApp	AUT-T5a-prova-instrumento	sonnet	25			contado
-2026-08-22	PantonicApp	AUT-T5a	sonnet	27	78.4	6263	usage
-2026-08-22	PantonicApp	AUT-T5b	Sonnet				nao_medido
-2026-08-22	PantonicApp	P-0738-autoria	opus	50	165.6	863	usage
-2026-08-22	PantonicApp	P-0738-revisao-DX-13	opus	50	103.7	687	usage
-2026-08-22	PantonicApp	P-0738-revisao-DX-15	opus	68	110.8	664	usage
-2026-08-22	PantonicApp	CTX-T1	opus	33	68	352	usage
-2026-08-22	PantonicApp	CTX-T1b	opus	39	63.7	401	usage
-2026-08-22	PantonicApp	CTX-T1c	opus	32	66.9	286	usage
-2026-08-23	PantonicApp	CTX-T1d	sonnet	62	122.4	823	usage
-2026-08-23	PantonicApp	CTX-T2	Sonnet	34	95.2	457	usage
-2026-08-23	PantonicApp	CTX-T3	Sonnet	43	143.8	1608	usage
-2026-08-23	PantonicApp	CTX-T4	Opus	23			contado
-2026-08-23	PantonicApp	P-0738-CTX-T5	opus	24	105	1500	contado
-2026-08-23	PantonicApp	CTX-T6a	sonnet	22	85.4	914	usage
-2026-08-23	PantonicApp	CTX-T6a	sonnet	74	187	1386	usage
-2026-08-23	PantonicApp	CTX-T6b	sonnet	16	125.5	2132	usage
-2026-08-23	PantonicApp	CTX-T7	sonnet	19	53.2	190	usage
-2026-08-23	PantonicApp	CTX-T8a	sonnet	6	44.6	1675	usage
-2026-08-23	PantonicApp	CTX-T8b	sonnet	11	51.2	97	usage
-2026-08-23	PantonicApp	CTX-T8c	sonnet	7	44.9	2335	usage
-2026-08-24	PantonicApp	CTX-T9	sonnet	30			contado
-2026-08-24	PantonicApp	CTX-T10	sonnet	9	57.257	89.716	usage
-2026-08-24	PantonicApp	CTX-T11	opus	52			contado
-2026-08-24	PantonicApp	TK-52	sonnet	10	47.668	426.407	usage
-2026-08-24	PantonicApp	TK-51	sonnet	112	292.635	1883.894	usage
-2026-08-24	PantonicApp	TK-51-decisao	sonnet	27			contado
-2026-08-24	PantonicApp	TK-53a	sonnet	52	172.733	1022.771	usage
-2026-08-24	PantonicApp	TK-53-escopamento	opus	16	116.382	199.356	usage
-2026-08-31	PantonicApp	TK-54-escopamento	opus	22			contado
-2026-09-16	PantonicApp	BKL-RP1	fable	17			contado
-2026-09-16	PantonicApp	BKL-T2	sonnet	46	200	980	usage
-2026-09-16	PantonicApp	BKL-AE2-pickup	opus	29			contado
-2026-09-16	PantonicApp	BKL-RP2	opus	31	98.445	476	usage
-2026-09-16	PantonicApp	BKL-T2a	sonnet	15	82.313	182	usage
-2026-09-16	PantonicApp	BKL-RP2-doutrina	opus	10			contado
-2026-09-16	PantonicApp	BKL-T2-revisao	opus	15	67.161	232	usage
-2026-09-16	PantonicApp	BKL-T2a-revisao	opus	11	51.239	131	usage
-2026-09-16	PantonicApp	BKL-REV-pickup	opus	29			contado
-2026-09-16	PantonicApp	BKL-RP3	opus	45	158.137	1062	usage
-2026-09-16	PantonicApp	BKL-T2b	sonnet	22	84.865	162	usage
-2026-09-16	PantonicApp	BKL-T2c	sonnet	23	93.705	216	usage
-2026-09-16	PantonicApp	BKL-T2bc-revisao	opus	15	67.780	191	usage
-2026-09-16	PantonicApp	BKL-RP4	opus	20	85.321	466	usage
-2026-09-16	PantonicApp	BKL-T2d	sonnet	23	82.925	202	usage
-2026-09-17	PantonicApp	BKL-T2d-revisao	opus	11	52.353	104.928	usage
-2026-09-17	PantonicApp	BKL-T2e	sonnet	31	92.454	189.672	usage
-2026-09-17	PantonicApp	BKL-T2e-revisao	opus	14	53.650	114.987	usage
-2026-09-17	PantonicApp	BKL-T3-devolvida	sonnet	23	125.878	434.503	usage
-2026-09-17	PantonicApp	BKL-RP5	opus	29	108.154	616.861	usage
-2026-09-17	PantonicApp	BKL-T3	sonnet	46	179.305	1020.648	usage
-2026-09-17	PantonicApp	BKL-T3-revisao	opus	19	90.225	307.822	usage
-2026-09-18	PantonicApp	BKL-RP6	opus	23	124.985	722.474	usage
-2026-09-18	PantonicApp	BKL-T3a	sonnet	27	86.429	248.836	usage
-2026-09-18	PantonicApp	BKL-T3a-revisao	sonnet	18	67.794	301.706	usage
-2026-09-18	PantonicApp	BKL-RP7	opus	48	153.754	664.885	usage
-2026-09-18	PantonicApp	BKL-T3b	sonnet	22	78	97	usage
-2026-09-18	PantonicApp	BKL-T3b-revisao	opus	21	63.768	176.714	usage
-2026-09-18	PantonicApp	TK-54a-triagem-blocked	sonnet	0	63.2	119	usage
-2026-09-18	PantonicApp	RP-TK54-1	sonnet	18	87.2	699	usage
-2026-09-18	PantonicApp	TK-54a-inline	opus	10	0	0	nao_medido
-2026-09-18	PantonicApp	BKL-T4	sonnet	51	6558.8	1026.2	usage
-2026-09-18	PantonicApp	BKL-T4	sonnet	51	203.7	1027	usage
-2026-09-18	PantonicApp	BKL-T4-revisao	sonnet	20	80.9	262	usage
-2026-09-18	PantonicApp	LM-T1	sonnet	10	61.8	88	usage
-2026-09-18	PantonicApp	P-0740-RP-1	opus	38	112.4	456	usage
-2026-09-18	PantonicApp	LM-T1	sonnet	27	73.0	252	usage
-2026-09-18	PantonicApp	P-0740-RP-2	opus	48	114.3	483	usage
-2026-09-18	PantonicApp	P-0740-RP-3	opus	47	129.5	587	usage
-2026-09-18	PantonicApp	P-0740-RP-4	opus	35	67.5	268	usage
-2026-09-18	PantonicApp	LM-T1-revisao	opus	20	66.5	259	usage
-2026-09-18	PantonicApp	P-0740-RP-5	opus	57	167.9	1002.2	usage
-2026-09-18	PantonicApp	LM-T7	sonnet	4	59.5	62.8	usage
-2026-09-18	PantonicApp	P-0740-ESC-1	opus	10	191.8	360.3	usage
-2026-09-18	PantonicApp	LM-T7-2	sonnet	17	49.8	67.3	usage
-2026-09-18	PantonicApp	LM-T7-revisao	opus	21	53.9	186.2	usage
-2026-09-18	PantonicApp	P-0740-ESC-2	opus	21	225.7	493.1	usage
-2026-09-18	PantonicApp	LM-T1a	sonnet	30	94.8	251.6	usage
-2026-09-18	PantonicApp	LM-T1a-revisao	opus	25	69.6	202.2	usage
-2026-09-18	PantonicApp	LM-T7a	sonnet	13	75.3	268.8	usage
-2026-09-18	PantonicApp	LM-T7a-revisao	opus	20	64.0	246.8	usage
-2026-09-18	PantonicApp	P-0740-ESC-3	opus	22	272.9	573.5	usage
-2026-09-18	PantonicApp	LM-T3	sonnet	30	93.9	289.4	usage
-2026-09-18	PantonicApp	LM-T3-revisao	opus	18	58.1	276.2	usage
-2026-09-18	PantonicApp	P-0740-ESC-4	opus	13	305.2	333.0	usage
-2026-09-19	PantonicApp	LM-T4a	sonnet	25	61.3	86.3	usage
-2026-09-19	PantonicApp	LM-T4a-revisao	opus	35	86.1	348.6	usage
-2026-09-19	PantonicApp	LM-T2a	sonnet	26	92.5	238.2	usage
-2026-09-19	PantonicApp	LM-T2a-revisao	opus	25	70.1	285.9	usage
-2026-09-19	PantonicApp	P-0740-ESC-5	opus	10	331.9	356.6	usage
-2026-09-19	PantonicApp	LM-T2	sonnet	14	78.4	275.3	usage
-2026-09-19	PantonicApp	P-0740-ESC-6	opus	11	356.3	290.7	usage
-2026-09-19	PantonicApp	LM-T2-revisao	opus	23	73.7	236.9	usage
-2026-09-19	PantonicApp	P-0740-ESC-7	opus	13	382.5	276.2	usage
-2026-09-19	PantonicApp	LM-T2c	sonnet	11	56.6	65.8	usage
-2026-09-19	PantonicApp	LM-T2c-revisao	opus	22	73.6	226.2	usage
-2026-09-19	PantonicApp	P-0740-ESC-8	opus	6	404.9	296.8	usage
-2026-09-19	PantonicApp	LM-T3a	sonnet	36	86.0	213.6	usage
-2026-09-19	PantonicApp	LM-T3a-revisao	opus	15	56.3	139.2	usage
-2026-09-19	PantonicApp	LM-T2d	sonnet	17	50.6	65.3	usage
-2026-09-19	PantonicApp	LM-T2d-revisao	opus	23	55.6	178.5	usage
-2026-09-19	PantonicApp	P-0740-ESC-9	opus	38	72.7	333.9	usage
-2026-09-19	PantonicApp	P-0740-ESC-9b	opus	9	90.2	134.4	usage
-2026-09-19	PantonicApp	LM-T2e	sonnet	7	44.4	39.1	usage
-2026-09-19	PantonicApp	LM-T2e-revisao	opus	16	53.7	119.4	usage
-2026-09-19	PantonicApp	LM-T2b	sonnet	9	72.9	199.9	usage
-2026-09-19	PantonicApp	P-0740-ESC-10	opus	28	139.8	369.7	usage
-2026-09-19	PantonicApp	LM-T2b	sonnet	16	52.5	131.4	usage
-2026-09-19	PantonicApp	P-0740-ESC-11	opus	13	164.9	274.9	usage
-2026-09-19	PantonicApp	LM-T2b-revisao	opus	18	61.4	185.8	usage
-2026-09-19	PantonicApp	P-0740-ESC-12	opus	37	220.9	585.3	usage
-2026-09-19	PantonicApp	LM-T4b	sonnet	14	77.2	272.6	usage
-2026-09-19	PantonicApp	P-0740-ESC-13	opus	30	269.2	493.6	usage
-2026-09-19	PantonicApp	P-0740-ESC-14	opus	8	287.2	206.6	usage
-2026-09-19	PantonicApp	LM-T5	opus	33	169.5	541.7	usage
-2026-09-19	PantonicApp	LM-T5-revisao	opus	23	80.9	243.0	usage
-2026-09-19	PantonicApp	P-0740-ESC-15	opus	9	304.8	197.4	usage
-2026-09-19	PantonicApp	LM-T5b	sonnet	26	106.0	393.6	usage
-2026-09-19	PantonicApp	LM-T5b-revisao	opus	22	74.9	290.3	usage
-2026-09-19	PantonicApp	P-0740-ESC-16	opus	18	332.8	436.7	usage
-2026-09-19	PantonicApp	LM-T5c	sonnet	46	134.7	618.8	usage
-2026-09-19	PantonicApp	LM-T5c-revisao	opus	26	78.0	296.8	usage
-2026-09-19	PantonicApp	P-0740-ESC-17	opus	7	348.3	189.0	usage
-2026-09-19	PantonicApp	LM-T4b	sonnet	39	111.8	422.7	usage
-2026-09-19	PantonicApp	P-0740-ESC-18	opus	9	363.3	310.4	usage
-2026-09-19	PantonicApp	LM-T4b-revisao	opus	21	67.8	209.0	usage
-2026-09-19	PantonicApp	P-0740-ESC-19	opus	10	379.4	218.6	usage
-2026-09-19	PantonicApp	LM-T4	opus	25	129.7	197.6	usage
-2026-09-19	PantonicApp	P-0740-ESC-20	opus	14	405.6	250.2	usage
-2026-09-19	PantonicApp	LM-T4	opus	88	228.5	863.2	usage
-2026-09-19	PantonicApp	LM-T4-revisao	opus	38	110.0	305.7	usage
-2026-09-19	PantonicApp	P-0740-ESC-21	opus	10	423.1	250.7	usage
-2026-09-19	PantonicApp	LM-T4d	sonnet	27	61.9	132.1	usage
-2026-09-19	PantonicApp	LM-T4d-revisao	opus	23	83.7	268.0	usage
-2026-09-19	PantonicApp	LM-T3b	sonnet	19	64.2	133.5	usage
-2026-09-19	PantonicApp	LM-T3b-revisao	opus	33	89.9	308.1	usage
-2026-09-19	PantonicApp	LM-T2f	sonnet	5	44.4	37.4	usage
-2026-09-19	PantonicApp	LM-T2f-revisao	opus	17	53.8	127.9	usage
-2026-09-19	PantonicApp	LM-T8	opus	6	48.5	61.0	usage
-2026-09-19	PantonicApp	LM-T8	sonnet	4	66.4	57.4	usage
-2026-09-19	PantonicApp	ESC-23-consultor	opus	62	147.6	1002.2	usage
-2026-09-19	PantonicApp	ESC-24-consultor	opus	27	197.6	544.3	usage
-2026-09-19	PantonicApp	LM-T6	opus	47	122.6	533.2	usage
-2026-09-19	PantonicApp	LM-T6-rederivacao	opus	5	129.8	70.5	usage
-2026-09-19	PantonicApp	LM-T8	sonnet	8	62.8	56.7	usage
-2026-09-19	PantonicApp	LM-T8-revisao	opus	24	95.2	301.0	usage
-2026-09-19	PantonicApp	ESC-25-consultor	opus	18	233.0	300.6	usage
-2026-09-19	PantonicApp	LM-T6-revisao	opus	23	84.8	298.0	usage
-2026-09-19	PantonicApp	ESC-26-consultor	opus	19	279.5	558.3	usage
-2026-09-19	PantonicApp	ESC-27-consultor	opus	61	125.3	887.3	usage
-2026-09-19	PantonicApp	LM-T10	sonnet	17	82.1	281.8	usage
-2026-09-19	PantonicApp	LM-T10-revisao	opus	23	77.0	333.2	usage
-2026-09-19	PantonicApp	ESC-28-consultor	opus	34	184.3	658.2	usage
-2026-09-19	PantonicApp	LM-T11	opus	13	60.7	174.0	usage
-2026-09-19	PantonicApp	LM-T11-revisao	opus	31	95.8	383.5	usage
-2026-09-19	PantonicApp	ESC-29-consultor	opus	17	229.6	475.2	usage
-2026-09-19	PantonicApp	LM-T12	sonnet	24	83.5	194.5	usage
-2026-09-19	PantonicApp	LM-T12-revisao	opus	26	79.6	287.6	usage
-2026-09-19	PantonicApp	LM-T4c	sonnet	20	74.2	195.1	usage
-2026-09-19	PantonicApp	LM-T4c-revisao	opus	26	82.1	240.2	usage
-2026-09-19	PantonicApp	ESC-30-consultor	opus	11	258.4	424.8	usage
-2026-09-19	PantonicApp	LM-T13	sonnet	23	67.3	137.9	usage
-2026-09-19	PantonicApp	LM-T13-revisao	opus	20	75.3	243.9	usage
-2026-09-19	PantonicApp	ESC-31-consultor	opus	6	275.1	226.6	usage
-2026-09-19	PantonicApp	LM-T14	sonnet	44	89.6	337.0	usage
-2026-09-19	PantonicApp	LM-T14-revisao	opus	23	72.9	292.6	usage
-2026-09-19	PantonicApp	ESC-32-consultor	opus	11	304.7	434.6	usage
-2026-09-19	PantonicApp	LM-T15	sonnet	42	108.0	424.2	usage
-2026-09-19	PantonicApp	LM-T15-revisao	opus	27	89.3	383.2	usage
-2026-09-19	PantonicApp	ESC-33-consultor	opus	3	317.4	151.6	usage
-2026-09-19	PantonicApp	LM-T5d	sonnet	11	75.3	222.0	usage
-2026-09-19	PantonicApp	LM-T5d-revisao	opus	17	67.8	279.3	usage
-2026-09-19	PantonicApp	LM-T5a	opus	9	67.1	131.3	usage
-2026-09-19	PantonicApp	ESC-34-consultor	opus	7	340.8	330.7	usage
-2026-09-19	PantonicApp	LM-T5a	opus	34	119.8	359.2	usage
-2026-09-19	PantonicApp	ESC-35-consultor	opus	8	363.7	317.5	usage
-2026-09-19	PantonicApp	LM-T5a	sonnet	20	72.5	124.1	usage
-2026-09-19	PantonicApp	LM-T5a-revisao	opus	22	75.0	313.4	usage
-2026-09-19	PantonicApp	LM-T9	opus	24	122.0	486.9	usage
-2026-09-19	PantonicApp	ESC-36-consultor	opus	4	377.0	164.0	usage
-2026-09-19	PantonicApp	LM-T9-revisao	opus	25	110.9	431.9	usage
-2026-09-19	PantonicApp	ESC-37-consultor	opus	9	400.6	337.6	usage
-2026-09-19	PantonicApp	ESC-38-consultor	opus	5	416.5	214.5	usage
-2026-09-19	PantonicApp	LM-T16	sonnet	20	73.6	149.9	usage
-2026-09-19	PantonicApp	ESC-39-consultor	opus	4	433.3	257.6	usage
-2026-09-19	PantonicApp	LM-T16-2	sonnet	30	98.5	359.3	usage
-2026-09-19	PantonicApp	LM-T16-revisao	opus	19	79.9	294.8	usage
-2026-09-19	PantonicApp	ESC-40-consultor	opus	8	450.9	256.8	usage
-2026-09-19	PantonicApp	LM-T17	sonnet	16	57.9	111.7	usage
-2026-09-19	PantonicApp	LM-T17-revisao	opus	25	93.9	438.4	usage
-2026-09-19	PantonicApp	BKL-T9a	opus	35	100.9	457.9	usage
-2026-09-19	PantonicApp	BKL-T9a-consultoria	opus	50	131.0	735.8	usage
-2026-09-19	PantonicApp	BKL-T9a-2o-despacho	opus	66	177.2	1261.6	usage
-2026-09-19	PantonicApp	BKL-T9a-revisao	opus	33	97.9	458.0	usage
-2026-09-19	PantonicApp	ESC-2-consultor	opus	25	191.8	650.1	usage
-2026-09-19	PantonicApp	BKL-T10	sonnet	14	108.4	113.7	usage
-2026-09-19	PantonicApp	BKL-T10	sonnet	14	108.4	114.3	usage
-2026-09-19	PantonicApp	ESC-3-consultor	opus	31	245.7	583.0	usage
-2026-09-19	PantonicApp	BKL-T10-2o-despacho	sonnet	39	169.7	459.9	usage
-2026-09-19	PantonicApp	ESC-4-consultor	opus	19	290.3	438.3	usage
-2026-09-19	PantonicApp	BKL-T10-3o-despacho	sonnet	53	259.6	916.3	usage
-2026-09-19	PantonicApp	ESC-5-consultor	opus	13	319.6	299.7	usage
-2026-09-19	PantonicApp	BKL-T10-4o-despacho-PARCIAL	sonnet	154	523.2	2112.3	usage
-2026-09-20	PantonicApp	BKL-T10	sonnet	3	60.0	27.5	usage
-2026-09-20	PantonicApp	BKL-T10-5o-despacho-DEFEITO-ORQ	sonnet	3	60.0	27.7	usage
-2026-09-20	PantonicApp	BKL-T10-6o-despacho	sonnet	119	313.6	1801.1	usage
-2026-09-20	PantonicApp	BKL-T10-revisao	opus	34	116.1	391.9	usage
-2026-09-20	PantonicApp	ESC-6-consultor	opus	17	354.8	405.9	usage
-2026-09-20	PantonicApp	BKL-T10b	sonnet	40	177.5	724.6	usage
-2026-09-20	PantonicApp	BKL-T10b	sonnet	40	177.5	724.8	usage
-2026-09-20	PantonicApp	BKL-T10b-revisao	opus	33	96.7	372.2	usage
-2026-09-20	PantonicApp	BKL-T10a	sonnet	38	177.3	654.1	usage
-2026-09-20	PantonicApp	BKL-T10a	sonnet	38	177.3	654.4	usage
-2026-09-20	PantonicApp	BKL-T10a-2o-despacho	sonnet	21	103.9	204.1	usage
-2026-09-20	PantonicApp	BKL-T10a-revisao	opus	28	89.8	258.5	usage
-2026-09-20	PantonicApp	ESC-7-consultor	opus	14	386.8	346.8	usage
-2026-09-20	PantonicApp	BKL-T11	sonnet	26	109.1	165.2	usage
-2026-09-20	PantonicApp	BKL-T11	sonnet	26	109.1	165.4	usage
-2026-09-20	PantonicApp	ESC-8-consultor	opus	15	418.0	296.0	usage
-2026-09-20	PantonicApp	BKL-T11-2o-despacho	sonnet	59	143.3	484.8	usage
-2026-09-20	PantonicApp	BKL-T11-revisao	opus	32	93.4	390.2	usage
-2026-09-20	PantonicApp	ESC-9-consultor	opus	15	448.6	351.8	usage
-2026-09-20	PantonicApp	BKL-T11a	sonnet	31	75.8	204.2	usage
-2026-09-20	PantonicApp	BKL-T11a-revisao	opus	21	66.6	246.1	usage
-2026-09-20	PantonicApp	ESC-10-consultor	opus	7	467.2	220.9	usage
-2026-09-20	PantonicApp	BKL-T12	opus	32	97.2	355.3	usage
-2026-09-20	PantonicApp	BKL-T12	opus	32	97.2	355.5	usage
-2026-09-20	PantonicApp	BKL-T12-revisao	opus	35	98.1	441.5	usage
-2026-09-20	PantonicApp	TK-57a	sonnet	14	62.8	283.9	usage
-2026-09-20	PantonicApp	TK-62a	sonnet	21	91.0	369.3	usage
-2026-09-20	PantonicApp	TK-57a-revisao	opus	15	56.0	238.8	usage
-2026-09-20	PantonicApp	TK-62a-revisao	opus	17	60.6	217.5	usage
-2026-09-20	PantonicApp	TK-56a	sonnet	51	99.1	378.8	usage
-2026-09-20	PantonicApp	TK-56a-revisao	opus	17	68.0	269.6	usage
-2026-09-20	PantonicApp	TK-56a-consultor	opus	45	107.8	756.4	usage
-2026-09-20	PantonicApp	TK-56b	sonnet	30	120.0	384.9	usage
-2026-09-20	PantonicApp	TK-56b-revisao	opus	35	90.2	393.9	usage
-2026-09-20	PantonicApp	TK-64a	sonnet	11	46.9	68.3	usage
-2026-09-20	PantonicApp	TK-64a-revisao	opus	13	48.4	107.4	usage
-2026-09-20	PantonicApp	P-0741-ESC-1	opus	54	98.0	458.8	usage
-2026-09-20	PantonicApp	TK-59a	sonnet	62	110.6	393.8	usage
-2026-09-20	PantonicApp	TK-59a-revisao	opus	35	79.4	246.8	usage
-2026-09-20	PantonicApp	TK-60a	sonnet	42	135.5	695.9	usage
-2026-09-20	PantonicApp	TK-60a-revisao	opus	26	80.0	270.2	usage
-2026-09-20	PantonicApp	TK-60a-consultor	opus	17	34.4	359.9	usage
-2026-09-20	PantonicApp	TK-60a-r2	sonnet	50	134.9	703.7	usage
-2026-09-20	PantonicApp	TK-60a-r2-revisao	opus	23	84.7	286.0	usage
-2026-09-20	PantonicApp	TK-60b-consultor	opus	5	17.1	152.2	usage
-2026-09-20	PantonicApp	TK-60b	sonnet	20	67.6	158.1	usage
-2026-09-20	PantonicApp	TK-60b-revisao	opus	23	80.2	203.9	usage
-2026-09-20	PantonicApp	TK-60c	sonnet	7	44.5	39.2	usage
-2026-09-20	PantonicApp	TK-60c-revisao	opus	17	58.3	107.5	usage
-2026-09-20	PantonicApp	TK-61a-consultor	opus	11	22.3	188.4	usage
-2026-09-20	PantonicApp	TK-61a	sonnet	37	95.1	255.1	usage
-2026-09-20	PantonicApp	TK-61a-revisao	opus	23	78.9	207.7	usage
-2026-09-20	PantonicApp	TK-63a	sonnet	30	117.6	460.7	usage
-2026-09-20	PantonicApp	TK-63a-consultor	opus	4	13.9	154.2	usage
-2026-09-20	PantonicApp	TK-63a-r2	sonnet	30	97.8	286.2	usage
-2026-09-20	PantonicApp	TK-63a-revisao	opus	26	89.2	292.3	usage
-2026-09-20	PantonicApp	TK-58a	opus	16	54.8	163.7	usage
-2026-09-20	PantonicApp	TK-58a-revisao	opus	13	72.8	222.8	usage
-2026-09-20	PantonicApp	TK-58b-consultor	opus	7	22.2	219.1	usage
-2026-09-20	PantonicApp	TK-58b	sonnet	12	59.2	128.6	usage
-2026-09-20	PantonicApp	TK-58b-revisao	opus	11	63.0	131.7	usage
-2026-09-20	PantonicApp	TK-58c	sonnet	5	45.2	35.0	usage
-2026-09-20	PantonicApp	TK-58c-revisao	opus	17	69.8	176.1	usage
-2026-09-20	PantonicApp	TK-58d	sonnet	10	53.9	95.9	usage
-2026-09-20	PantonicApp	TK-58d-revisao	opus	15	63.5	136.6	usage
-2026-09-20	PantonicApp	MC-T1	sonnet	12	67.3	90.1	usage
-2026-09-20	PantonicApp	MC-T1-revisao	opus	16	80.9	243.3	usage
-2026-09-20	PantonicApp	P-0741-ESC-2	opus	85	161.2	1034.0	usage
-2026-09-20	PantonicApp	MC-T2	sonnet	80	201.9	7462.8	usage
-2026-09-20	PantonicApp	MC-T2-revisao	opus	29	97.2	388.8	usage
-2026-09-20	PantonicApp	P-0741-ESC-3	opus	22	198.6	531.8	usage
-2026-09-20	PantonicApp	MC-T2a	sonnet	10	47.0	91.7	usage
-2026-09-20	PantonicApp	MC-T2a-revisao	opus	24	65.6	274.3	usage
-2026-09-20	PantonicApp	MC-T3	sonnet	37	135.4	495.9	usage
-2026-09-20	PantonicApp	MC-T3-revisao	opus	29	101.9	358.0	usage
-2026-09-20	PantonicApp	MC-T3-revisao-b	opus	3	106.4	41.7	usage
-2026-09-20	PantonicApp	P-0741-ESC-4	opus	23	240.5	490.7	usage
-2026-09-20	PantonicApp	MC-T4	sonnet	27	63.9	119.5	usage
-2026-09-20	PantonicApp	MC-T4-revisao	opus	24	97.1	263.6	usage
-2026-09-20	PantonicApp	P-0741-ESC-5	opus	15	270.5	348.3	usage
-2026-09-20	PantonicApp	MC-T4a	sonnet	14	53.0	63.1	usage
-2026-09-20	PantonicApp	MC-T4a-revisao	opus	17	71.2	156.8	usage
-2026-09-20	PantonicApp	MC-T2b	sonnet	16	57.7	137.7	usage
-2026-09-20	PantonicApp	MC-T2b-revisao	opus	26	80.6	292.5	usage
-2026-09-20	PantonicApp	MC-T5	opus	19	61.0	162.1	usage
-2026-09-20	PantonicApp	MC-T5-revisao	opus	27	86.1	376.7	usage
-2026-09-20	PantonicApp	P-0741-RP-1	opus	51	212.4	1467.5	usage
-2026-09-20	PantonicApp	DOM-T1	sonnet	22	74.0	195.6	usage
-2026-09-20	PantonicApp	DOM-T1-revisao	opus	34	83.8	295.3	usage
-2026-09-20	PantonicApp	DOM-T2	sonnet	5	60.5	107.7	usage
-2026-09-20	PantonicApp	DOM-T2-revisao	opus	17	72.5	224.6	usage
-2026-09-20	PantonicApp	DOM-T3	sonnet	51	239.0	1385.3	usage
-2026-09-20	PantonicApp	DOM-T3-revisao	opus	32	102.0	417.3	usage
-2026-09-20	PantonicApp	P-0743-ESC-1	opus	48	110.1	568.9	usage
-2026-09-20	PantonicApp	DOM-T3a	sonnet	16	58.0	87.0	usage
-2026-09-20	PantonicApp	DOM-T3a-revisao	opus	19	71.7	241.8	usage
-2026-09-20	PantonicApp	P-0743-ESC-2	opus	30	160.9	494.2	usage
-2026-09-20	PantonicApp	DOM-T3b	sonnet	9	49.1	69.5	usage
-2026-09-20	PantonicApp	DOM-T3b-revisao	opus	15	59.5	154.8	usage
-2026-09-20	PantonicApp	DOM-T4	sonnet	26	99.5	168.7	usage
-2026-09-20	PantonicApp	DOM-T4-revisao	opus	22	80.4	223.3	usage
-2026-09-20	PantonicApp	DOM-T5	sonnet	15	109.2	403.1	usage
-2026-09-20	PantonicApp	DOM-T5-tentativa-1	sonnet	15	109.2	403.9	usage
-2026-09-20	PantonicApp	P-0743-ESC-3	opus	18	200.7	324.7	usage
-2026-09-20	PantonicApp	DOM-T5	sonnet	28	76.5	150.0	usage
-2026-09-20	PantonicApp	DOM-T5-revisao	opus	21	108.3	381.3	usage
-2026-09-20	PantonicApp	P-0743-ESC-4	opus	13	232.9	276.7	usage
-2026-09-20	PantonicApp	DOM-T5a	sonnet	7	56.4	83.7	usage
-2026-09-20	PantonicApp	DOM-T5a-tentativa-1	sonnet	7	56.4	84.3	usage
-2026-09-20	PantonicApp	DOM-T5a-revisao	opus	15	68.2	180.5	usage
-2026-09-20	PantonicApp	P-0743-ESC-5	opus	12	267.0	275.4	usage
-2026-09-20	PantonicApp	DOM-T5b	sonnet	10	57.7	50.2	usage
-2026-09-20	PantonicApp	DOM-T5b-revisao	opus	20	85.4	213.4	usage
-2026-09-20	PantonicApp	P-0743-ESC-6	opus	6	288.4	211.5	usage
-2026-09-20	PantonicApp	P-0743-ESC-7	opus	13	338.7	445.5	usage
-2026-09-20	PantonicApp	DOM-T7	sonnet	10	55.6	50.0	usage
-2026-09-20	PantonicApp	DOM-T7-revisao	opus	20	85.7	323.0	usage
-2026-09-20	PantonicApp	P-0743-ESC-6-DOM-T7	opus	47	167.7	891.9	usage
-2026-09-20	PantonicApp	P-0743-MD-5	opus	18	65.1	135.7	usage
-2026-09-20	PantonicApp	DOM-T8	sonnet	14	56.8	73.7	usage
-2026-09-20	PantonicApp	DOM-T8-revisao	opus	20	81.7	202.7	usage
-2026-09-21	PantonicApp	P-0743-ESC-7-DOM-T8	opus	15	202.5	284.9	usage
-2026-09-21	PantonicApp	DOM-T8a	sonnet	22	67.1	113.3	usage
-2026-09-21	PantonicApp	DOM-T8a-revisao	opus	20	83.5	251.8	usage
-2026-09-21	PantonicApp	P-0743-ESC-8-DOM-T8a	opus	17	233.3	269.2	usage
-2026-09-21	PantonicApp	DOM-T9	sonnet	40	204.9	990.9	usage
-2026-09-21	PantonicApp	DOM-T9-revisao	opus	46	113.5	392.8	usage
-2026-09-21	PantonicApp	DOM-T9a	sonnet	12	57.8	60.9	usage
-2026-09-21	PantonicApp	DOM-T9a-revisao	opus	22	82.5	202.4	usage
-2026-09-21	PantonicApp	P-0743-ESC-9-DOM-T9a	opus	16	272.4	386.5	usage
-2026-09-21	PantonicApp	P-0743-MD-6	opus	10	46.9	67.7	usage
-2026-09-21	PantonicApp	DOM-T9b	sonnet	5	47.4	27.6	usage
-2026-09-21	PantonicApp	DOM-T9b-revisao	opus	20	87.3	237.6	usage
-2026-09-21	PantonicApp	P-0743-ESC-10-DOM-T9b	opus	21	304.9	313.3	usage
-2026-09-21	PantonicApp	P-0743-MD-7	opus	8	48.1	74.0	usage
-2026-09-21	PantonicApp	DOM-T9c	sonnet	11	59.2	99.5	usage
-2026-09-21	PantonicApp	P-0743-RP-1-DOM-T9c	opus	62	149.4	904.0	usage
-2026-09-21	PantonicApp	DOM-T9c-revisao	opus	27	85.7	252.2	usage
-2026-09-21	PantonicApp	DOM-T10-ato1	sonnet	7	52.8	41.6	usage
-2026-09-21	PantonicApp	P-0743-MD-8-DOM-T10	opus	28	132.6	525.9	usage
-2026-09-21	PantonicApp	DOM-T10-ato2	sonnet	55	106.4	264.9	usage
-2026-09-21	PantonicApp	DOM-T10-revisao	opus	23	87.6	250.2	usage
-2026-09-21	PantonicApp	DOM-T6	sonnet	27	60.1	108.8	usage
-2026-09-21	PantonicApp	DOM-T6-revisao	opus	21	73.1	191.5	usage
-2026-09-21	PantonicApp	P-0743-as-is	opus	45	134.7	611.2	usage
-2026-09-21	PantonicApp	TK-54b	sonnet	56	150.0	628.6	usage
-2026-09-21	PantonicApp	TK-54b-consultor	opus	27	68.2	316.4	usage
-2026-09-21	PantonicApp	TK-54b-revisao	opus	18	70.9	213.5	usage
-2026-09-21	PantonicApp	TK-54b-consultor-b1	opus	6	81.6	88.1	usage
-2026-09-21	PantonicApp	LST-T1	opus	6	49.2	108.2	usage
-2026-09-21	PantonicApp	LST-T1-revisao	opus	16	67.8	205.4	usage
-2026-09-21	PantonicApp	LST-T1-consultor-b1	opus	50	144.8	983.0	usage
-2026-09-21	PantonicApp	LST-T1-modelador-parcial	opus	19	64.6	426.2	usage
-2026-09-22	PantonicApp	LST-T1-modelador-retomada	opus	4	77.8	74.7	usage
-2026-09-22	PantonicApp	LST-T7	opus	5	46.8	80.6	usage
-2026-09-22	PantonicApp	LST-T7-revisao	opus	22	69.5	223.7	usage
-2026-09-22	PantonicApp	LST-T3	opus	6	42.0	55.6	usage
-2026-09-22	PantonicApp	LST-T3-revisao	opus	22	76.7	212.6	usage
-2026-09-22	PantonicApp	LST-T8	opus	10	55.2	121.4	usage
-2026-09-22	PantonicApp	LST-T8-revisao	opus	25	87.7	377.6	usage
-2026-09-22	PantonicApp	LST-T8-consultor-b1	opus	19	180.1	284.0	usage
-2026-09-22	PantonicApp	LST-T9	opus	15	54.5	105.9	usage
-2026-09-22	PantonicApp	LST-T9-revisao	opus	31	86.3	268.1	usage
-2026-09-22	PantonicApp	LST-T9-consultor-b1	opus	10	197.9	181.5	usage
-2026-09-22	PantonicApp	LST-T9-modelador	opus	2	85.4	42.1	usage
-2026-09-22	PantonicApp	LST-T5	sonnet	31	144.8	363.2	usage
-2026-09-22	PantonicApp	LST-T5-consultor-a3b	opus	14	221.3	251.4	usage
-2026-09-22	PantonicApp	LST-T5	sonnet	18	76.2	109.5	usage
-2026-09-22	PantonicApp	LST-T5-consultor-a3b-2	opus	17	249.1	292.7	usage
-2026-09-22	PantonicApp	LST-T5-modelador	opus	2	93.6	48.4	usage
-2026-09-22	PantonicApp	LST-T5	sonnet	55	154.8	524.2	usage
-2026-09-22	PantonicApp	LST-T5-revisao	opus	30	101.7	354.3	usage
-2026-09-22	PantonicApp	LST-T5-modelador-conflito	opus	3	103.1	63.3	usage
-2026-09-22	PantonicApp	LST-T6	opus	41	167.4	847.1	usage
-2026-09-22	PantonicApp	LST-T6-revisao	opus	50	144.6	627.4	usage
-2026-09-22	PantonicApp	LST-T6-consultor-b1	opus	6	266.8	208.8	usage
-2026-09-22	PantonicApp	PLN-T1	sonnet	28	156.8	631.3	usage
-2026-09-22	PantonicApp	PLN-T1-consultor	opus	26	70.3	353.7	usage
-2026-09-22	PantonicApp	PLN-T1-revisao	opus	24	86.1	274.9	usage
-2026-09-22	PantonicApp	PLN-T1-consultor-b1	opus	16	95.9	166.5	usage
-2026-09-22	PantonicApp	PLN-T2	opus	31	85.4	340.6	usage
-2026-09-22	PantonicApp	PLN-T2-consultor-triagem	opus	28	136.7	736.5	usage
-2026-09-22	PantonicApp	PLN-T2	opus	7	41.4	100.4	usage
-2026-09-22	PantonicApp	PLN-T2-14b	opus	7	41.4	100.6	usage
-2026-09-22	PantonicApp	PLN-T2-revisao	opus	26	103.1	327.3	usage
-2026-09-22	PantonicApp	PLN-T2-revisao-achados	opus	1	108.7	56.0	usage
-2026-09-22	PantonicApp	PLN-T2-consultor-b1	opus	26	184.9	331.0	usage
-2026-09-22	PantonicApp	PLN-T3	sonnet	17	56.9	106.6	usage
-2026-09-22	PantonicApp	PLN-T3-revisao	opus	17	80.5	235.6	usage
-2026-09-22	PantonicApp	PLN-T4	opus	24	72.6	223.9	usage
-2026-09-22	PantonicApp	PLN-T4-revisao	opus	25	120.2	349.2	usage
-2026-09-22	PantonicApp	PLN-T4-modelador-conflito	opus	24	88.3	306.4	usage
-2026-09-22	PantonicApp	PLN-T4-consultor-b1	opus	31	234.9	417.3	usage
-2026-09-22	PantonicApp	PLN-T4-modelador-emenda	opus	12	60.8	98.5	usage
-2026-09-22	PantonicApp	PLN-T4a	sonnet	16	55.4	116.5	usage
-2026-09-22	PantonicApp	PLN-T4a-revisao	opus	20	79.5	211.1	usage
-2026-09-22	PantonicApp	PLN-T4a-consultor-b1	opus	16	261.2	230.3	usage
-2026-09-22	PantonicApp	PLN-T5	sonnet	17	75.4	209.0	usage
-2026-09-22	PantonicApp	PLN-T5-consultor-triagem	opus	24	291.2	321.8	usage
-2026-09-22	PantonicApp	PLN-T5-revisao	opus	20	86.2	249.7	usage
-2026-09-22	PantonicApp	PLN-T5-consultor-b1	opus	23	337.8	348.7	usage
-2026-09-22	PantonicApp	PLN-T5-modelador-emenda	opus	14	59.3	95.4	usage
-2026-09-22	PantonicApp	MARCO2-modelador-merge	opus	20	61.8	205.5	usage
-2026-09-22	PantonicApp	PLN-T5a	sonnet	14	60.8	94.2	usage
-2026-09-22	PantonicApp	PLN-T5a-revisao	opus	29	98.0	315.9	usage
-2026-09-22	PantonicApp	PLN-T6	opus	39	146.7	693.1	usage
-2026-09-22	PantonicApp	PLN-T6-revisao	opus	30	125.3	502.4	usage
-2026-09-22	PantonicApp	PLN-T7	sonnet	51	110.6	364.5	usage
-2026-09-22	PantonicApp	PLN-T7-revisao	opus	23	123.6	419.7	usage
-2026-09-22	PantonicApp	PLN-T7-consultor-b1	opus	18	368.5	289.1	usage
-2026-09-22	PantonicApp	PLN-T7-modelador-emenda	opus	10	41.9	57.0	usage
-2026-09-22	PantonicApp	PLN-T7a	sonnet	32	78.7	196.2	usage
-2026-09-22	PantonicApp	PLN-T7a-revisao	opus	23	100.2	303.5	usage
-2026-09-22	PantonicApp	MARCO3-as-is	opus	43	166.9	478.5	usage
-2026-09-22	PantonicApp	P-0747-planner-1	opus	4	61.5	94	usage
-2026-09-22	PantonicApp	P-0747-planner-2	opus	4	89.6	183	usage
-2026-09-22	PantonicApp	P-0747-planner-3	opus	18	155.1	172	usage
-2026-09-22	PantonicApp	P-0747-planner-4	opus	26	177.9	574	usage
-2026-09-22	PantonicApp	P-0747-planner-5	opus	70	332.8	2297	usage
-2026-09-22	PantonicApp	P-0747-modelador-1	opus	11	89.7	264	usage
-2026-09-22	PantonicApp	P-0747-modelador-2	opus	29	141.0	266	usage
-2026-09-22	PantonicApp	P-0747-modelador-3	opus	40	153.3	457	usage
-2026-09-22	PantonicApp	P-0747-scout-1	haiku	28	58.8	152	usage
-2026-09-22	PantonicApp	P-0747-scout-2	haiku	9	36.9	118	usage
-2026-09-22	PantonicApp	P-0747-scout-3	haiku	24	35.7	75	usage
-2026-09-23	PantonicApp	P-0747-consultor-1	fable	36	235.9	878	usage
-2026-09-23	PantonicApp	P-0747-modelador-4	opus	9	160.7	46	usage
-2026-09-23	PantonicApp	P-0747-consultor-2	fable	39	239.2	987	usage
-2026-09-23	PantonicApp	TK-76a	sonnet	18	52.3	79.2	usage
-2026-09-23	PantonicApp	TK-76a-revisao	opus	10	56.8	76	usage
-2026-09-23	PantonicApp	CON-T1	sonnet	45	88.3	216.2	usage
-2026-09-23	PantonicApp	CON-T1-revisao	opus	14	76.7	93	usage
-2026-09-23	PantonicApp	CON-T2	sonnet	14	67.7	129.6	usage
-2026-09-23	PantonicApp	CON-T2-revisao	opus	9	60.1	57	usage
-2026-09-23	PantonicApp	CON-T3	sonnet	20	78.7	161.6	usage
-2026-09-23	PantonicApp	CON-T3-revisao	opus	21	115.5	226	usage
-2026-09-23	PantonicApp	CON-T3-consultor-b1	fable	7	270.5	267	usage
-2026-09-23	PantonicApp	CON-T3a	sonnet	29	68.9	135.7	usage
-2026-09-23	PantonicApp	CON-T3a-revisao	opus	20	85.1	165	usage
-2026-09-23	PantonicApp	CON-T4	sonnet	23	69.9	153.0	usage
-2026-09-23	PantonicApp	CON-T4-revisao	opus	24	97.1	232	usage
-2026-09-23	PantonicApp	CON-T4-consultor-1	fable	24	139.7	696	usage
-2026-09-23	PantonicApp	CON-T2a	sonnet	9	57.0	62.1	usage
-2026-09-23	PantonicApp	CON-T2a-revisao	opus	14	70.6	86	usage
-2026-09-23	PantonicApp	CON-T3b	sonnet	13	60.2	81.2	usage
-2026-09-23	PantonicApp	CON-T3b-revisao	opus	25	91.1	209	usage
-2026-09-23	PantonicApp	P-0747-modelador-5-conflito	opus	4	173.6	55	usage
-2026-09-23	PantonicApp	CON-T4a	sonnet	12	57.9	74.4	usage
-2026-09-23	PantonicApp	CON-T4a-revisao	opus	17	83.9	155	usage
-2026-09-23	PantonicApp	CON-T4a-consultor-1	fable	29	104.1	591	usage
-2026-09-23	PantonicApp	P-0747-modelador-6-conflito	opus	2	178.3	37	usage
-2026-09-23	PantonicApp	CON-T3c	sonnet	15	60.7	88.0	usage
-2026-09-23	PantonicApp	CON-T3c-revisao	opus	21	83.3	160	usage
-2026-09-23	PantonicApp	P-0747-modelador-7-conflito	opus	2	182.8	35	usage
-2026-09-23	PantonicApp	CON-T5	sonnet	37	75.8	226.1	usage
-2026-09-23	PantonicApp	CON-T5-revisao	opus	33	113.2	221	usage
-2026-09-23	PantonicApp	CON-T6	sonnet	25	67.7	128.4	usage
-2026-09-23	PantonicApp	CON-T6-revisao	opus	23	87.0	146	usage
-2026-09-23	PantonicApp	CON-T6-consultor-1	fable	28	135.8	955	usage
-2026-09-23	PantonicApp	P-0747-modelador-8-conflito	opus	4	187.5	39	usage
-2026-09-23	PantonicApp	CON-T5a	sonnet	16	61.8	100.1	usage
-2026-09-23	PantonicApp	CON-T5a-revisao	opus	14	76.7	113	usage
-2026-09-23	PantonicApp	CON-T6a	sonnet	11	57.5	62.8	usage
-2026-09-23	PantonicApp	CON-T6a-revisao	opus	22	75.1	154	usage
-2026-09-23	PantonicApp	CON-T7	sonnet	15	72.5	106.7	usage
-2026-09-23	PantonicApp	CON-T7-revisao	opus	19	71.6	136	usage
-2026-09-23	PantonicApp	CON-T7-consultor-1	fable	23	99.0	460	usage
-2026-09-23	PantonicApp	CON-T7a	sonnet	10	52.7	91.4	usage
-2026-09-23	PantonicApp	CON-T7a-revisao	opus	21	76.2	136	usage
-2026-09-23	PantonicApp	CON-T8	sonnet	19	67.0	103.6	usage
-2026-09-23	PantonicApp	CON-T8-revisao	opus	16	77.4	149	usage
-2026-09-23	PantonicApp	CON-T8-consultor-1	fable	26	90.9	571	usage
-2026-09-23	PantonicApp	CON-T8a	sonnet	8	58.1	71.9	usage
-2026-09-23	PantonicApp	CON-T8a-revisao	opus	13	65.6	96	usage
-2026-09-23	PantonicApp	P-0747-consultor-marco	fable	15	63.4	179	usage
-2026-09-23	PantonicApp	P-0747-encerramento	opus	59	266.3	873	usage
-2026-09-23	PantonicApp	P-0747-consultor-dono-recusa	fable	31	132.8	761	usage
-2026-09-23	PantonicApp	P-0747-modelador-9-emenda	opus	5	194.2	47	usage
-2026-09-23	PantonicApp	CON-T2b	sonnet	11	60.1	67.0	usage
-2026-09-23	PantonicApp	CON-T2b-revisao	opus	17	78.9	107	usage
-2026-09-23	PantonicApp	CON-T3d	sonnet	35	63.4	119.4	usage
-2026-09-23	PantonicApp	CON-T3d-revisao	opus	21	90.3	161	usage
-2026-09-23	PantonicApp	P-0747-modelador-10-promocao	opus	3	200.4	42	usage
-2026-09-24	PantonicApp	TLG-T1-consultor-1	opus	21	56.5	199.9	usage
-2026-09-24	PantonicApp	TLG-T1-sonda-b	opus	5	15.1	27.6	usage
-2026-09-24	PantonicApp	TLG-T1-revisao	opus	12	96.4	156.5	usage
-2026-09-24	PantonicApp	TLG-T1-consultor-2	opus	22	58.3	258.7	usage
-2026-09-24	PantonicApp	TLG-T2	sonnet	12	53.1	103.9	usage
-2026-09-24	PantonicApp	TLG-T2-revisao	opus	18	68.7	124.5	usage
-2026-09-24	PantonicApp	TK-78a	sonnet	26	67.7	156.3	usage
-2026-09-24	PantonicApp	TK-78a-revisao	opus	21	80.3	161.2	usage
-2026-09-24	PantonicApp	TK-78a-consultor-1	opus	27	75.5	255.0	usage
-2026-09-24	PantonicApp	TK-78d	sonnet	11	53.2	137.6	usage
-2026-09-24	PantonicApp	TK-78d-revisao	opus	17	61.2	122.6	usage
-2026-09-24	PantonicApp	TK-78b	sonnet	10	52.0	116.6	usage
-2026-09-24	PantonicApp	TK-78b-revisao	opus	18	66.4	119.5	usage
-2026-09-24	PantonicApp	TK-78c	sonnet	31	79.1	273.5	usage
-2026-09-24	PantonicApp	TK-78c-revisao	opus	18	75.2	168.9	usage
-2026-09-24	PantonicApp	TLG-T3-consultor-3	opus	20	55.9	129.1	usage
-2026-09-24	PantonicApp	TLG-T3-modelador-1	opus	18	97.4	272.7	usage
-2026-09-24	PantonicApp	TLG-T3-consultor-4	opus	16	60.7	102.9	usage
-2026-09-24	PantonicApp	TLG-T3-modelador-2	opus	9	44.7	48.6	usage
-2026-09-24	PantonicApp	P-0748-replanejamento-1	opus	62	247.5	1278.5	usage
-2026-09-24	PantonicApp	TLG-T3	sonnet	29	87.0	276.1	usage
-2026-09-24	PantonicApp	TLG-T3-revisao	opus	27	92.2	186.8	usage
-2026-09-24	PantonicApp	TLG-T2a	sonnet	14	54.6	93.4	usage
-2026-09-24	PantonicApp	TLG-T2a-revisao	opus	18	70.9	110.5	usage
-2026-09-24	PantonicApp	TLG-T4	sonnet	20	81.2	136.3	usage
-2026-09-24	PantonicApp	TLG-T4-revisao	opus	19	84.7	179.2	usage
-2026-09-24	PantonicApp	P-0748-modelador-3	fable	16	80.3	286.0	usage
-2026-09-24	PantonicApp	P-0748-replanejamento-2	fable	49	246.4	1650.8	usage
-2026-09-24	PantonicApp	TLG-T3a	sonnet	16	63.2	129.5	usage
-2026-09-24	PantonicApp	TLG-T3a-revisao	opus	12	70.1	113.7	usage
-2026-09-24	PantonicApp	TLG-T2b	sonnet	19	75.2	175.0	usage
-2026-09-24	PantonicApp	TLG-T2b-revisao	opus	22	84.3	169.5	usage
-2026-09-24	PantonicApp	P-0748-modelador-4	opus	11	46.4	70.7	usage
-2026-09-24	PantonicApp	TLG-T3b	sonnet	9	75.1	121.6	usage
-2026-09-24	PantonicApp	TLG-T3b-consultor-5	opus	49	102.7	357.8	usage
-2026-09-24	PantonicApp	TLG-T3b	sonnet	44	128.7	509.2	usage
-2026-09-24	PantonicApp	TLG-T3b-revisao	opus	24	105.4	226.6	usage
-2026-09-24	PantonicApp	TLG-T4a	sonnet	20	59.9	164.8	usage
-2026-09-24	PantonicApp	TLG-T4a-revisao	opus	16	79.0	114.5	usage
-2026-09-24	PantonicApp	TLG-T4a-consultor-6	opus	28	61.7	169.8	usage
-2026-09-24	PantonicApp	TLG-T5	sonnet	11	59.0	97.0	usage
-2026-09-24	PantonicApp	TLG-T5-revisao	opus	10	65.8	64.6	usage
-2026-09-24	PantonicApp	TLG-T5-consultor-7	opus	45	166.9	612.3	usage
-2026-09-24	PantonicApp	TLG-T5-consultor-8	opus	49	150.8	547.8	usage
-2026-09-24	PantonicApp	TLG-T3c	sonnet	31	131.0	448.7	usage
-2026-09-24	PantonicApp	TLG-T3c-revisao	opus	17	103.2	176.8	usage
-2026-09-24	PantonicApp	TLG-T3c-consultor-9	opus	42	111.6	512.1	usage
-2026-09-24	PantonicApp	TLG-T3d	sonnet	20	83.8	223.8	usage
-2026-09-24	PantonicApp	TLG-T3d-consultor-10	opus	29	66.0	195.7	usage
-2026-09-24	PantonicApp	TLG-T3d	sonnet	29	100.2	253.5	usage
-2026-09-24	PantonicApp	TLG-T3d-revisao	opus	20	90.6	199.5	usage
-2026-09-24	PantonicApp	TLG-T3d-consultor-11	opus	26	91.9	372.7	usage
-2026-09-24	PantonicApp	AE-20-consultor-12	opus	53	143.4	672.6	usage
-2026-09-24	PantonicApp	AE-21-consultor-13	opus	54	149.1	526.7	usage
-2026-09-24	PantonicApp	TLG-T3e	sonnet	50	124.9	404.6	usage
-2026-09-24	PantonicApp	TLG-T3e-revisao	opus	26	109.4	240.5	usage
-2026-09-24	PantonicApp	AE-22-consultor-14	opus	19	83.9	276.1	usage
-2026-09-24	PantonicApp	TLG-T3f	sonnet	18	55.0	93.4	usage
-2026-09-24	PantonicApp	TLG-T3f-revisao	opus	13	71.5	115.7	usage
-2026-09-24	PantonicApp	TLG-T5a	sonnet	10	48.6	28.1	usage
-2026-09-24	PantonicApp	TLG-T5a-revisao	opus	10	60.7	53.6	usage
-2026-09-24	PantonicApp	AE-24-consultor-15	opus	47	93.7	437.8	usage
-2026-09-24	PantonicApp	TLG-T3g	sonnet	23	57.9	93.1	usage
-2026-09-24	PantonicApp	TLG-T3g-revisao	opus	15	76.8	118.7	usage
-2026-09-24	PantonicApp	P-0748-encerramento-redacao	opus	72	263.1	809.9	usage
-2026-09-24	PantonicApp	AE-25-consultor-16	opus	54	116.3	476.0	usage
-2026-09-24	PantonicApp	TLG-T3h	sonnet	28	72.6	185.4	usage
-2026-09-24	PantonicApp	TLG-T3h-revisao	opus	24	95.8	196.8	usage
-2026-09-24	PantonicApp	P-0748-encerramento-redacao-2	opus	17	289.8	212.4	usage
-2026-09-24	PantonicApp	P-0748-modelador-5	opus	9	40.2	47.4	usage
-2026-09-24	PantonicApp	TK-65a	opus				nao_medido
-2026-09-24	PantonicApp	TK-65a-revisao	opus	18	83.6	128.2	usage
-2026-09-24	PantonicApp	TK-65b	sonnet	27	75.0	140.4	usage
-2026-09-24	PantonicApp	TK-65b-consultor-1	opus	16	38.3	166.9	usage
-2026-09-24	PantonicApp	TK-65b-revisao	opus	18	70.5	121.4	usage
-2026-09-24	PantonicApp	TK-65c	sonnet	7	56.7	88.8	usage
-2026-09-24	PantonicApp	TK-65c	sonnet	36	80.5	177.8	usage
-2026-09-24	PantonicApp	TK-65c-consultor-2	opus	19	42.6	144.2	usage
-2026-09-24	PantonicApp	TK-65c-revisao	opus	17	74.8	125.7	usage
-2026-09-24	PantonicApp	TK-65d	sonnet	6	47.3	28.8	usage
-2026-09-24	PantonicApp	TK-65d-revisao	opus	11	64.2	75.3	usage
-2026-09-24	PantonicApp	TK-65e	sonnet	9	57.3	41.6	usage
-2026-09-24	PantonicApp	TK-65e-revisao	opus	18	73.2	95.7	usage
-2026-09-25	PantonicApp	TK-74a-revisao	opus	18	83.6	197.6	usage
-2026-09-25	PantonicApp	TK-74b-revisao	opus	15	74.5	107.9	usage
-2026-09-25	PantonicApp	TK-66a-revisao	opus	17	76.7	147.6	usage
-2026-09-25	PantonicApp	SAN-T1	sonnet	56	103.7	471.4	usage
-2026-09-25	PantonicApp	SAN-T1-revisao	opus	25	113.8	279.9	usage
-2026-09-25	PantonicApp	SAN-T1-consultor-1	opus	68	148.3	958.5	usage
-2026-09-25	PantonicApp	SAN-T1-consultor-2	opus	24	94.4	298.0	usage
-2026-09-25	PantonicApp	SAN-T1	sonnet	56	100.9	361.1	usage
-2026-09-25	PantonicApp	SAN-T1-revisao-2	opus	31	87.8	185.9	usage
-2026-09-25	PantonicApp	SAN-T2	sonnet	75	132.3	594.2	usage
-2026-09-25	PantonicApp	SAN-T2-revisao	opus	27	106.1	226.2	usage
-2026-09-25	PantonicApp	SAN-T3	sonnet	39	88.2	271.7	usage
-2026-09-25	PantonicApp	SAN-T3-revisao	opus	30	96.2	277.5	usage
-2026-09-25	PantonicApp	SAN-T3-consultor-2	opus	35	64.1	334.8	usage
-2026-09-25	PantonicApp	SAN-T3a	sonnet	38	69.7	156.8	usage
-2026-09-25	PantonicApp	SAN-T3a-revisao	opus	15	79.1	118.2	usage
-2026-09-25	PantonicApp	SAN-T4	sonnet	55	76.5	263.1	usage
-2026-09-25	PantonicApp	SAN-T4-revisao	opus	34	103.5	219.0	usage
-2026-09-25	PantonicApp	SAN-T4-consultor-3	opus	31	74.0	220.9	usage
-2026-09-25	PantonicApp	SAN-T2a	sonnet	18	64.9	127.6	usage
-2026-09-25	PantonicApp	SAN-T2a-revisao	opus	16	71.5	94.1	usage
-2026-09-25	PantonicApp	SAN-T5	sonnet	12	53.1	69.4	usage
-2026-09-25	PantonicApp	SAN-T5-revisao	opus	14	68.9	84.0	usage
-2026-09-25	PantonicApp	SAN-T6	sonnet	12	50.0	62.5	usage
-2026-09-25	PantonicApp	SAN-T6-revisao	opus	18	81.1	164.4	usage
-2026-09-25	PantonicApp	SAN-T6-consultor-4	opus	27	65.1	140.6	usage
-2026-09-25	PantonicApp	SAN-T6a	sonnet	11	47.1	59.3	usage
-2026-09-25	PantonicApp	SAN-T6a-revisao	opus	19	72.0	106.6	usage
-2026-09-25	PantonicApp	SAN-T6a-consultor-5	opus	21	54.0	111.7	usage
-2026-09-25	PantonicApp	SAN-T6b	sonnet	12	47.6	65.0	usage
-2026-09-25	PantonicApp	SAN-T6b-revisao	opus	19	77.9	96.1	usage
-2026-09-25	PantonicApp	CAH-T1	sonnet	13	53.5	94.8	usage
-2026-09-25	PantonicApp	CAH-T1-revisao	opus	19	87.9	174.7	usage
-2026-09-25	PantonicApp	CAH-T2	sonnet	10	51.8	72.4	usage
-2026-09-25	PantonicApp	CAH-T2-revisao	opus	15	83.4	123.7	usage
-2026-09-25	PantonicApp	CAH-T3	sonnet	6	47.5	29.7	usage
-2026-09-25	PantonicApp	CAH-T3-revisao	opus	17	86.0	83.9	usage
-2026-09-25	PantonicApp	CAH-T4	sonnet	16	62.2	88.7	usage
-2026-09-25	PantonicApp	CAH-T4-consultor-1	opus	22	57.4	136.1	usage
-2026-09-25	PantonicApp	CAH-T4	sonnet	11	53.6	65.7	usage
-2026-09-25	PantonicApp	CAH-T4-revisao	opus	17	89.2	117.7	usage
-2026-09-25	PantonicApp	CAH-T4-consultor-2	opus	25	51.4	153.3	usage
-2026-09-25	PantonicApp	CAH-T5	sonnet	20	55.8	76.3	usage
-2026-09-25	PantonicApp	CAH-T5-revisao	opus	16	75.1	105.8	usage
-2026-09-25	PantonicApp	CAH-T4a	sonnet	10	49.3	60.4	usage
-2026-09-25	PantonicApp	CAH-T4a-revisao	opus	14	83.4	94.9	usage
-2026-09-25	PantonicApp	TK-77a	sonnet	27	72.7	383.3	usage
-2026-09-25	PantonicApp	TK-77a-revisao	opus	28	91.7	197.5	usage
-2026-09-25	PantonicApp	TK-79a	sonnet	14	50.9	105.0	usage
-2026-09-25	PantonicApp	TK-79a-revisao	opus	17	83.2	137.7	usage
-2026-09-25	PantonicApp	TK-82a	sonnet	21	59.4	159.9	usage
-2026-09-25	PantonicApp	TK-82a-revisao	opus	24	84.8	183.9	usage
-2026-09-25	PantonicApp	TK-68a	sonnet	8	49.4	164.9	usage
-2026-09-25	PantonicApp	TK-68a-revisao	opus	19	84.9	208.8	usage
-2026-09-25	PantonicApp	EBK-T1	sonnet	23	83.1	169.3	usage
-2026-09-25	PantonicApp	EBK-T1	sonnet	1	84.0	10.3	usage
-2026-09-25	PantonicApp	EBK-T1-consultor-1	opus	25	59.2	240.0	usage
-2026-09-25	PantonicApp	EBK-T1	sonnet	40	97.0	325.4	usage
-2026-09-25	PantonicApp	EBK-T1-revisao	opus	19	97.3	196.8	usage
-2026-09-25	PantonicApp	EBK-T2	sonnet	17	106.3	320.3	usage
-2026-09-25	PantonicApp	EBK-T2-consultor-2	opus	47	78.3	426.9	usage
-2026-09-25	PantonicApp	EBK-T2	sonnet	67	156.0	727.2	usage
-2026-09-25	PantonicApp	EBK-T2-revisao	opus	23	91.2	197.0	usage
-2026-09-25	PantonicApp	EBK-T3	sonnet	38	88.8	366.9	usage
-2026-09-25	PantonicApp	EBK-T3-revisao	opus	20	83.0	184.4	usage
-2026-09-25	PantonicApp	EBK-T4	sonnet	28	127.2	281.8	usage
-2026-09-25	PantonicApp	EBK-T4-consultor-3	opus	36	72.3	335.0	usage
-2026-09-25	PantonicApp	EBK-T4	sonnet	58	130.0	461.1	usage
-2026-09-25	PantonicApp	EBK-T4-revisao	opus	27	88.2	203.5	usage
-2026-09-25	PantonicApp	EBK-T5	sonnet	33	97.8	358.4	usage
-2026-09-25	PantonicApp	EBK-T5-revisao	opus	18	96.8	236.3	usage
-2026-09-25	PantonicApp	EBK-T5-consultor-4	opus	67	143.0	730.8	usage
-2026-09-26	PantonicApp	EBK-T5a	sonnet	22	76.2	200.0	usage
-2026-09-26	PantonicApp	EBK-T5a-revisao	opus	15	85.2	105.1	usage
-2026-09-26	PantonicApp	EBK-T6	sonnet	6	48.0	68.0	usage
-2026-09-26	PantonicApp	EBK-T6-revisao	opus	14	75.3	115.1	usage
-2026-09-26	PantonicApp	EBK-T7	sonnet	10	50.7	83.3	usage
-2026-09-26	PantonicApp	EBK-T7-revisao	opus	15	76.8	110.8	usage
-2026-09-26	PantonicApp	EBK-T8	sonnet	11	50.7	73.5	usage
-2026-09-26	PantonicApp	EBK-T8-revisao	opus	11	74.0	89.3	usage
-2026-09-26	PantonicApp	EBK-T9	sonnet	10	49.5	78.8	usage
-2026-09-26	PantonicApp	EBK-T9-revisao	opus	14	77.2	110.4	usage
-2026-09-26	PantonicApp	EBK-T10	sonnet	12	55.8	105.3	usage
-2026-09-26	PantonicApp	EBK-T10-revisao	opus	15	65.9	124.0	usage
-2026-09-26	PantonicApp	EBK-T11	sonnet	11	50.4	95.9	usage
-2026-09-26	PantonicApp	EBK-T11-revisao	opus	18	84.8	156.4	usage
-2026-09-26	PantonicApp	EBK-T12	sonnet	17	57.4	139.3	usage
-2026-09-26	PantonicApp	EBK-T12-consultor-5	opus	24	54.1	294.4	usage
-2026-09-26	PantonicApp	EBK-T12	sonnet	28	64.7	206.3	usage
-2026-09-26	PantonicApp	EBK-T12-revisao	opus	19	85.1	132.7	usage
-2026-09-26	PantonicApp	EBK-T13	sonnet	13	64.4	198.6	usage
-2026-09-26	PantonicApp	EBK-T13-consultor-6	opus	19	62.2	193.2	usage
-2026-09-26	PantonicApp	EBK-T13	sonnet	19	66.9	166.4	usage
-2026-09-26	PantonicApp	EBK-T13-revisao	opus	18	91.4	198.5	usage
-2026-09-26	PantonicApp	EBK-T13-consultor-7	opus	23	79.8	331.5	usage
-2026-09-26	PantonicApp	EBK-T13a	sonnet	13	62.1	149.9	usage
-2026-09-26	PantonicApp	EBK-T13a-revisao	opus	17	82.6	161.3	usage
-2026-09-26	PantonicApp	EBK-T14	opus	27	104.3	275.7	usage
-2026-09-26	PantonicApp	EBK-T14-revisao	opus	26	107.4	216.8	usage
-2026-09-26	PantonicApp	P-0751-consultor-8	opus	51	114.9	548.1	usage
-2026-09-26	PantonicApp	FPU-T1	sonnet	9	68.0	74.6	usage
-2026-09-26	PantonicApp	FPU-T1	sonnet	16	97.1	191.4	usage
-2026-09-26	PantonicApp	FPU-T1	sonnet	42	180.9	1051.7	usage
-2026-09-26	PantonicApp	FPU-T1	sonnet	23	58.5	174.1	usage
-2026-09-26	PantonicApp	FPU-T1-consultor-1	opus	16	54.7	305.9	usage
-2026-09-26	PantonicApp	FPU-T1-consultor-2	opus	29	73.1	301.3	usage
-2026-09-26	PantonicApp	FPU-T1-consultor-3	opus	16	50.2	271.2	usage
-2026-09-26	PantonicApp	FPU-T1-revisao	opus	32	119.1	308.9	usage
-2026-09-26	PantonicApp	FPU-T3-consultor-4	opus	31	99.6	452.0	usage
-2026-09-26	PantonicApp	FPU-T3	sonnet	25	102.9	349.9	usage
-2026-09-26	PantonicApp	FPU-T3-revisao	opus	24	103.4	206.7	usage
-2026-09-26	PantonicApp	FPU-T3-modelador	opus	11	57.7	73.8	usage
-2026-09-26	PantonicApp	FPU-T5	sonnet	10	78.1	215.2	usage
-2026-09-26	PantonicApp	FPU-T5-consultor-5	opus	34	108.9	796.9	usage
-2026-09-26	PantonicApp	FPU-T5	sonnet	60	130.9	631.6	usage
-2026-09-26	PantonicApp	FPU-T5-revisao	opus	27	115.1	367.2	usage
-2026-09-26	PantonicApp	FPU-T2	sonnet	27	107.2	313.1	usage
-2026-09-26	PantonicApp	FPU-T2-revisao	opus	22	123.5	250.9	usage
-2026-09-26	PantonicApp	FPU-T2-consultor-6	opus	91	161.2	1041.8	usage
-2026-09-26	PantonicApp	FPU-T5a	sonnet	15	69.5	163.7	usage
-2026-09-26	PantonicApp	FPU-T5a-revisao	opus	15	86.6	96.0	usage
-2026-09-26	PantonicApp	FPU-T1a	sonnet	18	71.5	185.4	usage
-2026-09-26	PantonicApp	FPU-T1a-revisao	opus	21	93.2	137.5	usage
-2026-09-26	PantonicApp	FPU-T5b	sonnet	22	60.8	157.5	usage
-2026-09-26	PantonicApp	FPU-T5b-revisao	opus	15	90.6	129.0	usage
-2026-09-26	PantonicApp	FPU-T4	sonnet	31	90.2	274.1	usage
-2026-09-26	PantonicApp	FPU-T4-revisao	opus	39	95.8	237.8	usage
-2026-09-26	PantonicApp	FPU-T6-consultor-7	opus	72	149.7	1078.4	usage
-2026-09-26	PantonicApp	FPU-T6	sonnet	49	108.2	421.3	usage
-2026-09-26	PantonicApp	FPU-T6-revisao	opus	27	64.5	210.1	usage
-2026-09-26	PantonicApp	FPU-T5c	sonnet	12	58.0	95.4	usage
-2026-09-26	PantonicApp	FPU-T5c-revisao	opus	21	93.4	122.5	usage
-2026-09-26	PantonicApp	FPU-T4a	sonnet	12	56.5	155.8	usage
-2026-09-26	PantonicApp	FPU-T4a-revisao	opus	18	54.4	85.3	usage
-2026-09-26	PantonicApp	FPU-T8	sonnet	6	67.7	80.0	usage
-2026-09-26	PantonicApp	FPU-T8-consultor-8	opus	50	96.5	569.7	usage
-2026-09-26	PantonicApp	FPU-T8	sonnet	18	71.9	136.3	usage
-2026-09-26	PantonicApp	FPU-T8-revisao	opus	23	82.6	126.7	usage
-2026-09-26	PantonicApp	FPU-T9	sonnet	31	91.5	186.7	usage
-2026-09-26	PantonicApp	FPU-T9-revisao	opus	21	108.2	186.0	usage
-2026-09-26	PantonicApp	FPU-T9-consultor-9	opus	36	127.5	470.0	usage
-2026-09-26	PantonicApp	FPU-T8a	sonnet	8	48.9	39.6	usage
-2026-09-26	PantonicApp	FPU-T8a-revisao	opus	18	83.6	84.7	usage
-2026-09-26	PantonicApp	FPU-T9a	sonnet	12	55.1	61.0	usage
-2026-09-26	PantonicApp	FPU-T9a-revisao	opus	18	97.5	141.2	usage
-2026-09-26	PantonicApp	P-0752-consultor-10	opus	79	154.1	1023.5	usage
-2026-09-26	PantonicApp	P-0752-modelador-2	opus	13	52.8	116.7	usage
-2026-09-26	PantonicApp	P-0752-consultor-11	opus	62	143.5	621.8	usage
-2026-09-26	PantonicApp	TK-91a	sonnet	9	52.1	72.8	usage
-2026-09-26	PantonicApp	TK-91a-revisao	opus	24	70.2	126.6	usage
-2026-09-26	PantonicApp	TK-88a-revisao	opus	60	186.4	464.3	usage
-2026-09-26	PantonicApp	TK-86a-consultor-1	opus	14	53.9	286.4	usage
-2026-09-26	PantonicApp	TK-86a	sonnet	20	56.1	208.0	usage
-2026-09-26	PantonicApp	TK-86a-revisao	opus	24	67.4	204.0	usage
-2026-09-26	PantonicApp	TK-86a-consultor-2	opus	61	147.6	1681.0	usage
-2026-09-26	PantonicApp	TK-87a	sonnet	28	74.0	302.2	usage
-2026-09-26	PantonicApp	TK-88b	sonnet	74	170.8	679.3	usage
-2026-09-26	PantonicApp	TK-88a	Opus				nao_medido
-2026-09-26	PantonicApp	TK-84a	Sonnet				nao_medido
-2026-09-26	PantonicApp	TK-88c	sonnet	75	154.7	911.4	usage
-2026-09-26	PantonicApp	TK-88d	sonnet	60	192.8	1367.2	usage
-2026-09-26	PantonicApp	TK-89a	sonnet	13	58.8	146.5	usage
-2026-09-26	PantonicApp	TK-88b-revisao	opus	18	79.3	190.1	usage
-2026-09-26	PantonicApp	TK-88c-revisao	opus	22	106.0	214.9	usage
-2026-09-26	PantonicApp	TK-88d-revisao	opus	21	83.3	243.0	usage
-2026-09-26	PantonicApp	TK-89a-consultor-1	opus	20	50.5	412.7	usage
-2026-09-26	PantonicApp	TK-89a	sonnet	25	83.6	765.0	usage
-2026-09-26	PantonicApp	TK-89a-revisao	opus	14	48.4	161.6	usage
-2026-09-26	PantonicApp	TK-89b-consultor-1	opus	8	29.4	66.6	usage
-2026-09-26	PantonicApp	TK-89b	sonnet	19	61.0	234.3	usage
-2026-09-26	PantonicApp	TK-89b-revisao	opus	11	40.9	88.3	usage
-2026-09-26	PantonicApp	TK-90a	sonnet	16	72.8	217.0	usage
-2026-09-26	PantonicApp	TK-90a-revisao	opus	10	46.2	91.1	usage
-2026-09-26	PantonicApp	TK-90b-planejador-1	opus	27	138.5	584.8	usage
-2026-09-26	PantonicApp	TK-90b-modelador-1	opus	12	79.9	248.6	usage
-2026-09-27	PantonicApp	TK-90b-revisao	opus	23	109.8	247.0	usage
-2026-09-27	PantonicApp	TK-90b	Opus	77	307.2	2029.3	usage
-2026-09-27	PantonicApp	FPU-T7	sonnet	14	87.1	281.0	usage
-2026-09-27	PantonicApp	FPU-T7-consultor-1	opus	29	89.4	700.0	usage
-2026-09-27	PantonicApp	FPU-T7	sonnet	27	114.3	377.5	usage
-2026-09-27	PantonicApp	FPU-T7-revisao	opus	16	64.1	119.3	usage
-2026-09-27	PantonicApp	FPU-T10	sonnet	3	56.9	107.8	usage
-2026-09-27	PantonicApp	FPU-T10-consultor-1	opus	40	92.8	470.3	usage
-2026-09-27	PantonicApp	FPU-T10	sonnet	23	87.5	281.8	usage
-2026-09-27	PantonicApp	FPU-T10-revisao	opus	15	59.9	100.5	usage
-2026-09-27	PantonicApp	TK-85a-revisao	opus	18	55.7	137.8	usage
-2026-09-27	PantonicApp	TK-85a	Sonnet				nao_medido
-2026-09-27	PantonicApp	TK-92a	sonnet	49	90.3	402.0	usage
-2026-09-27	PantonicApp	TK-92a-revisao	opus	15	63.9	131.9	usage
-2026-09-27	PantonicApp	TK-93a	sonnet	42	115.2	698.8	usage
-2026-09-27	PantonicApp	TK-93a-revisao	opus	22	78.2	294.2	usage
-2026-09-27	PantonicApp	P-0752-entrega	sonnet	52	217.2	934.3	usage
-2026-09-27	PantonicApp	AF-T1	sonnet	22	87.4	474.4	usage
-2026-09-27	PantonicApp	AF-T2	sonnet	20	84.0	338.6	usage
-2026-09-27	PantonicApp	AF-T3	sonnet	23	75.9	354.3	usage
-2026-09-27	PantonicApp	AF-T4	sonnet	27	94.0	387.7	usage
-2026-09-27	PantonicApp	AF-T5	sonnet	4	69.3	77.1	usage
-2026-09-27	PantonicApp	AF-T5	sonnet	39	128.7	645.4	usage
-2026-09-27	PantonicApp	AF-T5-revisao	opus	23	81.4	220.3	usage
-2026-09-27	PantonicApp	AF-T6	sonnet	20	75.0	211.2	usage
-2026-09-27	PantonicApp	AF-T6-consultor-1	opus	28	56.7	508.7	usage
-2026-09-27	PantonicApp	AF-T6	sonnet	33	74.5	340.1	usage
-2026-09-27	PantonicApp	AF-T6-revisao	opus	16	58.7	133.9	usage
-2026-09-27	PantonicApp	AF-T7	sonnet	26	85.6	274.1	usage
-2026-09-27	PantonicApp	AF-T7-consultor-1	opus	20	53.8	333.0	usage
-2026-09-27	PantonicApp	AF-T7	sonnet	27	88.4	242.3	usage
-2026-09-27	PantonicApp	AF-T7-revisao	opus	13	54.1	136.1	usage
-2026-09-27	PantonicApp	P-0753-modelador	opus	15	59.7	93.7	usage
-2026-09-27	PantonicApp	AF-T8	sonnet	56	122.7	444.3	usage
-2026-09-27	PantonicApp	AF-T8-revisao	opus	17	56.9	147.6	usage
-2026-09-27	PantonicApp	AF-T8-consultor-1	opus	19	55.4	288.7	usage
-2026-09-27	PantonicApp	AF-T9	sonnet	39	102.6	479.1	usage
-2026-09-27	PantonicApp	AF-T9-revisao	opus	17	56.0	144.7	usage
-2026-09-27	PantonicApp	AF-T10	sonnet	43	152.5	549.3	usage
-2026-09-27	PantonicApp	AF-T10-consultor-1	opus	27	64.8	335.9	usage
-2026-09-27	PantonicApp	AF-T10	sonnet	72	180.3	872.6	usage
-2026-09-27	PantonicApp	AF-T10-revisao	opus	15	64.0	194.2	usage
-2026-09-27	PantonicApp	AF-T10-consultor-2	opus	17	52.3	192.4	usage
-2026-09-27	PantonicApp	AF-T11	opus	9	47.7	156.4	usage
-2026-09-27	PantonicApp	AF-T11-revisao	opus	11	48.7	111.3	usage
-2026-09-27	PantonicApp	AF-T12	sonnet	57	164.7	855.5	usage
-2026-09-27	PantonicApp	AF-T12-revisao	opus	16	65.2	217.8	usage
-2026-09-27	PantonicApp	AF-T12-consultor-1	opus	36	71.6	287.5	usage
-2026-09-27	PantonicApp	AF-T13	sonnet	49	138.6	671.6	usage
-2026-09-27	PantonicApp	AF-T13-revisao	opus	15	58.8	127.5	usage
-2026-09-27	PantonicApp	AF-T13-consultor-1	opus	19	58.5	239.9	usage
-2026-09-27	PantonicApp	AF-T14	sonnet	43	106.1	442.2	usage
-2026-09-27	PantonicApp	AF-T14-revisao	opus	15	58.6	145.8	usage
-2026-09-27	PantonicApp	AF-T15	sonnet	20	62.4	275.2	usage
-2026-09-27	PantonicApp	AF-T15-revisao	opus	10	45.0	120.6	usage
-2026-09-27	PantonicApp	AF-T16	sonnet	11	48.8	148.7	usage
-2026-09-27	PantonicApp	AF-T16-revisao	opus	12	46.7	79.5	usage
-2026-09-27	PantonicApp	AF-T17	sonnet	39	104.2	674.4	usage
-2026-09-27	PantonicApp	AF-T17	sonnet	39	104.4	683.6	usage
-2026-09-27	PantonicApp	AF-T17	sonnet	40	104.5	689.8	usage
-2026-09-27	PantonicApp	AF-T17-revisao	opus	14	57.5	187.2	usage
-2026-09-27	PantonicApp	AF-T17-consultor-1	opus	16	57.2	240.1	usage
-2026-09-27	PantonicApp	AF-T18	sonnet	22	85.3	304.0	usage
-2026-09-27	PantonicApp	AF-T18	sonnet	23	85.7	316.5	usage
-2026-09-27	PantonicApp	AF-T18-revisao	opus	11	44.9	118.4	usage
-2026-09-27	PantonicApp	AF-T20	sonnet	13	50.2	196.4	usage
-2026-09-27	PantonicApp	AF-T20-revisao	opus	14	48.0	115.5	usage
-2026-09-27	PantonicApp	AF-T21	opus	8	45.2	161.6	usage
-2026-09-27	PantonicApp	AF-T21-revisao	opus	11	42.1	111.8	usage
-2026-09-27	PantonicApp	P-0753-modelador	opus	8	47.5	53.9	usage
-2026-09-27	PantonicApp	P-0753-modelador	opus	15	70.3	170.2	usage
-2026-09-27	PantonicApp	sem-id-scout	opus	2	13.9	9.7	usage
-2026-09-27	PantonicApp	sem-id-scout	sonnet	3	14.8	15.0	usage
-2026-09-27	PantonicApp	sem-id-scout	haiku	4	12.2	19.7	usage
-2026-09-27	PantonicApp	sem-id-scout	sonnet	4	16.1	18.5	usage
-2026-09-27	PantonicApp	sem-id-scout	opus	4	15.5	17.0	usage
-2026-09-27	PantonicApp	sem-id-scout	haiku	12	23.5	24.6	usage
-2026-09-27	PantonicApp	sem-id-scout	opus	18	88.5	60.1	usage
-2026-09-27	PantonicApp	sem-id-scout	haiku	18	84.6	79.5	usage
-2026-09-27	PantonicApp	sem-id-scout	opus	15	32.8	86.2	usage
-2026-09-27	PantonicApp	sem-id-scout	haiku	19	85.5	93.7	usage
-2026-09-27	PantonicApp	sem-id-scout	haiku	6	67.0	133.8	usage
-2026-09-27	PantonicApp	sem-id-scout	sonnet	7	87.8	176.5	usage
-2026-09-27	PantonicApp	sem-id-scout	sonnet	25	149.4	314.1	usage
-2026-09-27	PantonicApp	P-0753-modelador	opus	21	90.2	249.7	usage
-2026-09-27	PantonicApp	AF-T21-consultor-1	opus	11	48.2	105.3	usage
-2026-09-27	PantonicApp	P-0753-modelador	opus	28	101.2	668.5	usage
-2026-09-27	PantonicApp	AF-T21-consultor-2	opus	16	59.9	291.8	usage
-2026-09-27	PantonicApp	P-0753-modelador	opus	31	107.4	3561.9	usage
-2026-09-27	PantonicApp	AF-T19a	sonnet	19	60.4	205.1	usage
-2026-09-27	PantonicApp	AF-T19a	sonnet	35	79.9	6066.8	usage
-2026-09-27	PantonicApp	AF-T19a-consultor-1	opus	22	56.1	259.5	usage
-2026-09-27	PantonicApp	AF-T19a	sonnet	9	54.1	72.2	usage
-2026-09-27	PantonicApp	AF-T19a-revisao	opus	23	78.5	197.1	usage
+data	projeto	tarefa	modelo	tool_uses	tokens_k	duracao_s	fonte	agente
+2026-08-01	PantonicApp	V2B-T1	Sonnet	13	44	100	usage	-
+2026-08-01	PantonicApp	V2B-T2	Sonnet	20	57	128	usage	-
+2026-08-01	PantonicApp	V2B-T3	Sonnet	24	79	357	usage	-
+2026-08-01	PantonicApp	V2B-T4	Haiku	122	282	2300	usage	-
+2026-08-01	PantonicApp	V2B-T5	Haiku	28	40	201	usage	-
+2026-08-01	PantonicApp	V2B-T6	Haiku	12	190.5	390	usage	-
+2026-08-01	PantonicApp	V2B-T7	Haiku	136	310	11500	usage	-
+2026-08-01	PantonicApp	V2B-T8	Sonnet	67	159	810	usage	-
+2026-08-01	PantonicApp	V2B-T9	Sonnet	49	117	540	usage	-
+2026-08-01	PantonicApp	V2C-T1	Sonnet	28	111	305	usage	-
+2026-08-01	PantonicApp	V2C-T2	Sonnet	32	178	449	usage	-
+2026-08-01	PantonicApp	V2C-T3	Opus	37	183	698	usage	-
+2026-08-01	PantonicApp	V2C-T4	Opus	28			contado	-
+2026-08-01	PantonicApp	V2C-T5	Opus	12			contado	-
+2026-08-01	PantonicApp	V2C-T6	Opus	28			contado	-
+2026-08-01	PantonicApp	V2M-T1	Opus	40			nao_medido	-
+2026-08-01	PantonicApp	V2M-T2	Sonnet	25	78	2940	usage	-
+2026-08-01	PantonicApp	V2M-T3	Sonnet	29	71	11580	usage	-
+2026-08-01	PantonicApp	V2M-T4	Sonnet	24	55	446	usage	-
+2026-08-01	PantonicApp	V2M-T5	Sonnet	41	76	312	usage	-
+2026-08-01	PantonicApp	V2M-T5	Sonnet	31	94	1172	usage	-
+2026-08-01	PantonicApp	V2K-T1	Sonnet	17	55	2160	usage	-
+2026-08-01	PantonicApp	V2K-T2	Sonnet	33	101	24420	usage	-
+2026-08-01	PantonicApp	V2K-T3	Opus	18	49	180	usage	-
+2026-08-01	PantonicApp	V2K-T4	Opus	11	66	360	contado	-
+2026-08-01	PantonicApp	V2K-T5	Sonnet	21	65	396	usage	-
+2026-08-01	PantonicApp	V2K-T6	Opus	24			contado	-
+2026-08-01	PantonicApp	V2K-T7	Opus	14			contado	-
+2026-08-01	PantonicApp	V2K-T8	Sonnet	18	99	396	usage	-
+2026-08-01	PantonicApp	V2K-T9	Opus	30	120	720	contado	-
+2026-08-01	PantonicApp	V2K-T10	Opus	35	95	780	contado	-
+2026-08-01	PantonicApp	V2K-T11	Sonnet	47	104	6000	usage	-
+2026-08-01	PantonicApp	V2K-T12a	Sonnet	38	87	564	usage	-
+2026-08-01	PantonicApp	V2K-T12b	Sonnet	25	79	1029	usage	-
+2026-08-04	PantonicApp	V2K-T13	Sonnet	18	73	502	usage	-
+2026-08-04	PantonicApp	V2K-T14	Opus	15			contado	-
+2026-08-04	PantonicApp	V2K-T15	Sonnet	26	87	6960	usage	-
+2026-08-04	PantonicApp	V2K-T16	Opus	34			contado	-
+2026-08-04	PantonicApp	V2K-T17	Sonnet				nao_medido	-
+2026-08-04	PantonicApp	V2K-T18	Sonnet	34	135	449	usage	-
+2026-08-04	PantonicApp	V2K-T19	Sonnet				nao_medido	-
+2026-08-05	PantonicApp	V2D-T1	Opus	16			contado	-
+2026-08-05	PantonicApp	V2D-T2	Opus	25	96	427	usage	-
+2026-08-05	PantonicApp	V2D-T3	Sonnet	57	121	4512	usage	-
+2026-08-05	PantonicApp	V2D-T4	Sonnet	46	100	8061	usage	-
+2026-08-05	PantonicApp	V2D-T2r2	Opus	64	185	1084	usage	-
+2026-08-05	PantonicApp	V2I-T1	Sonnet	20	65	117	usage	-
+2026-08-05	PantonicApp	V2I-T2	Sonnet	15	54	140	usage	-
+2026-08-05	PantonicApp	V2I-T3	Opus	22			contado	-
+2026-08-05	PantonicApp	V2I-T4	Opus	32	61	258	usage	-
+2026-08-05	PantonicApp	V2I-T5	Opus	28	72	308	usage	-
+2026-08-05	PantonicApp	V2I-T6	Opus	25	87	317	usage	-
+2026-08-05	PantonicApp	V2I-T7	Opus	19	53	152	usage	-
+2026-08-05	PantonicApp	V2I-T8	Sonnet	48	99	383	usage	-
+2026-08-05	PantonicApp	V2I-T9	Sonnet	40	93	2743	usage	-
+2026-08-05	PantonicApp	V2I-T10	Sonnet	32	80	429	usage	-
+2026-08-06	PantonicApp	V2I-T11	Opus	39	95	405	usage	-
+2026-08-06	PantonicApp	V2I-T11b	Opus	34	104	316	usage	-
+2026-08-06	PantonicApp	V2I-T11c	Opus	66	199	1032	usage	-
+2026-08-06	PantonicApp	V2E-T1	Sonnet	39	76	11797	usage	-
+2026-08-06	PantonicApp	V2E-T2	Opus	70	83	327	usage	-
+2026-08-06	PantonicApp	V2E-T3a	Sonnet	49	112	520	usage	-
+2026-08-06	PantonicApp	V2E-T3b	Opus	19	54	179	usage	-
+2026-08-06	PantonicApp	V2E-T3c	Opus	21	49	147	usage	-
+2026-08-06	PantonicApp	V2E-T4a	Sonnet	33	110	671	usage	-
+2026-08-06	PantonicApp	V2E-T4b	Sonnet	27	91	468	usage	-
+2026-08-06	PantonicApp	V2E-T4c	Sonnet	31	97	514	usage	-
+2026-08-06	PantonicApp	V2E-T5a	Sonnet	27	87	588	usage	-
+2026-08-06	PantonicApp	V2E-T5b	Sonnet	46	108	1660	usage	-
+2026-08-07	PantonicApp	V2E-T6a	Opus	19	56	187	usage	-
+2026-08-07	PantonicApp	V2E-T6b	Opus	22	59	172	usage	-
+2026-08-07	PantonicApp	V2E-T7	Opus	13	44	433	usage	-
+2026-08-07	PantonicApp	V2E-T9-replan	Opus	48	110	823	usage	-
+2026-08-07	PantonicApp	V2E-T9-replan-r2	Opus	43	164	680	usage	-
+2026-08-07	PantonicApp	V2E-T9a	Opus	29	85	375	usage	-
+2026-08-07	PantonicApp	V2E-T9b	Opus	25	78	290	usage	-
+2026-08-07	PantonicApp	V2E-T9c	Sonnet	41	94	2002	usage	-
+2026-08-07	PantonicApp	V2E-T9d	Sonnet	32	76	332	usage	-
+2026-08-07	PantonicApp	V2E-T9e	Opus	29	70	193	usage	-
+2026-08-07	PantonicApp	V2E-T10-sweep-arch-reverse	Haiku	5	11	41	usage	-
+2026-08-07	PantonicApp	V2E-T10-sweep-arch-acl	Haiku	13	20	73	usage	-
+2026-08-07	PantonicApp	V2E-T10-sweep-arch-mirror	Haiku	15	28	114	usage	-
+2026-08-07	PantonicApp	V2E-T10-sweep-ddd-pureza	Haiku	3	10	17	usage	-
+2026-08-07	PantonicApp	V2E-T10-sweep-ddd-vo	Haiku	10	17	49	usage	-
+2026-08-07	PantonicApp	V2E-T10-sweep-ddd-usecase	Haiku	30	23	133	usage	-
+2026-08-07	PantonicApp	V2E-T10	Opus	57	131	498	usage	-
+2026-08-07	PantonicApp	V2E-T11	Opus	52	137	882	usage	-
+2026-08-07	PantonicApp	V2P-T1	Opus	32	85	413	usage	-
+2026-08-07	PantonicApp	V2P-T2	Opus	33	68	960	usage	-
+2026-08-08	PantonicApp	V2P-T3	Opus	34	85	302	usage	-
+2026-08-08	PantonicApp	V2P-T4	Opus	24	57	197	usage	-
+2026-08-08	PantonicApp	V2P-T5	Sonnet	41	111	472	usage	-
+2026-08-08	PantonicApp	V2P-T6	Sonnet	35	84	620	usage	-
+2026-08-08	PantonicApp	V2P-T7	Opus	68	84	160	contado	-
+2026-08-08	PantonicApp	V2P-T8	Opus	38	90	262	usage	-
+2026-08-08	PantonicApp	V2P-T9	Sonnet	31	79	279	usage	-
+2026-08-08	PantonicApp	DHB-T1	Sonnet	40	117	446	usage	-
+2026-08-08	PantonicApp	EXA-T1	Sonnet	26	148	1113	usage	-
+2026-08-08	PantonicApp	EXA-T2	Opus	25			contado	-
+2026-08-08	PantonicApp	EXA-T3	Opus	26			contado	-
+2026-08-08	PantonicApp	EXA-T4	Opus	34			contado	-
+2026-08-08	PantonicApp	EXA-T5	Opus	26	94	428	usage	-
+2026-08-08	PantonicApp	EXA-T6a	Opus	17	63	204	usage	-
+2026-08-08	PantonicApp	EXA-T6b	Opus	30	75	307	usage	-
+2026-08-08	PantonicApp	EXA-T7	Sonnet	35	99	1343	usage	-
+2026-08-08	PantonicApp	EXA-T8a	Sonnet	48	141	2103	usage	-
+2026-08-08	PantonicApp	EXA-T8b	Sonnet	26	102	1874	usage	-
+2026-08-08	PantonicApp	EXA-T8c	Sonnet	38	155	2139	usage	-
+2026-08-08	PantonicApp	EXA-T9a	Sonnet	37	138	1486	usage	-
+2026-08-08	PantonicApp	EXA-T9b	Sonnet	34	105	22129	usage	-
+2026-08-09	PantonicApp	EXA-T10	Opus	19	79	764	usage	-
+2026-08-10	PantonicApp	EXA-T11-retomada	Opus	8	103	179	usage	-
+2026-08-11	PantonicApp	EXA-T18	Sonnet	48	137	1960	usage	-
+2026-08-11	PantonicApp	EXA-T19	Sonnet	29	140	478	usage	-
+2026-08-11	PantonicApp	EXA-T19-replan	Opus	21	80	423	usage	-
+2026-08-11	PantonicApp	EXA-DPE-replan	Opus	19	78	550	usage	-
+2026-08-11	PantonicApp	EXA-T22	Opus	14	61	355	usage	-
+2026-08-11	PantonicApp	EXA-T23a	Opus	14	58	3101	usage	-
+2026-08-11	PantonicApp	EXA-T23b	Opus	19	63	237	usage	-
+2026-08-11	PantonicApp	EXA-DPG-replan	Opus	39			contado	-
+2026-08-11	PantonicApp	EXA-DPG-replan-followup	Opus	12			contado	-
+2026-08-11	PantonicApp	EXA-T28	Opus	21	54	406	usage	-
+2026-08-11	PantonicApp	EXA-DPH-replan	Opus	53	127	4637	usage	-
+2026-08-11	PantonicApp	EXA-DPK-replan	Opus	34	94	625	usage	-
+2026-08-11	PantonicApp	EXA-T19	Sonnet	41	168	964	usage	-
+2026-08-11	PantonicApp	EXA-T20	Opus	26	72	409	usage	-
+2026-08-11	PantonicApp	EXA-T31	Opus	15	53	151	usage	-
+2026-08-11	PantonicApp	EXA-TK32-insumo	Opus	44			contado	-
+2026-08-11	PantonicApp	EXA-T32	Opus	17	61	146	usage	-
+2026-08-11	PantonicApp	EXA-T21a	Opus	29	93	2594	usage	-
+2026-08-11	PantonicApp	EXA-T21b	Opus	27	115	12268	usage	-
+2026-08-11	PantonicApp	EXA-DPM-decisao	Opus	5			contado	-
+2026-08-11	PantonicApp	EXA-DPM-replan	Opus	39	117	829	usage	-
+2026-08-12	PantonicApp	EXA-T33	Opus	25	58	414	usage	-
+2026-08-12	PantonicApp	EXA-T35	Opus	23	60	187	usage	-
+2026-08-12	PantonicApp	EXA-T36	Opus	24	60	215	usage	-
+2026-08-12	PantonicApp	EXA-T37	Opus	23	58	274	usage	-
+2026-08-12	PantonicApp	EXA-T38	Sonnet	20	55	3871	usage	-
+2026-08-12	PantonicApp	EXA-T39	Opus	13	54	2033	usage	-
+2026-08-12	PantonicApp	EXA-T23b-fecho	Opus	24			contado	-
+2026-08-12	PantonicApp	EXA-T24	Opus	24	48	186	usage	-
+2026-08-12	PantonicApp	EXA-DPN-replan	Opus	20			contado	-
+2026-08-12	PantonicApp	EXA-DPO-replan	Opus	10			contado	-
+2026-08-12	PantonicApp	EXA-T40	Opus	9	41	383	usage	-
+2026-08-12	PantonicApp	EXA-T41	Opus	17	54	380	usage	-
+2026-08-12	PantonicApp	EXA-T42	Opus	7	45	78	usage	-
+2026-08-12	PantonicApp	EXA-T43	Opus	41	101	1601	usage	-
+2026-08-12	PantonicApp	EXA-T44	Opus	18	101	353	usage	-
+2026-08-13	PantonicApp	EXA-T25	Opus	24	73	179	usage	-
+2026-08-13	PantonicApp	EXA-T45	Opus	17	72	745	usage	-
+2026-08-13	PantonicApp	EXA-T46	Opus	12	46	171	usage	-
+2026-08-13	PantonicApp	EXA-T47	Opus	28	113	393	usage	-
+2026-08-13	PantonicApp	EXA-T48	Opus	46	133	2741	usage	-
+2026-08-13	PantonicApp	EXA-T49	Opus	38	76	352	usage	-
+2026-08-13	PantonicApp	EXA-T50	Opus	36	88	1082	usage	-
+2026-08-13	PantonicApp	EXA-T51a	Sonnet	26	76	446	usage	-
+2026-08-13	PantonicApp	EXA-T51b	Opus	48	118	547	usage	-
+2026-08-13	PantonicApp	EXA-T52	Sonnet	52	113	533	usage	-
+2026-08-15	PantonicApp	EXA-T13	Sonnet	35	131	15599	usage	-
+2026-08-15	PantonicApp	EXA-T13-laudo	Opus	17	72	254	usage	-
+2026-08-15	PantonicApp	EXA-DPR-replan	Opus	58	122	707	usage	-
+2026-08-15	PantonicApp	RPC-P0735-planejamento	Opus	64	183	994	usage	-
+2026-08-15	PantonicApp	RPC-T1	Opus	14	56	103	usage	-
+2026-08-17	PantonicApp	RPC-T2	Sonnet	25	127	6082	usage	-
+2026-08-17	PantonicApp	RPC-T3	Sonnet	21	63	164	usage	-
+2026-08-17	PantonicApp	RPC-T4	Sonnet	24	86	225	usage	-
+2026-08-17	PantonicApp	RPC-T10	Sonnet	18	64	816	usage	-
+2026-08-17	PantonicApp	RPC-T5	Sonnet				nao_medido	-
+2026-08-17	PantonicApp	RPC-T6	Sonnet	17	52	136	usage	-
+2026-08-18	PantonicApp	RPC-T11	Sonnet	23	79	23259	usage	-
+2026-08-18	PantonicApp	RPC-T7a	Opus	18	60	616	usage	-
+2026-08-18	PantonicApp	RPC-T7b	Opus	9	46	1939	usage	-
+2026-08-18	PantonicApp	RPC-T7c	Opus	15	44	1341	usage	-
+2026-08-19	PantonicApp	RPC-T8	Sonnet	17	61	106	usage	-
+2026-08-19	PantonicApp	RPC-T9	Opus	28			contado	-
+2026-08-19	PantonicApp	EXA-T14	Sonnet	23	81	351	usage	-
+2026-08-19	PantonicApp	EXA-T15	Sonnet	43	129.1	1505	usage	-
+2026-08-19	PantonicApp	EXA-DPS-replan	Opus	27			contado	-
+2026-08-19	PantonicApp	EXA-T55	Sonnet	49	125.3	2558	usage	-
+2026-08-22	PantonicApp	P-0736-autoria	Opus	13	57	353	usage	-
+2026-08-22	PantonicApp	CPK-T1	sonnet	31	98.8	457	usage	-
+2026-08-22	PantonicApp	CPK-T2	sonnet				nao_medido	-
+2026-08-22	PantonicApp	CPK-T3	Opus	17	100	0	contado	-
+2026-08-22	PantonicApp	P-0737-autoria	opus	11	134.1	158	usage	-
+2026-08-22	PantonicApp	AUT-T1	sonnet	32	105.7	255	usage	-
+2026-08-22	PantonicApp	AUT-T5a-prova-instrumento	sonnet	25			contado	-
+2026-08-22	PantonicApp	AUT-T5a	sonnet	27	78.4	6263	usage	-
+2026-08-22	PantonicApp	AUT-T5b	Sonnet				nao_medido	-
+2026-08-22	PantonicApp	P-0738-autoria	opus	50	165.6	863	usage	-
+2026-08-22	PantonicApp	P-0738-revisao-DX-13	opus	50	103.7	687	usage	-
+2026-08-22	PantonicApp	P-0738-revisao-DX-15	opus	68	110.8	664	usage	-
+2026-08-22	PantonicApp	CTX-T1	opus	33	68	352	usage	-
+2026-08-22	PantonicApp	CTX-T1b	opus	39	63.7	401	usage	-
+2026-08-22	PantonicApp	CTX-T1c	opus	32	66.9	286	usage	-
+2026-08-23	PantonicApp	CTX-T1d	sonnet	62	122.4	823	usage	-
+2026-08-23	PantonicApp	CTX-T2	Sonnet	34	95.2	457	usage	-
+2026-08-23	PantonicApp	CTX-T3	Sonnet	43	143.8	1608	usage	-
+2026-08-23	PantonicApp	CTX-T4	Opus	23			contado	-
+2026-08-23	PantonicApp	P-0738-CTX-T5	opus	24	105	1500	contado	-
+2026-08-23	PantonicApp	CTX-T6a	sonnet	22	85.4	914	usage	-
+2026-08-23	PantonicApp	CTX-T6a	sonnet	74	187	1386	usage	-
+2026-08-23	PantonicApp	CTX-T6b	sonnet	16	125.5	2132	usage	-
+2026-08-23	PantonicApp	CTX-T7	sonnet	19	53.2	190	usage	-
+2026-08-23	PantonicApp	CTX-T8a	sonnet	6	44.6	1675	usage	-
+2026-08-23	PantonicApp	CTX-T8b	sonnet	11	51.2	97	usage	-
+2026-08-23	PantonicApp	CTX-T8c	sonnet	7	44.9	2335	usage	-
+2026-08-24	PantonicApp	CTX-T9	sonnet	30			contado	-
+2026-08-24	PantonicApp	CTX-T10	sonnet	9	57.257	89.716	usage	-
+2026-08-24	PantonicApp	CTX-T11	opus	52			contado	-
+2026-08-24	PantonicApp	TK-52	sonnet	10	47.668	426.407	usage	-
+2026-08-24	PantonicApp	TK-51	sonnet	112	292.635	1883.894	usage	-
+2026-08-24	PantonicApp	TK-51-decisao	sonnet	27			contado	-
+2026-08-24	PantonicApp	TK-53a	sonnet	52	172.733	1022.771	usage	-
+2026-08-24	PantonicApp	TK-53-escopamento	opus	16	116.382	199.356	usage	-
+2026-08-31	PantonicApp	TK-54-escopamento	opus	22			contado	-
+2026-09-16	PantonicApp	BKL-RP1	fable	17			contado	-
+2026-09-16	PantonicApp	BKL-T2	sonnet	46	200	980	usage	-
+2026-09-16	PantonicApp	BKL-AE2-pickup	opus	29			contado	-
+2026-09-16	PantonicApp	BKL-RP2	opus	31	98.445	476	usage	-
+2026-09-16	PantonicApp	BKL-T2a	sonnet	15	82.313	182	usage	-
+2026-09-16	PantonicApp	BKL-RP2-doutrina	opus	10			contado	-
+2026-09-16	PantonicApp	BKL-T2-revisao	opus	15	67.161	232	usage	-
+2026-09-16	PantonicApp	BKL-T2a-revisao	opus	11	51.239	131	usage	-
+2026-09-16	PantonicApp	BKL-REV-pickup	opus	29			contado	-
+2026-09-16	PantonicApp	BKL-RP3	opus	45	158.137	1062	usage	-
+2026-09-16	PantonicApp	BKL-T2b	sonnet	22	84.865	162	usage	-
+2026-09-16	PantonicApp	BKL-T2c	sonnet	23	93.705	216	usage	-
+2026-09-16	PantonicApp	BKL-T2bc-revisao	opus	15	67.780	191	usage	-
+2026-09-16	PantonicApp	BKL-RP4	opus	20	85.321	466	usage	-
+2026-09-16	PantonicApp	BKL-T2d	sonnet	23	82.925	202	usage	-
+2026-09-17	PantonicApp	BKL-T2d-revisao	opus	11	52.353	104.928	usage	-
+2026-09-17	PantonicApp	BKL-T2e	sonnet	31	92.454	189.672	usage	-
+2026-09-17	PantonicApp	BKL-T2e-revisao	opus	14	53.650	114.987	usage	-
+2026-09-17	PantonicApp	BKL-T3-devolvida	sonnet	23	125.878	434.503	usage	-
+2026-09-17	PantonicApp	BKL-RP5	opus	29	108.154	616.861	usage	-
+2026-09-17	PantonicApp	BKL-T3	sonnet	46	179.305	1020.648	usage	-
+2026-09-17	PantonicApp	BKL-T3-revisao	opus	19	90.225	307.822	usage	-
+2026-09-18	PantonicApp	BKL-RP6	opus	23	124.985	722.474	usage	-
+2026-09-18	PantonicApp	BKL-T3a	sonnet	27	86.429	248.836	usage	-
+2026-09-18	PantonicApp	BKL-T3a-revisao	sonnet	18	67.794	301.706	usage	-
+2026-09-18	PantonicApp	BKL-RP7	opus	48	153.754	664.885	usage	-
+2026-09-18	PantonicApp	BKL-T3b	sonnet	22	78	97	usage	-
+2026-09-18	PantonicApp	BKL-T3b-revisao	opus	21	63.768	176.714	usage	-
+2026-09-18	PantonicApp	TK-54a-triagem-blocked	sonnet	0	63.2	119	usage	-
+2026-09-18	PantonicApp	RP-TK54-1	sonnet	18	87.2	699	usage	-
+2026-09-18	PantonicApp	TK-54a-inline	opus	10	0	0	nao_medido	-
+2026-09-18	PantonicApp	BKL-T4	sonnet	51	6558.8	1026.2	usage	-
+2026-09-18	PantonicApp	BKL-T4	sonnet	51	203.7	1027	usage	-
+2026-09-18	PantonicApp	BKL-T4-revisao	sonnet	20	80.9	262	usage	-
+2026-09-18	PantonicApp	LM-T1	sonnet	10	61.8	88	usage	-
+2026-09-18	PantonicApp	P-0740-RP-1	opus	38	112.4	456	usage	-
+2026-09-18	PantonicApp	LM-T1	sonnet	27	73.0	252	usage	-
+2026-09-18	PantonicApp	P-0740-RP-2	opus	48	114.3	483	usage	-
+2026-09-18	PantonicApp	P-0740-RP-3	opus	47	129.5	587	usage	-
+2026-09-18	PantonicApp	P-0740-RP-4	opus	35	67.5	268	usage	-
+2026-09-18	PantonicApp	LM-T1-revisao	opus	20	66.5	259	usage	-
+2026-09-18	PantonicApp	P-0740-RP-5	opus	57	167.9	1002.2	usage	-
+2026-09-18	PantonicApp	LM-T7	sonnet	4	59.5	62.8	usage	-
+2026-09-18	PantonicApp	P-0740-ESC-1	opus	10	191.8	360.3	usage	-
+2026-09-18	PantonicApp	LM-T7-2	sonnet	17	49.8	67.3	usage	-
+2026-09-18	PantonicApp	LM-T7-revisao	opus	21	53.9	186.2	usage	-
+2026-09-18	PantonicApp	P-0740-ESC-2	opus	21	225.7	493.1	usage	-
+2026-09-18	PantonicApp	LM-T1a	sonnet	30	94.8	251.6	usage	-
+2026-09-18	PantonicApp	LM-T1a-revisao	opus	25	69.6	202.2	usage	-
+2026-09-18	PantonicApp	LM-T7a	sonnet	13	75.3	268.8	usage	-
+2026-09-18	PantonicApp	LM-T7a-revisao	opus	20	64.0	246.8	usage	-
+2026-09-18	PantonicApp	P-0740-ESC-3	opus	22	272.9	573.5	usage	-
+2026-09-18	PantonicApp	LM-T3	sonnet	30	93.9	289.4	usage	-
+2026-09-18	PantonicApp	LM-T3-revisao	opus	18	58.1	276.2	usage	-
+2026-09-18	PantonicApp	P-0740-ESC-4	opus	13	305.2	333.0	usage	-
+2026-09-19	PantonicApp	LM-T4a	sonnet	25	61.3	86.3	usage	-
+2026-09-19	PantonicApp	LM-T4a-revisao	opus	35	86.1	348.6	usage	-
+2026-09-19	PantonicApp	LM-T2a	sonnet	26	92.5	238.2	usage	-
+2026-09-19	PantonicApp	LM-T2a-revisao	opus	25	70.1	285.9	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-5	opus	10	331.9	356.6	usage	-
+2026-09-19	PantonicApp	LM-T2	sonnet	14	78.4	275.3	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-6	opus	11	356.3	290.7	usage	-
+2026-09-19	PantonicApp	LM-T2-revisao	opus	23	73.7	236.9	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-7	opus	13	382.5	276.2	usage	-
+2026-09-19	PantonicApp	LM-T2c	sonnet	11	56.6	65.8	usage	-
+2026-09-19	PantonicApp	LM-T2c-revisao	opus	22	73.6	226.2	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-8	opus	6	404.9	296.8	usage	-
+2026-09-19	PantonicApp	LM-T3a	sonnet	36	86.0	213.6	usage	-
+2026-09-19	PantonicApp	LM-T3a-revisao	opus	15	56.3	139.2	usage	-
+2026-09-19	PantonicApp	LM-T2d	sonnet	17	50.6	65.3	usage	-
+2026-09-19	PantonicApp	LM-T2d-revisao	opus	23	55.6	178.5	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-9	opus	38	72.7	333.9	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-9b	opus	9	90.2	134.4	usage	-
+2026-09-19	PantonicApp	LM-T2e	sonnet	7	44.4	39.1	usage	-
+2026-09-19	PantonicApp	LM-T2e-revisao	opus	16	53.7	119.4	usage	-
+2026-09-19	PantonicApp	LM-T2b	sonnet	9	72.9	199.9	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-10	opus	28	139.8	369.7	usage	-
+2026-09-19	PantonicApp	LM-T2b	sonnet	16	52.5	131.4	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-11	opus	13	164.9	274.9	usage	-
+2026-09-19	PantonicApp	LM-T2b-revisao	opus	18	61.4	185.8	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-12	opus	37	220.9	585.3	usage	-
+2026-09-19	PantonicApp	LM-T4b	sonnet	14	77.2	272.6	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-13	opus	30	269.2	493.6	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-14	opus	8	287.2	206.6	usage	-
+2026-09-19	PantonicApp	LM-T5	opus	33	169.5	541.7	usage	-
+2026-09-19	PantonicApp	LM-T5-revisao	opus	23	80.9	243.0	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-15	opus	9	304.8	197.4	usage	-
+2026-09-19	PantonicApp	LM-T5b	sonnet	26	106.0	393.6	usage	-
+2026-09-19	PantonicApp	LM-T5b-revisao	opus	22	74.9	290.3	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-16	opus	18	332.8	436.7	usage	-
+2026-09-19	PantonicApp	LM-T5c	sonnet	46	134.7	618.8	usage	-
+2026-09-19	PantonicApp	LM-T5c-revisao	opus	26	78.0	296.8	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-17	opus	7	348.3	189.0	usage	-
+2026-09-19	PantonicApp	LM-T4b	sonnet	39	111.8	422.7	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-18	opus	9	363.3	310.4	usage	-
+2026-09-19	PantonicApp	LM-T4b-revisao	opus	21	67.8	209.0	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-19	opus	10	379.4	218.6	usage	-
+2026-09-19	PantonicApp	LM-T4	opus	25	129.7	197.6	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-20	opus	14	405.6	250.2	usage	-
+2026-09-19	PantonicApp	LM-T4	opus	88	228.5	863.2	usage	-
+2026-09-19	PantonicApp	LM-T4-revisao	opus	38	110.0	305.7	usage	-
+2026-09-19	PantonicApp	P-0740-ESC-21	opus	10	423.1	250.7	usage	-
+2026-09-19	PantonicApp	LM-T4d	sonnet	27	61.9	132.1	usage	-
+2026-09-19	PantonicApp	LM-T4d-revisao	opus	23	83.7	268.0	usage	-
+2026-09-19	PantonicApp	LM-T3b	sonnet	19	64.2	133.5	usage	-
+2026-09-19	PantonicApp	LM-T3b-revisao	opus	33	89.9	308.1	usage	-
+2026-09-19	PantonicApp	LM-T2f	sonnet	5	44.4	37.4	usage	-
+2026-09-19	PantonicApp	LM-T2f-revisao	opus	17	53.8	127.9	usage	-
+2026-09-19	PantonicApp	LM-T8	opus	6	48.5	61.0	usage	-
+2026-09-19	PantonicApp	LM-T8	sonnet	4	66.4	57.4	usage	-
+2026-09-19	PantonicApp	ESC-23-consultor	opus	62	147.6	1002.2	usage	-
+2026-09-19	PantonicApp	ESC-24-consultor	opus	27	197.6	544.3	usage	-
+2026-09-19	PantonicApp	LM-T6	opus	47	122.6	533.2	usage	-
+2026-09-19	PantonicApp	LM-T6-rederivacao	opus	5	129.8	70.5	usage	-
+2026-09-19	PantonicApp	LM-T8	sonnet	8	62.8	56.7	usage	-
+2026-09-19	PantonicApp	LM-T8-revisao	opus	24	95.2	301.0	usage	-
+2026-09-19	PantonicApp	ESC-25-consultor	opus	18	233.0	300.6	usage	-
+2026-09-19	PantonicApp	LM-T6-revisao	opus	23	84.8	298.0	usage	-
+2026-09-19	PantonicApp	ESC-26-consultor	opus	19	279.5	558.3	usage	-
+2026-09-19	PantonicApp	ESC-27-consultor	opus	61	125.3	887.3	usage	-
+2026-09-19	PantonicApp	LM-T10	sonnet	17	82.1	281.8	usage	-
+2026-09-19	PantonicApp	LM-T10-revisao	opus	23	77.0	333.2	usage	-
+2026-09-19	PantonicApp	ESC-28-consultor	opus	34	184.3	658.2	usage	-
+2026-09-19	PantonicApp	LM-T11	opus	13	60.7	174.0	usage	-
+2026-09-19	PantonicApp	LM-T11-revisao	opus	31	95.8	383.5	usage	-
+2026-09-19	PantonicApp	ESC-29-consultor	opus	17	229.6	475.2	usage	-
+2026-09-19	PantonicApp	LM-T12	sonnet	24	83.5	194.5	usage	-
+2026-09-19	PantonicApp	LM-T12-revisao	opus	26	79.6	287.6	usage	-
+2026-09-19	PantonicApp	LM-T4c	sonnet	20	74.2	195.1	usage	-
+2026-09-19	PantonicApp	LM-T4c-revisao	opus	26	82.1	240.2	usage	-
+2026-09-19	PantonicApp	ESC-30-consultor	opus	11	258.4	424.8	usage	-
+2026-09-19	PantonicApp	LM-T13	sonnet	23	67.3	137.9	usage	-
+2026-09-19	PantonicApp	LM-T13-revisao	opus	20	75.3	243.9	usage	-
+2026-09-19	PantonicApp	ESC-31-consultor	opus	6	275.1	226.6	usage	-
+2026-09-19	PantonicApp	LM-T14	sonnet	44	89.6	337.0	usage	-
+2026-09-19	PantonicApp	LM-T14-revisao	opus	23	72.9	292.6	usage	-
+2026-09-19	PantonicApp	ESC-32-consultor	opus	11	304.7	434.6	usage	-
+2026-09-19	PantonicApp	LM-T15	sonnet	42	108.0	424.2	usage	-
+2026-09-19	PantonicApp	LM-T15-revisao	opus	27	89.3	383.2	usage	-
+2026-09-19	PantonicApp	ESC-33-consultor	opus	3	317.4	151.6	usage	-
+2026-09-19	PantonicApp	LM-T5d	sonnet	11	75.3	222.0	usage	-
+2026-09-19	PantonicApp	LM-T5d-revisao	opus	17	67.8	279.3	usage	-
+2026-09-19	PantonicApp	LM-T5a	opus	9	67.1	131.3	usage	-
+2026-09-19	PantonicApp	ESC-34-consultor	opus	7	340.8	330.7	usage	-
+2026-09-19	PantonicApp	LM-T5a	opus	34	119.8	359.2	usage	-
+2026-09-19	PantonicApp	ESC-35-consultor	opus	8	363.7	317.5	usage	-
+2026-09-19	PantonicApp	LM-T5a	sonnet	20	72.5	124.1	usage	-
+2026-09-19	PantonicApp	LM-T5a-revisao	opus	22	75.0	313.4	usage	-
+2026-09-19	PantonicApp	LM-T9	opus	24	122.0	486.9	usage	-
+2026-09-19	PantonicApp	ESC-36-consultor	opus	4	377.0	164.0	usage	-
+2026-09-19	PantonicApp	LM-T9-revisao	opus	25	110.9	431.9	usage	-
+2026-09-19	PantonicApp	ESC-37-consultor	opus	9	400.6	337.6	usage	-
+2026-09-19	PantonicApp	ESC-38-consultor	opus	5	416.5	214.5	usage	-
+2026-09-19	PantonicApp	LM-T16	sonnet	20	73.6	149.9	usage	-
+2026-09-19	PantonicApp	ESC-39-consultor	opus	4	433.3	257.6	usage	-
+2026-09-19	PantonicApp	LM-T16-2	sonnet	30	98.5	359.3	usage	-
+2026-09-19	PantonicApp	LM-T16-revisao	opus	19	79.9	294.8	usage	-
+2026-09-19	PantonicApp	ESC-40-consultor	opus	8	450.9	256.8	usage	-
+2026-09-19	PantonicApp	LM-T17	sonnet	16	57.9	111.7	usage	-
+2026-09-19	PantonicApp	LM-T17-revisao	opus	25	93.9	438.4	usage	-
+2026-09-19	PantonicApp	BKL-T9a	opus	35	100.9	457.9	usage	-
+2026-09-19	PantonicApp	BKL-T9a-consultoria	opus	50	131.0	735.8	usage	-
+2026-09-19	PantonicApp	BKL-T9a-2o-despacho	opus	66	177.2	1261.6	usage	-
+2026-09-19	PantonicApp	BKL-T9a-revisao	opus	33	97.9	458.0	usage	-
+2026-09-19	PantonicApp	ESC-2-consultor	opus	25	191.8	650.1	usage	-
+2026-09-19	PantonicApp	BKL-T10	sonnet	14	108.4	113.7	usage	-
+2026-09-19	PantonicApp	BKL-T10	sonnet	14	108.4	114.3	usage	-
+2026-09-19	PantonicApp	ESC-3-consultor	opus	31	245.7	583.0	usage	-
+2026-09-19	PantonicApp	BKL-T10-2o-despacho	sonnet	39	169.7	459.9	usage	-
+2026-09-19	PantonicApp	ESC-4-consultor	opus	19	290.3	438.3	usage	-
+2026-09-19	PantonicApp	BKL-T10-3o-despacho	sonnet	53	259.6	916.3	usage	-
+2026-09-19	PantonicApp	ESC-5-consultor	opus	13	319.6	299.7	usage	-
+2026-09-19	PantonicApp	BKL-T10-4o-despacho-PARCIAL	sonnet	154	523.2	2112.3	usage	-
+2026-09-20	PantonicApp	BKL-T10	sonnet	3	60.0	27.5	usage	-
+2026-09-20	PantonicApp	BKL-T10-5o-despacho-DEFEITO-ORQ	sonnet	3	60.0	27.7	usage	-
+2026-09-20	PantonicApp	BKL-T10-6o-despacho	sonnet	119	313.6	1801.1	usage	-
+2026-09-20	PantonicApp	BKL-T10-revisao	opus	34	116.1	391.9	usage	-
+2026-09-20	PantonicApp	ESC-6-consultor	opus	17	354.8	405.9	usage	-
+2026-09-20	PantonicApp	BKL-T10b	sonnet	40	177.5	724.6	usage	-
+2026-09-20	PantonicApp	BKL-T10b	sonnet	40	177.5	724.8	usage	-
+2026-09-20	PantonicApp	BKL-T10b-revisao	opus	33	96.7	372.2	usage	-
+2026-09-20	PantonicApp	BKL-T10a	sonnet	38	177.3	654.1	usage	-
+2026-09-20	PantonicApp	BKL-T10a	sonnet	38	177.3	654.4	usage	-
+2026-09-20	PantonicApp	BKL-T10a-2o-despacho	sonnet	21	103.9	204.1	usage	-
+2026-09-20	PantonicApp	BKL-T10a-revisao	opus	28	89.8	258.5	usage	-
+2026-09-20	PantonicApp	ESC-7-consultor	opus	14	386.8	346.8	usage	-
+2026-09-20	PantonicApp	BKL-T11	sonnet	26	109.1	165.2	usage	-
+2026-09-20	PantonicApp	BKL-T11	sonnet	26	109.1	165.4	usage	-
+2026-09-20	PantonicApp	ESC-8-consultor	opus	15	418.0	296.0	usage	-
+2026-09-20	PantonicApp	BKL-T11-2o-despacho	sonnet	59	143.3	484.8	usage	-
+2026-09-20	PantonicApp	BKL-T11-revisao	opus	32	93.4	390.2	usage	-
+2026-09-20	PantonicApp	ESC-9-consultor	opus	15	448.6	351.8	usage	-
+2026-09-20	PantonicApp	BKL-T11a	sonnet	31	75.8	204.2	usage	-
+2026-09-20	PantonicApp	BKL-T11a-revisao	opus	21	66.6	246.1	usage	-
+2026-09-20	PantonicApp	ESC-10-consultor	opus	7	467.2	220.9	usage	-
+2026-09-20	PantonicApp	BKL-T12	opus	32	97.2	355.3	usage	-
+2026-09-20	PantonicApp	BKL-T12	opus	32	97.2	355.5	usage	-
+2026-09-20	PantonicApp	BKL-T12-revisao	opus	35	98.1	441.5	usage	-
+2026-09-20	PantonicApp	TK-57a	sonnet	14	62.8	283.9	usage	-
+2026-09-20	PantonicApp	TK-62a	sonnet	21	91.0	369.3	usage	-
+2026-09-20	PantonicApp	TK-57a-revisao	opus	15	56.0	238.8	usage	-
+2026-09-20	PantonicApp	TK-62a-revisao	opus	17	60.6	217.5	usage	-
+2026-09-20	PantonicApp	TK-56a	sonnet	51	99.1	378.8	usage	-
+2026-09-20	PantonicApp	TK-56a-revisao	opus	17	68.0	269.6	usage	-
+2026-09-20	PantonicApp	TK-56a-consultor	opus	45	107.8	756.4	usage	-
+2026-09-20	PantonicApp	TK-56b	sonnet	30	120.0	384.9	usage	-
+2026-09-20	PantonicApp	TK-56b-revisao	opus	35	90.2	393.9	usage	-
+2026-09-20	PantonicApp	TK-64a	sonnet	11	46.9	68.3	usage	-
+2026-09-20	PantonicApp	TK-64a-revisao	opus	13	48.4	107.4	usage	-
+2026-09-20	PantonicApp	P-0741-ESC-1	opus	54	98.0	458.8	usage	-
+2026-09-20	PantonicApp	TK-59a	sonnet	62	110.6	393.8	usage	-
+2026-09-20	PantonicApp	TK-59a-revisao	opus	35	79.4	246.8	usage	-
+2026-09-20	PantonicApp	TK-60a	sonnet	42	135.5	695.9	usage	-
+2026-09-20	PantonicApp	TK-60a-revisao	opus	26	80.0	270.2	usage	-
+2026-09-20	PantonicApp	TK-60a-consultor	opus	17	34.4	359.9	usage	-
+2026-09-20	PantonicApp	TK-60a-r2	sonnet	50	134.9	703.7	usage	-
+2026-09-20	PantonicApp	TK-60a-r2-revisao	opus	23	84.7	286.0	usage	-
+2026-09-20	PantonicApp	TK-60b-consultor	opus	5	17.1	152.2	usage	-
+2026-09-20	PantonicApp	TK-60b	sonnet	20	67.6	158.1	usage	-
+2026-09-20	PantonicApp	TK-60b-revisao	opus	23	80.2	203.9	usage	-
+2026-09-20	PantonicApp	TK-60c	sonnet	7	44.5	39.2	usage	-
+2026-09-20	PantonicApp	TK-60c-revisao	opus	17	58.3	107.5	usage	-
+2026-09-20	PantonicApp	TK-61a-consultor	opus	11	22.3	188.4	usage	-
+2026-09-20	PantonicApp	TK-61a	sonnet	37	95.1	255.1	usage	-
+2026-09-20	PantonicApp	TK-61a-revisao	opus	23	78.9	207.7	usage	-
+2026-09-20	PantonicApp	TK-63a	sonnet	30	117.6	460.7	usage	-
+2026-09-20	PantonicApp	TK-63a-consultor	opus	4	13.9	154.2	usage	-
+2026-09-20	PantonicApp	TK-63a-r2	sonnet	30	97.8	286.2	usage	-
+2026-09-20	PantonicApp	TK-63a-revisao	opus	26	89.2	292.3	usage	-
+2026-09-20	PantonicApp	TK-58a	opus	16	54.8	163.7	usage	-
+2026-09-20	PantonicApp	TK-58a-revisao	opus	13	72.8	222.8	usage	-
+2026-09-20	PantonicApp	TK-58b-consultor	opus	7	22.2	219.1	usage	-
+2026-09-20	PantonicApp	TK-58b	sonnet	12	59.2	128.6	usage	-
+2026-09-20	PantonicApp	TK-58b-revisao	opus	11	63.0	131.7	usage	-
+2026-09-20	PantonicApp	TK-58c	sonnet	5	45.2	35.0	usage	-
+2026-09-20	PantonicApp	TK-58c-revisao	opus	17	69.8	176.1	usage	-
+2026-09-20	PantonicApp	TK-58d	sonnet	10	53.9	95.9	usage	-
+2026-09-20	PantonicApp	TK-58d-revisao	opus	15	63.5	136.6	usage	-
+2026-09-20	PantonicApp	MC-T1	sonnet	12	67.3	90.1	usage	-
+2026-09-20	PantonicApp	MC-T1-revisao	opus	16	80.9	243.3	usage	-
+2026-09-20	PantonicApp	P-0741-ESC-2	opus	85	161.2	1034.0	usage	-
+2026-09-20	PantonicApp	MC-T2	sonnet	80	201.9	7462.8	usage	-
+2026-09-20	PantonicApp	MC-T2-revisao	opus	29	97.2	388.8	usage	-
+2026-09-20	PantonicApp	P-0741-ESC-3	opus	22	198.6	531.8	usage	-
+2026-09-20	PantonicApp	MC-T2a	sonnet	10	47.0	91.7	usage	-
+2026-09-20	PantonicApp	MC-T2a-revisao	opus	24	65.6	274.3	usage	-
+2026-09-20	PantonicApp	MC-T3	sonnet	37	135.4	495.9	usage	-
+2026-09-20	PantonicApp	MC-T3-revisao	opus	29	101.9	358.0	usage	-
+2026-09-20	PantonicApp	MC-T3-revisao-b	opus	3	106.4	41.7	usage	-
+2026-09-20	PantonicApp	P-0741-ESC-4	opus	23	240.5	490.7	usage	-
+2026-09-20	PantonicApp	MC-T4	sonnet	27	63.9	119.5	usage	-
+2026-09-20	PantonicApp	MC-T4-revisao	opus	24	97.1	263.6	usage	-
+2026-09-20	PantonicApp	P-0741-ESC-5	opus	15	270.5	348.3	usage	-
+2026-09-20	PantonicApp	MC-T4a	sonnet	14	53.0	63.1	usage	-
+2026-09-20	PantonicApp	MC-T4a-revisao	opus	17	71.2	156.8	usage	-
+2026-09-20	PantonicApp	MC-T2b	sonnet	16	57.7	137.7	usage	-
+2026-09-20	PantonicApp	MC-T2b-revisao	opus	26	80.6	292.5	usage	-
+2026-09-20	PantonicApp	MC-T5	opus	19	61.0	162.1	usage	-
+2026-09-20	PantonicApp	MC-T5-revisao	opus	27	86.1	376.7	usage	-
+2026-09-20	PantonicApp	P-0741-RP-1	opus	51	212.4	1467.5	usage	-
+2026-09-20	PantonicApp	DOM-T1	sonnet	22	74.0	195.6	usage	-
+2026-09-20	PantonicApp	DOM-T1-revisao	opus	34	83.8	295.3	usage	-
+2026-09-20	PantonicApp	DOM-T2	sonnet	5	60.5	107.7	usage	-
+2026-09-20	PantonicApp	DOM-T2-revisao	opus	17	72.5	224.6	usage	-
+2026-09-20	PantonicApp	DOM-T3	sonnet	51	239.0	1385.3	usage	-
+2026-09-20	PantonicApp	DOM-T3-revisao	opus	32	102.0	417.3	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-1	opus	48	110.1	568.9	usage	-
+2026-09-20	PantonicApp	DOM-T3a	sonnet	16	58.0	87.0	usage	-
+2026-09-20	PantonicApp	DOM-T3a-revisao	opus	19	71.7	241.8	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-2	opus	30	160.9	494.2	usage	-
+2026-09-20	PantonicApp	DOM-T3b	sonnet	9	49.1	69.5	usage	-
+2026-09-20	PantonicApp	DOM-T3b-revisao	opus	15	59.5	154.8	usage	-
+2026-09-20	PantonicApp	DOM-T4	sonnet	26	99.5	168.7	usage	-
+2026-09-20	PantonicApp	DOM-T4-revisao	opus	22	80.4	223.3	usage	-
+2026-09-20	PantonicApp	DOM-T5	sonnet	15	109.2	403.1	usage	-
+2026-09-20	PantonicApp	DOM-T5-tentativa-1	sonnet	15	109.2	403.9	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-3	opus	18	200.7	324.7	usage	-
+2026-09-20	PantonicApp	DOM-T5	sonnet	28	76.5	150.0	usage	-
+2026-09-20	PantonicApp	DOM-T5-revisao	opus	21	108.3	381.3	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-4	opus	13	232.9	276.7	usage	-
+2026-09-20	PantonicApp	DOM-T5a	sonnet	7	56.4	83.7	usage	-
+2026-09-20	PantonicApp	DOM-T5a-tentativa-1	sonnet	7	56.4	84.3	usage	-
+2026-09-20	PantonicApp	DOM-T5a-revisao	opus	15	68.2	180.5	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-5	opus	12	267.0	275.4	usage	-
+2026-09-20	PantonicApp	DOM-T5b	sonnet	10	57.7	50.2	usage	-
+2026-09-20	PantonicApp	DOM-T5b-revisao	opus	20	85.4	213.4	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-6	opus	6	288.4	211.5	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-7	opus	13	338.7	445.5	usage	-
+2026-09-20	PantonicApp	DOM-T7	sonnet	10	55.6	50.0	usage	-
+2026-09-20	PantonicApp	DOM-T7-revisao	opus	20	85.7	323.0	usage	-
+2026-09-20	PantonicApp	P-0743-ESC-6-DOM-T7	opus	47	167.7	891.9	usage	-
+2026-09-20	PantonicApp	P-0743-MD-5	opus	18	65.1	135.7	usage	-
+2026-09-20	PantonicApp	DOM-T8	sonnet	14	56.8	73.7	usage	-
+2026-09-20	PantonicApp	DOM-T8-revisao	opus	20	81.7	202.7	usage	-
+2026-09-21	PantonicApp	P-0743-ESC-7-DOM-T8	opus	15	202.5	284.9	usage	-
+2026-09-21	PantonicApp	DOM-T8a	sonnet	22	67.1	113.3	usage	-
+2026-09-21	PantonicApp	DOM-T8a-revisao	opus	20	83.5	251.8	usage	-
+2026-09-21	PantonicApp	P-0743-ESC-8-DOM-T8a	opus	17	233.3	269.2	usage	-
+2026-09-21	PantonicApp	DOM-T9	sonnet	40	204.9	990.9	usage	-
+2026-09-21	PantonicApp	DOM-T9-revisao	opus	46	113.5	392.8	usage	-
+2026-09-21	PantonicApp	DOM-T9a	sonnet	12	57.8	60.9	usage	-
+2026-09-21	PantonicApp	DOM-T9a-revisao	opus	22	82.5	202.4	usage	-
+2026-09-21	PantonicApp	P-0743-ESC-9-DOM-T9a	opus	16	272.4	386.5	usage	-
+2026-09-21	PantonicApp	P-0743-MD-6	opus	10	46.9	67.7	usage	-
+2026-09-21	PantonicApp	DOM-T9b	sonnet	5	47.4	27.6	usage	-
+2026-09-21	PantonicApp	DOM-T9b-revisao	opus	20	87.3	237.6	usage	-
+2026-09-21	PantonicApp	P-0743-ESC-10-DOM-T9b	opus	21	304.9	313.3	usage	-
+2026-09-21	PantonicApp	P-0743-MD-7	opus	8	48.1	74.0	usage	-
+2026-09-21	PantonicApp	DOM-T9c	sonnet	11	59.2	99.5	usage	-
+2026-09-21	PantonicApp	P-0743-RP-1-DOM-T9c	opus	62	149.4	904.0	usage	-
+2026-09-21	PantonicApp	DOM-T9c-revisao	opus	27	85.7	252.2	usage	-
+2026-09-21	PantonicApp	DOM-T10-ato1	sonnet	7	52.8	41.6	usage	-
+2026-09-21	PantonicApp	P-0743-MD-8-DOM-T10	opus	28	132.6	525.9	usage	-
+2026-09-21	PantonicApp	DOM-T10-ato2	sonnet	55	106.4	264.9	usage	-
+2026-09-21	PantonicApp	DOM-T10-revisao	opus	23	87.6	250.2	usage	-
+2026-09-21	PantonicApp	DOM-T6	sonnet	27	60.1	108.8	usage	-
+2026-09-21	PantonicApp	DOM-T6-revisao	opus	21	73.1	191.5	usage	-
+2026-09-21	PantonicApp	P-0743-as-is	opus	45	134.7	611.2	usage	-
+2026-09-21	PantonicApp	TK-54b	sonnet	56	150.0	628.6	usage	-
+2026-09-21	PantonicApp	TK-54b-consultor	opus	27	68.2	316.4	usage	-
+2026-09-21	PantonicApp	TK-54b-revisao	opus	18	70.9	213.5	usage	-
+2026-09-21	PantonicApp	TK-54b-consultor-b1	opus	6	81.6	88.1	usage	-
+2026-09-21	PantonicApp	LST-T1	opus	6	49.2	108.2	usage	-
+2026-09-21	PantonicApp	LST-T1-revisao	opus	16	67.8	205.4	usage	-
+2026-09-21	PantonicApp	LST-T1-consultor-b1	opus	50	144.8	983.0	usage	-
+2026-09-21	PantonicApp	LST-T1-modelador-parcial	opus	19	64.6	426.2	usage	-
+2026-09-22	PantonicApp	LST-T1-modelador-retomada	opus	4	77.8	74.7	usage	-
+2026-09-22	PantonicApp	LST-T7	opus	5	46.8	80.6	usage	-
+2026-09-22	PantonicApp	LST-T7-revisao	opus	22	69.5	223.7	usage	-
+2026-09-22	PantonicApp	LST-T3	opus	6	42.0	55.6	usage	-
+2026-09-22	PantonicApp	LST-T3-revisao	opus	22	76.7	212.6	usage	-
+2026-09-22	PantonicApp	LST-T8	opus	10	55.2	121.4	usage	-
+2026-09-22	PantonicApp	LST-T8-revisao	opus	25	87.7	377.6	usage	-
+2026-09-22	PantonicApp	LST-T8-consultor-b1	opus	19	180.1	284.0	usage	-
+2026-09-22	PantonicApp	LST-T9	opus	15	54.5	105.9	usage	-
+2026-09-22	PantonicApp	LST-T9-revisao	opus	31	86.3	268.1	usage	-
+2026-09-22	PantonicApp	LST-T9-consultor-b1	opus	10	197.9	181.5	usage	-
+2026-09-22	PantonicApp	LST-T9-modelador	opus	2	85.4	42.1	usage	-
+2026-09-22	PantonicApp	LST-T5	sonnet	31	144.8	363.2	usage	-
+2026-09-22	PantonicApp	LST-T5-consultor-a3b	opus	14	221.3	251.4	usage	-
+2026-09-22	PantonicApp	LST-T5	sonnet	18	76.2	109.5	usage	-
+2026-09-22	PantonicApp	LST-T5-consultor-a3b-2	opus	17	249.1	292.7	usage	-
+2026-09-22	PantonicApp	LST-T5-modelador	opus	2	93.6	48.4	usage	-
+2026-09-22	PantonicApp	LST-T5	sonnet	55	154.8	524.2	usage	-
+2026-09-22	PantonicApp	LST-T5-revisao	opus	30	101.7	354.3	usage	-
+2026-09-22	PantonicApp	LST-T5-modelador-conflito	opus	3	103.1	63.3	usage	-
+2026-09-22	PantonicApp	LST-T6	opus	41	167.4	847.1	usage	-
+2026-09-22	PantonicApp	LST-T6-revisao	opus	50	144.6	627.4	usage	-
+2026-09-22	PantonicApp	LST-T6-consultor-b1	opus	6	266.8	208.8	usage	-
+2026-09-22	PantonicApp	PLN-T1	sonnet	28	156.8	631.3	usage	-
+2026-09-22	PantonicApp	PLN-T1-consultor	opus	26	70.3	353.7	usage	-
+2026-09-22	PantonicApp	PLN-T1-revisao	opus	24	86.1	274.9	usage	-
+2026-09-22	PantonicApp	PLN-T1-consultor-b1	opus	16	95.9	166.5	usage	-
+2026-09-22	PantonicApp	PLN-T2	opus	31	85.4	340.6	usage	-
+2026-09-22	PantonicApp	PLN-T2-consultor-triagem	opus	28	136.7	736.5	usage	-
+2026-09-22	PantonicApp	PLN-T2	opus	7	41.4	100.4	usage	-
+2026-09-22	PantonicApp	PLN-T2-14b	opus	7	41.4	100.6	usage	-
+2026-09-22	PantonicApp	PLN-T2-revisao	opus	26	103.1	327.3	usage	-
+2026-09-22	PantonicApp	PLN-T2-revisao-achados	opus	1	108.7	56.0	usage	-
+2026-09-22	PantonicApp	PLN-T2-consultor-b1	opus	26	184.9	331.0	usage	-
+2026-09-22	PantonicApp	PLN-T3	sonnet	17	56.9	106.6	usage	-
+2026-09-22	PantonicApp	PLN-T3-revisao	opus	17	80.5	235.6	usage	-
+2026-09-22	PantonicApp	PLN-T4	opus	24	72.6	223.9	usage	-
+2026-09-22	PantonicApp	PLN-T4-revisao	opus	25	120.2	349.2	usage	-
+2026-09-22	PantonicApp	PLN-T4-modelador-conflito	opus	24	88.3	306.4	usage	-
+2026-09-22	PantonicApp	PLN-T4-consultor-b1	opus	31	234.9	417.3	usage	-
+2026-09-22	PantonicApp	PLN-T4-modelador-emenda	opus	12	60.8	98.5	usage	-
+2026-09-22	PantonicApp	PLN-T4a	sonnet	16	55.4	116.5	usage	-
+2026-09-22	PantonicApp	PLN-T4a-revisao	opus	20	79.5	211.1	usage	-
+2026-09-22	PantonicApp	PLN-T4a-consultor-b1	opus	16	261.2	230.3	usage	-
+2026-09-22	PantonicApp	PLN-T5	sonnet	17	75.4	209.0	usage	-
+2026-09-22	PantonicApp	PLN-T5-consultor-triagem	opus	24	291.2	321.8	usage	-
+2026-09-22	PantonicApp	PLN-T5-revisao	opus	20	86.2	249.7	usage	-
+2026-09-22	PantonicApp	PLN-T5-consultor-b1	opus	23	337.8	348.7	usage	-
+2026-09-22	PantonicApp	PLN-T5-modelador-emenda	opus	14	59.3	95.4	usage	-
+2026-09-22	PantonicApp	MARCO2-modelador-merge	opus	20	61.8	205.5	usage	-
+2026-09-22	PantonicApp	PLN-T5a	sonnet	14	60.8	94.2	usage	-
+2026-09-22	PantonicApp	PLN-T5a-revisao	opus	29	98.0	315.9	usage	-
+2026-09-22	PantonicApp	PLN-T6	opus	39	146.7	693.1	usage	-
+2026-09-22	PantonicApp	PLN-T6-revisao	opus	30	125.3	502.4	usage	-
+2026-09-22	PantonicApp	PLN-T7	sonnet	51	110.6	364.5	usage	-
+2026-09-22	PantonicApp	PLN-T7-revisao	opus	23	123.6	419.7	usage	-
+2026-09-22	PantonicApp	PLN-T7-consultor-b1	opus	18	368.5	289.1	usage	-
+2026-09-22	PantonicApp	PLN-T7-modelador-emenda	opus	10	41.9	57.0	usage	-
+2026-09-22	PantonicApp	PLN-T7a	sonnet	32	78.7	196.2	usage	-
+2026-09-22	PantonicApp	PLN-T7a-revisao	opus	23	100.2	303.5	usage	-
+2026-09-22	PantonicApp	MARCO3-as-is	opus	43	166.9	478.5	usage	-
+2026-09-22	PantonicApp	P-0747-planner-1	opus	4	61.5	94	usage	-
+2026-09-22	PantonicApp	P-0747-planner-2	opus	4	89.6	183	usage	-
+2026-09-22	PantonicApp	P-0747-planner-3	opus	18	155.1	172	usage	-
+2026-09-22	PantonicApp	P-0747-planner-4	opus	26	177.9	574	usage	-
+2026-09-22	PantonicApp	P-0747-planner-5	opus	70	332.8	2297	usage	-
+2026-09-22	PantonicApp	P-0747-modelador-1	opus	11	89.7	264	usage	-
+2026-09-22	PantonicApp	P-0747-modelador-2	opus	29	141.0	266	usage	-
+2026-09-22	PantonicApp	P-0747-modelador-3	opus	40	153.3	457	usage	-
+2026-09-22	PantonicApp	P-0747-scout-1	haiku	28	58.8	152	usage	-
+2026-09-22	PantonicApp	P-0747-scout-2	haiku	9	36.9	118	usage	-
+2026-09-22	PantonicApp	P-0747-scout-3	haiku	24	35.7	75	usage	-
+2026-09-23	PantonicApp	P-0747-consultor-1	fable	36	235.9	878	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-4	opus	9	160.7	46	usage	-
+2026-09-23	PantonicApp	P-0747-consultor-2	fable	39	239.2	987	usage	-
+2026-09-23	PantonicApp	TK-76a	sonnet	18	52.3	79.2	usage	-
+2026-09-23	PantonicApp	TK-76a-revisao	opus	10	56.8	76	usage	-
+2026-09-23	PantonicApp	CON-T1	sonnet	45	88.3	216.2	usage	-
+2026-09-23	PantonicApp	CON-T1-revisao	opus	14	76.7	93	usage	-
+2026-09-23	PantonicApp	CON-T2	sonnet	14	67.7	129.6	usage	-
+2026-09-23	PantonicApp	CON-T2-revisao	opus	9	60.1	57	usage	-
+2026-09-23	PantonicApp	CON-T3	sonnet	20	78.7	161.6	usage	-
+2026-09-23	PantonicApp	CON-T3-revisao	opus	21	115.5	226	usage	-
+2026-09-23	PantonicApp	CON-T3-consultor-b1	fable	7	270.5	267	usage	-
+2026-09-23	PantonicApp	CON-T3a	sonnet	29	68.9	135.7	usage	-
+2026-09-23	PantonicApp	CON-T3a-revisao	opus	20	85.1	165	usage	-
+2026-09-23	PantonicApp	CON-T4	sonnet	23	69.9	153.0	usage	-
+2026-09-23	PantonicApp	CON-T4-revisao	opus	24	97.1	232	usage	-
+2026-09-23	PantonicApp	CON-T4-consultor-1	fable	24	139.7	696	usage	-
+2026-09-23	PantonicApp	CON-T2a	sonnet	9	57.0	62.1	usage	-
+2026-09-23	PantonicApp	CON-T2a-revisao	opus	14	70.6	86	usage	-
+2026-09-23	PantonicApp	CON-T3b	sonnet	13	60.2	81.2	usage	-
+2026-09-23	PantonicApp	CON-T3b-revisao	opus	25	91.1	209	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-5-conflito	opus	4	173.6	55	usage	-
+2026-09-23	PantonicApp	CON-T4a	sonnet	12	57.9	74.4	usage	-
+2026-09-23	PantonicApp	CON-T4a-revisao	opus	17	83.9	155	usage	-
+2026-09-23	PantonicApp	CON-T4a-consultor-1	fable	29	104.1	591	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-6-conflito	opus	2	178.3	37	usage	-
+2026-09-23	PantonicApp	CON-T3c	sonnet	15	60.7	88.0	usage	-
+2026-09-23	PantonicApp	CON-T3c-revisao	opus	21	83.3	160	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-7-conflito	opus	2	182.8	35	usage	-
+2026-09-23	PantonicApp	CON-T5	sonnet	37	75.8	226.1	usage	-
+2026-09-23	PantonicApp	CON-T5-revisao	opus	33	113.2	221	usage	-
+2026-09-23	PantonicApp	CON-T6	sonnet	25	67.7	128.4	usage	-
+2026-09-23	PantonicApp	CON-T6-revisao	opus	23	87.0	146	usage	-
+2026-09-23	PantonicApp	CON-T6-consultor-1	fable	28	135.8	955	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-8-conflito	opus	4	187.5	39	usage	-
+2026-09-23	PantonicApp	CON-T5a	sonnet	16	61.8	100.1	usage	-
+2026-09-23	PantonicApp	CON-T5a-revisao	opus	14	76.7	113	usage	-
+2026-09-23	PantonicApp	CON-T6a	sonnet	11	57.5	62.8	usage	-
+2026-09-23	PantonicApp	CON-T6a-revisao	opus	22	75.1	154	usage	-
+2026-09-23	PantonicApp	CON-T7	sonnet	15	72.5	106.7	usage	-
+2026-09-23	PantonicApp	CON-T7-revisao	opus	19	71.6	136	usage	-
+2026-09-23	PantonicApp	CON-T7-consultor-1	fable	23	99.0	460	usage	-
+2026-09-23	PantonicApp	CON-T7a	sonnet	10	52.7	91.4	usage	-
+2026-09-23	PantonicApp	CON-T7a-revisao	opus	21	76.2	136	usage	-
+2026-09-23	PantonicApp	CON-T8	sonnet	19	67.0	103.6	usage	-
+2026-09-23	PantonicApp	CON-T8-revisao	opus	16	77.4	149	usage	-
+2026-09-23	PantonicApp	CON-T8-consultor-1	fable	26	90.9	571	usage	-
+2026-09-23	PantonicApp	CON-T8a	sonnet	8	58.1	71.9	usage	-
+2026-09-23	PantonicApp	CON-T8a-revisao	opus	13	65.6	96	usage	-
+2026-09-23	PantonicApp	P-0747-consultor-marco	fable	15	63.4	179	usage	-
+2026-09-23	PantonicApp	P-0747-encerramento	opus	59	266.3	873	usage	-
+2026-09-23	PantonicApp	P-0747-consultor-dono-recusa	fable	31	132.8	761	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-9-emenda	opus	5	194.2	47	usage	-
+2026-09-23	PantonicApp	CON-T2b	sonnet	11	60.1	67.0	usage	-
+2026-09-23	PantonicApp	CON-T2b-revisao	opus	17	78.9	107	usage	-
+2026-09-23	PantonicApp	CON-T3d	sonnet	35	63.4	119.4	usage	-
+2026-09-23	PantonicApp	CON-T3d-revisao	opus	21	90.3	161	usage	-
+2026-09-23	PantonicApp	P-0747-modelador-10-promocao	opus	3	200.4	42	usage	-
+2026-09-24	PantonicApp	TLG-T1-consultor-1	opus	21	56.5	199.9	usage	-
+2026-09-24	PantonicApp	TLG-T1-sonda-b	opus	5	15.1	27.6	usage	-
+2026-09-24	PantonicApp	TLG-T1-revisao	opus	12	96.4	156.5	usage	-
+2026-09-24	PantonicApp	TLG-T1-consultor-2	opus	22	58.3	258.7	usage	-
+2026-09-24	PantonicApp	TLG-T2	sonnet	12	53.1	103.9	usage	-
+2026-09-24	PantonicApp	TLG-T2-revisao	opus	18	68.7	124.5	usage	-
+2026-09-24	PantonicApp	TK-78a	sonnet	26	67.7	156.3	usage	-
+2026-09-24	PantonicApp	TK-78a-revisao	opus	21	80.3	161.2	usage	-
+2026-09-24	PantonicApp	TK-78a-consultor-1	opus	27	75.5	255.0	usage	-
+2026-09-24	PantonicApp	TK-78d	sonnet	11	53.2	137.6	usage	-
+2026-09-24	PantonicApp	TK-78d-revisao	opus	17	61.2	122.6	usage	-
+2026-09-24	PantonicApp	TK-78b	sonnet	10	52.0	116.6	usage	-
+2026-09-24	PantonicApp	TK-78b-revisao	opus	18	66.4	119.5	usage	-
+2026-09-24	PantonicApp	TK-78c	sonnet	31	79.1	273.5	usage	-
+2026-09-24	PantonicApp	TK-78c-revisao	opus	18	75.2	168.9	usage	-
+2026-09-24	PantonicApp	TLG-T3-consultor-3	opus	20	55.9	129.1	usage	-
+2026-09-24	PantonicApp	TLG-T3-modelador-1	opus	18	97.4	272.7	usage	-
+2026-09-24	PantonicApp	TLG-T3-consultor-4	opus	16	60.7	102.9	usage	-
+2026-09-24	PantonicApp	TLG-T3-modelador-2	opus	9	44.7	48.6	usage	-
+2026-09-24	PantonicApp	P-0748-replanejamento-1	opus	62	247.5	1278.5	usage	-
+2026-09-24	PantonicApp	TLG-T3	sonnet	29	87.0	276.1	usage	-
+2026-09-24	PantonicApp	TLG-T3-revisao	opus	27	92.2	186.8	usage	-
+2026-09-24	PantonicApp	TLG-T2a	sonnet	14	54.6	93.4	usage	-
+2026-09-24	PantonicApp	TLG-T2a-revisao	opus	18	70.9	110.5	usage	-
+2026-09-24	PantonicApp	TLG-T4	sonnet	20	81.2	136.3	usage	-
+2026-09-24	PantonicApp	TLG-T4-revisao	opus	19	84.7	179.2	usage	-
+2026-09-24	PantonicApp	P-0748-modelador-3	fable	16	80.3	286.0	usage	-
+2026-09-24	PantonicApp	P-0748-replanejamento-2	fable	49	246.4	1650.8	usage	-
+2026-09-24	PantonicApp	TLG-T3a	sonnet	16	63.2	129.5	usage	-
+2026-09-24	PantonicApp	TLG-T3a-revisao	opus	12	70.1	113.7	usage	-
+2026-09-24	PantonicApp	TLG-T2b	sonnet	19	75.2	175.0	usage	-
+2026-09-24	PantonicApp	TLG-T2b-revisao	opus	22	84.3	169.5	usage	-
+2026-09-24	PantonicApp	P-0748-modelador-4	opus	11	46.4	70.7	usage	-
+2026-09-24	PantonicApp	TLG-T3b	sonnet	9	75.1	121.6	usage	-
+2026-09-24	PantonicApp	TLG-T3b-consultor-5	opus	49	102.7	357.8	usage	-
+2026-09-24	PantonicApp	TLG-T3b	sonnet	44	128.7	509.2	usage	-
+2026-09-24	PantonicApp	TLG-T3b-revisao	opus	24	105.4	226.6	usage	-
+2026-09-24	PantonicApp	TLG-T4a	sonnet	20	59.9	164.8	usage	-
+2026-09-24	PantonicApp	TLG-T4a-revisao	opus	16	79.0	114.5	usage	-
+2026-09-24	PantonicApp	TLG-T4a-consultor-6	opus	28	61.7	169.8	usage	-
+2026-09-24	PantonicApp	TLG-T5	sonnet	11	59.0	97.0	usage	-
+2026-09-24	PantonicApp	TLG-T5-revisao	opus	10	65.8	64.6	usage	-
+2026-09-24	PantonicApp	TLG-T5-consultor-7	opus	45	166.9	612.3	usage	-
+2026-09-24	PantonicApp	TLG-T5-consultor-8	opus	49	150.8	547.8	usage	-
+2026-09-24	PantonicApp	TLG-T3c	sonnet	31	131.0	448.7	usage	-
+2026-09-24	PantonicApp	TLG-T3c-revisao	opus	17	103.2	176.8	usage	-
+2026-09-24	PantonicApp	TLG-T3c-consultor-9	opus	42	111.6	512.1	usage	-
+2026-09-24	PantonicApp	TLG-T3d	sonnet	20	83.8	223.8	usage	-
+2026-09-24	PantonicApp	TLG-T3d-consultor-10	opus	29	66.0	195.7	usage	-
+2026-09-24	PantonicApp	TLG-T3d	sonnet	29	100.2	253.5	usage	-
+2026-09-24	PantonicApp	TLG-T3d-revisao	opus	20	90.6	199.5	usage	-
+2026-09-24	PantonicApp	TLG-T3d-consultor-11	opus	26	91.9	372.7	usage	-
+2026-09-24	PantonicApp	AE-20-consultor-12	opus	53	143.4	672.6	usage	-
+2026-09-24	PantonicApp	AE-21-consultor-13	opus	54	149.1	526.7	usage	-
+2026-09-24	PantonicApp	TLG-T3e	sonnet	50	124.9	404.6	usage	-
+2026-09-24	PantonicApp	TLG-T3e-revisao	opus	26	109.4	240.5	usage	-
+2026-09-24	PantonicApp	AE-22-consultor-14	opus	19	83.9	276.1	usage	-
+2026-09-24	PantonicApp	TLG-T3f	sonnet	18	55.0	93.4	usage	-
+2026-09-24	PantonicApp	TLG-T3f-revisao	opus	13	71.5	115.7	usage	-
+2026-09-24	PantonicApp	TLG-T5a	sonnet	10	48.6	28.1	usage	-
+2026-09-24	PantonicApp	TLG-T5a-revisao	opus	10	60.7	53.6	usage	-
+2026-09-24	PantonicApp	AE-24-consultor-15	opus	47	93.7	437.8	usage	-
+2026-09-24	PantonicApp	TLG-T3g	sonnet	23	57.9	93.1	usage	-
+2026-09-24	PantonicApp	TLG-T3g-revisao	opus	15	76.8	118.7	usage	-
+2026-09-24	PantonicApp	P-0748-encerramento-redacao	opus	72	263.1	809.9	usage	-
+2026-09-24	PantonicApp	AE-25-consultor-16	opus	54	116.3	476.0	usage	-
+2026-09-24	PantonicApp	TLG-T3h	sonnet	28	72.6	185.4	usage	-
+2026-09-24	PantonicApp	TLG-T3h-revisao	opus	24	95.8	196.8	usage	-
+2026-09-24	PantonicApp	P-0748-encerramento-redacao-2	opus	17	289.8	212.4	usage	-
+2026-09-24	PantonicApp	P-0748-modelador-5	opus	9	40.2	47.4	usage	-
+2026-09-24	PantonicApp	TK-65a	opus				nao_medido	-
+2026-09-24	PantonicApp	TK-65a-revisao	opus	18	83.6	128.2	usage	-
+2026-09-24	PantonicApp	TK-65b	sonnet	27	75.0	140.4	usage	-
+2026-09-24	PantonicApp	TK-65b-consultor-1	opus	16	38.3	166.9	usage	-
+2026-09-24	PantonicApp	TK-65b-revisao	opus	18	70.5	121.4	usage	-
+2026-09-24	PantonicApp	TK-65c	sonnet	7	56.7	88.8	usage	-
+2026-09-24	PantonicApp	TK-65c	sonnet	36	80.5	177.8	usage	-
+2026-09-24	PantonicApp	TK-65c-consultor-2	opus	19	42.6	144.2	usage	-
+2026-09-24	PantonicApp	TK-65c-revisao	opus	17	74.8	125.7	usage	-
+2026-09-24	PantonicApp	TK-65d	sonnet	6	47.3	28.8	usage	-
+2026-09-24	PantonicApp	TK-65d-revisao	opus	11	64.2	75.3	usage	-
+2026-09-24	PantonicApp	TK-65e	sonnet	9	57.3	41.6	usage	-
+2026-09-24	PantonicApp	TK-65e-revisao	opus	18	73.2	95.7	usage	-
+2026-09-25	PantonicApp	TK-74a-revisao	opus	18	83.6	197.6	usage	-
+2026-09-25	PantonicApp	TK-74b-revisao	opus	15	74.5	107.9	usage	-
+2026-09-25	PantonicApp	TK-66a-revisao	opus	17	76.7	147.6	usage	-
+2026-09-25	PantonicApp	SAN-T1	sonnet	56	103.7	471.4	usage	-
+2026-09-25	PantonicApp	SAN-T1-revisao	opus	25	113.8	279.9	usage	-
+2026-09-25	PantonicApp	SAN-T1-consultor-1	opus	68	148.3	958.5	usage	-
+2026-09-25	PantonicApp	SAN-T1-consultor-2	opus	24	94.4	298.0	usage	-
+2026-09-25	PantonicApp	SAN-T1	sonnet	56	100.9	361.1	usage	-
+2026-09-25	PantonicApp	SAN-T1-revisao-2	opus	31	87.8	185.9	usage	-
+2026-09-25	PantonicApp	SAN-T2	sonnet	75	132.3	594.2	usage	-
+2026-09-25	PantonicApp	SAN-T2-revisao	opus	27	106.1	226.2	usage	-
+2026-09-25	PantonicApp	SAN-T3	sonnet	39	88.2	271.7	usage	-
+2026-09-25	PantonicApp	SAN-T3-revisao	opus	30	96.2	277.5	usage	-
+2026-09-25	PantonicApp	SAN-T3-consultor-2	opus	35	64.1	334.8	usage	-
+2026-09-25	PantonicApp	SAN-T3a	sonnet	38	69.7	156.8	usage	-
+2026-09-25	PantonicApp	SAN-T3a-revisao	opus	15	79.1	118.2	usage	-
+2026-09-25	PantonicApp	SAN-T4	sonnet	55	76.5	263.1	usage	-
+2026-09-25	PantonicApp	SAN-T4-revisao	opus	34	103.5	219.0	usage	-
+2026-09-25	PantonicApp	SAN-T4-consultor-3	opus	31	74.0	220.9	usage	-
+2026-09-25	PantonicApp	SAN-T2a	sonnet	18	64.9	127.6	usage	-
+2026-09-25	PantonicApp	SAN-T2a-revisao	opus	16	71.5	94.1	usage	-
+2026-09-25	PantonicApp	SAN-T5	sonnet	12	53.1	69.4	usage	-
+2026-09-25	PantonicApp	SAN-T5-revisao	opus	14	68.9	84.0	usage	-
+2026-09-25	PantonicApp	SAN-T6	sonnet	12	50.0	62.5	usage	-
+2026-09-25	PantonicApp	SAN-T6-revisao	opus	18	81.1	164.4	usage	-
+2026-09-25	PantonicApp	SAN-T6-consultor-4	opus	27	65.1	140.6	usage	-
+2026-09-25	PantonicApp	SAN-T6a	sonnet	11	47.1	59.3	usage	-
+2026-09-25	PantonicApp	SAN-T6a-revisao	opus	19	72.0	106.6	usage	-
+2026-09-25	PantonicApp	SAN-T6a-consultor-5	opus	21	54.0	111.7	usage	-
+2026-09-25	PantonicApp	SAN-T6b	sonnet	12	47.6	65.0	usage	-
+2026-09-25	PantonicApp	SAN-T6b-revisao	opus	19	77.9	96.1	usage	-
+2026-09-25	PantonicApp	CAH-T1	sonnet	13	53.5	94.8	usage	-
+2026-09-25	PantonicApp	CAH-T1-revisao	opus	19	87.9	174.7	usage	-
+2026-09-25	PantonicApp	CAH-T2	sonnet	10	51.8	72.4	usage	-
+2026-09-25	PantonicApp	CAH-T2-revisao	opus	15	83.4	123.7	usage	-
+2026-09-25	PantonicApp	CAH-T3	sonnet	6	47.5	29.7	usage	-
+2026-09-25	PantonicApp	CAH-T3-revisao	opus	17	86.0	83.9	usage	-
+2026-09-25	PantonicApp	CAH-T4	sonnet	16	62.2	88.7	usage	-
+2026-09-25	PantonicApp	CAH-T4-consultor-1	opus	22	57.4	136.1	usage	-
+2026-09-25	PantonicApp	CAH-T4	sonnet	11	53.6	65.7	usage	-
+2026-09-25	PantonicApp	CAH-T4-revisao	opus	17	89.2	117.7	usage	-
+2026-09-25	PantonicApp	CAH-T4-consultor-2	opus	25	51.4	153.3	usage	-
+2026-09-25	PantonicApp	CAH-T5	sonnet	20	55.8	76.3	usage	-
+2026-09-25	PantonicApp	CAH-T5-revisao	opus	16	75.1	105.8	usage	-
+2026-09-25	PantonicApp	CAH-T4a	sonnet	10	49.3	60.4	usage	-
+2026-09-25	PantonicApp	CAH-T4a-revisao	opus	14	83.4	94.9	usage	-
+2026-09-25	PantonicApp	TK-77a	sonnet	27	72.7	383.3	usage	-
+2026-09-25	PantonicApp	TK-77a-revisao	opus	28	91.7	197.5	usage	-
+2026-09-25	PantonicApp	TK-79a	sonnet	14	50.9	105.0	usage	-
+2026-09-25	PantonicApp	TK-79a-revisao	opus	17	83.2	137.7	usage	-
+2026-09-25	PantonicApp	TK-82a	sonnet	21	59.4	159.9	usage	-
+2026-09-25	PantonicApp	TK-82a-revisao	opus	24	84.8	183.9	usage	-
+2026-09-25	PantonicApp	TK-68a	sonnet	8	49.4	164.9	usage	-
+2026-09-25	PantonicApp	TK-68a-revisao	opus	19	84.9	208.8	usage	-
+2026-09-25	PantonicApp	EBK-T1	sonnet	23	83.1	169.3	usage	-
+2026-09-25	PantonicApp	EBK-T1	sonnet	1	84.0	10.3	usage	-
+2026-09-25	PantonicApp	EBK-T1-consultor-1	opus	25	59.2	240.0	usage	-
+2026-09-25	PantonicApp	EBK-T1	sonnet	40	97.0	325.4	usage	-
+2026-09-25	PantonicApp	EBK-T1-revisao	opus	19	97.3	196.8	usage	-
+2026-09-25	PantonicApp	EBK-T2	sonnet	17	106.3	320.3	usage	-
+2026-09-25	PantonicApp	EBK-T2-consultor-2	opus	47	78.3	426.9	usage	-
+2026-09-25	PantonicApp	EBK-T2	sonnet	67	156.0	727.2	usage	-
+2026-09-25	PantonicApp	EBK-T2-revisao	opus	23	91.2	197.0	usage	-
+2026-09-25	PantonicApp	EBK-T3	sonnet	38	88.8	366.9	usage	-
+2026-09-25	PantonicApp	EBK-T3-revisao	opus	20	83.0	184.4	usage	-
+2026-09-25	PantonicApp	EBK-T4	sonnet	28	127.2	281.8	usage	-
+2026-09-25	PantonicApp	EBK-T4-consultor-3	opus	36	72.3	335.0	usage	-
+2026-09-25	PantonicApp	EBK-T4	sonnet	58	130.0	461.1	usage	-
+2026-09-25	PantonicApp	EBK-T4-revisao	opus	27	88.2	203.5	usage	-
+2026-09-25	PantonicApp	EBK-T5	sonnet	33	97.8	358.4	usage	-
+2026-09-25	PantonicApp	EBK-T5-revisao	opus	18	96.8	236.3	usage	-
+2026-09-25	PantonicApp	EBK-T5-consultor-4	opus	67	143.0	730.8	usage	-
+2026-09-26	PantonicApp	EBK-T5a	sonnet	22	76.2	200.0	usage	-
+2026-09-26	PantonicApp	EBK-T5a-revisao	opus	15	85.2	105.1	usage	-
+2026-09-26	PantonicApp	EBK-T6	sonnet	6	48.0	68.0	usage	-
+2026-09-26	PantonicApp	EBK-T6-revisao	opus	14	75.3	115.1	usage	-
+2026-09-26	PantonicApp	EBK-T7	sonnet	10	50.7	83.3	usage	-
+2026-09-26	PantonicApp	EBK-T7-revisao	opus	15	76.8	110.8	usage	-
+2026-09-26	PantonicApp	EBK-T8	sonnet	11	50.7	73.5	usage	-
+2026-09-26	PantonicApp	EBK-T8-revisao	opus	11	74.0	89.3	usage	-
+2026-09-26	PantonicApp	EBK-T9	sonnet	10	49.5	78.8	usage	-
+2026-09-26	PantonicApp	EBK-T9-revisao	opus	14	77.2	110.4	usage	-
+2026-09-26	PantonicApp	EBK-T10	sonnet	12	55.8	105.3	usage	-
+2026-09-26	PantonicApp	EBK-T10-revisao	opus	15	65.9	124.0	usage	-
+2026-09-26	PantonicApp	EBK-T11	sonnet	11	50.4	95.9	usage	-
+2026-09-26	PantonicApp	EBK-T11-revisao	opus	18	84.8	156.4	usage	-
+2026-09-26	PantonicApp	EBK-T12	sonnet	17	57.4	139.3	usage	-
+2026-09-26	PantonicApp	EBK-T12-consultor-5	opus	24	54.1	294.4	usage	-
+2026-09-26	PantonicApp	EBK-T12	sonnet	28	64.7	206.3	usage	-
+2026-09-26	PantonicApp	EBK-T12-revisao	opus	19	85.1	132.7	usage	-
+2026-09-26	PantonicApp	EBK-T13	sonnet	13	64.4	198.6	usage	-
+2026-09-26	PantonicApp	EBK-T13-consultor-6	opus	19	62.2	193.2	usage	-
+2026-09-26	PantonicApp	EBK-T13	sonnet	19	66.9	166.4	usage	-
+2026-09-26	PantonicApp	EBK-T13-revisao	opus	18	91.4	198.5	usage	-
+2026-09-26	PantonicApp	EBK-T13-consultor-7	opus	23	79.8	331.5	usage	-
+2026-09-26	PantonicApp	EBK-T13a	sonnet	13	62.1	149.9	usage	-
+2026-09-26	PantonicApp	EBK-T13a-revisao	opus	17	82.6	161.3	usage	-
+2026-09-26	PantonicApp	EBK-T14	opus	27	104.3	275.7	usage	-
+2026-09-26	PantonicApp	EBK-T14-revisao	opus	26	107.4	216.8	usage	-
+2026-09-26	PantonicApp	P-0751-consultor-8	opus	51	114.9	548.1	usage	-
+2026-09-26	PantonicApp	FPU-T1	sonnet	9	68.0	74.6	usage	-
+2026-09-26	PantonicApp	FPU-T1	sonnet	16	97.1	191.4	usage	-
+2026-09-26	PantonicApp	FPU-T1	sonnet	42	180.9	1051.7	usage	-
+2026-09-26	PantonicApp	FPU-T1	sonnet	23	58.5	174.1	usage	-
+2026-09-26	PantonicApp	FPU-T1-consultor-1	opus	16	54.7	305.9	usage	-
+2026-09-26	PantonicApp	FPU-T1-consultor-2	opus	29	73.1	301.3	usage	-
+2026-09-26	PantonicApp	FPU-T1-consultor-3	opus	16	50.2	271.2	usage	-
+2026-09-26	PantonicApp	FPU-T1-revisao	opus	32	119.1	308.9	usage	-
+2026-09-26	PantonicApp	FPU-T3-consultor-4	opus	31	99.6	452.0	usage	-
+2026-09-26	PantonicApp	FPU-T3	sonnet	25	102.9	349.9	usage	-
+2026-09-26	PantonicApp	FPU-T3-revisao	opus	24	103.4	206.7	usage	-
+2026-09-26	PantonicApp	FPU-T3-modelador	opus	11	57.7	73.8	usage	-
+2026-09-26	PantonicApp	FPU-T5	sonnet	10	78.1	215.2	usage	-
+2026-09-26	PantonicApp	FPU-T5-consultor-5	opus	34	108.9	796.9	usage	-
+2026-09-26	PantonicApp	FPU-T5	sonnet	60	130.9	631.6	usage	-
+2026-09-26	PantonicApp	FPU-T5-revisao	opus	27	115.1	367.2	usage	-
+2026-09-26	PantonicApp	FPU-T2	sonnet	27	107.2	313.1	usage	-
+2026-09-26	PantonicApp	FPU-T2-revisao	opus	22	123.5	250.9	usage	-
+2026-09-26	PantonicApp	FPU-T2-consultor-6	opus	91	161.2	1041.8	usage	-
+2026-09-26	PantonicApp	FPU-T5a	sonnet	15	69.5	163.7	usage	-
+2026-09-26	PantonicApp	FPU-T5a-revisao	opus	15	86.6	96.0	usage	-
+2026-09-26	PantonicApp	FPU-T1a	sonnet	18	71.5	185.4	usage	-
+2026-09-26	PantonicApp	FPU-T1a-revisao	opus	21	93.2	137.5	usage	-
+2026-09-26	PantonicApp	FPU-T5b	sonnet	22	60.8	157.5	usage	-
+2026-09-26	PantonicApp	FPU-T5b-revisao	opus	15	90.6	129.0	usage	-
+2026-09-26	PantonicApp	FPU-T4	sonnet	31	90.2	274.1	usage	-
+2026-09-26	PantonicApp	FPU-T4-revisao	opus	39	95.8	237.8	usage	-
+2026-09-26	PantonicApp	FPU-T6-consultor-7	opus	72	149.7	1078.4	usage	-
+2026-09-26	PantonicApp	FPU-T6	sonnet	49	108.2	421.3	usage	-
+2026-09-26	PantonicApp	FPU-T6-revisao	opus	27	64.5	210.1	usage	-
+2026-09-26	PantonicApp	FPU-T5c	sonnet	12	58.0	95.4	usage	-
+2026-09-26	PantonicApp	FPU-T5c-revisao	opus	21	93.4	122.5	usage	-
+2026-09-26	PantonicApp	FPU-T4a	sonnet	12	56.5	155.8	usage	-
+2026-09-26	PantonicApp	FPU-T4a-revisao	opus	18	54.4	85.3	usage	-
+2026-09-26	PantonicApp	FPU-T8	sonnet	6	67.7	80.0	usage	-
+2026-09-26	PantonicApp	FPU-T8-consultor-8	opus	50	96.5	569.7	usage	-
+2026-09-26	PantonicApp	FPU-T8	sonnet	18	71.9	136.3	usage	-
+2026-09-26	PantonicApp	FPU-T8-revisao	opus	23	82.6	126.7	usage	-
+2026-09-26	PantonicApp	FPU-T9	sonnet	31	91.5	186.7	usage	-
+2026-09-26	PantonicApp	FPU-T9-revisao	opus	21	108.2	186.0	usage	-
+2026-09-26	PantonicApp	FPU-T9-consultor-9	opus	36	127.5	470.0	usage	-
+2026-09-26	PantonicApp	FPU-T8a	sonnet	8	48.9	39.6	usage	-
+2026-09-26	PantonicApp	FPU-T8a-revisao	opus	18	83.6	84.7	usage	-
+2026-09-26	PantonicApp	FPU-T9a	sonnet	12	55.1	61.0	usage	-
+2026-09-26	PantonicApp	FPU-T9a-revisao	opus	18	97.5	141.2	usage	-
+2026-09-26	PantonicApp	P-0752-consultor-10	opus	79	154.1	1023.5	usage	-
+2026-09-26	PantonicApp	P-0752-modelador-2	opus	13	52.8	116.7	usage	-
+2026-09-26	PantonicApp	P-0752-consultor-11	opus	62	143.5	621.8	usage	-
+2026-09-26	PantonicApp	TK-91a	sonnet	9	52.1	72.8	usage	-
+2026-09-26	PantonicApp	TK-91a-revisao	opus	24	70.2	126.6	usage	-
+2026-09-26	PantonicApp	TK-88a-revisao	opus	60	186.4	464.3	usage	-
+2026-09-26	PantonicApp	TK-86a-consultor-1	opus	14	53.9	286.4	usage	-
+2026-09-26	PantonicApp	TK-86a	sonnet	20	56.1	208.0	usage	-
+2026-09-26	PantonicApp	TK-86a-revisao	opus	24	67.4	204.0	usage	-
+2026-09-26	PantonicApp	TK-86a-consultor-2	opus	61	147.6	1681.0	usage	-
+2026-09-26	PantonicApp	TK-87a	sonnet	28	74.0	302.2	usage	-
+2026-09-26	PantonicApp	TK-88b	sonnet	74	170.8	679.3	usage	-
+2026-09-26	PantonicApp	TK-88a	Opus				nao_medido	-
+2026-09-26	PantonicApp	TK-84a	Sonnet				nao_medido	-
+2026-09-26	PantonicApp	TK-88c	sonnet	75	154.7	911.4	usage	-
+2026-09-26	PantonicApp	TK-88d	sonnet	60	192.8	1367.2	usage	-
+2026-09-26	PantonicApp	TK-89a	sonnet	13	58.8	146.5	usage	-
+2026-09-26	PantonicApp	TK-88b-revisao	opus	18	79.3	190.1	usage	-
+2026-09-26	PantonicApp	TK-88c-revisao	opus	22	106.0	214.9	usage	-
+2026-09-26	PantonicApp	TK-88d-revisao	opus	21	83.3	243.0	usage	-
+2026-09-26	PantonicApp	TK-89a-consultor-1	opus	20	50.5	412.7	usage	-
+2026-09-26	PantonicApp	TK-89a	sonnet	25	83.6	765.0	usage	-
+2026-09-26	PantonicApp	TK-89a-revisao	opus	14	48.4	161.6	usage	-
+2026-09-26	PantonicApp	TK-89b-consultor-1	opus	8	29.4	66.6	usage	-
+2026-09-26	PantonicApp	TK-89b	sonnet	19	61.0	234.3	usage	-
+2026-09-26	PantonicApp	TK-89b-revisao	opus	11	40.9	88.3	usage	-
+2026-09-26	PantonicApp	TK-90a	sonnet	16	72.8	217.0	usage	-
+2026-09-26	PantonicApp	TK-90a-revisao	opus	10	46.2	91.1	usage	-
+2026-09-26	PantonicApp	TK-90b-planejador-1	opus	27	138.5	584.8	usage	-
+2026-09-26	PantonicApp	TK-90b-modelador-1	opus	12	79.9	248.6	usage	-
+2026-09-27	PantonicApp	TK-90b-revisao	opus	23	109.8	247.0	usage	-
+2026-09-27	PantonicApp	TK-90b	Opus	77	307.2	2029.3	usage	-
+2026-09-27	PantonicApp	FPU-T7	sonnet	14	87.1	281.0	usage	-
+2026-09-27	PantonicApp	FPU-T7-consultor-1	opus	29	89.4	700.0	usage	-
+2026-09-27	PantonicApp	FPU-T7	sonnet	27	114.3	377.5	usage	-
+2026-09-27	PantonicApp	FPU-T7-revisao	opus	16	64.1	119.3	usage	-
+2026-09-27	PantonicApp	FPU-T10	sonnet	3	56.9	107.8	usage	-
+2026-09-27	PantonicApp	FPU-T10-consultor-1	opus	40	92.8	470.3	usage	-
+2026-09-27	PantonicApp	FPU-T10	sonnet	23	87.5	281.8	usage	-
+2026-09-27	PantonicApp	FPU-T10-revisao	opus	15	59.9	100.5	usage	-
+2026-09-27	PantonicApp	TK-85a-revisao	opus	18	55.7	137.8	usage	-
+2026-09-27	PantonicApp	TK-85a	Sonnet				nao_medido	-
+2026-09-27	PantonicApp	TK-92a	sonnet	49	90.3	402.0	usage	-
+2026-09-27	PantonicApp	TK-92a-revisao	opus	15	63.9	131.9	usage	-
+2026-09-27	PantonicApp	TK-93a	sonnet	42	115.2	698.8	usage	-
+2026-09-27	PantonicApp	TK-93a-revisao	opus	22	78.2	294.2	usage	-
+2026-09-27	PantonicApp	P-0752-entrega	sonnet	52	217.2	934.3	usage	-
+2026-09-27	PantonicApp	AF-T1	sonnet	22	87.4	474.4	usage	-
+2026-09-27	PantonicApp	AF-T2	sonnet	20	84.0	338.6	usage	-
+2026-09-27	PantonicApp	AF-T3	sonnet	23	75.9	354.3	usage	-
+2026-09-27	PantonicApp	AF-T4	sonnet	27	94.0	387.7	usage	-
+2026-09-27	PantonicApp	AF-T5	sonnet	4	69.3	77.1	usage	-
+2026-09-27	PantonicApp	AF-T5	sonnet	39	128.7	645.4	usage	-
+2026-09-27	PantonicApp	AF-T5-revisao	opus	23	81.4	220.3	usage	-
+2026-09-27	PantonicApp	AF-T6	sonnet	20	75.0	211.2	usage	-
+2026-09-27	PantonicApp	AF-T6-consultor-1	opus	28	56.7	508.7	usage	-
+2026-09-27	PantonicApp	AF-T6	sonnet	33	74.5	340.1	usage	-
+2026-09-27	PantonicApp	AF-T6-revisao	opus	16	58.7	133.9	usage	-
+2026-09-27	PantonicApp	AF-T7	sonnet	26	85.6	274.1	usage	-
+2026-09-27	PantonicApp	AF-T7-consultor-1	opus	20	53.8	333.0	usage	-
+2026-09-27	PantonicApp	AF-T7	sonnet	27	88.4	242.3	usage	-
+2026-09-27	PantonicApp	AF-T7-revisao	opus	13	54.1	136.1	usage	-
+2026-09-27	PantonicApp	P-0753-modelador	opus	15	59.7	93.7	usage	-
+2026-09-27	PantonicApp	AF-T8	sonnet	56	122.7	444.3	usage	-
+2026-09-27	PantonicApp	AF-T8-revisao	opus	17	56.9	147.6	usage	-
+2026-09-27	PantonicApp	AF-T8-consultor-1	opus	19	55.4	288.7	usage	-
+2026-09-27	PantonicApp	AF-T9	sonnet	39	102.6	479.1	usage	-
+2026-09-27	PantonicApp	AF-T9-revisao	opus	17	56.0	144.7	usage	-
+2026-09-27	PantonicApp	AF-T10	sonnet	43	152.5	549.3	usage	-
+2026-09-27	PantonicApp	AF-T10-consultor-1	opus	27	64.8	335.9	usage	-
+2026-09-27	PantonicApp	AF-T10	sonnet	72	180.3	872.6	usage	-
+2026-09-27	PantonicApp	AF-T10-revisao	opus	15	64.0	194.2	usage	-
+2026-09-27	PantonicApp	AF-T10-consultor-2	opus	17	52.3	192.4	usage	-
+2026-09-27	PantonicApp	AF-T11	opus	9	47.7	156.4	usage	-
+2026-09-27	PantonicApp	AF-T11-revisao	opus	11	48.7	111.3	usage	-
+2026-09-27	PantonicApp	AF-T12	sonnet	57	164.7	855.5	usage	-
+2026-09-27	PantonicApp	AF-T12-revisao	opus	16	65.2	217.8	usage	-
+2026-09-27	PantonicApp	AF-T12-consultor-1	opus	36	71.6	287.5	usage	-
+2026-09-27	PantonicApp	AF-T13	sonnet	49	138.6	671.6	usage	-
+2026-09-27	PantonicApp	AF-T13-revisao	opus	15	58.8	127.5	usage	-
+2026-09-27	PantonicApp	AF-T13-consultor-1	opus	19	58.5	239.9	usage	-
+2026-09-27	PantonicApp	AF-T14	sonnet	43	106.1	442.2	usage	-
+2026-09-27	PantonicApp	AF-T14-revisao	opus	15	58.6	145.8	usage	-
+2026-09-27	PantonicApp	AF-T15	sonnet	20	62.4	275.2	usage	-
+2026-09-27	PantonicApp	AF-T15-revisao	opus	10	45.0	120.6	usage	-
+2026-09-27	PantonicApp	AF-T16	sonnet	11	48.8	148.7	usage	-
+2026-09-27	PantonicApp	AF-T16-revisao	opus	12	46.7	79.5	usage	-
+2026-09-27	PantonicApp	AF-T17	sonnet	39	104.2	674.4	usage	-
+2026-09-27	PantonicApp	AF-T17	sonnet	39	104.4	683.6	usage	-
+2026-09-27	PantonicApp	AF-T17	sonnet	40	104.5	689.8	usage	-
+2026-09-27	PantonicApp	AF-T17-revisao	opus	14	57.5	187.2	usage	-
+2026-09-27	PantonicApp	AF-T17-consultor-1	opus	16	57.2	240.1	usage	-
+2026-09-27	PantonicApp	AF-T18	sonnet	22	85.3	304.0	usage	-
+2026-09-27	PantonicApp	AF-T18	sonnet	23	85.7	316.5	usage	-
+2026-09-27	PantonicApp	AF-T18-revisao	opus	11	44.9	118.4	usage	-
+2026-09-27	PantonicApp	AF-T20	sonnet	13	50.2	196.4	usage	-
+2026-09-27	PantonicApp	AF-T20-revisao	opus	14	48.0	115.5	usage	-
+2026-09-27	PantonicApp	AF-T21	opus	8	45.2	161.6	usage	-
+2026-09-27	PantonicApp	AF-T21-revisao	opus	11	42.1	111.8	usage	-
+2026-09-27	PantonicApp	P-0753-modelador	opus	8	47.5	53.9	usage	-
+2026-09-27	PantonicApp	P-0753-modelador	opus	15	70.3	170.2	usage	-
+2026-09-27	PantonicApp	sem-id-scout	opus	2	13.9	9.7	usage	-
+2026-09-27	PantonicApp	sem-id-scout	sonnet	3	14.8	15.0	usage	-
+2026-09-27	PantonicApp	sem-id-scout	haiku	4	12.2	19.7	usage	-
+2026-09-27	PantonicApp	sem-id-scout	sonnet	4	16.1	18.5	usage	-
+2026-09-27	PantonicApp	sem-id-scout	opus	4	15.5	17.0	usage	-
+2026-09-27	PantonicApp	sem-id-scout	haiku	12	23.5	24.6	usage	-
+2026-09-27	PantonicApp	sem-id-scout	opus	18	88.5	60.1	usage	-
+2026-09-27	PantonicApp	sem-id-scout	haiku	18	84.6	79.5	usage	-
+2026-09-27	PantonicApp	sem-id-scout	opus	15	32.8	86.2	usage	-
+2026-09-27	PantonicApp	sem-id-scout	haiku	19	85.5	93.7	usage	-
+2026-09-27	PantonicApp	sem-id-scout	haiku	6	67.0	133.8	usage	-
+2026-09-27	PantonicApp	sem-id-scout	sonnet	7	87.8	176.5	usage	-
+2026-09-27	PantonicApp	sem-id-scout	sonnet	25	149.4	314.1	usage	-
+2026-09-27	PantonicApp	P-0753-modelador	opus	21	90.2	249.7	usage	-
+2026-09-27	PantonicApp	AF-T21-consultor-1	opus	11	48.2	105.3	usage	-
+2026-09-27	PantonicApp	P-0753-modelador	opus	28	101.2	668.5	usage	-
+2026-09-27	PantonicApp	AF-T21-consultor-2	opus	16	59.9	291.8	usage	-
+2026-09-27	PantonicApp	P-0753-modelador	opus	31	107.4	3561.9	usage	-
+2026-09-27	PantonicApp	AF-T19a	sonnet	19	60.4	205.1	usage	-
+2026-09-27	PantonicApp	AF-T19a	sonnet	35	79.9	6066.8	usage	-
+2026-09-27	PantonicApp	AF-T19a-consultor-1	opus	22	56.1	259.5	usage	-
+2026-09-27	PantonicApp	AF-T19a	sonnet	9	54.1	72.2	usage	-
+2026-09-27	PantonicApp	AF-T19a-revisao	opus	23	78.5	197.1	usage	-
+2026-09-28	PantonicApp	P-0753-planejador	opus	3	42.7	88.6	usage	-
+2026-09-28	PantonicApp	P-1-scout	opus	15	35.8	109.2	usage	-
+2026-09-28	PantonicApp	P-0742-scout	opus	8	35.7	116.8	usage	-
+2026-09-28	PantonicApp	P-0753-scout	opus	18	57.9	210.2	usage	-
+2026-09-28	PantonicApp	P-0753-planejador	opus	4	58.7	479.4	usage	-
+2026-09-28	PantonicApp	sem-id-scout	opus	13	34.8	80.7	usage	-
+2026-09-28	PantonicApp	P-0753-scout	opus	15	50.1	96.6	usage	-
+2026-09-28	PantonicApp	P-0752-scout	opus	37	60.2	251.7	usage	-
+2026-09-28	PantonicApp	P-0753-planejador	opus	5	77.8	930.8	usage	-
+2026-09-28	PantonicApp	P-0753-planejador	opus	16	113.3	2109.9	usage	-
+2026-09-28	PantonicApp	P-0754-modelador	opus	11	89.6	335.0	usage	-
+2026-09-28	PantonicApp	P-0754-planejador	opus	123	311.4	2212.5	usage	-
+2026-09-28	PantonicApp	AUF-T1	sonnet	19	61.4	132.4	usage	-
+2026-09-28	PantonicApp	AUF-T1-revisao	opus	16	53.6	190.9	usage	-
+2026-09-28	PantonicApp	AUF-T2	sonnet	17	62.6	154.8	usage	-
+2026-09-28	PantonicApp	AUF-T2-revisao	opus	13	41.3	163.7	usage	-
+2026-09-28	PantonicApp	AUF-T2-consultor-1	opus	18	51.3	242.1	usage	-
+2026-09-28	PantonicApp	AUF-T3	sonnet	32	88.8	267.2	usage	-
+2026-09-28	PantonicApp	AUF-T3-revisao	opus	13	56.7	147.9	usage	-
+2026-09-28	PantonicApp	AUF-T4	sonnet	17	65.2	152.4	usage	-
+2026-09-28	PantonicApp	AUF-T4-revisao	opus	11	48.6	105.7	usage	-
+2026-09-28	PantonicApp	AUF-T5	sonnet	20	66.8	215.1	usage	-
+2026-09-28	PantonicApp	AUF-T5-revisao	opus	15	53.4	194.9	usage	-
+2026-09-28	PantonicApp	AUF-T6	sonnet	30	73.1	217.7	usage	-
+2026-09-28	PantonicApp	AUF-T6-revisao	opus	11	41.7	157.0	usage	-
+2026-09-28	PantonicApp	AUF-T7	sonnet	14	56.1	133.5	usage	-
+2026-09-28	PantonicApp	AUF-T7-revisao	opus	8	41.3	109.4	usage	-
+2026-09-28	PantonicApp	AUF-T8	sonnet	31	63.8	168.6	usage	-
+2026-09-28	PantonicApp	AUF-T8-revisao	opus	8	41.0	51.0	usage	-
+2026-09-28	PantonicApp	AUF-T9	sonnet	14	51.7	100.7	usage	-
+2026-09-28	PantonicApp	AUF-T9-revisao	opus	7	28.9	91.0	usage	-
+2026-09-28	PantonicApp	AUF-T10	sonnet	8	49.1	90.2	usage	-
+2026-09-28	PantonicApp	AUF-T10-revisao	opus	10	32.9	50.7	usage	-
+2026-09-28	PantonicApp	AUF-T11	sonnet	8	47.7	96.9	usage	-
+2026-09-28	PantonicApp	AUF-T11-revisao	opus	6	28.7	88.4	usage	-
+2026-09-28	PantonicApp	AUF-T12	sonnet	9	48.1	94.5	usage	-
+2026-09-28	PantonicApp	AUF-T12-revisao	opus	9	37.2	123.7	usage	-
+2026-09-28	PantonicApp	AUF-T13	sonnet	7	46.3	85.5	usage	-
+2026-09-28	PantonicApp	AUF-T13-revisao	opus	7	31.4	108.0	usage	-
+2026-09-28	PantonicApp	AUF-T14	sonnet	16	52.7	113.7	usage	-
+2026-09-28	PantonicApp	AUF-T14-revisao	opus	9	41.4	134.7	usage	-
+2026-09-28	PantonicApp	AUF-T15	sonnet	18	52.4	106.0	usage	-
+2026-09-28	PantonicApp	AUF-T15-revisao	opus	8	38.5	90.2	usage	-
+2026-09-28	PantonicApp	SA-T4-revisao	opus	26	97.4	291.8	usage	-
+2026-09-28	PantonicApp	SA-T4-consultor-1	opus	47	110.1	544.7	usage	-
+2026-09-28	PantonicApp	AUF-T16	Opus				nao_medido	-
+2026-09-28	PantonicApp	P-0754-planejador	opus	7	75.1	178.0	usage	-
+2026-09-28	PantonicApp	P-0755-scout	opus	37	88.3	170.4	usage	-
+2026-09-28	PantonicApp	P-0755-scout	opus	29	52.5	156.8	usage	-
+2026-09-28	PantonicApp	P-0755-scout	opus	20	43.6	159.6	usage	-
+2026-09-28	PantonicApp	P-0755-scout	opus	17	53.9	162.8	usage	-
+2026-09-28	PantonicApp	P-0755-scout	opus	44	73.8	263.4	usage	-
+2026-09-28	PantonicApp	P-0755-planejador	opus	17	183.6	784.1	usage	-
+2026-09-28	PantonicApp	P-0755-modelador	opus	15	149.3	694.2	usage	-
+2026-09-28	PantonicApp	P-0755-planejador	opus	147	448.9	3564.6	usage	-
+2026-09-28	PantonicApp	P-0755-planejador	opus	164	530.9	3385.8	usage	-
+2026-09-28	PantonicApp	P-0755-planejador	opus	57	238.5	1181.2	usage	-
+2026-09-28	PantonicApp	RAF-T1	sonnet	14	79.6	300.3	usage	-
+2026-09-28	PantonicApp	RAF-T1-revisao	opus	8	48.8	129.1	usage	-
+2026-09-28	PantonicApp	RAF-T1-consultor-1	opus	51	96.3	488.6	usage	-
+2026-09-28	PantonicApp	RAF-T1a	sonnet	8	50.5	114.7	usage	-
+2026-09-28	PantonicApp	RAF-T1a-revisao	opus	13	50.4	128.6	usage	-
+2026-09-28	PantonicApp	RAF-T2	sonnet	20	101.0	363.1	usage	-
+2026-09-28	PantonicApp	RAF-T2-revisao	opus	22	70.5	174.1	usage	-
+2026-09-28	PantonicApp	RAF-T3	sonnet	39	119.2	613.8	usage	-
+2026-09-28	PantonicApp	RAF-T3-revisao	opus	16	64.4	170.3	usage	-
+2026-09-28	PantonicApp	RAF-T3-consultor-1	opus	43	120.3	621.9	usage	-
+2026-09-28	PantonicApp	RAF-T3a	sonnet	23	116.6	626.2	usage	-
+2026-09-28	PantonicApp	RAF-T3a-revisao	opus	18	57.8	184.2	usage	-
+2026-09-28	PantonicApp	RAF-T4	sonnet	11	55.9	142.7	usage	-
+2026-09-28	PantonicApp	RAF-T4-revisao	opus	16	65.0	123.6	usage	-
+2026-09-28	PantonicApp	RAF-T4-consultor-1	opus	32	92.1	344.9	usage	-
+2026-09-28	PantonicApp	RAF-T4a	sonnet	16	55.6	140.3	usage	-
+2026-09-28	PantonicApp	RAF-T4a-revisao	opus	11	48.5	60.5	usage	-
+2026-09-28	PantonicApp	RAF-T5	sonnet	18	58.2	170.6	usage	-
+2026-09-28	PantonicApp	RAF-T5-revisao	opus	15	57.4	86.8	usage	-
+2026-09-28	PantonicApp	RAF-T6	sonnet	30	86.9	341.5	usage	-
+2026-09-28	PantonicApp	RAF-T6-revisao	opus	16	59.9	127.3	usage	-
+2026-09-29	PantonicApp	RAF-T6-consultor-1	opus	28	83.5	335.3	usage	-
+2026-09-29	PantonicApp	RAF-T6a	sonnet	25	75.8	568.3	usage	-
+2026-09-29	PantonicApp	RAF-T6a-revisao	opus	12	54.6	109.6	usage	-
+2026-09-29	PantonicApp	RAF-T6a-consultor-1	opus	16	63.7	241.8	usage	-
+2026-09-29	PantonicApp	RAF-T7	sonnet	39	109.2	469.0	usage	-
+2026-09-29	PantonicApp	RAF-T7-revisao	opus	13	55.9	212.9	usage	-
+2026-09-29	PantonicApp	RAF-T7-consultor-1	opus	19	84.4	314.4	usage	-
+2026-09-29	PantonicApp	RAF-T7a	sonnet	15	55.3	167.9	usage	-
+2026-09-29	PantonicApp	RAF-T7a-revisao	opus	12	49.7	148.7	usage	-
+2026-09-29	PantonicApp	RAF-T8	sonnet	30	80.2	344.3	usage	-
+2026-09-29	PantonicApp	RAF-T8-revisao	opus	16	58.7	153.1	usage	-
+2026-09-29	PantonicApp	RAF-T8-consultor-1	opus	22	66.2	177.1	usage	-
+2026-09-29	PantonicApp	RAF-T8a	sonnet	9	49.4	125.8	usage	-
+2026-09-29	PantonicApp	RAF-T8a-revisao	opus	11	50.3	142.6	usage	-
+2026-09-29	PantonicApp	RAF-T9	sonnet	28	71.9	294.5	usage	-
+2026-09-29	PantonicApp	RAF-T9-revisao	opus	15	65.0	236.3	usage	-
+2026-09-29	PantonicApp	RAF-T9-consultor-1	opus	19	81.4	334.4	usage	-
+2026-09-29	PantonicApp	RAF-T9a	sonnet	13	65.3	157.8	usage	-
+2026-09-29	PantonicApp	RAF-T9a-revisao	opus	14	51.8	188.5	usage	-
+2026-09-29	PantonicApp	RAF-T10	sonnet	30	82.6	354.7	usage	-
+2026-09-29	PantonicApp	RAF-T10-revisao	opus	23	76.3	250.5	usage	-
+2026-09-29	PantonicApp	P-0755-modelador	opus	17	84.1	164.0	usage	-
+2026-09-29	PantonicApp	RAF-T10-consultor-1	opus	63	135.8	788.7	usage	-
+2026-09-29	PantonicApp	RAF-T10a	sonnet	42	110.0	476.9	usage	-
+2026-09-29	PantonicApp	RAF-T10a-revisao	opus	17	67.7	143.1	usage	-
+2026-09-29	PantonicApp	RAF-T11	sonnet	30	81.7	295.8	usage	-
+2026-09-29	PantonicApp	RAF-T11-revisao	opus	16	61.5	192.8	usage	-
+2026-09-29	PantonicApp	RAF-T11-consultor-1	opus	35	92.8	525.6	usage	-
+2026-09-29	PantonicApp	RAF-T11a	sonnet	28	91.3	336.4	usage	-
+2026-09-29	PantonicApp	RAF-T11a-revisao	opus	23	69.4	314.3	usage	-
+2026-09-29	PantonicApp	RAF-T12	sonnet	14	55.5	168.7	usage	-
+2026-09-29	PantonicApp	RAF-T12-revisao	opus	12	48.0	149.6	usage	-
+2026-09-29	PantonicApp	RAF-T12-consultor-1	opus	37	97.5	456.7	usage	-
+2026-09-29	PantonicApp	RAF-T12a	sonnet	28	68.9	237.6	usage	-
+2026-09-29	PantonicApp	RAF-T12a-revisao	opus	16	54.0	203.7	usage	-
+2026-09-29	PantonicApp	RAF-T13	sonnet	44	137.1	757.4	usage	-
+2026-09-29	PantonicApp	RAF-T13-revisao	opus	20	73.7	319.0	usage	-
+2026-09-29	PantonicApp	RAF-T13-consultor-1	opus	33	95.4	305.4	usage	-
+2026-09-29	PantonicApp	RAF-T13a	sonnet	12	51.9	151.4	usage	-
+2026-09-29	PantonicApp	RAF-T13a-revisao	opus	13	52.4	169.2	usage	-
+2026-09-29	PantonicApp	RAF-T14	sonnet	34	124.7	636.7	usage	-
+2026-09-29	PantonicApp	RAF-T14-revisao	opus	19	67.3	323.4	usage	-
+2026-09-29	PantonicApp	RAF-T14-consultor-1	opus	26	70.2	190.4	usage	-
+2026-09-29	PantonicApp	RAF-T15	sonnet	42	111.9	485.4	usage	-
+2026-09-29	PantonicApp	RAF-T15-revisao	opus	21	74.5	239.1	usage	-
+2026-09-29	PantonicApp	RAF-T16	sonnet	9	49.8	142.5	usage	-
+2026-09-29	PantonicApp	RAF-T16-revisao	opus	14	60.8	180.7	usage	-
+2026-09-29	PantonicApp	RAF-T17	sonnet	9	51.9	149.7	usage	-
+2026-09-29	PantonicApp	RAF-T17-revisao	opus	10	52.0	151.2	usage	-
+2026-09-29	PantonicApp	RAF-T18	sonnet	10	51.0	147.5	usage	-
+2026-09-29	PantonicApp	RAF-T18-revisao	opus	17	58.8	186.5	usage	-
+2026-09-29	PantonicApp	RAF-T18-consultor-1	opus	19	63.2	210.4	usage	-
+2026-09-29	PantonicApp	P-0755-modelador	opus	8	40.9	58.1	usage	-
+2026-09-29	PantonicApp	RAF-T19	sonnet	46	115.5	570.2	usage	-
+2026-09-29	PantonicApp	RAF-T19	sonnet	46	115.7	585.1	usage	-
+2026-09-29	PantonicApp	RAF-T19	sonnet	47	115.9	592.4	usage	-
+2026-09-29	PantonicApp	RAF-T19-revisao	opus	20	62.6	278.5	usage	-
+2026-09-29	PantonicApp	P-0755-modelador	opus	17	60.5	129.3	usage	-
+2026-09-29	PantonicApp	RAF-T19	Sonnet	1	0.4	11	usage	-
+2026-09-29	PantonicApp	RAF-T19-consultor-1	opus	31	105.1	390.3	usage	-
+2026-09-29	PantonicApp	RAF-T19a	sonnet	15	57.5	196.5	usage	-
+2026-09-29	PantonicApp	RAF-T19a-revisao	opus	12	47.1	76.7	usage	-
+2026-09-29	PantonicApp	RAF-T20	sonnet	30	78.7	356.2	usage	-
+2026-09-29	PantonicApp	RAF-T20-revisao	opus	14	59.2	210.5	usage	-
+2026-09-29	PantonicApp	RAF-T21	sonnet	22	82.9	327.7	usage	-
+2026-09-29	PantonicApp	RAF-T21-consultor-1	opus	22	64.3	209.0	usage	-
+2026-09-29	PantonicApp	RAF-T21	sonnet	25	76.4	245.7	usage	-
+2026-09-29	PantonicApp	RAF-T21-revisao	opus	19	62.9	214.8	usage	-
+2026-09-29	PantonicApp	RAF-T22	sonnet	37	86.0	393.9	usage	-
+2026-09-29	PantonicApp	RAF-T22-revisao	opus	15	62.2	180.5	usage	-
+2026-09-29	PantonicApp	RAF-T23	sonnet	40	159.8	735.3	usage	-
+2026-09-29	PantonicApp	RAF-T23-revisao	opus	17	74.9	212.8	usage	-
+2026-09-29	PantonicApp	RAF-T23-consultor-1	opus	33	95.4	274.3	usage	-
+2026-09-29	PantonicApp	RAF-T23a	sonnet	18	61.9	193.9	usage	-
+2026-09-29	PantonicApp	RAF-T23a-revisao	opus	13	52.6	171.3	usage	-
+2026-09-29	PantonicApp	RAF-T24	sonnet	10	51.7	143.3	usage	-
+2026-09-29	PantonicApp	RAF-T24-revisao	opus	14	49.1	168.3	usage	-
+2026-09-29	PantonicApp	RAF-T25	sonnet	9	51.3	178.5	usage	-
+2026-09-29	PantonicApp	RAF-T25-revisao	opus	19	56.6	274.2	usage	-
+2026-09-29	PantonicApp	RAF-T25-consultor-1	opus	30	122.1	397.1	usage	-
+2026-09-29	PantonicApp	RAF-T24a	sonnet	10	51.9	246.8	usage	-
+2026-09-29	PantonicApp	RAF-T24a-revisao	opus	15	54.4	225.9	usage	-
+2026-09-29	PantonicApp	RAF-T26	sonnet	12	57.7	204.2	usage	-
+2026-09-29	PantonicApp	RAF-T26-revisao	opus	14	57.1	205.4	usage	-
+2026-09-29	PantonicApp	RAF-T26-consultor-1	opus	43	112.4	459.8	usage	-
+2026-09-29	PantonicApp	RAF-T23b	sonnet	34	75.1	367.6	usage	-
+2026-09-29	PantonicApp	RAF-T23b-revisao	opus	14	55.4	114.9	usage	-
+2026-09-29	PantonicApp	RAF-T26a	sonnet	12	52.5	179.8	usage	-
+2026-09-29	PantonicApp	RAF-T26a-revisao	opus	16	55.7	217.0	usage	-
+2026-09-29	PantonicApp	RAF-T26a-consultor-1	opus	12	48.1	83.5	usage	-
+2026-09-29	PantonicApp	RAF-T27	sonnet	19	86.0	377.6	usage	-
+2026-09-29	PantonicApp	RAF-T27-revisao	opus	12	59.0	266.6	usage	-
+2026-09-29	PantonicApp	RAF-T27-consultor-1	opus	31	100.6	315.4	usage	-
+2026-09-29	PantonicApp	RAF-T27a	sonnet	16	57.3	337.8	usage	-
+2026-09-29	PantonicApp	RAF-T27a-revisao	opus	14	48.9	318.9	usage	-
+2026-09-29	PantonicApp	RAF-T28	sonnet	35	90.9	430.0	usage	-
+2026-09-29	PantonicApp	RAF-T28-revisao	opus	13	52.4	235.8	usage	-
+2026-09-29	PantonicApp	RAF-T29	sonnet	45	97.7	655.6	usage	-
+2026-09-29	PantonicApp	RAF-T29-revisao	opus	17	56.8	349.8	usage	-
+2026-09-29	PantonicApp	RAF-T29-consultor-1	opus	15	79.7	214.3	usage	-
+2026-09-29	PantonicApp	RAF-T29a	sonnet	17	54.9	321.0	usage	-
+2026-09-29	PantonicApp	RAF-T29a-revisao	opus	8	41.8	45.0	usage	-
+2026-09-29	PantonicApp	RAF-T30	sonnet	27	81.5	321.7	usage	-
+2026-09-29	PantonicApp	RAF-T30-revisao	opus	15	66.0	221.3	usage	-
+2026-09-29	PantonicApp	RAF-T30-consultor-1	opus	45	137.5	580.1	usage	-
+2026-09-29	PantonicApp	P-0755-modelador	opus	15	76.3	114.9	usage	-
+2026-09-29	PantonicApp	RAF-T30	sonnet	17	64.4	233.3	usage	-
+2026-09-29	PantonicApp	RAF-T30-revisao	opus	15	67.1	187.1	usage	-
+2026-09-29	PantonicApp	RAF-T30a	sonnet	30	68.6	269.6	usage	-
+2026-09-29	PantonicApp	RAF-T30a-revisao	opus	11	53.5	61.3	usage	-
+2026-09-29	PantonicApp	RAF-T31	sonnet	34	152.3	643.0	usage	agent-ac0187e6ffa503329
+2026-09-29	PantonicApp	RAF-T31-revisao	opus	14	69.0	188.2	usage	agent-a1ff4a867afdc8f92
+2026-09-29	PantonicApp	RAF-T31-consultor-1	opus	26	101.1	290.4	usage	agent-adfb0f0fea5af6c0d
+2026-09-29	PantonicApp	RAF-T31a	sonnet	17	59.0	190.6	usage	agent-a820a7c01f678466d
+2026-09-29	PantonicApp	RAF-T31a-revisao	opus	10	48.6	61.8	usage	agent-addb9c6888048db3b
+2026-09-29	PantonicApp	RAF-T31a-consultor-1	opus	23	88.6	310.4	usage	agent-a14b6e43696116a8c
+2026-09-29	PantonicApp	RAF-T31b	sonnet	16	55.5	181.5	usage	agent-aedb33626a0f62d01
+2026-09-29	PantonicApp	RAF-T31b-revisao	opus	8	43.5	47.6	usage	agent-a7f82bc204a1afc9b
+2026-09-29	PantonicApp	RAF-T32	sonnet	7	61.6	52.0	usage	agent-af4f32a746ab2b346
+2026-09-29	PantonicApp	RAF-T32-consultor-1	opus	12	53.4	94.5	usage	agent-a8afe3a1ff23f4e3a
+2026-09-29	PantonicApp	RAF-T32	sonnet	30	82.6	297.8	usage	agent-ae8e65b4ff3286469
+2026-09-29	PantonicApp	RAF-T32-revisao	opus	16	59.0	190.2	usage	agent-acb077abeecd335be
+2026-09-29	PantonicApp	RAF-T32-consultor-2	opus	29	94.8	324.2	usage	agent-a1d373841b60f46a8
+2026-09-29	PantonicApp	RAF-T32a	sonnet	21	67.2	227.2	usage	agent-ac2a591f5ce2a6a90
+2026-09-29	PantonicApp	RAF-T32a-revisao	opus	12	50.0	66.0	usage	agent-a04741416421487ff
+2026-09-29	PantonicApp	RAF-T33	sonnet	19	56.7	177.6	usage	agent-addc9eeb889d47125
+2026-09-29	PantonicApp	RAF-T33-revisao	opus	10	44.3	57.4	usage	agent-a7b8665c80be3d78f
+2026-09-29	PantonicApp	RAF-T34	sonnet	16	63.8	190.6	usage	agent-a53ea8b1055c6365f
+2026-09-30	PantonicApp	RAF-T34-revisao	opus	15	48.4	151.6	usage	agent-a14867c0776a8ac24
+2026-09-30	PantonicApp	RAF-T35	sonnet	11	51.3	146.5	usage	agent-a0f4bfbc70a5cc5ef
+2026-09-30	PantonicApp	RAF-T35-revisao	opus	16	54.1	171.7	usage	agent-afe9920b22a2f44ed
+2026-09-30	PantonicApp	RAF-T30-consultor-2	opus	39	105.1	389.9	usage	agent-a4cf888e2a4b564ba
+2026-09-30	PantonicApp	RAF-T36	sonnet	16	53.6	136.7	usage	agent-a166b51427bb78a5b
+2026-09-30	PantonicApp	RAF-T36-revisao	opus	10	43.4	133.1	usage	agent-aa2dd1e1698558c8d
+2026-09-30	PantonicApp	RAF-T22a	sonnet	29	73.4	214.3	usage	agent-a564cda0ac6c498d1
+2026-09-30	PantonicApp	RAF-T22a-revisao	opus	14	53.9	85.0	usage	agent-af2b2cd6430e180cb
+2026-09-30	PantonicApp	RAF-T37	sonnet	10	50.2	123.8	usage	agent-a5f2acff8bec6cc23
+2026-09-30	PantonicApp	RAF-T37-revisao	opus	9	42.5	128.7	usage	agent-afe279345067c8532
+2026-09-30	PantonicApp	RAF-T38	sonnet	13	52.7	133.1	usage	agent-a0d84509454c85979
+2026-09-30	PantonicApp	RAF-T38-revisao	opus	10	46.0	140.3	usage	agent-ab8f357e7cc5d1c43
+2026-09-30	PantonicApp	RAF-T39	sonnet	13	52.7	139.4	usage	agent-a1d3f0854e3d10ac7
+2026-09-30	PantonicApp	RAF-T39-revisao	opus	14	50.4	157.7	usage	agent-a7eaccee359f079f6
+2026-09-30	PantonicApp	RAF-T39-consultor-1	opus	28	86.9	235.7	usage	agent-a7a436b4de9bd121a
+2026-09-30	PantonicApp	RAF-T39a	sonnet	11	51.6	128.6	usage	agent-ab90c82a558936249
+2026-09-30	PantonicApp	RAF-T39a-revisao	opus	11	45.7	138.7	usage	agent-a2532bd0c24bdeeaf
+2026-09-30	PantonicApp	RAF-T40	sonnet	33	69.4	227.1	usage	agent-adfff5fa4df45442a
+2026-09-30	PantonicApp	RAF-T40-revisao	opus	11	59.5	153.9	usage	agent-a77675e31ef703c3f
+2026-09-30	PantonicApp	P-0755-entrega	sonnet	48	274.4	863.6	usage	agent-a32d102fab1e98ed5

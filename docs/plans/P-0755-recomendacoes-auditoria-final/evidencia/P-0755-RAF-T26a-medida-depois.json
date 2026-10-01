@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T26a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T22:57:35+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/agents/pantonic-model-designer.md').read_text(encoding='utf-8');print('conflito=%d-%d'%(t.count('e o registro acertados para o'),t.count('(o plano sem a ')))\"",
+      "exit": 0,
+      "saida": "conflito=0-1",
+      "bate": true
+    }
+  ]
+}

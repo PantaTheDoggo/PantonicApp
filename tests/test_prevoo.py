@@ -159,3 +159,83 @@ def test_tr_prevoo_flag_com_pontuacao(tmp_path, capsys):
         "citado | existe | onde",
         "--plano | sim | .claude/tools/x.py:1",
     ]
+
+
+_PEDIDO_MEDIDO_R17 = (
+    "Crie em scratch_sonda/ duas coisas: (1) as amostras scratch_sonda/amostras/a.txt, "
+    "scratch_sonda/amostras/b.txt e o binário scratch_sonda/amostras/c.bin; (2) o utilitário "
+    "scratch_sonda/contar.py, que recebe caminhos de arquivo e imprime, por arquivo .txt, o "
+    "número de linhas, recusando com mensagem o caminho que não existe, com os testes em "
+    "tests/test_sonda_auditoria_final.py. Tudo só com biblioteca padrão."
+)
+
+
+def test_tf_prevoo_conta_como_caminho_sem_extensao_solta(tmp_path, capsys):
+    """`F-22`/`R-17`: extensão solta sem `/` (`.txt`) não é caminho — o binário `dados/c.bin`,
+    citado com `/`, é (hoje: `.txt | não | —` e nenhuma linha de `dados/c.bin`)."""
+    prevoo = _load_prevoo()
+    codigo = prevoo.main([
+        "leia, por arquivo .txt, o binário dados/c.bin",
+        "--root",
+        str(tmp_path),
+    ])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert saida.out.splitlines() == [
+        "citado | existe | onde",
+        "dados/c.bin | não | —",
+    ]
+
+
+def test_tr_prevoo_conta_como_caminho_nome_solto_conhecido(tmp_path, capsys):
+    """Nome solto sem `/` com uma das nove extensões conhecidas continua caminho — a regra
+    concorrente, exigir `/`, o perderia."""
+    (tmp_path / "notas.md").write_text("nota\n", encoding="utf-8")
+
+    prevoo = _load_prevoo()
+    codigo = prevoo.main(["leia notas.md antes", "--root", str(tmp_path)])
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert saida.out.splitlines() == [
+        "citado | existe | onde",
+        "notas.md | sim | notas.md",
+    ]
+
+
+def test_tf_prevoo_caminho_a_criar_no_pedido_medido(tmp_path, capsys):
+    """`R-17`: pedido medido do plano fictício — os seis caminhos citados depois de `Crie` na
+    mesma frase saem como `criar`, sem derrubar o exit (hoje: seis linhas `não` e exit 1)."""
+    prevoo = _load_prevoo()
+    codigo = prevoo.main([_PEDIDO_MEDIDO_R17, "--root", str(tmp_path)])
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert saida.out.splitlines() == [
+        "citado | existe | onde",
+        "scratch_sonda/ | criar | —",
+        "scratch_sonda/amostras/a.txt | criar | —",
+        "scratch_sonda/amostras/b.txt | criar | —",
+        "scratch_sonda/amostras/c.bin | criar | —",
+        "scratch_sonda/contar.py | criar | —",
+        "tests/test_sonda_auditoria_final.py | criar | —",
+    ]
+
+
+def test_tr_prevoo_caminho_a_criar_so_na_mesma_frase(tmp_path, capsys):
+    """O verbo de criação vale só na própria frase — a regra concorrente, verbo em qualquer
+    ponto do texto, daria `criar` para `docs/x.md`."""
+    prevoo = _load_prevoo()
+    codigo = prevoo.main([
+        "Crie o módulo novo. Leia docs/x.md depois",
+        "--root",
+        str(tmp_path),
+    ])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert saida.out.splitlines() == [
+        "citado | existe | onde",
+        "docs/x.md | não | —",
+    ]

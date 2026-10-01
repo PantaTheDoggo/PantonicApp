@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import importlib.util
 import re
+import shutil
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -624,3 +625,357 @@ def test_tf_show_plano_inexistente_sai_2_sem_traceback(tmp_path, capsys):
 
     assert codigo == 2
     assert "modelo: plano não encontrado 'TK-74'" in capsys.readouterr().out
+
+
+_MODELO_PENDENTE_TEXTO = """# P-0999 — Plano com versão pendente
+**Prefixo das tarefas no diário:** `EX-T<n>`
+
+## 1. Modelo conceitual
+
+**Estado do modelo:** versão 1 · 2026-09-10 · autor: modelador · 1 operações · 2 propriedades · situação: vigente
+
+### 1.1 Objetos
+
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo | dado de entrada | status | um registro por rodada | externo | lastro da fixture |
+| produto | o produto da primeira operação | status | um registro validado | OP-1 | lastro da fixture |
+
+### 1.2 Fluxo de operações
+
+- **OP-1** — Primeira operação da fixture.
+  - `precisa de: insumo` · `altera: produto.status` · `tarefas: EX-T1`
+
+### 1.3 Estado inicial e estado final
+
+| propriedade | estado inicial | estado final |
+|---|---|---|
+| insumo.status | lido | lido |
+| produto.status | rascunho | validado |
+
+### 1.4 Registro de versões
+
+| versão | data | situação | por |
+|---|---|---|---|
+| 1 | 2026-09-10 | vigente | modelador |
+| 2 | 2026-09-21 | pendente | modelador, emenda |
+
+## 1A. Modelo conceitual — versão pendente de validação
+
+**Estado do modelo:** versão 2 · 2026-09-21 · autor: modelador · 2 operações · 3 propriedades · situação: pendente
+
+### 1.1 Objetos
+
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo | dado de entrada | status | um registro por rodada | externo | lastro da fixture |
+| produto | o produto da primeira operação | status | um registro validado | OP-1 | lastro da fixture |
+| resultado | o produto da segunda operação | nível | um relatório derivado | OP-2 | lastro da fixture |
+
+### 1.2 Fluxo de operações
+
+- **OP-1** — Primeira operação da fixture.
+  - `precisa de: insumo` · `altera: produto.status` · `tarefas: EX-T1`
+- **OP-2** — Segunda operação, nova na versão pendente.
+  - `precisa de: produto` · `altera: resultado.nível` · `tarefas: @TAREFAS_OP2@`
+
+### 1.3 Estado inicial e estado final
+
+| propriedade | estado inicial | estado final |
+|---|---|---|
+| insumo.status | lido | lido |
+| produto.status | rascunho | validado |
+| resultado.nível | inicial | alto |
+
+## 5. Tarefas
+
+### EX-T1 — Um [Sonnet · classe mecanica]
+- **Operação do modelo:** `OP-1`
+  - OP-1: @TEXTO_OP1@
+  - precisa de: insumo — um registro por rodada
+"""
+
+_CARD_OP2_TEXTO = """
+### EX-T2 — Dois [Sonnet · classe mecanica]
+- **Operação do modelo:** `@OP_CARD2@`
+  - @OP_CARD2@: @TEXTO_OP2@
+  - precisa de: produto — um registro validado
+"""
+
+
+def _raiz_modelo_pendente(
+    tmp_path: Path,
+    tarefas_op2: str = "",
+    card_op2: bool = False,
+    texto_op1: str = "Primeira operação da fixture.",
+    texto_op2: str = "Segunda operação, nova na versão pendente.",
+    op_card2: str = "OP-2",
+) -> tuple[Path, Path]:
+    """RAF-T19: raiz sintética com cópias de `backlog.py`/`caminhos.py` e um plano com versão
+    pendente (`## 1A`), para exercitar `--so-vigente` sem depender de `## 1A` existir no plano
+    real (a versão 2 do modelo foi promovida a vigente no Marco 3)."""
+    raiz = tmp_path / "raiz"
+    ferramentas = raiz / ".claude" / "tools"
+    ferramentas.mkdir(parents=True)
+    shutil.copy2(_ROOT / ".claude" / "tools" / "backlog.py", ferramentas / "backlog.py")
+    shutil.copy2(_ROOT / ".claude" / "tools" / "caminhos.py", ferramentas / "caminhos.py")
+
+    texto = _MODELO_PENDENTE_TEXTO.replace("@TAREFAS_OP2@", tarefas_op2).replace(
+        "@TEXTO_OP1@", texto_op1
+    )
+    if card_op2:
+        texto = texto + _CARD_OP2_TEXTO.replace("@OP_CARD2@", op_card2).replace(
+            "@TEXTO_OP2@", texto_op2
+        )
+
+    plano = raiz / "docs" / "plans" / "P-0999-pendente.md"
+    plano.parent.mkdir(parents=True)
+    plano.write_text(texto, encoding="utf-8")
+    return raiz, plano
+
+
+def test_tf_so_vigente_ignora_a_versao_pendente(tmp_path, capsys):
+    """TF (RAF-T19): `tarefas_op2` vazio (a `OP-2` da `## 1A` sem card) — `check --so-vigente`
+    sai 0 com `modelo: OK — 1 operações` no stdout e sem `1A:` no stderr (hoje o argparse recusa
+    a flag e sai 2)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(tmp_path)
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz), "--so-vigente"])
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "modelo: OK — 1 operações" in saida.out
+    assert "1A:" not in saida.err
+
+
+def test_tr_sem_so_vigente_julga_as_duas_versoes(tmp_path, capsys):
+    """TR (RAF-T19): o mesmo plano, sem a flag, sai 1 com `1A: V1 OP-2 — operação sem tarefa` no
+    stderr (a regra concorrente, julgar sempre só a vigente, sairia 0)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(tmp_path)
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz)])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "1A: V1 OP-2 — operação sem tarefa" in saida.err
+
+
+def test_tf_so_vigente_card_da_operacao_nova_nao_e_v4(tmp_path, capsys):
+    """TF (RAF-T19): `tarefas_op2="EX-T2"` e o card `EX-T2` citando a `OP-2` — `check` sai 0 sem
+    a flag e sai 0 com ela (hoje sai 1 com `V4 EX-T2 — operação inexistente OP-2`)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(tmp_path, tarefas_op2="EX-T2", card_op2=True)
+
+    codigo_sem_flag = modelo.main(["check", "--plano", str(plano), "--root", str(raiz)])
+    capsys.readouterr()
+    codigo_com_flag = modelo.main(
+        ["check", "--plano", str(plano), "--root", str(raiz), "--so-vigente"]
+    )
+    capsys.readouterr()
+
+    assert codigo_sem_flag == 0
+    assert codigo_com_flag == 0
+
+
+def test_tr_so_vigente_operacao_ausente_das_duas_segue_v4(tmp_path, capsys):
+    """TR (RAF-T19): o card `EX-T2` cita `OP-9` — `check --so-vigente` sai 1 com
+    `V4 EX-T2 — operação inexistente OP-9`."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(
+        tmp_path, tarefas_op2="EX-T2", card_op2=True, op_card2="OP-9"
+    )
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz), "--so-vigente"])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "V4 EX-T2 — operação inexistente OP-9" in saida.err
+
+
+def _raiz_pendente_fora_de_sequencia(tmp_path: Path) -> tuple[Path, Path]:
+    """RAF-T19a: a raiz de `_raiz_modelo_pendente` com o card da `OP-2` e a `## 1A` em versão 3
+    contra a vigente 1, para que só a `V20` distinga o `check` com e sem `--so-vigente`."""
+    raiz, plano = _raiz_modelo_pendente(tmp_path, tarefas_op2="EX-T2", card_op2=True)
+    texto = plano.read_text(encoding="utf-8")
+    plano.write_text(
+        texto.replace("**Estado do modelo:** versão 2 ·", "**Estado do modelo:** versão 3 ·"),
+        encoding="utf-8",
+    )
+    return raiz, plano
+
+
+def test_tf_so_vigente_pendente_fora_de_sequencia_nao_e_v20(tmp_path, capsys):
+    """TF (RAF-T19a): pendente em versão 3 contra a vigente 1 — `check --so-vigente` sai 0 sem
+    `V20` no stderr (sem a guarda `not so_vigente` sairia 1 com a `V20`)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_pendente_fora_de_sequencia(tmp_path)
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz), "--so-vigente"])
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "V20" not in saida.err
+
+
+def test_tr_sem_so_vigente_pendente_fora_de_sequencia_segue_v20(tmp_path, capsys):
+    """TR (RAF-T19a): o mesmo plano, sem a flag, sai 1 com
+    `V20 secao — versão pendente fora de sequência` no stderr."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_pendente_fora_de_sequencia(tmp_path)
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz)])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "V20 secao — versão pendente fora de sequência" in saida.err
+
+
+def test_tf_texto_divergente_v22_da_vigente(tmp_path, capsys):
+    """TF (RAF-T21): `tarefas_op2="EX-T2"`, `card_op2=True` e o `EX-T1` com o texto `Primeira
+    operação da fixture, na redação antiga.` — `check` sai 1 com `V22 EX-T1 — texto de OP-1
+    diverge da versão 1` no stderr (hoje sai 0)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(
+        tmp_path,
+        tarefas_op2="EX-T2",
+        card_op2=True,
+        texto_op1="Primeira operação da fixture, na redação antiga.",
+    )
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz)])
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "V22 EX-T1 — texto de OP-1 diverge da versão 1" in saida.err
+
+
+def test_tr_texto_divergente_so_em_espacos_nao_e_v22(tmp_path, capsys):
+    """TR (RAF-T21): o `EX-T1` com `Primeira  operação da fixture. ` (espaço duplo e espaço na
+    ponta) — `check` sai 0 (a regra concorrente, comparação literal, acusaria `V22`)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(
+        tmp_path,
+        tarefas_op2="EX-T2",
+        card_op2=True,
+        texto_op1="Primeira  operação da fixture. ",
+    )
+
+    codigo = modelo.main(["check", "--plano", str(plano), "--root", str(raiz)])
+    saida = capsys.readouterr()
+
+    assert codigo == 0
+    assert "V22" not in saida.err
+
+
+def test_tf_texto_divergente_v22_da_pendente(tmp_path, capsys):
+    """TF (RAF-T21): o `EX-T2` com o texto `Outra redação da segunda operação.` — `check
+    --so-vigente` sai 1 com `V22 EX-T2 — texto de OP-2 diverge da versão 2` (hoje sai 0)."""
+    modelo = _load_modelo()
+    raiz, plano = _raiz_modelo_pendente(
+        tmp_path,
+        tarefas_op2="EX-T2",
+        card_op2=True,
+        texto_op2="Outra redação da segunda operação.",
+    )
+
+    codigo = modelo.main(
+        ["check", "--plano", str(plano), "--root", str(raiz), "--so-vigente"]
+    )
+    saida = capsys.readouterr()
+
+    assert codigo == 1
+    assert "V22 EX-T2 — texto de OP-2 diverge da versão 2" in saida.err
+
+
+def _modelo_drift(modelo, textos: list[str], estado: list[tuple[str, str, str]], versao: int):
+    """Monta um `Modelo` sintético para os testes de drift entre versões (RAF-T22): operações
+    `OP-1`..`OP-n` na ordem de `textos`, sem `precisa_de`/`altera`/`tarefas`."""
+    operacoes = [
+        modelo.Operacao(numero=numero, texto=texto)
+        for numero, texto in enumerate(textos, start=1)
+    ]
+    return modelo.Modelo(versao=versao, data="2026-09-28", operacoes=operacoes, estado=estado)
+
+
+def test_tf_drift_versoes_insercao_mostra_nova_e_renumerada():
+    """TF (RAF-T22, R-07/DRF-16): a pendente insere `Nova.` entre `Primeira.` e `Segunda.` — o
+    casamento por texto primeiro reconhece `Segunda.` como a mesma operação renumerada (`[=] OP-3
+    (era OP-2)`) e só `Nova.` sai como inserção (`[+] OP-2`); hoje, casando só por número, sairiam
+    `[+] OP-3 — Segunda.` e `[~] OP-2 — Segunda. => Nova.`."""
+    modelo = _load_modelo()
+    vigente = _modelo_drift(modelo, ["Primeira.", "Segunda."], [], 1)
+    pendente = _modelo_drift(modelo, ["Primeira.", "Nova.", "Segunda."], [], 2)
+
+    resultado = modelo.montar_drift(vigente, pendente)
+    linhas = resultado.splitlines()
+
+    assert "[+] OP-2 — Nova." in linhas
+    assert "[=] OP-3 (era OP-2)" in linhas
+    assert not any(linha.startswith("[~] OP-") or linha.startswith("[-] OP-") for linha in linhas)
+
+
+def test_tr_drift_versoes_texto_alterado_segue_por_numero():
+    """TR (RAF-T22): sem par de texto igual, `OP-1` casa por número entre as duas versões e sai
+    como alteração (`[~]`) — a regra concorrente, casar só por texto, daria `[+] OP-1` (pendente)
+    e `[-] OP-1` (vigente) por não achar par nenhum."""
+    modelo = _load_modelo()
+    vigente = _modelo_drift(modelo, ["Primeira."], [], 1)
+    pendente = _modelo_drift(modelo, ["Primeira, reescrita."], [], 2)
+
+    resultado = modelo.montar_drift(vigente, pendente)
+    linhas = resultado.splitlines()
+
+    assert "[~] OP-1 — Primeira. => Primeira, reescrita." in linhas
+    assert not any(linha.startswith("[+] OP-") or linha.startswith("[-] OP-") for linha in linhas)
+
+
+def test_tf_drift_versoes_propriedade_de_uma_versao_so():
+    """TF (RAF-T22, DRF-16): `x.c` só existe na vigente e `x.b` só existe na pendente — `_diff_estado`
+    hoje só mostra chave presente nas duas versões, então nenhuma das duas linhas aparecia."""
+    modelo = _load_modelo()
+    vigente = _modelo_drift(
+        modelo, ["Única."], [("x.a", "-", "fim"), ("x.c", "-", "baixo")], 1
+    )
+    pendente = _modelo_drift(
+        modelo, ["Única."], [("x.a", "-", "fim"), ("x.b", "-", "alto")], 2
+    )
+
+    resultado = modelo.montar_drift(vigente, pendente)
+    linhas = resultado.splitlines()
+
+    assert "[+] x.b — alto" in linhas
+    assert "[-] x.c — baixo" in linhas
+
+
+def test_tf_drift_contrato_da_operacao_mostra_precisa_e_altera():
+    """TF (RAF-T22a, AE-187/DRF-73): `OP-1` tem o mesmo texto e o mesmo número nas duas versões e
+    muda só `precisa de:` e `altera:` — o drift mostra as duas listas; hoje o par de texto igual não
+    emite linha nenhuma e `montar_drift` devolve `sem drift`."""
+    modelo = _load_modelo()
+    vigente = modelo.Modelo(versao=1, data="2026-09-28", operacoes=[
+        modelo.Operacao(numero=1, texto="Única.", precisa_de=["a"], altera=["x.a"]),
+    ])
+    pendente = modelo.Modelo(versao=2, data="2026-09-28", operacoes=[
+        modelo.Operacao(numero=1, texto="Única.", precisa_de=["a", "b"], altera=["x.a", "x.b"]),
+    ])
+
+    linhas = modelo.montar_drift(vigente, pendente).splitlines()
+
+    assert "[~] OP-1 — precisa de: a => a, b" in linhas
+    assert "[~] OP-1 — altera: x.a => x.a, x.b" in linhas
+
+
+def test_tr_drift_contrato_da_operacao_ignora_tarefas():
+    """TR (RAF-T22a, DRF-73): `OP-1` muda só `tarefas:`, que é lastro e não modelo — o drift segue
+    `sem drift`; a regra concorrente, comparar todo o sub-bullet, daria uma linha de `tarefas:`."""
+    modelo = _load_modelo()
+    vigente = modelo.Modelo(versao=1, data="2026-09-28", operacoes=[
+        modelo.Operacao(numero=1, texto="Única.", tarefas=["EX-T1"]),
+    ])
+    pendente = modelo.Modelo(versao=2, data="2026-09-28", operacoes=[
+        modelo.Operacao(numero=1, texto="Única.", tarefas=["EX-T1", "EX-T1a"]),
+    ])
+
+    assert modelo.montar_drift(vigente, pendente) == "sem drift"

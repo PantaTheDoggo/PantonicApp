@@ -1,7 +1,7 @@
 # Diário de Obras — PantonicApp (hub de governança Pantonic*)
 **Diretiva do dono (2026-09-26, vigente até o fechamento da auditoria final):** *"Execute em loop as tarefas abertas."* (1) O objetivo é **esgotar os tíquetes e planos abertos hoje**, para desbloquear o plano de auditoria final; (2) **nenhum card nem tíquete novo por ajuste**: achado novo vira `AE-<n>` com rota "auditoria final"; (3) tíquete ou card que o dono não abriu **fecha pelo condutor**, sem pedir o veredito do dono.
 
-**Diretiva de priorização:** o plano de auditoria final é o próximo, em contexto novo: ainda não existe, e a sessão de planejamento o escreve herdando os `AE-<n>` com rota "auditoria final" — o `AE-95` do `P-0742` (mecanizar as ações mecânicas do `scrum-master` sem tirá-lo do loop) e, do `P-0753`, a classe "card publicado com contingência ou valor não ensaiado", as notas de redação de card e a verificação "impedimento de papel é configuração do kit?" do `RP-1`. Fora da fila, atos do dono: a projeção da camada global em `~/.claude` (`materializar.py apply`), que leva o batedor em Opus à máquina.
+**Diretiva de priorização:** Priorize `P-0755` — o plano sucessor da auditoria final (as 31 recomendações do relatório, 40 cards em cinco etapas); Marco 1 com go do dono em 2026-09-28 ("Marcar como aceito, e colocar o plano no topo da fila para próxima janela"). O loop abre em janela nova, com o plano como único insumo (recomendação R-01 em prática), e para ao fim de cada etapa, nos Marcos 2 a 6. Fora da fila, atos do dono: o veredito do Marco 3 do plano P-0754 (documento de validação pronto na pasta dele), o commit do WIP e a projeção da camada global em ~/.claude (materializar.py apply).
 
 **`P-0753` — FECHADO `done` 21/21 em 2026-09-28, pelo aceite do dono** (*"Conclua o que estiver pendente, e me entregue o plano concluído"*). Entrega: `docs/plans/P-0753-auditoria-estagio-1/entrega.md` · validação: `docs/plans/P-0753-auditoria-estagio-1/operacoes.md`.
 
@@ -308,6 +308,8 @@ da resposta.
 | P-0752-FPU | Fato no ponto de uso: os mecanismos contra o esquecimento e a assunção | done 17/17 | docs/plans/P-0752-fato-no-ponto-de-uso.md |
 | P-0742-LF | O loop sai do LLM | cancelled | docs/plans/P-0742-loop-fora-do-llm.md |
 | P-0753-AF | Auditoria de encerramento do estágio 1: as dezoito recomendações e os dois tíquetes do consultor | done 21/21 | docs/plans/P-0753-auditoria-estagio-1/plano.md |
+| P-0754-AUF | Auditoria final do kit: os herdados e o relatório de auditoria nova | ready 16/16 | docs/plans/P-0754-auditoria-final/plano.md |
+| P-0755-RAF | Aplicação das recomendações da auditoria final do kit | ready 64/64 | docs/plans/P-0755-recomendacoes-auditoria-final/plano.md |
 
 ---
 
@@ -6080,7 +6082,7 @@ card: `TK-55`, `TK-67`, `TK-70`, `TK-72`, `TK-73` e `TK-81`; o `TK-71` fechou po
 - **Notas de execução:**
   - 2026-09-26 `ready` — aberto com os cards TK-90a e TK-90b (consultor P-0752, acionamento 10)
 - **AE-88** (`TK-90b`, fechamento, 2026-09-27) — rodada de replanejamento despachada ao planejador não tem canal de medida gravada (card_check --gravar); o verde só se confirmou por re-execução do revisor **Rota:** auditoria final
-- **AE-89** (`TK-90b`, fechamento, 2026-09-27) — LF-T2..LF-T5 do P-0742 passam do teto DB-7 de backlog.py show (8.000 caracteres) e saem truncados; a Fase 4 do planejador não confronta o tamanho do card com o teto **Rota:** auditoria final
+- **AE-89** (`TK-90b`, fechamento, 2026-09-27) — LF-T2..LF-T5 do P-0742 passam do teto DB-7 de backlog.py show (8.000 caracteres) e saem truncados; a Fase 4 do planejador não confronta o tamanho do card com o teto **Rota:** auditoria final · **Desfecho (P-0754, AUF-T14, 2026-09-28):** encerrado sem mudança no kit — a premissa caiu: o card de tarefa é isento do teto do `backlog.py show`, e os oito cards do `P-0742` saem inteiros, sem marca de truncado.
 
 
 

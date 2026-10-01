@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T6a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T03:10:28+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_pytest_pretooluse.py::test_tf_hook_reescreve_o_pytest_antes_do_ou_logico -q",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed in 0.08s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_pytest_pretooluse.py::test_tf_hook_reescreve_o_pytest_depois_do_ou_logico_e_da_quebra_de_linha -q",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed in 0.14s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest tests/test_pytest_pretooluse.py::test_tr_hook_pipe_simples_e_redirecionamento_seguem_passthrough -q",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed in 0.13s",
+      "bate": true
+    }
+  ]
+}

@@ -103,17 +103,33 @@ def destino_entrega(raiz: Path, plano_path: Path) -> Path:
     return planos_dir(raiz) / f"_ENTREGA-{id_do_plano(plano_path)}.md"
 
 
-# Destino único da medida do executor (`TK-92a`): plano em pasta grava/procura ao lado do
-# plano; plano legado e tíquete do diário (ex.: `docs/DIARIO_DE_OBRAS.md`) caem em
-# `<raiz>/docs/RDO/evidencia`, com `<id ou stem>` = `id_do_plano(plano_path) or
-# Path(plano_path).stem` — a mesma regra que `review_evidence.py` já usava para o plano_id.
-def destino_medida(raiz: Path, plano_path: Path, tarefa: str) -> Path:
+# Destino único da medida do executor (`TK-92a`, `RAF-T15`/`R-05`): plano em pasta grava/procura
+# na pasta do plano dentro da raiz medida (`planos_dir(raiz) / <pasta> / "evidencia"`, não ao
+# lado do `plano.md` real — a árvore de `plano_path` pode ser uma cópia); plano legado e tíquete
+# do diário (ex.: `docs/DIARIO_DE_OBRAS.md`) caem em `<raiz>/docs/RDO/evidencia`, com
+# `<id ou stem>` = `id_do_plano(plano_path) or Path(plano_path).stem` — a mesma regra que
+# `review_evidence.py` já usava para o plano_id. `mundo` (`"antes"`/`"depois"`/`None`) vira
+# sufixo `-<mundo>` no nome, vazio quando `None`.
+def destino_medida(raiz: Path, plano_path: Path, tarefa: str, mundo: str | None = None) -> Path:
     plano_path = Path(plano_path)
+    sufixo = f"-{mundo}" if mundo is not None else ""
     pasta = pasta_do_plano(plano_path)
     if pasta is not None:
-        return pasta / "evidencia" / f"{id_do_plano(plano_path)}-{tarefa}-medida.json"
+        return (
+            planos_dir(raiz)
+            / pasta.name
+            / "evidencia"
+            / f"{id_do_plano(plano_path)}-{tarefa}-medida{sufixo}.json"
+        )
     plano_id = id_do_plano(plano_path) or plano_path.stem
-    return Path(raiz) / "docs" / "RDO" / "evidencia" / f"{plano_id}-{tarefa}-medida.json"
+    return Path(raiz) / "docs" / "RDO" / "evidencia" / f"{plano_id}-{tarefa}-medida{sufixo}.json"
+
+
+def destino_despacho(raiz: Path, plano_path: Path, tarefa: str) -> Path:
+    pasta = pasta_do_plano(plano_path)
+    if pasta is not None:
+        return pasta / "despacho" / f"{tarefa}.md"
+    return Path(raiz) / "docs" / "RDO" / "despacho" / f"{tarefa}.md"
 
 
 def main(argv: list[str] | None = None) -> int:

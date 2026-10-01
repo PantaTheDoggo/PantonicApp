@@ -2,9 +2,10 @@
 `python .claude/tools/card_check.py --plano <plano> --tarefa <ID>` recorta o bloco `Verificação`
 do card pela forma normativa de `docs/RUBRICA_DE_REVISAO.md` `### 8.1` (comando em bloco cercado,
 linha `→` com o esperado, literal `**Medido antes: <valor>**`), exige os três elementos em cada
-item e **roda** cada comando publicado, comparando a saída medida agora com o `Medido antes`
-declarado — divergência é falha nomeada, porque significa que o card descreve um mundo que não é
-o que está na árvore.
+item e **roda** cada comando publicado, comparando a saída medida agora com o valor declarado
+para o mundo comparado (`--mundo`, RAF-T13: `antes` lê o `Medido antes`, `depois` o literal do
+esperado) — divergência é falha nomeada, porque significa que o card descreve um mundo que não
+é o que está na árvore.
 
 Reusa `rdo.extrair_dossie` (que por sua vez usa `rdo._parsear_campos_com_linhas`, `.claude/tools/rdo.py:187`,
 para localizar o cabeçalho da tarefa e recortar o bloco de campos) — o parser de campos é
@@ -97,12 +98,28 @@ _SETA_INLINE_RE = re.compile(r"→\s*(?P<esperado>.+?)(?=\s—\s*antes\b|\Z)")
 _ANTES_DEPOIS_RE = re.compile(
     r"antes\s+`?(?P<antes>[^`,;]+)`?[,;]?\s*depois\s+`?(?P<depois>[^`.\n]+)`?"
 )
+# Par `antes`/`depois` com o literal inteiro entre crases (RAF-T13) — aceita `,`, `;` e `.`
+# dentro do valor, porque a extensão é delimitada pela própria crase, não por um caractere de
+# parada; tentada antes da `_ANTES_DEPOIS_RE` (legado), que fica intocada para os cards sem
+# crase no par.
+_ANTES_DEPOIS_CRASE_RE = re.compile(
+    r"antes\s+`(?P<antes>[^`]*)`\s*[,;]?\s*depois\s+`(?P<depois>[^`]*)`"
+)
 # Primeiro trecho entre crases simples — usado tanto para extrair o comando da forma inline
 # quanto para achar o literal dentro de um `esperado` sem par `antes`/`depois`.
 _CRASE_RE = re.compile(r"`(?P<val>[^`]*)`")
+# Primeiro negrito **<valor>** do `esperado` (RAF-T13) — o literal comparado no mundo `depois`
+# da forma 8.1, antes de cair para `_CRASE_RE`.
+_NEGRITO_RE = re.compile(r"\*\*(?P<val>[^*]+?)\*\*")
 _AFERICAO_MANUAL_RE = re.compile(r"\*\*Aferição:\s*manual\*\*")
+# Marca de invariância (RAF-T14, DRF-36): item cujo mundo `antes` não é medido — só o mundo
+# `depois` roda o comando.
+_INVARIANCIA_RE = re.compile(r"\(invariância\)")
 
-_COMANDOS_PERMITIDOS = ("python", "pwsh")
+_COMANDOS_PERMITIDOS = ("python", "pwsh", "git")
+# Subcomandos de leitura do `git` (RAF-T14): o `git` entra na lista fechada só para ler — nenhum
+# subcomando que escreve no índice, na árvore ou nas referências roda.
+_GIT_LEITURA = ("status", "diff", "show", "ls-files", "check-ignore")
 _TOKENS_SHELL_RECUSADOS = frozenset({";", "&&", "||", "|", ">", ">>", "<", "<<"})
 _EXIT_RE = re.compile(r"^exit\s+(-?\d+)$", re.IGNORECASE)
 
@@ -123,6 +140,7 @@ class ItemVerificacao:
         forma: str = "8.1",
         antes: str | None = None,
         depois: str | None = None,
+        invariancia: bool = False,
     ):
         self.indice = indice
         self.comando = comando
@@ -132,6 +150,7 @@ class ItemVerificacao:
         self.forma = forma
         self.antes = antes
         self.depois = depois
+        self.invariancia = invariancia
 
 
 def _parsear_itens(linhas: list[str]) -> tuple[list[ItemVerificacao], list[str]]:
@@ -181,9 +200,16 @@ def _parsear_itens(linhas: list[str]) -> tuple[list[ItemVerificacao], list[str]]
             m_seta = _SETA_RE.search(pos_resto)
             esperado = m_seta.group("esperado").strip() if m_seta else None
             afericao_manual = bool(_AFERICAO_MANUAL_RE.search(pos_resto))
+            invariancia = bool(_INVARIANCIA_RE.search(pos_resto))
             itens.append(
                 ItemVerificacao(
-                    len(itens) + 1, comando, esperado, medido_antes, afericao_manual, forma="8.1"
+                    len(itens) + 1,
+                    comando,
+                    esperado,
+                    medido_antes,
+                    afericao_manual,
+                    forma="8.1",
+                    invariancia=invariancia,
                 )
             )
         elif resto.startswith("`"):
@@ -192,10 +218,15 @@ def _parsear_itens(linhas: list[str]) -> tuple[list[ItemVerificacao], list[str]]
             pos_resto = texto_item[m_cmd.end() :] if m_cmd else texto_item[m_num.end() :]
             m_seta = _SETA_INLINE_RE.search(pos_resto)
             esperado = m_seta.group("esperado").strip() if m_seta else None
-            m_par = _ANTES_DEPOIS_RE.search(pos_resto)
+            m_seta_bruta = re.search(r"→", pos_resto)
+            trecho_par = pos_resto[m_seta_bruta.start() :] if m_seta_bruta else pos_resto
+            m_par = _ANTES_DEPOIS_CRASE_RE.search(trecho_par) or _ANTES_DEPOIS_RE.search(
+                trecho_par
+            )
             antes = m_par.group("antes").strip() if m_par else None
             depois = m_par.group("depois").strip() if m_par else None
             afericao_manual = bool(_AFERICAO_MANUAL_RE.search(pos_resto))
+            invariancia = bool(_INVARIANCIA_RE.search(pos_resto))
             itens.append(
                 ItemVerificacao(
                     len(itens) + 1,
@@ -206,6 +237,7 @@ def _parsear_itens(linhas: list[str]) -> tuple[list[ItemVerificacao], list[str]]
                     forma="inline",
                     antes=antes,
                     depois=depois,
+                    invariancia=invariancia,
                 )
             )
         else:
@@ -235,6 +267,10 @@ def _validar_comando(comando: str) -> str | None:
             )
     if not tokens or tokens[0] not in _COMANDOS_PERMITIDOS:
         return f"primeiro token fora da lista fechada {_COMANDOS_PERMITIDOS}"
+    if tokens[0] == "git":
+        segundo = tokens[1] if len(tokens) > 1 else ""
+        if segundo not in _GIT_LEITURA:
+            return f"subcomando git '{segundo}' fora da lista de leitura {_GIT_LEITURA}"
     return None
 
 
@@ -259,6 +295,42 @@ def _bate_com_medido(valor_declarado: str, returncode: int, saida: str) -> bool:
     if m:
         return returncode == int(m.group(1))
     return valor in saida
+
+
+def _literal_do_esperado(esperado: str) -> str | None:
+    """Literal comparado no mundo `depois` da forma 8.1 (RAF-T13): o primeiro negrito
+    `**<valor>**` do `esperado`; sem negrito, o primeiro trecho entre crases (`_CRASE_RE`); sem
+    nenhum dos dois, `None` — a falha e a decisão de não rodar o item são responsabilidade de
+    quem chama (`verificar_tarefa`)."""
+    m = _NEGRITO_RE.search(esperado)
+    if m:
+        return m.group("val").strip()
+    m = _CRASE_RE.search(esperado)
+    if m:
+        return m.group("val").strip()
+    return None
+
+
+def _ref_do_despacho(root: Path, tarefa_id: str) -> str | None:
+    """`ref` que o `despachar` gravou em `<root>/.claude/estado/tarefa-corrente.json` para
+    `tarefa_id` (RAF-T14, DRF-13 (iii)/(iv)): devolve o `ref` só quando o JSON é objeto, o
+    `tarefa` dele é `tarefa_id` e o `ref` não é vazio. Arquivo ausente, ilegível ou de outra
+    tarefa → `None` (a nomeação da falha é responsabilidade de `verificar_tarefa`)."""
+    caminho = root / ".claude" / "estado" / "tarefa-corrente.json"
+    if not caminho.is_file():
+        return None
+    try:
+        dados = json.loads(caminho.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    if not isinstance(dados, dict):
+        return None
+    if dados.get("tarefa") != tarefa_id:
+        return None
+    ref = dados.get("ref")
+    if not ref:
+        return None
+    return ref
 
 
 # --- âncoras de arquivo:linha (FPU-T3, DFP-4/DFP-16): toda âncora `<caminho>:<linha>` (ou
@@ -340,10 +412,12 @@ def verificar_tarefa(
     `{"plano": ..., "tarefa": ..., "mundo": ..., "itens": [...]}` — um registro por item de
     `itens` (`_parsear_itens`), com `exit`/`saida`/`bate` preenchidos só quando o comando roda.
 
-    `mundo` em `{"antes", "depois", None}` — só afeta a forma inline (a forma 8.1 sempre compara
-    `Medido antes`, qualquer que seja o mundo). `None` deriva do bullet `- **Status:**` do card
-    (`rdo._status_atual`): `done` → `depois`; qualquer outro (inclusive ausente) → `antes`. Status
-    ausente imprime o aviso `status ausente: comparando antes`."""
+    `mundo` em `{"antes", "depois", None}` — afeta as duas formas (RAF-T13): na 8.1, `depois`
+    compara com o literal do `esperado` (`_literal_do_esperado`: negrito ou crase) e `antes`
+    segue comparando com `Medido antes`; na forma inline, `depois` usa o par `antes`/`depois`
+    (ou o literal do `esperado`, sem par) e `antes` usa o valor `antes`. `None` deriva do bullet
+    `- **Status:**` do card (`rdo._status_atual`): `done` → `depois`; qualquer outro (inclusive
+    ausente) → `antes`. Status ausente imprime o aviso `status ausente: comparando antes`."""
     plano_path = Path(plano)
     _exigir_plano(plano_path)
 
@@ -385,6 +459,22 @@ def verificar_tarefa(
             "bate": False,
         }
         registros.append(registro)
+
+        if item.invariancia and mundo == "antes":
+            registro["saida"] = "não medida (invariância)"
+            continue
+
+        if item.comando is not None and "<ref>" in item.comando:
+            ref = _ref_do_despacho(root, dossie.tarefa_id)
+            if ref is None:
+                falhas.append(
+                    f"item {item.indice}: <ref> sem recorte do despacho para "
+                    f"'{dossie.tarefa_id}' em .claude/estado/tarefa-corrente.json"
+                )
+                continue
+            item.comando = item.comando.replace("<ref>", ref)
+            registro["comando"] = item.comando
+
         if item.forma == "8.1":
             motivo_recusa = _validar_comando(item.comando) if item.comando else None
             comando_executavel = item.comando is not None and motivo_recusa is None
@@ -402,9 +492,9 @@ def verificar_tarefa(
 
             if item.esperado is None:
                 falhas.append(f"item {item.indice}: elemento ausente - → (valor esperado)")
-            if item.medido_antes is None:
+            if item.medido_antes is None and not item.invariancia:
                 falhas.append(f"item {item.indice}: elemento ausente - Medido antes")
-            if item.esperado is None or item.medido_antes is None:
+            if item.esperado is None or (item.medido_antes is None and not item.invariancia):
                 continue
 
             if item.afericao_manual:
@@ -416,17 +506,32 @@ def verificar_tarefa(
                 falhas.append(f"item {item.indice}: comando recusado - {motivo_recusa}")
                 continue
 
+            if mundo == "depois":
+                valor_comparado = _literal_do_esperado(item.esperado)
+                if valor_comparado is None:
+                    falhas.append(f"item {item.indice}: esperado sem literal")
+                    continue
+            else:
+                valor_comparado = item.medido_antes
+
             returncode, saida = _rodar_comando(item.comando, root)
-            bate = _bate_com_medido(item.medido_antes, returncode, saida)
+            bate = _bate_com_medido(valor_comparado, returncode, saida)
             registro["exit"] = returncode
             registro["saida"] = saida.strip()[-400:]
             registro["bate"] = bate
             if not bate:
-                falhas.append(
-                    f"item {item.indice}: divergencia - Medido antes declara "
-                    f"'{item.medido_antes}', execução mediu exit {returncode} saída "
-                    f"'{saida.strip()[:200]}'"
-                )
+                if mundo == "depois":
+                    falhas.append(
+                        f"item {item.indice}: divergencia - esperado (depois) declara "
+                        f"'{valor_comparado}', execução mediu exit {returncode} saída "
+                        f"'{saida.strip()[:200]}'"
+                    )
+                else:
+                    falhas.append(
+                        f"item {item.indice}: divergencia - Medido antes declara "
+                        f"'{valor_comparado}', execução mediu exit {returncode} saída "
+                        f"'{saida.strip()[:200]}'"
+                    )
             continue
 
         # forma inline (DFP-14): sem as checagens de → / Medido antes da 8.1.
@@ -517,8 +622,8 @@ def main(argv: list[str] | None = None) -> int:
         choices=["antes", "depois"],
         default=None,
         help=(
-            "Mundo do card a comparar na forma inline (DFP-14); ausente deriva do bullet "
-            "- **Status:** (done -> depois; demais -> antes)."
+            "Mundo do card a comparar nas duas formas, 8.1 e inline (DFP-14, RAF-T13); "
+            "ausente deriva do bullet - **Status:** (done -> depois; demais -> antes)."
         ),
     )
     parser.add_argument(
@@ -529,8 +634,8 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help=(
             "Grava a medida (FPU-T5, DFP-17, TK-92a) — com caminho, neste .json; sem caminho, "
-            "em caminhos.destino_medida(--root, --plano, --tarefa) — um registro por item de "
-            "Verificação, ok ou não; não muda exit, stdout nem stderr."
+            "em caminhos.destino_medida(--root, --plano, --tarefa, <mundo>) — um registro por "
+            "item de Verificação, ok ou não; não muda exit, stdout nem stderr."
         ),
     )
     args = parser.parse_args(argv)
@@ -543,7 +648,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.gravar is not None:
         destino = (
-            _caminhos.destino_medida(args.root, args.plano, args.tarefa)
+            _caminhos.destino_medida(args.root, args.plano, args.tarefa, medida["mundo"])
             if args.gravar is True
             else args.gravar
         )

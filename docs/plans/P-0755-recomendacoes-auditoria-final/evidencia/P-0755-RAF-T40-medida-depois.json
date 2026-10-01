@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T40",
+  "mundo": "depois",
+  "gerado_em": "2026-09-30T06:27:01+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('README.md').read_text(encoding='utf-8');n=['card_check.py','modelo.py','encerrar.py','backlog.py','review_evidence.py','backlog_hook.py','telemetria_hook.py','progresso_hook.py','prevoo.py','materializar.py','custo_sessao.py'];e=['abre numa janela nova','sem reconferir âncora à mão','só chama o modelador quando encontra conflito','--so-vigente','a propriedade que só uma delas tem','Na parada de marco','rodada por quem conduz antes de despachar o planejador','C-18','que ele julga só na versão vigente','não cita mais nenhum item vivo','nunca o relato de um subagente','encerrar: B1','--consultor','as linhas que a entrega removeu','que o próprio pedido manda criar','uma por agente'];print('guia=%d-%d-%d'%(sum(x in t for x in n),sum(x in t for x in e),t.count('append-only e é a')))\"",
+      "exit": 0,
+      "saida": "guia=11-16-0",
+      "bate": true
+    }
+  ]
+}

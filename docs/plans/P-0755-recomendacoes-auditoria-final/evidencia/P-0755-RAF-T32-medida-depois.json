@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T32",
+  "mundo": "depois",
+  "gerado_em": "2026-09-30T02:26:24+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_progresso_hook.py -q -k tarefa_do_despacho",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 45 deselected in 0.06s",
+      "bate": true
+    }
+  ]
+}

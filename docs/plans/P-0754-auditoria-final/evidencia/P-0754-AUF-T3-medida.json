@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T3",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T14:10:22+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"curinga or marcado_como_novo or marca_de_novo\"",
+      "exit": 0,
+      "saida": "....                                                                     [100%]\n4 passed, 68 deselected in 1.94s",
+      "bate": true
+    }
+  ]
+}

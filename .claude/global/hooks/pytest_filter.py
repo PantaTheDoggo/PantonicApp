@@ -4,9 +4,11 @@ Le a saida completa do pytest via stdin, grava o log integral em
 %TEMP%/claude/pytest_last_run.log e imprime apenas o que importa para o agente:
 secoes FAILURES/ERRORS, o short test summary e a linha de sumario final.
 
-Exit code: 0 se a suite passou; 1 se houve falha/erro/saida irreconhecivel
-(permite ao agente detectar falha mesmo com o pipe engolindo o exit code
-original do pytest).
+Exit code: se a entrada trouxer o marcador `__PYTEST_EXIT__=<n>` (gravado
+pelo pytest_pretooluse.py antes do pipe, no comando encadeado), o filtro sai
+com esse `<n>` - o exit code real do pytest. Sem marcador: 0 se a suite
+passou; 1 se houve falha/erro/saida irreconhecivel (permite ao agente
+detectar falha mesmo com o pipe engolindo o exit code original do pytest).
 """
 import os
 import re
@@ -27,6 +29,7 @@ PLAIN_SUMMARY_RE = re.compile(
     r"^(no tests ran|\d+ (passed|failed|errors?|skipped|xfailed|xpassed|deselected|warnings?)\b.*)"
     r" in \d+(\.\d+)?s"
 )
+MARCADOR_EXIT_RE = re.compile(r"^__PYTEST_EXIT__=(-?\d+)$")
 
 
 def main() -> None:
@@ -36,7 +39,15 @@ def main() -> None:
     except Exception:
         pass
 
-    lines = sys.stdin.read().splitlines()
+    lines_lidas = sys.stdin.read().splitlines()
+    marcador_exit = None
+    lines = []
+    for ln in lines_lidas:
+        m = MARCADOR_EXIT_RE.match(ln.strip())
+        if m:
+            marcador_exit = int(m.group(1))
+            continue
+        lines.append(ln)
 
     log_dir = os.path.join(tempfile.gettempdir(), "claude")
     log_path = os.path.join(log_dir, "pytest_last_run.log")
@@ -84,6 +95,9 @@ def main() -> None:
     if truncated:
         note += " (saida filtrada acima foi truncada; use Grep no log)"
     print(note)
+
+    if marcador_exit is not None:
+        sys.exit(marcador_exit)
 
     summary = lines[summary_idx] if summary_idx is not None else ""
     failed = summary == "" or bool(FAILURE_HINT_RE.search(summary))

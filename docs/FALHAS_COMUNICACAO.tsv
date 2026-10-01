@@ -3,3 +3,4 @@ data	superficie	o_que_faltou	custo_prompts	correcao	fonte
 2026-09-19	relatório de janela	regras de roteamento citadas pelo identificador; o dono pediu glossário e citou A10 e B6, que não existem	1	relatório de janela passa a citar a regra pela condição (CAH-T5)	docs/DIARIO_DE_OBRAS.md ## TK-38
 2026-09-24	relatório de janela	termo "evidência mecânica" vago	0	-	docs/plans/P-0748-tela-do-gerente.md:493
 2026-09-25	conversa	'ator inédito na operação' citado sem glosa nem exemplo, como se fosse regra conhecida; a origem (exemplos do próprio dono no TK-69 §3, 2026-09-21) e o que 'ator' e 'operação' nomeiam só estavam no diário	1	-	docs/DIARIO_DE_OBRAS.md ## TK-69 §3
+2026-09-28	relatório de janela	"auditoria nova" pedida no Marco 2 sem dizer que é a mesma auditoria que o dono pediu no ato 2 ("Herdado + auditoria nova") e que é a última tarefa do próprio plano; o dono entendeu um pedido de mais uma auditoria	1	-	docs/plans/P-0754-auditoria-final/plano.md §0

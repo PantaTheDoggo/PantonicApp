@@ -35,8 +35,8 @@ def test_tf_san_2_id_do_plano_nas_duas_formas():
 
 def test_tf_destino_medida_tres_residencias():
     """`TK-92a` — `destino_medida` cobre as três residências pela mesma função: tíquete do
-    diário e plano legado caem em `<raiz>/docs/RDO/evidencia`, plano em pasta grava ao lado
-    do plano, em `<pasta>/evidencia`."""
+    diário e plano legado caem em `<raiz>/docs/RDO/evidencia`, plano em pasta grava na pasta do
+    plano sob a raiz, em `<raiz>/docs/plans/<pasta>/evidencia` (`R-05`, RAF-T15)."""
     raiz = Path("/raiz")
 
     assert caminhos.destino_medida(
@@ -49,7 +49,7 @@ def test_tf_destino_medida_tres_residencias():
 
     assert caminhos.destino_medida(
         raiz, Path("docs/plans/P-0002-y/plano.md"), "T2"
-    ) == Path("docs/plans/P-0002-y") / "evidencia" / "P-0002-T2-medida.json"
+    ) == raiz / "docs" / "plans" / "P-0002-y" / "evidencia" / "P-0002-T2-medida.json"
 
 
 def test_tf_san_3_arquivos_de_plano(tmp_path):
@@ -112,3 +112,22 @@ def test_tf_san_6_formatar_id_preserva_largura():
     assert caminhos.formatar_id(750, 4) == "P-0750"
     assert caminhos.formatar_id(1, 1) == "P-1"
     assert caminhos.formatar_id(10, 1) == "P-10"
+
+
+# --- RAF-T15 (R-05): a medida gravada fica na pasta do plano da árvore medida, com o mundo no nome
+
+
+def test_tf_destino_medida_na_raiz_com_o_mundo():
+    """`RAF-T15` (`R-05`) — `destino_medida` recebe `mundo` e grava/procura na pasta do plano
+    dentro da raiz medida, não na árvore real de `plano_path` (que pode ser uma cópia): plano em
+    pasta some sob `raiz` mesmo com `plano_path` apontando para `/real`, e o nome leva o sufixo
+    `-<mundo>`; hoje a função não aceita `mundo` e a pasta vem de `/real`."""
+    raiz = Path("/copia")
+
+    assert caminhos.destino_medida(
+        raiz, Path("/real/docs/plans/P-0002-y/plano.md"), "T2", "depois"
+    ) == raiz / "docs" / "plans" / "P-0002-y" / "evidencia" / "P-0002-T2-medida-depois.json"
+
+    assert caminhos.destino_medida(
+        raiz, Path("/real/docs/plans/P-0001-x.md"), "T1", "antes"
+    ) == raiz / "docs" / "RDO" / "evidencia" / "P-0001-T1-medida-antes.json"

@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T27",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T23:29:06+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_prevoo.py -q -k conta_como_caminho",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 8 deselected in 0.03s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_prevoo.py -q -k caminho_a_criar",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 8 deselected in 0.03s",
+      "bate": true
+    }
+  ]
+}

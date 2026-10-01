@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T29a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-30T00:49:24+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/tools/backlog.py').read_text(encoding='utf-8');print('vocabulario=%d-%d-%d linhas=%d'%(t.count('C-1..C-17'),t.count('C-1..C-18'),t.count('via _prefixo_decisoes_checks'),len(t.splitlines())))\"",
+      "exit": 0,
+      "saida": "vocabulario=0-3-1 linhas=2613",
+      "bate": true
+    }
+  ]
+}

@@ -480,7 +480,7 @@ def test_tf_plano_fecha_status_entrega_tres_secoes_e_linha_do_diario(tmp_path):
 def test_tf_fechado_conta_como_o_indice(tmp_path, capsys):
     """TF (`TK-88d`): a linha `FECHADO` conta as tarefas como o índice conta (`_done_total`,
     que tira as `cancelled` do total) — fixture com uma `done` (`ALF-T1`) e uma `cancelled`
-    (`ALF-T2`) fecha com `1/1`, não `1/2`, e o stdout do fechamento diz `plano fechado`."""
+    (`ALF-T2`) fecha com `1/1`, não `1/2`, e o stdout do fechamento diz `comando 'plano' concluído`."""
     repo = _montar_repo(tmp_path)
     _fechar_tarefa_e_preparar_plano(repo)
 
@@ -489,7 +489,7 @@ def test_tf_fechado_conta_como_o_indice(tmp_path, capsys):
     assert exit_code == 0
     diario = (repo / "docs" / "DIARIO_DE_OBRAS.md").read_text(encoding="utf-8").splitlines()
     assert any("FECHADO `done` 1/1 em 2026-09-26" in l for l in diario)
-    assert "plano fechado" in capsys.readouterr().out
+    assert "encerrar: OK - comando 'plano' concluído;" in capsys.readouterr().out
 
 
 @pytest.mark.parametrize(
@@ -885,3 +885,436 @@ def test_tr_esqueleto_de_operacoes_plano_relativo(tmp_path, monkeypatch, capsys)
     assert exit_code == 0
     assert "nao citados: nenhum" in saida
     assert "sem seção: nenhum" in saida
+
+
+def test_tf_conclusao_da_tarefa_sem_erro_de_concordancia(tmp_path, capsys):
+    """TF: a frase final do fechamento serve a todos os comandos — para `tarefa` ela diz
+    `comando 'tarefa' concluído`, nunca `tarefa fechado` (a regra antiga imprimia
+    `encerrar: OK - tarefa fechado;`)."""
+    repo = _montar_repo(tmp_path)
+
+    exit_code = encerrar.main(_argv_tarefa(
+        repo, **{"--resumo": "A primeira coisa está entregue.", "--pendencia": "nomear a função"},
+    ))
+
+    assert exit_code == 0
+    saida = capsys.readouterr().out
+    assert "encerrar: OK - comando 'tarefa' concluído;" in saida
+    assert "tarefa fechado" not in saida
+
+
+# --- marco --aceita-versao (RAF-T23) ------------------------------------------------------------
+
+
+PLANO_MARCO_PROMOCAO = """# P-0001 — Plano marco
+
+**Prefixo das tarefas no diário:** `MRC-T<n>`
+
+**Marcos de validação pelo dono:**
+
+| marco | o que o dono lê | veredito |
+|---|---|---|
+| **Marco 1** | a seção 1 | go |
+| **Marco 2** | a etapa A | pendente |
+
+## 0. O problema, verbatim
+
+Texto do problema, verbatim.
+
+## 1. Modelo conceitual
+
+**Estado do modelo:** versão 1 · 2026-09-10 · autor: modelador · 1 operações · 2 propriedades · situação: vigente
+
+### 1.1 Objetos
+
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo | dado de entrada | status | um registro por rodada | externo | lastro da fixture |
+| produto | o produto da operação | status | um registro validado | OP-1 | lastro da fixture |
+
+### 1.2 Fluxo de operações
+
+- **OP-1** — Primeira operação da fixture.
+  - `precisa de: insumo` · `altera: produto.status` · `tarefas: MRC-T1`
+
+### 1.3 Estado inicial e estado final
+
+| propriedade | estado inicial | estado final |
+|---|---|---|
+| insumo.status | lido | lido |
+| produto.status | rascunho | validado |
+
+### 1.4 Registro de versões
+
+| versão | data | situação | por |
+|---|---|---|---|
+| 1 | 2026-09-10 | vigente | modelador |
+| 2 | 2026-09-21 | pendente | modelador, emenda |
+
+## 1A. Modelo conceitual — versão pendente de validação
+
+**Estado do modelo:** versão 2 · 2026-09-21 · autor: modelador · 2 operações · 3 propriedades · situação: pendente
+
+### 1.1 Objetos
+
+| objeto | o que é | propriedades | contrato | origem | lastro |
+|---|---|---|---|---|---|
+| insumo | dado de entrada | status | um registro por rodada | externo | lastro da fixture |
+| esboço | o esboço da operação nova | estado | um esboço revisado | OP-1 | lastro da fixture |
+| produto | o produto da operação | status | um registro validado | OP-2 | lastro da fixture |
+
+### 1.2 Fluxo de operações
+
+- **OP-1** — Operação nova, inserida antes.
+  - `precisa de: insumo` · `altera: esboço.estado` · `tarefas: @TAREFAS_OP1@`
+- **OP-2** — Primeira operação da fixture.
+  - `precisa de: esboço` · `altera: produto.status` · `tarefas: MRC-T1`
+
+### 1.3 Estado inicial e estado final
+
+| propriedade | estado inicial | estado final |
+|---|---|---|
+| insumo.status | lido | lido |
+| esboço.estado | vazio | revisado |
+| produto.status | rascunho | validado |
+
+## 5. Tarefas
+
+### MRC-T1 — Tarefa da operação antiga [Sonnet · classe implementacao]
+- **Objetivo:** entregar algo.
+- **Operação do modelo:** `OP-1`
+  - OP-1: Primeira operação da fixture.
+  - precisa de: insumo — um registro por rodada
+- **Arquivos-alvo:** `a.py`.
+- **Verificação:** `pytest -q`.
+- **Pronto quando:** o teste passa.
+
+### MRC-T2 — Tarefa da operação nova [Sonnet · classe implementacao]
+- **Objetivo:** entregar outra coisa.
+- **Operação do modelo:** `OP-1`
+  - OP-1: Operação nova, inserida antes.
+  - precisa de: insumo — um registro por rodada
+- **Arquivos-alvo:** `b.py`.
+- **Verificação:** `pytest -q`.
+- **Pronto quando:** o teste passa.
+"""
+
+
+def _montar_repo_promocao(tmp_path: Path, tarefas_op1: str = "MRC-T2") -> Path:
+    return _montar_repo_marco(tmp_path, PLANO_MARCO_PROMOCAO.replace("@TAREFAS_OP1@", tarefas_op1))
+
+
+def _card(texto: str, tarefa: str) -> str:
+    prefixo = f"### {tarefa} — "
+    idx = texto.index(prefixo)
+    fim = texto.find("\n### ", idx)
+    return texto[idx:] if fim == -1 else texto[idx:fim]
+
+
+def test_tf_marco_promove_versao_aceita_e_reescreve_os_cards(tmp_path, capsys):
+    """TF (RAF-T23, `DRF-38`): `--aceita-versao` promove a versão pendente a vigente — a linha
+    vigente do registro cai a obsoleta com o motivo na célula `por`, a linha da versão aceita
+    sobe a vigente, a `## 1A` sai do plano e o campo `Operação do modelo` de cada card citado
+    pela pendente é reescrito com as operações e contratos dela."""
+    repo = _montar_repo_promocao(tmp_path)
+    plano = repo / "docs" / "plans" / "P-0001-marco.md"
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito a versão 2",
+            "--aceita-versao": "2", "--consultor": "valido a versão 2",
+        },
+    ))
+
+    assert exit_code == 0
+    saida = capsys.readouterr().out
+    assert "marco: versão 2 promovida — 2 card(s) com a operação reescrita" in saida
+    assert "Ato: emenda" not in saida
+
+    texto = plano.read_text(encoding="utf-8")
+    assert "## 1A." not in texto
+    assert "versão 2 · 2026-09-21 · autor: modelador · 2 operações · 3 propriedades · situação: vigente" in texto
+    assert "| 1 | 2026-09-10 | obsoleta | modelador; Caiu pelo aceite da versão 2 em 2026-09-26 |" in texto
+    assert "| 2 | 2026-09-21 | vigente | modelador, emenda |" in texto
+
+    card_t1 = _card(texto, "MRC-T1")
+    assert "`OP-2`" in card_t1.splitlines()[next(
+        i for i, l in enumerate(card_t1.splitlines()) if l.startswith("- **Operação do modelo:**")
+    )]
+    idx_campo_t1 = card_t1.index("- **Operação do modelo:**")
+    trecho_t1 = card_t1[idx_campo_t1:]
+    assert trecho_t1.splitlines()[0:3] == [
+        "- **Operação do modelo:** `OP-2`",
+        "  - OP-2: Primeira operação da fixture.",
+        "  - precisa de: esboço — um esboço revisado",
+    ]
+
+    card_t2 = _card(texto, "MRC-T2")
+    idx_campo_t2 = card_t2.index("- **Operação do modelo:**")
+    trecho_t2 = card_t2[idx_campo_t2:]
+    assert trecho_t2.splitlines()[0:3] == [
+        "- **Operação do modelo:** `OP-1`",
+        "  - OP-1: Operação nova, inserida antes.",
+        "  - precisa de: insumo — um registro por rodada",
+    ]
+
+
+def test_tf_marco_promove_versao_conflito_imprime_dossie(tmp_path, capsys):
+    """TF (RAF-T23): `--aceita-versao` que não bate com a versão da `## 1A` recusa antes de
+    escrever e imprime, no stdout, o dossiê `Ato: emenda` para o modelador."""
+    repo = _montar_repo_promocao(tmp_path)
+    plano = repo / "docs" / "plans" / "P-0001-marco.md"
+    antes = plano.read_text(encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito a versão 3",
+            "--aceita-versao": "3", "--consultor": "valido a versão 3",
+        },
+    ))
+
+    assert exit_code == 1
+    err = capsys.readouterr()
+    assert "marco: conflito na promoção da versão 3 — a ## 1A é a versão 2" in err.err
+    assert "Ato: emenda" in err.out
+    assert plano.read_text(encoding="utf-8") == antes
+
+
+def test_tr_marco_promove_versao_recusa_pendente_com_violacao(tmp_path, capsys):
+    """TR (RAF-T23): a versão pendente com violação (aqui, `OP-1` sem tarefa) recusa a promoção
+    antes de escrever — a mesma checagem de `_modelo.validar(pendente=True)`, prefixada `1A: `."""
+    repo = _montar_repo_promocao(tmp_path, tarefas_op1="")
+    plano = repo / "docs" / "plans" / "P-0001-marco.md"
+    antes = plano.read_text(encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito a versão 2",
+            "--aceita-versao": "2", "--consultor": "valido a versão 2",
+        },
+    ))
+
+    assert exit_code == 1
+    assert "marco: versão pendente com violação — 1A: V1 OP-1 — operação sem tarefa" in capsys.readouterr().err
+    assert plano.read_text(encoding="utf-8") == antes
+
+
+def test_tf_marco_validacao_do_consultor_na_celula(tmp_path):
+    """TF (RAF-T23, `R-08`): a linha de validação do consultor grava ao lado do veredito do
+    dono, na mesma célula do marco, com `|` escapado como o resto da célula."""
+    repo = _montar_repo_promocao(tmp_path)
+    plano = repo / "docs" / "plans" / "P-0001-marco.md"
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito",
+            "--aceita-versao": "2", "--consultor": "valido a versão 2 | sem ressalva",
+        },
+    ))
+
+    assert exit_code == 0
+    texto = plano.read_text(encoding="utf-8")
+    assert (
+        '| **Marco 2** | a etapa A | go · 2026-09-26 — "Aceito" · '
+        'consultor: "valido a versão 2 \\| sem ressalva" |'
+    ) in texto
+
+
+def test_tr_marco_validacao_do_consultor_obrigatoria_no_aceite(tmp_path, capsys):
+    """TR (RAF-T23, `R-08`): `--aceita-versao` sem `--consultor` recusa sem escrever — a regra
+    concorrente (consultor opcional) promoveria a versão sem validação registrada."""
+    repo = _montar_repo_promocao(tmp_path)
+    plano = repo / "docs" / "plans" / "P-0001-marco.md"
+    antes = plano.read_text(encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito a versão 2",
+            "--aceita-versao": "2",
+        },
+    ))
+
+    assert exit_code == 1
+    assert (
+        "marco: --aceita-versao exige --consultor com a linha de validação do consultor"
+        in capsys.readouterr().err
+    )
+    assert plano.read_text(encoding="utf-8") == antes
+
+
+def test_tf_marco_cabecalho_1a_com_texto_a_mais_recusa_sem_pendente(tmp_path, capsys):
+    """TF (RAF-T23a, `AE-176`): a `## 1A` cujo cabeçalho tem texto a mais não é a versão pendente
+    que o `modelo.py` lê (igualdade exata com `_modelo._HEADING_PENDENTE`); a pré-checagem do
+    marco usa a mesma regra e recusa antes de escrever, em vez de passar pelo prefixo e cair em
+    `AttributeError` dentro de `_checar_promocao`."""
+    texto = PLANO_MARCO_PROMOCAO.replace("@TAREFAS_OP1@", "MRC-T2").replace(
+        "## 1A. Modelo conceitual — versão pendente de validação",
+        "## 1A. Modelo conceitual — versão pendente de validação (rascunho)",
+    )
+    repo = _montar_repo_marco(tmp_path, texto)
+    plano = repo / "docs" / "plans" / "P-0001-marco.md"
+    antes = plano.read_text(encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito a versão 2",
+            "--aceita-versao": "2", "--consultor": "valido a versão 2",
+        },
+    ))
+
+    assert exit_code == 1
+    assert "marco: plano sem versão pendente (## 1A)" in capsys.readouterr().err
+    assert plano.read_text(encoding="utf-8") == antes
+
+
+def test_tf_marco_conflito_devolver_pede_a_1_e_a_1a(tmp_path, capsys):
+    """TF (RAF-T23b, `AE-180`): no conflito da promoção o modelador acerta o que está (a
+    `## 1`, a `## 1A` e o registro de versões) para o comando rodar de novo; o `Devolver` do
+    dossiê não pede a seção depois do ato nem linha nova do registro, que o comando faz."""
+    repo = _montar_repo_promocao(tmp_path)
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "2", "--resultado": "go", "--veredito": "Aceito a versão 3",
+            "--aceita-versao": "3", "--consultor": "valido a versão 3",
+        },
+    ))
+
+    assert exit_code == 1
+    saida = capsys.readouterr().out
+    assert (
+        "Devolver: a ## 1 e a ## 1A acertadas, com o registro de versões, para o comando do "
+        "marco rodar de novo." in saida
+    )
+    assert "linha nova do registro" not in saida
+
+
+def test_tf_marco_recusa_devolver_sem_linha_nova_do_registro(tmp_path, capsys):
+    """TF (RAF-T23b, `AE-180`): na recusa a `## 1A` e a linha dela saem e a vigente fica sem
+    marca (`GOVERNANCA.md` §3.2); o `Devolver` do dossiê pede a `## 1` com o registro sem a linha
+    da versão recusada, não uma linha nova."""
+    repo = _montar_repo_marco(tmp_path)
+
+    exit_code = encerrar.main(_argv_marco(
+        repo, **{
+            "--marco": "1", "--resultado": "no-go", "--veredito": "Não aceito",
+            "--recusa-versao": "2",
+        },
+    ))
+
+    assert exit_code == 0
+    saida = capsys.readouterr().out
+    assert (
+        "Devolver: a seção ## 1 depois do ato, com o registro de versões sem a linha da versão "
+        "recusada, e o plano sem a ## 1A." in saida
+    )
+    assert "linha nova do registro" not in saida
+
+
+# --- RAF-T30: origem do achado e aviso de falha de instrumento -------------------------------
+
+
+def test_tf_origem_do_achado_gravada_na_linha(tmp_path):
+    """TF (RAF-T30, `R-19`/`DRF-21`): cada achado do laudo grava a linha de origem
+    `laudo:<TAREFA>#<n>`, numerada a partir de 1 na ordem da tabela."""
+    repo = _montar_repo(tmp_path)
+    laudo = repo / "docs" / "RDO" / "laudos" / "P-0001-ALF-T1.md"
+    laudo.write_text(_laudo_com_achado([
+        "| dossiê | o card não citava o arquivo de teste. Rota: card corretivo ALF-T1a |",
+        "| doutrina | a skill não nomeia o gate. Rota: tíquete |",
+    ]), encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_tarefa(repo))
+
+    assert exit_code == 0
+    texto_plano = (repo / "docs" / "plans" / "P-0001-alfa.md").read_text(encoding="utf-8")
+    assert (
+        "- **AE-3** (`ALF-T1`, fechamento, 2026-09-26) — achado de processo (doutrina): "
+        "a skill não nomeia o gate. **Rota:** tíquete **Origem:** `laudo:ALF-T1#2`"
+    ) in texto_plano
+
+
+def test_tf_origem_do_achado_ja_registrada_pula(tmp_path):
+    """TF (RAF-T30, `R-19`): a origem `laudo:ALF-T1#1` já está registrada no plano com outro
+    texto; a regra concorrente (dedupe só por texto) gravaria de novo — o fechamento pula."""
+    repo = _montar_repo(tmp_path)
+    plano = repo / "docs" / "plans" / "P-0001-alfa.md"
+    entrada_existente = (
+        "- **AE-2** (`ALF-T1`, laudo, 2026-09-21) — achado de processo (dossiê): "
+        "outro texto qualquer. **Rota:** outra rota. **Origem:** `laudo:ALF-T1#1`\n"
+    )
+    plano.write_text(plano.read_text(encoding="utf-8") + entrada_existente, encoding="utf-8")
+    laudo = repo / "docs" / "RDO" / "laudos" / "P-0001-ALF-T1.md"
+    laudo.write_text(_laudo_com_achado([
+        "| dossiê | o card não citava o arquivo de teste. Rota: card corretivo ALF-T1a |",
+    ]), encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_tarefa(repo))
+
+    assert exit_code == 0
+    texto_plano = plano.read_text(encoding="utf-8")
+    assert "AE-3" not in texto_plano
+
+
+def test_tr_origem_do_achado_de_outra_linha_nao_pula(tmp_path):
+    """TR (RAF-T30): a `AE-2` existente cita `laudo:ALF-T1#11`; a regra concorrente (casar
+    `laudo:ALF-T1#1` como substring sem as crases) pularia a linha 1 por engano — não pula."""
+    repo = _montar_repo(tmp_path)
+    plano = repo / "docs" / "plans" / "P-0001-alfa.md"
+    entrada_existente = (
+        "- **AE-2** (`ALF-T1`, laudo, 2026-09-21) — achado de processo (dossiê): "
+        "outro texto qualquer. **Rota:** outra rota. **Origem:** `laudo:ALF-T1#11`\n"
+    )
+    plano.write_text(plano.read_text(encoding="utf-8") + entrada_existente, encoding="utf-8")
+    laudo = repo / "docs" / "RDO" / "laudos" / "P-0001-ALF-T1.md"
+    laudo.write_text(_laudo_com_achado([
+        "| dossiê | o card não citava o arquivo de teste. Rota: card corretivo ALF-T1a |",
+    ]), encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_tarefa(repo))
+
+    assert exit_code == 0
+    texto_plano = plano.read_text(encoding="utf-8")
+    assert (
+        "- **AE-3** (`ALF-T1`, fechamento, 2026-09-26) — achado de processo (dossiê): "
+        "o card não citava o arquivo de teste. **Rota:** card corretivo ALF-T1a **Origem:** "
+        "`laudo:ALF-T1#1`"
+    ) in texto_plano
+
+
+def test_tf_falha_de_instrumento_avisa_b1(tmp_path, capsys):
+    """TF (RAF-T30, `R-20`): achado de processo do alvo `instrumento` que relata queda ou erro
+    ganha, no stdout, a linha `encerrar: B1` antes da linha final de conclusão."""
+    repo = _montar_repo(tmp_path)
+    laudo = repo / "docs" / "RDO" / "laudos" / "P-0001-ALF-T1.md"
+    laudo.write_text(_laudo_com_achado([
+        "| instrumento | o card_check caiu com Traceback no item 2. Rota: tíquete |",
+    ]), encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_tarefa(repo))
+
+    assert exit_code == 0
+    saida = capsys.readouterr().out
+    assert (
+        "encerrar: B1 — achado de instrumento com falha: o card_check caiu com Traceback no "
+        "item 2." in saida
+    )
+    assert saida.index("encerrar: B1") < saida.index("encerrar: OK - comando 'tarefa' concluído")
+
+
+def test_tr_falha_de_instrumento_sem_termo_ou_de_outro_alvo_cala(tmp_path, capsys):
+    """TR (RAF-T30): achado de instrumento sem termo de falha, e achado com termo de falha de
+    outro alvo — a regra concorrente (qualquer achado de instrumento, ou qualquer termo em
+    qualquer alvo) avisaria; nenhum dos dois casa a regra e o `B1` não sai."""
+    repo = _montar_repo(tmp_path)
+    laudo = repo / "docs" / "RDO" / "laudos" / "P-0001-ALF-T1.md"
+    laudo.write_text(_laudo_com_achado([
+        "| instrumento | a saída do card_check é longa. |",
+        "| dossiê | o teste deu error no ramo vazio. |",
+    ]), encoding="utf-8")
+
+    exit_code = encerrar.main(_argv_tarefa(repo))
+
+    assert exit_code == 0
+    saida = capsys.readouterr().out
+    assert "encerrar: B1" not in saida

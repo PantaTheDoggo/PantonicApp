@@ -125,7 +125,7 @@ que ficou congelado no recorte do marco.
 Por desenho, não por limitação:
 
 - **O veredito de marco** — este documento existe para um.
-- **Rota e escopo.** O consultor decide o técnico e o tático; o que muda rota ou escopo sobe.
+- **Rota e escopo.** O consultor decide o operacional e o tático; sobe só o estratégico — o que altera o modelo que o dono descreveu ou o prompt da demanda (`G-ESCALA`, `GOVERNANCA.md` §7 item 21).
 - **Superfície de permissão.** O loop não altera o que ele próprio pode fazer.
 - **Commit.** O loop acumula e commita no marco; nesta janela não commitou, porque o marco é *de
   validação* e a validação é sua.

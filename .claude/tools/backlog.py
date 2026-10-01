@@ -1,10 +1,10 @@
 """BKL-T2 (`docs/plans/P-0739-backlog-instrumento.md` `### BKL-T2`) — núcleo somente-leitura do
 instrumento de backlog: carrega o índice do diário, os planos vivos e o próprio diário; monta o
-grafo item → tarefas; `check` acusa cada violação de gramática (`C-1..C-17`, vocabulário fechado
+grafo item → tarefas; `check` acusa cada violação de gramática (`C-1..C-18`, vocabulário fechado
 definido no card) com `arquivo:linha`; `resolver_citacao_secao` (`TK-60a`) resolve uma citação
 `` `<arquivo>.md` §<N>[.<N>]* `` contra o arquivo citado, acusando `C-11` quando a seção não
 existe; `C-12` (`TK-65a`) acusa `Depende de:` fora da gramática ou citando id que não é item —
-vocabulário do instrumento fechado em `C-1..C-17`; `show` emite o dossiê verbatim de um item,
+vocabulário do instrumento fechado em `C-1..C-18`; `show` emite o dossiê verbatim de um item,
 inteiro no card de tarefa; o teto `DB-7` (8.000 chars / 120 linhas, com ponteiro `arquivo:l1-l2` quando corta) vale para plano, notas de execução e achados.
 
 Gramática implementada (residência canônica: skill `diario-de-obras`, seção "Gramática legível
@@ -110,6 +110,9 @@ _BRACKET_DETALHE_RE = re.compile(
 PLANO_HEADER_RE = _caminhos.PLANO_HEADER_RE
 STATUS_CAMPO_RE = re.compile(r"\*\*Status:\*\* `([a-z-]+)`")
 PREFIXO_CAMPO_RE = re.compile(r"\*\*Prefixo das tarefas no diário:\*\* `([A-Za-z0-9]+)-T<n>`")
+# R-28 / DRF-29 (`P-0755`) — prefixo de decisão declarado no cabeçalho do plano; citar prefixo
+# alheio no corpo do texto não casa este padrão (exige o rótulo do campo, não a ocorrência).
+PREFIXO_DECISOES_RE = re.compile(r"\*\*Prefixo das decisões:\*\* `([A-Za-z0-9]+)-<n>`")
 ORDEM_CAMPO_RE = re.compile(r"\*\*Ordem de execução:\*\* (.+)$")
 
 HEADING_RE = re.compile(r"^(#{2,3}) (\S+) — (.*)$")
@@ -199,6 +202,8 @@ class Plano:
     estado_ids: list[tuple[str, int]] = field(default_factory=list)
     estado_defeitos: list[tuple[int, str]] = field(default_factory=list)
     status_no_texto: int | None = None
+    prefixo_decisoes: str | None = None
+    prefixo_decisoes_linha: int | None = None
 
 
 @dataclass
@@ -481,6 +486,8 @@ def _parse_plano(caminho: Path, repo: Path) -> Plano:
     status: str | None = None
     status_linha: int | None = None
     prefixo: str | None = None
+    prefixo_decisoes: str | None = None
+    prefixo_decisoes_linha: int | None = None
     ordem: list[str] = []
     for i, linha in enumerate(linhas[:20], start=1):
         if linha.lstrip().startswith("-"):
@@ -495,6 +502,10 @@ def _parse_plano(caminho: Path, repo: Path) -> Plano:
             mp = PREFIXO_CAMPO_RE.search(linha)
             if mp:
                 prefixo = mp.group(1)
+        if prefixo_decisoes is None:
+            mpd = PREFIXO_DECISOES_RE.search(linha)
+            if mpd:
+                prefixo_decisoes, prefixo_decisoes_linha = mpd.group(1), i
         if not ordem:
             mo = ORDEM_CAMPO_RE.search(linha)
             if mo:
@@ -514,6 +525,8 @@ def _parse_plano(caminho: Path, repo: Path) -> Plano:
         status=status,
         status_linha=status_linha,
         prefixo=prefixo,
+        prefixo_decisoes=prefixo_decisoes,
+        prefixo_decisoes_linha=prefixo_decisoes_linha,
         ordem_execucao=ordem,
         tarefas=tarefas,
     )
@@ -576,10 +589,11 @@ def carregar(repo: Path) -> Modelo:
 
 
 # --------------------------------------------------------------------------- #
-# check — violações C-1..C-17 (C-11 via resolver_citacao_secao, definido abaixo — TK-60a:
+# check — violações C-1..C-18 (C-11 via resolver_citacao_secao, definido abaixo — TK-60a:
 # check é o chamador de produção, nenhum subcomando novo; C-12 via _depende_checks — TK-65a;
 # C-15 acusa tíquete vivo sem subtarefa — EBK-T1; C-16 confronta card vivo com a leitura de
-# dossiê do rdo.py e C-17 acusa entrada órfã de piso_c11 — EBK-T2)
+# dossiê do rdo.py e C-17 acusa entrada órfã de piso_c11 — EBK-T2; C-18 acusa o prefixo de
+# decisão que dois planos declaram, via _prefixo_decisoes_checks — RAF-T29 do P-0755)
 # --------------------------------------------------------------------------- #
 
 
@@ -699,6 +713,43 @@ def _dossie_check(item: Item, repo: Path | None, dossie: bool, violacoes: list[V
         violacoes.append(Violacao("C-16", item.arquivo, item.linha_header, str(exc)))
 
 
+def _numero_do_plano(plano: Plano) -> tuple[int, str]:
+    """Chave de ordenação de dono de prefixo (`C-18`, `R-28`/`DRF-29` do `P-0755`): plano com id
+    `P-<n>` ordena pelo número; id fora desse formato (legado sem numeração `P-`) vai para o
+    fim, desempatado pelo próprio id."""
+    m = re.match(r"^P-(\d+)", plano.id)
+    if m:
+        return int(m.group(1)), plano.id
+    return 10**9, plano.id
+
+
+def _prefixo_decisoes_checks(modelo: Modelo, violacoes: list[Violacao]) -> None:
+    """C-18 (`R-28`, `DRF-29` do `P-0755`): dois ou mais planos que declaram o mesmo
+    `**Prefixo das decisões:**` colidem — o dono do prefixo é o plano de menor `_numero_do_plano`,
+    e cada outro plano vivo do grupo é acusado, nomeando o dono. Citar o prefixo de outro plano
+    no corpo do texto não é declará-lo: só a linha do campo, casada por `PREFIXO_DECISOES_RE`,
+    conta aqui."""
+    grupos: dict[str, list[Plano]] = {}
+    for plano in modelo.planos:
+        if plano.prefixo_decisoes is not None:
+            grupos.setdefault(plano.prefixo_decisoes, []).append(plano)
+    for prefixo, planos_grupo in grupos.items():
+        if len(planos_grupo) < 2:
+            continue
+        dono = min(planos_grupo, key=_numero_do_plano)
+        for plano in planos_grupo:
+            if plano is dono or plano.fora_do_corpus:
+                continue
+            violacoes.append(
+                Violacao(
+                    "C-18",
+                    plano.arquivo,
+                    plano.prefixo_decisoes_linha or plano.linha_header,
+                    f"{plano.id}: prefixo de decisão '{prefixo}' já declarado por {dono.id}",
+                )
+            )
+
+
 def check(
     modelo: Modelo,
     inbox_planos: Path | None = None,
@@ -773,6 +824,8 @@ def check(
                     f"duas tarefas in-progress em {plano.id}",
                 )
             )
+
+    _prefixo_decisoes_checks(modelo, violacoes)
 
     for tiquete in modelo.tiquetes:
         _item_checks(tiquete, violacoes)
@@ -1039,6 +1092,18 @@ def _citacoes_do_texto(texto: str) -> list[tuple[int, str]]:
 # --------------------------------------------------------------------------- #
 # show — dossiê verbatim, teto DB-7
 # --------------------------------------------------------------------------- #
+
+
+def _id_vivo(modelo: Modelo, id_: str) -> bool:
+    """RAF-T28 (`DRF-20` do `P-0755`): id vivo é o que `_localizar` encontra na árvore e cujo
+    `status` (texto até o primeiro espaço) não é `done`, `cancelled` nem `superseded` — status
+    vazio conta como vivo."""
+    alvo = _localizar(modelo, id_)
+    if alvo is None:
+        return False
+    if not alvo.status:
+        return True
+    return alvo.status.split(" ", 1)[0] not in {"done", "cancelled", "superseded"}
 
 
 def _localizar(modelo: Modelo, id_: str) -> Plano | Item | None:
@@ -2065,6 +2130,19 @@ def transacionar_drain(
     _escrever_atomico(inbox_planos, linhas_novo_inbox)
     _escrever_atomico(historico, linhas_historico)
 
+    # R-18 (DRF-20 do P-0755): a auditoria achou a diretiva de priorização ainda apontando um
+    # plano que já tinha saído da fila. Aviso, não recusa, e não reescreve a diretiva — isso é
+    # ato de quem conduz, via `backlog.py diretiva`.
+    if any(DIRETIVA_RE.match(l) for l in diario_linhas) and not any(
+        _id_vivo(modelo, id_) for id_ in modelo.diretiva_ids
+    ):
+        for _, _, plano in drenos:
+            if plano.id not in modelo.diretiva_ids:
+                print(
+                    f"drain: aviso — a diretiva de priorização não cita nenhum id vivo nem {plano.id}",
+                    file=sys.stderr,
+                )
+
     arquivos = sorted(
         {
             modelo.diario_arquivo,
@@ -2078,6 +2156,157 @@ def transacionar_drain(
 def _ultima_linha_stderr(texto: str) -> str:
     linhas = texto.splitlines()
     return linhas[-1] if linhas else ""
+
+
+_CAMPO_CARD_RE = re.compile(r"^- \*\*(?P<rotulo>[^*]+):\*\*(?P<resto>.*)$")
+
+
+def _campos_do_card(texto: str) -> dict[str, str]:
+    """RAF-T3 — cada linha que abre um campo de topo do card (`- **<rótulo>:**`) inicia um
+    campo cujo texto vai do resto da linha até a linha anterior ao próximo campo."""
+    campos: dict[str, str] = {}
+    rotulo_atual: str | None = None
+    linhas_atual: list[str] = []
+    for linha in texto.splitlines():
+        m = _CAMPO_CARD_RE.match(linha)
+        if m:
+            if rotulo_atual is not None:
+                campos[rotulo_atual] = "\n".join(linhas_atual)
+            rotulo_atual = m.group("rotulo").strip()
+            linhas_atual = [m.group("resto")]
+        elif rotulo_atual is not None:
+            linhas_atual.append(linha)
+    if rotulo_atual is not None:
+        campos[rotulo_atual] = "\n".join(linhas_atual)
+    return campos
+
+
+_CODE_SPAN_RE = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)")
+_ANCORA_CAMINHO_LINHA_RE = re.compile(r"^(?P<caminho>[^:\s`]+):(?P<linha>\d+)(?:-\d+)?$")
+_SEPARADOR_LINHA_CITADA_RE = re.compile(r"^[ \t]*[—:][ \t]*$")
+
+
+def conferir_ancoras_do_card(repo: Path, texto_card: str) -> list[str]:
+    """RAF-T3 (`DRF-8`, `DRF-35`) — regra fechada: (a) alvos = trechos entre crases do campo
+    `Arquivos-alvo` que são arquivo existente sob `repo`, na ordem do card e sem repetição; (b)
+    trechos entre crases de `Passos` e, depois, `Contratos/classes`, pulando o menor que 4
+    caracteres, o já visto e o que é um dos alvos; (f) item repetido não se repete; sem nenhum →
+    `- nenhuma âncora citada`. RAF-T3a (`DRF-45`) muda o resto da regra: (g) trecho entre crases
+    é o *code span* do Markdown, lido linha a linha do campo: uma sequência de N crases abre, a
+    próxima sequência de exatamente N crases fecha, e o trecho é o que fica entre elas, sem
+    espaços nas pontas; vale também para os alvos de `Arquivos-alvo`. (h) trecho de linha citada
+    é `<caminho>:<n>` (ou `<caminho>:<n>-<m>`); o caminho resolve para ele mesmo quando é arquivo
+    sob `repo` e, se não for, para o primeiro alvo, na ordem do card, cujo caminho termina em `/`
+    mais o caminho citado; resolvido e com `1 <= n <= número de linhas` → `- <caminho
+    resolvido>:<n> — <linha n sem espaços nas pontas>`; senão → `- âncora ausente: <trecho>`.
+    (i) trecho que, na mesma linha do card, vem logo depois de um trecho da forma (h), com só
+    espaços e um `—` ou um `:` entre os dois, é o texto daquela linha citada: a primeira linha
+    do arquivo resolvido que o contém → `- <caminho resolvido>:<k> — <texto da linha sem
+    espaços nas pontas>`; caminho não resolvido ou nenhuma linha que o contenha → `- âncora
+    ausente: <trecho>`. Um trecho da forma (h) pulado por já visto continua abrindo o (i) do
+    trecho seguinte. (j) outro trecho → a primeira linha, do primeiro alvo em ordem, que o
+    contém, como antes; sem linha, o trecho não entra no pacote: não cita linha (comando, nome
+    que a tarefa cria, rótulo de campo)."""
+    campos = _campos_do_card(texto_card)
+
+    alvos: list[str] = []
+    for _abertura, trecho in _CODE_SPAN_RE.findall(campos.get("Arquivos-alvo", "")):
+        caminho = trecho.strip()
+        if caminho in alvos:
+            continue
+        if (Path(repo) / caminho).is_file():
+            alvos.append(caminho)
+
+    resultado: list[str] = []
+    vistos: set[str] = set()
+
+    def _acrescentar(item: str) -> None:
+        if item not in resultado:
+            resultado.append(item)
+
+    def _pode_registrar(trecho: str) -> bool:
+        if len(trecho) < 4 or trecho in vistos or trecho in alvos:
+            return False
+        vistos.add(trecho)
+        return True
+
+    def _resolver(caminho: str) -> str | None:
+        if (Path(repo) / caminho).is_file():
+            return caminho
+        for alvo in alvos:
+            if alvo.endswith("/" + caminho):
+                return alvo
+        return None
+
+    def _linhas(caminho_resolvido: str) -> list[str]:
+        return (Path(repo) / caminho_resolvido).read_text(
+            encoding="utf-8", errors="replace"
+        ).splitlines()
+
+    def _item_h(trecho: str, caminho: str, n: int) -> tuple[str, str | None]:
+        caminho_resolvido = _resolver(caminho)
+        if caminho_resolvido is not None:
+            linhas_alvo = _linhas(caminho_resolvido)
+            if 1 <= n <= len(linhas_alvo):
+                return f"- {caminho_resolvido}:{n} — {linhas_alvo[n - 1].strip()}", caminho_resolvido
+        return f"- âncora ausente: {trecho}", caminho_resolvido
+
+    def _item_i(trecho: str, caminho_resolvido: str | None) -> str:
+        if caminho_resolvido is not None:
+            linhas_alvo = _linhas(caminho_resolvido)
+            achado = next((i for i, l in enumerate(linhas_alvo, start=1) if trecho in l), None)
+            if achado is not None:
+                return f"- {caminho_resolvido}:{achado} — {linhas_alvo[achado - 1].strip()}"
+        return f"- âncora ausente: {trecho}"
+
+    def _item_j(trecho: str) -> str | None:
+        for caminho in alvos:
+            linhas_alvo = _linhas(caminho)
+            achado = next((i for i, l in enumerate(linhas_alvo, start=1) if trecho in l), None)
+            if achado is not None:
+                return f"- {caminho}:{achado} — {linhas_alvo[achado - 1].strip()}"
+        return None
+
+    def _processar_campo(texto_campo: str) -> None:
+        for linha in texto_campo.splitlines():
+            pendente_ativo = False
+            pendente_caminho: str | None = None
+            fim_anterior: int | None = None
+            for m in _CODE_SPAN_RE.finditer(linha):
+                trecho = m.group(2).strip()
+                continuacao = (
+                    pendente_ativo
+                    and fim_anterior is not None
+                    and _SEPARADOR_LINHA_CITADA_RE.match(linha[fim_anterior:m.start()]) is not None
+                )
+                caminho_para_i = pendente_caminho
+                fim_anterior = m.end()
+                registrar = _pode_registrar(trecho)
+                pendente_ativo = False
+                pendente_caminho = None
+
+                if continuacao:
+                    item = _item_i(trecho, caminho_para_i)
+                    if registrar:
+                        _acrescentar(item)
+                    continue
+
+                h = _ANCORA_CAMINHO_LINHA_RE.match(trecho)
+                if h:
+                    item, caminho_resolvido = _item_h(trecho, h.group("caminho"), int(h.group("linha")))
+                    pendente_ativo = True
+                    pendente_caminho = caminho_resolvido
+                    if registrar:
+                        _acrescentar(item)
+                else:
+                    item = _item_j(trecho)
+                    if item is not None and registrar:
+                        _acrescentar(item)
+
+    _processar_campo(campos.get("Passos", ""))
+    _processar_campo(campos.get("Contratos/classes", ""))
+
+    return resultado if resultado else ["- nenhuma âncora citada"]
 
 
 def despachar(repo: Path, id_: str, mundo: str | None = None) -> ResultadoStatus:
@@ -2113,8 +2342,9 @@ def despachar(repo: Path, id_: str, mundo: str | None = None) -> ResultadoStatus
     # `DAF-42` (`AE-14`): os irmãos escrevem o stderr em UTF-8; sem `encoding` explícito o
     # texto sai na codificação do locale (cp1252 no Windows) — razão com mojibake, ou stderr
     # `None` quando um byte UTF-8 não existe em cp1252. Vale para os quatro `subprocess.run`.
+    # `R-04` (`DRF-14` do `P-0755`): o despacho julga só a `## 1`; a `## 1A` fica para o marco.
     resultado_modelo = subprocess.run(
-        [sys.executable, str(irmao / "modelo.py"), "check", "--plano", plano_abs, "--root", str(repo)],
+        [sys.executable, str(irmao / "modelo.py"), "check", "--plano", plano_abs, "--root", str(repo), "--so-vigente"],
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -2193,11 +2423,47 @@ def despachar(repo: Path, id_: str, mundo: str | None = None) -> ResultadoStatus
     }
     estado_path.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    pacote_partes: list[str] = [
+        f"# Despacho {id_} — {alvo.titulo}",
+        "",
+        f"despacho: {pai.id} {id_}",
+        f"ref={ref}",
+        "",
+        "## Card",
+        "",
+        show(modelo, id_),
+        "",
+        "## Handovers",
+        "",
+    ]
+    handovers = handovers_para(pai, tipo_pai, alvo)
+    if handovers:
+        for autor, texto_handover in handovers:
+            pacote_partes.append(
+                f"=== HANDOVER DE {autor.id} — {autor.titulo} ({autor.status}; {autor.arquivo})"
+            )
+            pacote_partes.append(texto_handover)
+            pacote_partes.append("")
+    else:
+        pacote_partes.append("- nenhum")
+        pacote_partes.append("")
+    pacote_partes.append("## Âncoras conferidas")
+    pacote_partes.append("")
+    pacote_partes.extend(conferir_ancoras_do_card(repo, alvo.texto))
+    pacote_partes.append("")
+
+    destino = _caminhos.destino_despacho(repo, repo / pai.arquivo, id_)
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    _escrever_atomico(destino, pacote_partes)
+
+    rel = destino.relative_to(repo).as_posix()
     print(f"=== DESPACHO: {id_} — {alvo.titulo}")
-    for autor, texto_handover in handovers_para(pai, tipo_pai, alvo):
-        print(f"=== HANDOVER DE {autor.id} — {autor.titulo} ({autor.status}; {autor.arquivo})")
-        print(texto_handover)
-    print(show(modelo, id_))
+    print(f"despacho: {pai.id} {id_}")
+    print(f"Execute a tarefa {id_}: o card, os handovers e as âncoras conferidas estão em {rel}.")
+    print("Devolva uma única linha, numa destas formas:")
+    print(f"{id_} review")
+    print(f"{id_} review pendencia=<uma linha>")
+    print(f"{id_} blocked motivo=<dependencia|premissa|ferramenta> <uma linha de razão>")
     print(f"ref={ref}")
 
     return ResultadoStatus(0)

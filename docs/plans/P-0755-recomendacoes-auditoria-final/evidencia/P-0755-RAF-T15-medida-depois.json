@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T15",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T10:50:21+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_caminhos.py -q -k destino_medida_na_raiz",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 8 deselected in 0.02s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_card_check.py -q -k medida_gravada_com_o_mundo",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 34 deselected in 0.19s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k medida_com_mundo",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 100 deselected in 1.42s",
+      "bate": true
+    }
+  ]
+}

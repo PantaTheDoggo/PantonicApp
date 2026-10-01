@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T5",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T14:25:25+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"versionado\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 74 deselected in 1.53s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/tools/review_evidence.py').read_text(encoding='utf-8');print('[%d-%d-%d]'%(t.count('def _gravar_arvore_de_trabalho'),t.count('_gravar_arvore_de_trabalho(root)'),t.count(chr(34)+'read-tree'+chr(34))))\"",
+      "exit": 0,
+      "saida": "[1-2-1]",
+      "bate": true
+    }
+  ]
+}

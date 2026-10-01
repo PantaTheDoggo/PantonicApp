@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T10a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T08:42:25+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"acento_diff or acento_alvo\"",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 90 deselected in 1.86s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"import pathlib,sys; t=pathlib.Path('.claude/tools/review_evidence.py').read_text(encoding='utf-8'); q=chr(96); p=chr(34); a=t.count(p+'--name-only'+p); b=t.count('escape octal, por')+t.count('o último campo da linha'); c=t.count(p+'--name-status'+p+', '+p+'-z'+p); d=t.count('-z --untracked-files=all'+q+' por caminho'); e=t.count(p+'-c'+p+', '+p+'core.quotepath=false'+p); print('diff=%d-%d-%d-%d-%d'%(a,b,c,d,e)); sys.exit(0 if (a,b,c,d,e)==(0,0,1,1,1) else 1)\"",
+      "exit": 0,
+      "saida": "diff=0-0-1-1-1",
+      "bate": true
+    }
+  ]
+}

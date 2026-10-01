@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T2",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T13:55:36+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_review_evidence.py -q -k \"caminho_acentuado\"",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 67 deselected in 0.52s",
+      "bate": true
+    }
+  ]
+}

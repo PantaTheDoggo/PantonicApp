@@ -47,7 +47,8 @@ Dimensão de fonte mista tem a parte mecânica travada e a parte de juízo livre
 
 A seção `## Arquivos tocados` do dossiê de evidência (`.claude/tools/review_evidence.py`) carrega
 essa mesma autoridade por arquivo: cada arquivo tocado sai marcado `da entrega` (coberto pelos
-`Arquivos-alvo` da tarefa) ou `alheio` (fora deles), com o estado `git` que comprova a marcação —
+`Arquivos-alvo` da tarefa), `registro da orquestração` (arquivo que quem conduz escreve por ofício,
+sem peso no veredito) ou `alheio` (os demais), com o estado `git` que comprova a marcação —
 atribuição derivada da mesma `confrontar_escopo` que resolve a dimensão `escopo` abaixo, nunca uma
 segunda classificação. O reviewer lê a atribuição já calculada; não a julga de memória nem depende
 de injeção manual de contexto do orquestrador (`AE-13`).
@@ -93,15 +94,18 @@ essa obrigação é **capacidade**, não card: atribuição por **hunk**.
 ### `testes`
 
 - **Pergunta:** os testes que o dossiê exige existem e passam?
-- **Fonte da evidência:** mecânica — presença dos arquivos de teste declarados e exit code da suíte
-  da área tocada.
+- **Fonte da evidência:** mista — presença dos arquivos de teste declarados e exit code da suíte
+  da área tocada, mecânicos e travados; juízo sobre cada linha da seção
+  `## Linhas removidas dos testes` da evidência, confrontada com o que o card manda remover.
 - **Bloqueante:** sim.
 - **`conforme`:** o teste funcional e o teste de regressão exigidos existem e a suíte fecha em
   exit 0.
 - **`parcial`:** os testes presentes passam, com cobertura menor que a declarada — teste funcional
   sem o de regressão que tranca o comportamento, por exemplo.
-- **`não conforme`:** teste exigido ausente, suíte em exit não-zero, ou teste cujo significado mudou
-  removido em vez de reescrito.
+- **`não conforme`:** teste exigido ausente, suíte em exit não-zero, teste cujo significado mudou
+  removido em vez de reescrito, ou asserção de teste existente removida sem que o card mande
+  removê-la — a linha aparece na seção `## Linhas removidas dos testes` da evidência (`R-12`,
+  `P-0755`).
 - **`não se aplica`:** dossiê de classe de redação, sem exigência de teste de código. A suíte
   continua medida pela dimensão `guardas`.
 
@@ -250,7 +254,7 @@ critério de pronto inverificável, dossiê que empurra a execução contra a ar
 exigida que não discrimina nada: corrigir o sintoma na entrega deixa a causa de pé, e a tarefa
 seguinte reincide.
 
-O laudo carrega um campo próprio para esse achado, com quatro alvos possíveis:
+O laudo carrega um campo próprio para esse achado, com cinco alvos possíveis:
 
 | alvo | o que o achado denuncia |
 |---|---|
@@ -258,6 +262,7 @@ O laudo carrega um campo próprio para esse achado, com quatro alvos possíveis:
 | `doutrina` | guardrail ausente, ambíguo ou em conflito com outro |
 | `rubrica` | dimensão mal formulada, nível sem fronteira clara, peso desalinhado com o dano real |
 | `modelo` | operação do modelo de domínio do plano que a entrega tornou falsa ou ambígua (`GOVERNANCA.md` §3.2); rota: dossiê `Ato de modelo` de conflito, devolvido junto com o laudo e despachado ao `pantonic-model-designer` por quem conduz a sessão — nunca corrigido pelo reviewer |
+| `instrumento` | instrumento do kit que caiu, devolveu saída errada ou recusou entrada válida na execução ou na revisão; o `encerrar.py tarefa` avisa, na linha `encerrar: B1 —`, o achado deste alvo que relata queda, traceback, exceção ou erro |
 
 Três invariantes governam a via:
 
@@ -309,6 +314,7 @@ processo de alvo `modelo`, e o texto fica como está até o modelador agir.
 | (xvi) | **rótulo de campo termina na mesma linha em que começa.** Decoração no rótulo (data, `ESC-n`, `DM-n`, ressalva) é permitida enquanto o `:**` couber na primeira linha; o parser de campos do kit lê **linha a linha**, de modo que rótulo quebrado faz o campo **desaparecer**, não apenas ficar feio | `AE-34` |
 | (xvii) | **o aceite cobre o mundo que o próprio produto cria.** Quando o módulo **emite** uma forma, a `Verificação` exercita **essa** forma, e não só a que ele consome: produto que escreve num formato e é aferido noutro deixa o ramo que ele mesmo produz sem nenhuma linha que o discrimine | `AE-35` |
 | (xviii) | **o valor publicado no literal `Medido antes` é invariante ao que outras entregas movem.** Ele mede o que **este** card possui — exit code do comando, veredito binário, recorte do arquivo-alvo —, nunca um total de corpus que qualquer outra entrega desloca (total de suíte, contagem de módulo compartilhado, contagem de cards ou de insumos do próprio plano); quando a pergunta é sobre corpus, o comando publica o **veredito** (`exit 0`, `iguais`, `1`) e o número absoluto desce para a prosa como referência **datada**, fora do literal | `AE-49` |
+| (xix) | **a contingência é parte ensaiada do card, e não o contradiz.** A ação `seguir com <X>` de cada contingência foi aplicada no ensaio, quando o plano ensaia, e as linhas de `Verificação` re-rodadas depois dela; ela não contraria nenhuma `Restrição` do mesmo card; e todo arquivo que ela escreve está nos `Arquivos-alvo`, seguido de `(condicional: contingência <n>)` | pendência 1 e `AE-24` do `P-0753` |
 
 ### 8.1 A forma normativa do bloco `Verificação`
 

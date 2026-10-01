@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T30a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-30T01:34:08+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_rdo.py -q -k alvo_instrumento",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 69 deselected in 0.07s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;b=chr(96);r=Path('.claude/tools/rdo.py').read_text(encoding='utf-8');u=Path('docs/RUBRICA_DE_REVISAO.md').read_text(encoding='utf-8');v=Path('.claude/agents/pantonic-reviewer.md').read_text(encoding='utf-8');print('alvos=%d-%d-%d rdo=%d-%d-%d'%(r.count('quatro alvos')+u.count('quatro alvos')+v.count('quatro alvos'),u.count('| '+b+'instrumento'+b+' |'),v.count(b+'modelo'+b+', '+b+'instrumento'+b),r.count('ou '+b+'instrumento'+b),r.count('ou instrumento, seguido'),r.count('cinco alvos')))\"",
+      "exit": 0,
+      "saida": "alvos=0-1-1 rdo=1-1-1",
+      "bate": true
+    }
+  ]
+}

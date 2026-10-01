@@ -86,12 +86,18 @@ palavras de indireções, e o dono o achou difícil de compreender (`TK-76`, 202
   que a decisão toca — e a linha da versão nova em `### 1.4 Registro de versões`, com a situação
   `pendente` e, na célula `por`, o papel e o identificador da decisão. A `## 1` vigente **não se
   toca**: quem decide entre as duas é o marco, nunca você.
-  **No marco**, o desfecho da pendente chega em novo dossiê `Ato: emenda`, com a validação do
-  consultor e o ato do dono em `Motivo`. Aceita: o conteúdo da `## 1A` passa à `## 1`, com o
-  cabeçalho em `situação: vigente`; a `## 1A` sai do plano; no registro de versões a pendente passa
-  a `vigente` e a anterior a `obsoleta`, com a frase `Caiu pelo aceite da versão <N> em <data>` —
-  a linha fica, o conteúdo da obsoleta não. Recusada: a `## 1A` e a linha dela saem, e a vigente
-  fica sem marca (`GOVERNANCA.md` §3.2, *Versão vigente, pendente e obsoleta*).
+  **No marco**, a versão aceita é promovida pelo comando do marco, não por você
+  (`R-08` da auditoria final, `P-0755`): `encerrar.py marco --aceita-versao <k> --consultor
+  "<linha>"` passa o conteúdo da `## 1A` à `## 1`, com o cabeçalho em `situação: vigente`; tira
+  a `## 1A` do plano; no registro de versões põe a pendente em `vigente` e a anterior em
+  `obsoleta`, com a frase `Caiu pelo aceite da versão <N> em <data>` — a linha fica, o conteúdo
+  da obsoleta não —; e reescreve o campo `Operação do modelo` dos cards das listas `tarefas:`.
+  Você só é chamado na promoção quando o comando encontra **conflito** (o plano sem a `## 1`, a
+  `## 1A` com outra versão, registro de versões sem vigente único ou sem a linha pendente da
+  versão): o comando imprime o dossiê `Ato: emenda`, e você devolve a `## 1` e a `## 1A`
+  acertadas, com o registro de versões, para o comando rodar de novo. Recusada: o desfecho chega
+  em dossiê `Ato: emenda`, com o ato do dono em `Motivo`; a `## 1A` e a linha dela saem, e a
+  vigente fica sem marca (`GOVERNANCA.md` §3.2, *Versão vigente, pendente e obsoleta*).
 - **Conflito** — recebe um achado de divergência entre o texto de uma operação e o que a entrega
   materializou de fato, no dossiê de quem o encontrou (`Ato: conflito`, com o identificador do
   achado em `Motivo`). Devolve a correção **na mesma forma da emenda** — bloco irmão pendente e

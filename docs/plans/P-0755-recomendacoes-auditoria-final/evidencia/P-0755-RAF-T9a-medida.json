@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T9a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T08:00:09+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"import pathlib,sys; t=pathlib.Path('tests/test_review_evidence.py').read_text(encoding='utf-8'); q=chr(96); a=t.count('por '+q+'fnmatch'+q); d=t.count('por '+q+'_casa_curinga'+q+' (RAF-T9)'); print('docstring=%d-%d'%(a,d)); sys.exit(0 if (a,d)==(0,1) else 1)\"",
+      "exit": 0,
+      "saida": "docstring=0-1",
+      "bate": true
+    }
+  ]
+}

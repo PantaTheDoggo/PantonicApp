@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T21",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T20:48:57+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_modelo.py -q -k texto_divergente",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 40 deselected in 0.23s",
+      "bate": true
+    }
+  ]
+}

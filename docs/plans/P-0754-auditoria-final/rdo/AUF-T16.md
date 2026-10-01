@@ -1,0 +1,84 @@
+# RDO — P-0754 · AUF-T16
+
+# Humano
+
+Tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" concluída em 2026-09-28.
+A auditoria nova do kit foi feita num plano fictício de ponta a ponta e o relatório está gravado.
+Revisão: aprovada com ressalva (90%).
+Pendência para o dono: veredito do dono sobre o relatório de auditoria, no Marco 3.
+Plano "Auditoria final do kit: os herdados e o relatório de auditoria nova": 16/16 tarefas concluídas; nenhuma tarefa pronta na fila dele.
+Handover para quem vem depois: registrado no card; o `next` o entrega à sucessora.
+
+# Máquina
+
+**Plano:** `docs/plans/P-0754-auditoria-final/plano.md`
+**Tarefa:** `AUF-T16` — A auditoria nova do kit, medida num plano fictício de ponta a ponta
+**Modelo:** Opus · **Classe:** investigacao
+**Esquema de leitura do plano:** padrao
+
+## Dossiê
+
+**Objetivo:** Quem conduz a sessão, por instrução do dono, grava o relatório de auditoria nova, medido num plano fictício que ela executa de ponta a ponta sobre o kit já fechado.
+
+**Arquivos-alvo:** - `docs/audits/AUDITORIA_FINAL_KIT.md` (novo) - `docs/plans/P-0754-auditoria-final/plano.md` (condicional: contingência 2)
+
+**Verificação:** 1. `python -c "from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;H=['## 0. O pedido, verbatim','## 1. Modelo conceitual da auditoria','## 2. Cláusulas do kit exercitadas','## 3. Registros — um por teste','## 4. Conclusão por dimensão','## 5. Recomendações — um tíquete por registro viável','## 6. Custo medido da execução do plano fictício','## 7. O que ficou na árvore e o que foi descartado','## 8. As ações mecânicas do gerente do loop'];print('ausente' if L is None else '[%d]'%sum(1 for h in H if h in L))"` → `[9]` — antes `ausente`, depois `[9]` 2. `python -c "from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;D=['Integração ponta a ponta','Lacunas (L)','Erros de execução (E)','Confiabilidade (C)','Custo evitável','Qualidade da entrega (Q)','Mecanização (M)','Fluxo (F)'];print('ausente' if L is None else '[%d]'%sum(1 for d in D if any(l.startswith('| ') and d in l for l in L)))"` → `[8]` — antes `ausente`, depois `[8]` 3. `python -c "from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;print('ausente' if L is None else '[%d]'%sum(1 for n in range(1,11) if any(l.startswith('| P%d |'%n) for l in L)))"` → `[10]` — antes `ausente`, depois `[10]` 4. `python -c "from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;print('ausente' if L is None else '[%d]'%sum(1 for l in L if l.startswith('| K-') and 'rodada de replanejamento grava a medida' in l))"` → `[1]` — antes `ausente`, depois `[1]` 5. `python -c "from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');t=p.read_text(encoding='utf-8') if p.exists() else None;print('ausente' if t is None else '[%d-%d]'%(t.count('As recomendações deste relatório não se aplicam no P-0754'),min(1,t.count('### R-'))))"` → `[1-1]` — antes `ausente`, depois `[1-1]` 6. `python -c "from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');t=p.read_text(encoding='utf-8') if p.exists() else None;print('ausente' if t is None else '[%d]'%min(1,t.count('-sonda-auditoria-final')))"` → `[1]` — antes `ausente`, depois `[1]`
+
+**Pronto quando:** - relatório de auditoria nova.cobertura do kit — cada regra do kit que se pode testar tem o seu teste no plano fictício, a medição registrada e a conclusão por dimensão, no formato do primeiro estágio; o plano fictício foi descartado e nada dele ficou — Verificações 1, 2 e 6 - relatório de auditoria nova.avaliação das ações mecânicas do gerente — cada passo do loop diz se é mecânico, que instrumento já o cobre e quanto custou no plano fictício, com uma recomendação para cada ação que se possa mecanizar — Verificação 3 - relatório de auditoria nova.medida no replanejamento — o relatório diz onde essa medida deve morar e recomenda o remédio — Verificação 4 - relatório de auditoria nova.recomendações — uma recomendação por registro inadequado ou oportunidade de melhoria, a aplicar em plano seguinte que o dono abre depois de ler o relatório — Verificação 5
+
+**Dossiê fechado por:** nenhum
+
+**Extras (rótulos livres do plano, verbatim):**
+
+- **Fundamento:** `DAU-1`, `DAU-3`, `DAU-4`, `DAU-5`, `DAU-6`, `DAU-20`, `DAU-21`, `DAU-30`; `H-16`, `H-21` (§2.1); `F-3`, `F-5`, `F-6`, `F-7`, `F-8`, `F-9`.
+- **Depende de:** `AUF-T1`, `AUF-T2`, `AUF-T3`, `AUF-T4`, `AUF-T5`, `AUF-T6`, `AUF-T7`, `AUF-T8`, `AUF-T9`, `AUF-T10`, `AUF-T11`, `AUF-T12`, `AUF-T13`, `AUF-T14`, `AUF-T15`
+- **Operação do modelo:** `OP-16` - OP-16: Quem conduz a sessão, por instrução do dono, grava o relatório de auditoria nova, medido num plano fictício que ela executa de ponta a ponta sobre o kit já fechado. - precisa de: instrução do dono no segundo marco — Ninguém altera: a auditoria espera por ela, e o loop não a abre sozinho.; guia de entrada do kit — Quem implementa revisa o guia contra o kit como ele fica depois dos herdados fechados.; herdados que não pedem mudança — Quem implementa registra o encerramento de cada um com a prova já levantada, sem mudar nada no kit.; dossiê de evidência — Quem implementa corrige um caso por vez do que a evidência mostra errado ao revisor, cada caso com o teste que o prova, sempre numa cópia descartável do repositório.; relatório do primeiro estágio — Ninguém altera: é o molde do relatório novo, seção por seção.; gerente do loop — Ninguém altera: ele fica no loop, e é nele que se mede, durante o plano fictício, quanto das suas ações é mecânico e quanto custa.; levantamento dos herdados — Ninguém altera: é a fonte de cada item que o plano fecha e da prova com que ele fecha.
+- **Camada e fronteira:** executado pela **sessão principal** — quem conduz a sessão, no papel de auditor —, exceção à matriz de papéis válida só para este card (ato do dono de 2026-09-28, §0 ato 3: *"A auditoria é a última tarefa do plano, executada pela sessão principal, como no estágio 1. O loop para antes dela e só a abre quando você mandar. Isso abre uma exceção à matriz de papéis, válida só para essa tarefa. A tarefa passa pela revisão."*). Só a sessão principal despacha subagente; o plano fictício aciona planejador, modelador, executor, revisor e consultor pelo procedimento que o kit prescreve. O card passa pela revisão (`pantonic-reviewer`) como os demais; `review_evidence.py` trata `docs/audits/` como registro da condução, e a revisão mede o relatório pelo conteúdo no arquivo (`DAU-21`).
+- **Método de sondagem:** 1. **Abertura.** Só com a instrução do dono no Marco 2: a sessão principal passa a linha `AUF-T16` de `estado.tsv` a `ready` e, no ato seguinte, a `in-progress`, por `python .claude/tools/backlog.py status AUF-T16 ready` e `python .claude/tools/backlog.py status AUF-T16 in-progress` (a tabela de transições recusa `blocked` → `in-progress` direto); o loop nunca a despacha. 2. **Retrato inicial**, antes do primeiro ato da sonda: copiar para `%TEMP%\claude\auditoria\p0754_retrato\` a saída de `git status --porcelain=v1 --untracked-files=all` e os arquivos `docs/plans/_INBOX.md`, `docs/plans/_INBOX_HISTORICO.md`, `docs/DIARIO_DE_OBRAS.md`, `docs/telemetria.tsv`, `docs/ACIONAMENTOS_CONSULTOR.tsv` e `docs/RDO/INDEX.md`. 3. **Corpus das cláusulas** (`DAU-4`, `F-6`): `.claude/tools/*.py`; `.claude/agents/pantonic-{planner,model-designer,executor,reviewer,scout,consultant}.md`; as skills `scrum-master`, `diario-de-obras`, `passagem-de-bastao`, `guardrails-check`, `entrega-de-encerramento`, `checar-versao-kit` e `modelo-por-fase`; `.claude/checks/`; `.claude/global/hooks/`; `GOVERNANCA.md`; e, como cláusulas novas, o que as `AUF-T1` a `AUF-T13` mudaram. Uma linha `K-<nn>` por mecanismo testável, com residência e teste; cláusula sem passagem no plano fictício marcada `sonda`. Uma das linhas é a cláusula cujo texto contém `rodada de replanejamento grava a medida` (`H-16`, `DAU-6`), com o diagnóstico de onde essa medida deve morar. 4. **Plano fictício**: pasta `docs/plans/P-<n>-sonda-auditoria-final/`, com `<n>` o id que o `_INBOX.md` declara como próximo no retrato inicial; ele cobre as cláusulas da §2 do relatório e atravessa planejador → modelador → decomposição → loop do `scrum-master` → revisão → fechamento, com pelo menos uma rodada de replanejamento; cada passagem vira um registro da §3 do relatório. 5. **Métricas por registro**: as dimensões do estágio 1 — `L` lacuna, `E` erro de execução, `C` pouca confiabilidade, `$` custo evitável, `Q` qualidade da entrega, `M` mecanização, `F` fluxo —, com avaliação `adequado`, `inadequado` ou `oportunidade`. Custo por papel sai do bloco `<usage>` da notificação de conclusão de cada subagente; papel sem medida entra como `nao_medido`, com a razão. 6. **Ações mecânicas do gerente do loop** (`H-21`, `DAU-5`): durante o loop do plano fictício, medir cada passo `P1` a `P10` da skill `scrum-master` — se a ação é mecânica, que instrumento já a cobre e quanto custou (turnos e tokens da sessão principal naquele passo) — e emitir uma `R-<nn>` por ação mecanizável. Nenhum passo se remove, funde ou substitui. 7. **Relatório** em `docs/audits/AUDITORIA_FINAL_KIT.md`, com a data de execução no cabeçalho e as seções abaixo, cada cabeçalho exato numa linha própria, nesta ordem, na coluna 0 do relatório (cada linha perde o recuo da cerca do bloco): ```text ## 0. O pedido, verbatim ## 1. Modelo conceitual da auditoria ## 2. Cláusulas do kit exercitadas ## 3. Registros — um por teste ## 4. Conclusão por dimensão ## 5. Recomendações — um tíquete por registro viável ## 6. Custo medido da execução do plano fictício ## 7. O que ficou na árvore e o que foi descartado ## 8. As ações mecânicas do gerente do loop ``` A §2 é a tabela `| id | cláusula (mecanismo) | residência | teste |`; a §3, a tabela `| # | cláusula | teste | medido | dimensões | avaliação |`; a §4, a tabela `| dimensão | veredito | fundamento (registros da §3) |` com uma linha por dimensão — `Integração ponta a ponta`, `Lacunas (L)`, `Erros de execução (E)`, `Confiabilidade (C)`, `Custo evitável ($)`, `Qualidade da entrega (Q)`, `Mecanização (M)`, `Fluxo (F)` — e o veredito geral; a §5, uma `### R-<nn> — <título>` por recomendação e a frase exata `As recomendações deste relatório não se aplicam no P-0754.`; a §7 nomeia a pasta do plano fictício e o que foi descartado; a §8, a tabela `| passo | ação | mecânica | instrumento que a cobre | custo medido no plano fictício | recomendação |` com uma linha por passo, cada uma começando por `| P<n> |`. Teto do relatório: 450 linhas. 8. **Limpeza**: copiar os artefatos do plano fictício para `%TEMP%\claude\auditoria\p0754_artefatos\`, restaurar do retrato inicial os arquivos do passo 2 e remover a pasta do plano fictício e tudo o que ela criou fora dela, sem commit; conferir que `git status --porcelain=v1 --untracked-files=all` é o do retrato inicial mais o relatório e os registros deste card.
+- **Restrições desta tarefa:** - As recomendações do relatório não se aplicam neste plano (`DAU-1`); nenhum card corretivo nem tíquete nasce da auditoria (`DAU-20`). - O `scrum-master` fica no loop: nenhum passo de `.claude/skills/scrum-master/SKILL.md` se remove, funde ou substitui. - Nada do plano fictício é commitado; ao fim, `docs/plans/` não tem pasta `*-sonda-auditoria-final`. - Nenhum `git stash push`, `git add` sobre o índice real, `git reset --hard` nem `git clean`; nenhum commit. - A árvore fora dos `Arquivos-alvo` volta ao retrato inicial.
+- **Não fazer:** não despachar este card a subagente; não abrir o card sem a instrução do dono no Marco 2; não aplicar recomendação no kit durante a auditoria; não editar `README.md`, `.claude/` nem `GOVERNANCA.md` fora do que o plano fictício faz e a limpeza desfaz.
+- **Contingências:** - se um papel não tiver medida de custo no `<usage>` nem em `docs/telemetria.tsv` → seguir com `nao_medido` e a razão na §6 do relatório, e uma `R-<nn>` para a lacuna. - se a auditoria encontrar defeito num herdado já fechado por este plano → seguir registrando-o na §3 do relatório e como `AE-<n>` em `## 9. Achados da execução` de `docs/plans/P-0754-auditoria-final/plano.md`, rota "plano sucessor"; nenhum card corretivo. - se, depois da limpeza, `git status --porcelain=v1 --untracked-files=all` diferir do retrato inicial em algo além do relatório e dos registros deste card → parar e sinalizar `blocked` razão `premissa`, colando a diferença.
+- **Testes:** nenhum teste novo no kit; os testes do plano fictício saem com ele.
+- **Fora do escopo desta tarefa:** aplicar as recomendações (plano sucessor que o dono abre depois de ler o relatório, `DAU-1`); o veredito do dono sobre o relatório — gate do Marco 3, não critério de pronto deste card.
+- **Handover:** 2026-09-28 · para `dono` - **Entregue:** docs/audits/AUDITORIA_FINAL_KIT.md: 43 cláusulas, 54 registros, 31 recomendações, custo por papel, avaliação P1..P10 do gerente do loop; plano fictício P-0755 descartado, árvore igual ao retrato - **Contrato:** relatório para o dono ler no Marco 3; as recomendações vão a plano sucessor - **Não refazer:** nada a declarar - **Pendente:** veredito do dono sobre o relatório (Marco 3)
+
+## Execução
+
+**Consumo:** não medido — card executado pela sessão principal (exceção DAU-3, ato do dono); sem <usage> de subagente; o custo da sessão principal está na §6 do relatório, lido do transcript
+
+**Pendência para o dono:** executor: veredito do dono sobre o relatório de auditoria, no Marco 3
+
+## Laudo
+
+**Veredito:** ressalva
+
+**Percentual:** 90%
+
+**Dimensão bloqueante:** nenhuma
+
+**Recomendação:** seguir com ressalva
+
+## Lições aprendidas na tarefa
+
+Os numeros do relatorio se re-derivam dos artefatos fora do repositorio: medir.py + passos.py sobre o transcript reproduzem exatamente o loop real (fim no handover da AUF-T15) e o ficticio a um turno de diferenca pelo marcador de fim; a soma por papel da §6 bate com as 22 linhas da serie depois. Terminologia: '20/20 aprovadas' (reg. 21, §4) inclui a AUF-T2, que fechou ressalva 91%. O card executado pela sessao principal nao tem linha na serie de telemetria (o hook so grava subagente); o custo dele so existe no transcript.
+
+## Fechamento
+
+**Desdobramento:** aprovado com ressalva
+
+# Histórico
+
+Tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": gates aprovados; vou materializar in-progress e gravar o ponto de partida.
+Agente planejador recebe a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" e vai replanejar.
+Agente planejador devolveu a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": SAÍDA 1: campanha de investigação (rodada 1 de 2). Não gravei plano, nem esqueleto, nem estado.tsv, e não mexi no _INBOX.md..
+Agente modelador recebe a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" e vai atualizar o modelo.
+Agente modelador devolveu a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": Ato de autoria concluído para "Sonda da auditoria final" (P-0755). A seção do modelo está gravada. O `check` sai 1, mas só com as quatro violações `V3` de lastr….
+Agente planejador recebe a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" e vai replanejar.
+Agente planejador devolveu a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": Fases 3b, 4 e 5 fechadas para o "Sonda da auditoria final" (P-0755). Todos os instrumentos saem 0. O plano está registrado e nasce parado até o Marco 1. Não há ….
+Tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": vou reunir para o revisor o que mudou desde o despacho, os arquivos tocados fora do previsto e o resultado dos testes e guardas do kit.
+Agente revisor recebe a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" e vai confrontar a entrega com o card.
+Agente revisor devolveu a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": ressalva 90%, bloqueante nenhuma, recomendação seguir com ressalva.
+Agente consultor recebe a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" e vai triar.
+Agente consultor devolveu a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta": rota resolve.
+Scrum master vai fechar a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" como done: registrar estado, RDO e telemetria.
+Scrum master vai fechar a tarefa "A auditoria nova do kit, medida num plano fictício de ponta a ponta" como done: registrar estado, RDO e telemetria.

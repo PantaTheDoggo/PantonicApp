@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T3",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T01:50:34+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_backlog.py -q -k pacote",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 129 deselected in 2.14s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_backlog.py -q -k texto_pronto",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 131 deselected in 1.50s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -m pytest tests/test_backlog.py -q -k confere_as_ancoras",
+      "exit": 0,
+      "saida": ".                                                                        [100%]\n1 passed, 131 deselected in 1.60s",
+      "bate": true
+    }
+  ]
+}

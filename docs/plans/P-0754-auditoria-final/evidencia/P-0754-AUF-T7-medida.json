@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T7",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T14:42:22+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_progresso_hook.py -q -k \"tiquete\"",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 43 deselected in 0.04s",
+      "bate": true
+    }
+  ]
+}

@@ -10,9 +10,14 @@ pontuação de frase (`,` `.` `;` `:` `!` `?`) e fecha-parêntese/colchete/chave
 Assim `` `ler_texto_utf8` ``, `` `.claude/tools/caminhos.py`, ``, `--plano;` e `nome()` citam o mesmo
 que `ler_texto_utf8`, `.claude/tools/caminhos.py`, `--plano` e `nome(`.
 
-- **caminhos** — token terminado em `.py`, `.md`, `.ps1`, `.json`, `.tsv`, `.txt`, `.yml`, `.yaml`
-  ou `.toml`, ou terminado em `/`; existe quando `(<root> / <token>)` existe; `onde` é o próprio
-  caminho.
+- **caminhos** — token terminado em `/`; ou com `/` e o último segmento terminado numa extensão
+  de 1 a 5 letras ou dígitos; ou, sem `/`, terminado em `.py`, `.md`, `.ps1`, `.json`, `.tsv`,
+  `.txt`, `.yml`, `.yaml` ou `.toml` e não começado por `.` (`R-17` e `DRF-19` do `P-0755`);
+  existe (`sim`) quando `(<root> / <token>)` existe, e `onde` é o próprio caminho; o que não
+  existe sai `criar` quando a mesma frase (texto entre `. ` ou quebra de linha) o traz depois de
+  um verbo de criação (`crie`, `criar`, `grave`, `gravar`, `escreva`, `escrever`, `gere`, `gerar`,
+  sem distinção de caixa), e `criar` não derruba o exit 0; o que não existe e o pedido não manda
+  criar sai `não` e, como o símbolo e a flag ausentes, faz o exit ser 1.
 - **símbolos** — nome seguido de `(` (com ou sem argumentos até o `)`), ou identificador com `_` que não é caminho nem flag; existe
   quando algum `.py` sob `<root>` (fora de `.git` e `__pycache__`) tem a linha `def <nome>(` ou
   `class <nome>`; `onde` é `<arquivo>:<linha>` da primeira ocorrência, com `/`.
@@ -54,8 +59,20 @@ def _normalizar(token: str) -> str:
     return token
 
 
+_RE_EXTENSAO_CURTA = re.compile(r"\.[A-Za-z0-9]{1,5}$")
+
+
 def _e_caminho(token: str) -> bool:
-    return token.endswith(_EXTENSOES_CAMINHO) or token.endswith("/")
+    """`R-17` (auditoria reg. 2) e `DRF-19` do `P-0755`: extensão solta sem `/` não é caminho —
+    verdadeiro quando `token` termina em `/`; ou quando tem `/` e o último segmento (depois da
+    última `/`) casa `_RE_EXTENSAO_CURTA` (qualquer extensão curta, não só as nove conhecidas);
+    ou quando não tem `/`, termina numa das nove `_EXTENSOES_CAMINHO` e não começa por `.`."""
+    if token.endswith("/"):
+        return True
+    if "/" in token:
+        ultimo_segmento = token.rsplit("/", 1)[1]
+        return bool(_RE_EXTENSAO_CURTA.search(ultimo_segmento))
+    return token.endswith(_EXTENSOES_CAMINHO) and not token.startswith(".")
 
 
 def _e_flag(token: str) -> bool:
@@ -97,6 +114,30 @@ def _extrair(texto: str) -> tuple[list[str], list[str], list[str]]:
         if simbolo is not None and simbolo not in simbolos:
             simbolos.append(simbolo)
     return caminhos, simbolos, flags
+
+
+_VERBOS_DE_CRIACAO = {"crie", "criar", "grave", "gravar", "escreva", "escrever", "gere", "gerar"}
+_RE_FIM_DE_FRASE = re.compile(r"\. |\n")
+
+
+def _caminhos_a_criar(texto: str) -> set[str]:
+    """Caminhos que o pedido manda criar: `texto` se divide em frases por `_RE_FIM_DE_FRASE`; em
+    cada frase, os tokens (normalizados por `_normalizar`) depois do primeiro cujo `lower()` é um
+    dos `_VERBOS_DE_CRIACAO` entram no conjunto devolvido quando são caminho por `_e_caminho`."""
+    resultado: set[str] = set()
+    for frase in _RE_FIM_DE_FRASE.split(texto):
+        verbo_visto = False
+        for bruto in frase.split():
+            token = _normalizar(bruto)
+            if not token:
+                continue
+            if not verbo_visto:
+                if token.lower() in _VERBOS_DE_CRIACAO:
+                    verbo_visto = True
+                continue
+            if _e_caminho(token):
+                resultado.add(token)
+    return resultado
 
 
 def _achar_simbolo(root: Path, nome: str) -> str | None:
@@ -155,10 +196,16 @@ def main(argv: list[str] | None = None) -> int:
     linhas: list[tuple[str, str, str]] = [("citado", "existe", "onde")]
     tudo_existe = True
 
+    a_criar = _caminhos_a_criar(args.texto)
     for caminho in caminhos:
         existe = (root / caminho).exists()
-        tudo_existe = tudo_existe and existe
-        linhas.append((caminho, "sim" if existe else "não", caminho if existe else "—"))
+        if existe:
+            linhas.append((caminho, "sim", caminho))
+        elif caminho in a_criar:
+            linhas.append((caminho, "criar", "—"))
+        else:
+            tudo_existe = False
+            linhas.append((caminho, "não", "—"))
 
     for simbolo in simbolos:
         onde = _achar_simbolo(root, simbolo)

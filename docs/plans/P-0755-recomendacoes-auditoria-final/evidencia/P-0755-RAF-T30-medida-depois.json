@@ -1,0 +1,29 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T30",
+  "mundo": "depois",
+  "gerado_em": "2026-09-30T01:23:49+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k origem_do_achado",
+      "exit": 0,
+      "saida": "...                                                                      [100%]\n3 passed, 47 deselected in 0.44s",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -m pytest tests/test_encerrar.py -q -k falha_de_instrumento",
+      "exit": 0,
+      "saida": "..                                                                       [100%]\n2 passed, 48 deselected in 0.54s",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;t=Path('tests/test_encerrar.py').read_text(encoding='utf-8');a=chr(34)+'linha nova do registro'+chr(34)+' not in saida';m=t.split('def test_tf_origem_do_achado_gravada_na_linha')[0];print('marco=%d total=%d'%(m.count(a),t.count(a)))\"",
+      "exit": 0,
+      "saida": "marco=2 total=2",
+      "bate": true
+    }
+  ]
+}

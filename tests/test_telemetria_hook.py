@@ -293,8 +293,8 @@ def test_tf_processar_payload_de_fixture_grava_linha_esperada_no_tsv(tmp_path):
 
     assert escreveu is True
     linhas = tsv_path.read_text(encoding="utf-8").splitlines()
-    assert linhas[0] == _HEADER.rstrip("\n")
-    assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tsonnet\t5\t1.0\t0.0\tusage"
+    assert linhas[0] == _HEADER.rstrip("\n") + "\tagente"
+    assert linhas[1] == "2026-08-19\tPantonicApp\tEXA-T55\tsonnet\t5\t1.0\t0.0\tusage\tagent-transcript"
     assert estado_path.exists()
 
 
@@ -329,7 +329,7 @@ def test_tr_processar_sem_tsv_path_grava_na_serie_do_repo_do_estado(tmp_path):
 
     assert escreveu is True
     assert serie.read_text(encoding="utf-8").splitlines()[1] == (
-        "2026-08-19\tPantonicApp\tAE5-TR-SONDA\tsonnet\t2\t1.0\t0.0\tusage"
+        "2026-08-19\tPantonicApp\tAE5-TR-SONDA\tsonnet\t2\t1.0\t0.0\tusage\tagent-transcript"
     )
     assert (real.read_bytes() if real.is_file() else None) == antes_real
 
@@ -559,7 +559,10 @@ def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path
         "PYTHONUTF8": "1",
     }
     hoje = datetime.date.today().isoformat()
-    linha_esperada = f"{hoje}\tPantonicApp\tEXA-T55\tsonnet\t0\t0.0\t0.0\tusage"
+    linha_esperada = (
+        _HEADER.rstrip("\n") + "\tagente\n"
+        + f"{hoje}\tPantonicApp\tEXA-T55\tsonnet\t0\t0.0\t0.0\tusage\tanálise"
+    )
 
     def _rodar(nome: str, fonte_hook: str, env: dict):
         hook_path, estado_path, tsv_path, transcript_path = _montar_raiz_isolada(
@@ -597,3 +600,184 @@ def test_tf_hook_executavel_stdin_utf8_nao_falha_e_preserva_invariancia(tmp_path
     assert tsv_vh is None
     assert estado_vs is True
     assert tsv_vs is not None and tsv_vs.strip("\n") == linha_esperada
+
+
+def _transcript_com_mensagem(caminho: Path, primeira_mensagem: str, input_tokens: int = 10) -> Path:
+    """Transcript sintético de duas linhas — a primeira mensagem de usuário (`primeira_mensagem`)
+    e uma resposta `assistant` mínima — para os testes de `_linha_de_despacho` e de atribuição
+    por agente (`R-16`, `DRF-18` do `P-0755`, `RAF-T31`)."""
+    caminho.write_text(
+        "\n".join(
+            [
+                _linha_user(primeira_mensagem),
+                _linha_assistant(
+                    {
+                        "input_tokens": input_tokens,
+                        "cache_creation_input_tokens": 0,
+                        "cache_read_input_tokens": 0,
+                        "output_tokens": 0,
+                    },
+                    "2026-09-26T10:00:00+00:00",
+                    n_tool_uses=1,
+                    model="claude-opus-4",
+                ),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return caminho
+
+
+def test_tf_linha_de_despacho_atribui_o_plano_antes_do_primeiro_id_citado(tmp_path):
+    """TF (`R-16`, `DRF-18` do `P-0755`): a linha de abertura do despacho (`despacho: P-0755`)
+    manda antes de qualquer `P-<n>` citado na prosa livre da mensagem. Concorrente (ler o
+    primeiro `P-<n>` da mensagem inteira, ignorando a linha de despacho): gravaria
+    `P-0700-planejador`, o `P-<n>` do texto de contexto, não o do despacho."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"  # nunca criado
+
+    transcript_path = _transcript_com_mensagem(
+        tmp_path / "planejador-transcript.jsonl",
+        "Contexto: veja o P-0700 antes.\ndespacho: P-0755\nPlaneje.",
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    payload = _payload(agent_type="pantonic-planner", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[-1].split("\t")[2] == "P-0755-planejador"
+
+
+def test_tf_linha_de_despacho_atribui_a_tarefa_antes_do_estado(tmp_path):
+    """TF (`R-16`, `DRF-18` do `P-0755`): revisor cuja primeira mensagem abre com
+    `despacho: P-0755 RAF-T3` grava a tarefa do despacho, não a do estado corrente. Concorrente
+    (ler só o estado): gravaria `EXA-T55-revisao`, a tarefa do despacho anterior ainda no disco."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"
+    estado_path.parent.mkdir(parents=True)
+    estado_path.write_text(json.dumps(_estado_valido()), encoding="utf-8")
+
+    transcript_path = _transcript_com_mensagem(
+        tmp_path / "revisor-transcript.jsonl", "despacho: P-0755 RAF-T3\nRevise."
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    payload = _payload(agent_type="pantonic-reviewer", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[-1].split("\t")[2] == "RAF-T3-revisao"
+
+
+def test_tr_linha_de_despacho_ausente_segue_o_estado(tmp_path):
+    """TR: revisor cuja primeira mensagem não abre com a linha de despacho segue o estado
+    corrente, como antes da `RAF-T31` — a regra concorrente (exigir a linha) não gravaria
+    nada."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"
+    estado_path.parent.mkdir(parents=True)
+    estado_path.write_text(json.dumps(_estado_valido()), encoding="utf-8")
+
+    transcript_path = _transcript_com_mensagem(
+        tmp_path / "revisor-transcript.jsonl", "Revise a entrega, por favor."
+    )
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    payload = _payload(agent_type="pantonic-reviewer", agent_transcript_path=str(transcript_path))
+
+    escreveu = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path
+    )
+
+    assert escreveu is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[-1].split("\t")[2] == "EXA-T55-revisao"
+
+
+def test_tf_linhas_por_agente_substitui_a_do_mesmo_agente(tmp_path):
+    """TF (`R-16`, `DRF-39` do `P-0755`): duas paradas do mesmo agente (`agent-a1b2`) gravam uma
+    linha só na série — a segunda substitui a primeira, e a série ganha a coluna `agente`, vazia
+    (`-`) nas linhas antigas que não a tinham. Concorrente (apensar sempre): a série ficaria com
+    duas linhas do mesmo agente."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"  # nunca criado
+
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(
+        _HEADER + "2026-09-20\tPantonicApp\tP-0700-scout\tsonnet\t5\t10.0\t20.0\tusage\n",
+        encoding="utf-8",
+    )
+
+    transcript_path = tmp_path / "agent-a1b2.jsonl"
+    payload = _payload(agent_type="pantonic-planner", agent_transcript_path=str(transcript_path))
+
+    _transcript_com_mensagem(transcript_path, "Planeje o P-0755.", input_tokens=10)
+    escreveu_1 = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path,
+        data="2026-09-28",
+    )
+
+    _transcript_com_mensagem(transcript_path, "Planeje o P-0755.", input_tokens=3000)
+    escreveu_2 = hook.processar(
+        payload, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path,
+        data="2026-09-28",
+    )
+
+    assert escreveu_1 is True
+    assert escreveu_2 is True
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    assert linhas[0] == _HEADER.rstrip("\n") + "\tagente"
+    assert linhas[1] == "2026-09-20\tPantonicApp\tP-0700-scout\tsonnet\t5\t10.0\t20.0\tusage\t-"
+    assert len(linhas) == 3
+    ultima = linhas[2].split("\t")
+    assert ultima[2] == "P-0755-planejador"
+    assert ultima[5] == "3.0"
+    assert ultima[-1] == "agent-a1b2"
+
+
+def test_tf_linhas_por_agente_outro_agente_apensa(tmp_path):
+    """TF (`R-16` do `P-0755`): agentes diferentes apensam, cada um com a própria linha na
+    série. Concorrente (agrupar por tarefa, não por agente): a segunda parada substituiria a
+    linha da primeira."""
+    hook = _load_hook()
+
+    estado_path = tmp_path / "estado" / "tarefa-corrente.json"  # nunca criado
+    tsv_path = tmp_path / "telemetria.tsv"
+    tsv_path.write_text(_HEADER, encoding="utf-8")
+
+    transcript_um = _transcript_com_mensagem(tmp_path / "agent-um.jsonl", "Planeje o P-0755.")
+    payload_um = _payload(agent_type="pantonic-planner", agent_transcript_path=str(transcript_um))
+    hook.processar(
+        payload_um, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path,
+        data="2026-09-28",
+    )
+
+    transcript_dois = _transcript_com_mensagem(tmp_path / "agent-dois.jsonl", "Planeje o P-0755.")
+    payload_dois = _payload(agent_type="pantonic-planner", agent_transcript_path=str(transcript_dois))
+    hook.processar(
+        payload_dois, estado_path=estado_path, telemetria_cli=_TELEMETRIA_CLI_PATH, tsv_path=tsv_path,
+        data="2026-09-28",
+    )
+
+    linhas = tsv_path.read_text(encoding="utf-8").splitlines()
+    dados = linhas[1:]
+    assert [linha.split("\t")[-1] for linha in dados] == ["agent-um", "agent-dois"]

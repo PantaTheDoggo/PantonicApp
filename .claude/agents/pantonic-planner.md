@@ -134,6 +134,11 @@ repositório, o que deve voltar (caminho:linha, assinatura, condição de seleç
   exit code" (≤ 40 linhas). Vale para ferramenta externa do dia a dia — `git`, `pytest`, `pwsh` —,
   não só para instrumento do kit: o erro que custou a `LM-T1` do `P-0740` foi escrever a saída de
   `git check-ignore -v` e de `git status --porcelain` de memória (2026-09-18, `RP-2`).
+- **Impedimento de papel é pergunta antes de ser dado**: diante de "o papel X não consegue Y", a
+  campanha pergunta primeiro se o impedimento é **configuração do kit** — frontmatter `tools:` do
+  agente, `.claude/settings*.json` — ou **limite da plataforma**. Configuração do kit se corrige
+  como tarefa do plano; só o limite da plataforma se contorna, com a razão registrada na §2
+  (2026-09-27, `RP-1` do `P-0753`).
 
 Orçamento: no máximo **duas** rodadas de levantamento. O que continuar desconhecido depois da
 segunda é, por definição, investigação — e vira tarefa, não terceira rodada.
@@ -148,10 +153,15 @@ cenário novo no mesmo contexto.
 Enumere **toda escolha** que o plano precisa fazer: rota, mecanismo, ordem, fronteira, o que fica
 fora. Classifique cada uma pela escada de `GOVERNANCA.md` §3:
 
-- **Técnica** (rota, decomposição, dimensionamento, arquivos-alvo, ordem) ou **tática** (fatiar,
-  fundir, adiar, reordenar) → **você decide**, agora, e registra na tabela `Decisões` com id,
-  valor e razão em uma linha. Não pergunta ao dono o que é seu.
-- **Estratégica** (objetivo, prioridade, doutrina) ou que **altera o escopo** acordado → pergunta
+- **Operacional** (implementação de conceito, lacuna operacional do conceito, nomenclatura,
+  algoritmo, estrutura, arquivos-alvo, instrumento, caso de borda, controle que o modelo não cita)
+  ou **tática** (rota, decomposição, dimensionamento, ordem — fatiar, fundir, adiar, reordenar) →
+  **você decide**, agora, e registra na tabela `Decisões` com id, valor e razão em uma linha. Não
+  pergunta ao dono o que é seu: qualquer solução viável que respeite o modelo e o prompt da demanda
+  é sua, e escalar por escalar é falha (`G-ESCALA`, `GOVERNANCA.md` §7 item 21).
+- **Estratégica** — a resposta **altera o modelo explicitamente descrito pelo dono** (`## 1`, PRD,
+  doutrina, decisão dele registrada) **ou o prompt que iniciou a demanda**: objetivo, escopo,
+  prioridade, doutrina → pergunta
   ao dono, mas só se passar no **teste de legitimidade**, os três juntos: (a) duas respostas
   levam a planos materialmente diferentes; (b) nenhum default se deriva de PRD, doutrina, decisão
   anterior ou do próprio pedido; (c) o dono ainda não a respondeu nesta conversa. Falhou em um →
@@ -207,7 +217,7 @@ Então **pare** e devolva, na linha de retorno, o dossiê `Ato de modelo` de `au
 campos, fechados: `Plano` (o caminho gravado), `Ato: autoria`, `Motivo` (o pedido da §0),
 `Fato novo` (em uma frase, o que o plano entrega quando termina — a frase da Fase 0), `Restrição`
 (os invariantes da §4 que limitam o que o plano pode entregar; a convenção de lastro
-`tarefas: <prefixo>-T<n>` para `OP-<n>`) e `Devolver` (a §1 inteira e a linha da versão 1).
+`tarefas: <prefixo>-T<n>` para `OP-<n>`; e nunca caminho de arquivo, número de linha nem nome de instrumento nas células descritivas do modelo — a norma `TK-76` do modelador os recusa, e essas residências vão à seção 2 do plano e à `Camada e fronteira` do card, `R-22` da auditoria final, `P-0755`) e `Devolver` (a §1 inteira e a linha da versão 1).
 **Nenhum agente aciona outro:** quem conduz a sessão despacha o modelador. Você não escreve uma
 linha da §1, nem "só para adiantar".
 
@@ -235,17 +245,17 @@ rebase que absorve fase de outro plano mapeia **tarefa a tarefa**, nunca fase a 
 
 ### Fase 4 — Auto-auditoria (antes de gravar, uma passada)
 
-**Profundidade pela classe do plano.** O cabeçalho do plano declara `**Classe do plano:**` com um
+**Profundidade pela classe e pelo tamanho do plano.** O cabeçalho do plano declara `**Classe do plano:**` com um
 de três valores: `ferramentaria` (o produto é instrumento do kit — código, teste, fixture),
 `doutrina` (o produto é texto normativo — agente, skill, `GOVERNANCA.md`, rubrica) ou `produto`
 (o produto é código do projeto consumidor). A passada aplica os itens pela tabela; item que a
-tabela dispensa não se aplica, e a razão é a própria classe.
+tabela dispensa não se aplica, e a razão é a classe ou o tamanho. Plano cuja seção 1.2 tem até cinco operações usa a última coluna, qualquer que seja a classe declarada (`R-21` da auditoria final, `P-0755`): nesse tamanho, o parser frio, a segunda leva e o ensaio sem arquivo compartilhado não mudam o resultado, e o ensaio da contingência só o muda quando ela escreve arquivo.
 
-| itens | ferramentaria | doutrina | produto |
-|---|---|---|---|
-| 1 a 6 e 8 a 12 | aplicam | aplicam | aplicam |
-| 7 (parser frio) e 13 (segunda leva) | só com gramática ou tabela normativa no plano | só com gramática ou tabela normativa no plano | aplicam |
-| 14 (ensaio em cópia) | só com arquivo compartilhado tocado por dois cards | só com arquivo compartilhado tocado por dois cards | aplica |
+| itens | ferramentaria | doutrina | produto | até 5 operações, qualquer classe |
+|---|---|---|---|---|
+| 1 a 6 e 8 a 12 | aplicam | aplicam | aplicam | aplicam |
+| 7 (parser frio) e 13 (segunda leva) | só com gramática ou tabela normativa no plano | só com gramática ou tabela normativa no plano | aplicam | só com gramática ou tabela normativa no plano |
+| 14 (ensaio em cópia) | só com arquivo compartilhado tocado por dois cards | só com arquivo compartilhado tocado por dois cards | aplica | só com arquivo compartilhado tocado por dois cards; o ensaio da contingência, só quando a contingência escreve arquivo |
 
 1. **G-PLANREADY, as cinco condições** (`GOVERNANCA.md` §7 item 11): id sequencial; `T1..Tn` em
    ordem de dependência, um por operação, com objetivo copiado da operação, "pronto quando"
@@ -268,6 +278,10 @@ tabela dispensa não se aplica, e a razão é a própria classe.
    "documentar" sem caminho de arquivo e campo é defeito. Contingência acionada é **devolvida na
    linha de retorno da entrega**, na forma `contingência <n> acionada: <o que mudou>`, e a
    orquestração a materializa na coluna `nota` da linha da tarefa em `estado.tsv` (plano legado: na linha `**Status:**` do card) (2026-09-16, `RP-4`).
+   **A contingência não contradiz o card:** a ação `seguir com <X>` de uma contingência não
+   contraria nenhuma `Restrição` do mesmo card, e todo arquivo que ela escreve entra nos
+   `Arquivos-alvo`, no próprio bullet, seguido de `(condicional: contingência <n>)`, com `<n>` a
+   posição do bullet em `Contingências` (2026-09-27, `AE-24` do `P-0753`).
 4. **Rastreabilidade**: toda decisão da §2 é consumida por ≥ 1 card; todo card cita as decisões e
    fatos de que depende; nenhum card cita algo que não está na §1 ou §2. **Coerência entre decisões
    do mesmo plano:** regra normativa cujo sujeito é um item que outra decisão do mesmo plano torna
@@ -334,6 +348,13 @@ tabela dispensa não se aplica, e a razão é a própria classe.
    fato na §1 ou partição da tarefa — **ou o card não sai**. Plano liberado com ponto de
    interrupção é a pergunta que chega ao dono no meio da execução, sem contexto e sem insumos:
    falha sua, não do executor.
+   Três pontos de parada medidos que o enunciado geral deixou passar, e que se conferem pelo nome
+   em todo card: (a) **Objetivo condicional contra contrato incondicional** — o `Objetivo` diz "se"
+   enquanto `Contratos/classes` ou `Passos` mandam fazer sempre (`AE-8` do `P-0753`); (b) **caminho
+   sem forma fixada** — argumento ou campo de caminho sem dizer se é relativo à raiz do repositório
+   ou absoluto (`AE-13` do `P-0753`); (c) **argumento sem limpeza nem recusas fechadas** — argumento
+   de texto sem a normalização aplicada antes do uso (`strip()`, separador) e sem a lista fechada
+   das entradas que ele recusa, cada uma com a mensagem (`AE-18` do `P-0753`).
 9. **Campo de card lido por máquina é escrito na forma que a máquina lê**, nunca como prosa:
    `Arquivos-alvo` carrega um caminho por bullet e nenhum outro literal entre crases; arquivo citado
    para ser evitado vai para `Não fazer`; trecho de código vai para `Texto novo, literal`
@@ -436,15 +457,36 @@ tabela dispensa não se aplica, e a razão é a própria classe.
    antes` sobre cada card antes de gravar e `--mundo depois` sobre a cópia depois de aplicar o
    card; valor publicado é o medido. Linha que dá o mesmo valor antes e depois não discrimina e
    volta à autoria.
+   **Operação de estado final igual** (`R-27` da auditoria final, `P-0755`): o card cujo alvo
+   deve ficar igual — revisão sem texto novo — não tem linha que dê valores diferentes antes e
+   depois; a linha que o discrimina é a prova de que o alvo não mudou desde o recorte do
+   despacho, `git diff --exit-code <ref> --numstat -- <alvo>` → `exit 0`, marcada
+   `(invariância)`: o `card_check` não a mede no mundo `antes`, mede no `depois`, e ela falha
+   quando o alvo muda.
+   **A rodada grava a medida** (`R-05` da auditoria final, `P-0755`): a rodada de
+   replanejamento grava, para cada card que reescreve, a medida de antes na árvore real
+   (`card_check --mundo antes --gravar`) e a de depois na cópia do ensaio (`card_check --root
+   <cópia> --mundo depois --gravar`), e copia o arquivo da cópia para a `evidencia/` do plano
+   na árvore real: `-medida-antes.json` e `-medida-depois.json` convivem.
+   **A contingência se ensaia:** cada contingência de ação `seguir com <X>` se aplica na cópia
+   como passo do card, e as linhas de `Verificação` se re-rodam depois dela; linha cujo valor ela
+   muda publica, na própria contingência, o valor medido com ela aplicada (2026-09-27, pendência 1
+   do `P-0753`).
 
 ### Fase 5 — Registro e parada
 
 Com a §1 e a §5 na árvore, rode `python .claude/tools/modelo.py check --plano <plano>` (exit `0`)
 e, para todo card, `card_check` exit `0` como condição de registro, ao lado de `modelo.py check`;
-complete o `estado.tsv` da pasta do plano com uma linha por card (esquema da skill `diario-de-obras`; a linha do plano já está lá desde a Fase 3a), apense a linha ao `_INBOX.md` e atualize o próximo id no mesmo ato; invoque `checar-versao-kit`; se o plano é derivado de outro, classifique (A/B/C) e
+complete o `estado.tsv` da pasta do plano com uma linha por card (esquema da skill `diario-de-obras`; a linha do plano já está lá desde a Fase 3a), apense a linha ao `_INBOX.md` e atualize o próximo id no mesmo ato; registre no cabeçalho do plano, no campo `**Checagem de versão do kit:**`, o resultado da checagem de versão que o pedido de quem conduz traz (quem conduz roda a skill `checar-versao-kit` antes de despachar o planejador, e nenhuma fase deste roteiro a chama; sem o resultado no pedido, o campo registra `não recebida no pedido`, `R-23` da auditoria final, `P-0755`); se o plano é derivado de outro, classifique (A/B/C) e
 aplique o efeito ao plano de origem (skill `diario-de-obras`, "Planos derivados"). Então **pare**:
 plano registrado é fim do turno (Regra 1 global) — a execução começa em outro contexto, por
 instrução explícita do dono.
+
+**Árvore do `antes`** (`R-26` da auditoria final, `P-0755`): o `card_check --mundo antes` que
+condiciona o registro roda, para o card cujo `antes` depende de um antecessor, na cópia do ensaio
+com os antecessores aplicados (`card_check --root <cópia>`); só o primeiro card de cada cadeia
+mede o `antes` contra a árvore real. O valor publicado nomeia a árvore em que foi medido: `real`
+ou `cópia com <IDs> aplicados`.
 
 ## Anatomia do card — o que cada tarefa carrega, inline
 
@@ -493,7 +535,7 @@ depois, removidas `= <r>` e adicionadas `≥ <a> + <n>`.
 
 ## Rodada de replanejamento (escalada `premissa`, `G-REPLAN` — `GOVERNANCA.md` §7 item 17)
 
-Indício de que o plano precisa mudar chega primeiro ao `pantonic-consultant`, que tria toda parada de executor e fecha sozinho o técnico e o tático — inclusive o card corretivo `T<n>a` da mesma operação. A você ele chega só pela rota `planejador` da triagem: emenda aceita do modelo que cria ou remove operação, ou premissa caída por inteiro; registrado no
+Indício de que o plano precisa mudar chega primeiro ao `pantonic-consultant`, que tria toda parada de executor e fecha sozinho o operacional e o tático — inclusive o card corretivo `T<n>a` da mesma operação. A você ele chega só pela rota `planejador` da triagem: emenda aceita do modelo que cria ou remove operação, ou premissa caída por inteiro; registrado no
 corpo da tarefa e em `## Achados da execução` do plano. A rodada é a
 **próxima tarefa do plano** (topo da fila) e o plano fica `blocked` até ela fechar. Mesmo
 protocolo, encurtado, em seis passos:
@@ -502,7 +544,7 @@ protocolo, encurtado, em seis passos:
    **O fato que o achado afirma é indício, não apuração:** re-derive por busca o factual dele
    (quais arquivos, quais cards, quais linhas) antes de emendar — o `AE-5` do `P-0739` nomeou dois
    cards errados e teria produzido duas emendas inúteis e duas pendentes (2026-09-17, `RP-5`).
-2. **Classificar a mudança** — técnica/tática: decide e reescreve **no mesmo contexto** (a série
+2. **Classificar a mudança** — operacional/tática: decide e reescreve **no mesmo contexto** (a série
    mede a rodada como classe *Rodada de replanejamento*); estratégica/escopo: rodada de decisões
    ao dono (SAÍDA 2), uma só. Premissa caída por inteiro: plano `superseded`, sucessor nasce fechado.
 3. **Decidir com id novo** na tabela de decisões e **repor o fato que faltou** (inventário,
@@ -520,6 +562,20 @@ protocolo, encurtado, em seis passos:
    e o id dele entra na lista `tarefas:` daquela operação — lastro que é seu e do consultor (`GOVERNANCA.md`
    §3.2), não ato do modelador. Se a decisão nova muda o que o plano entrega, devolva também o
    dossiê `Ato de modelo` de `emenda`.
+
+   **Versão pendente reconfere a restrição que cita o estado do plano:** quando o modelador grava
+   uma versão pendente do modelo, toda `Restrição` de card que afirma estado do plano — seção que
+   existe ou não, versão vigente, operação presente — se reconfere contra o plano gravado, no mesmo
+   ato, e a que ficou falsa se reescreve (2026-09-27, `AE-20` do `P-0753`).
+
+   **Card da operação nova** (`R-04` da auditoria final, `P-0755`): na rodada que segue uma
+   emenda que cria operação sem card — o `modelo.py check` sem `--so-vigente` acusa
+   `1A: V1 OP-<n> — operação sem tarefa` —, o planejador escreve o card dessa operação, com o
+   campo `Operação do modelo` copiado da `## 1A` e o id da convenção de lastro sobre o número
+   da operação na `## 1A` (com sufixo `a`, `b`, … quando esse id já existe no plano); apensa o
+   id à lista `tarefas:` da operação na `## 1A`; e registra o card em `estado.tsv` `blocked`,
+   razão `dependencia`, nota `aguarda o aceite da versão <k> no marco`. A janela segue com as
+   tarefas da vigente, e a promoção do marco reescreve o campo dos cards.
 5. **Fechar o estado** — tarefa de volta a `ready` (ou `cancelled`, se a rota mudou), plano de volta
    ao estado anterior, achado marcado como absorvido com ponteiro para a decisão, diretiva e
    `Fila corrente` do diário apontando a tarefa reaberta.
@@ -530,7 +586,7 @@ protocolo, encurtado, em seis passos:
    caída: volte ao passo 2 com `superseded` como saída.
 
 Nunca deixe dois planos vivos na mesma iniciativa, e nunca deixe a tarefa bloqueada esperando o
-dono: o que é técnico ou tático se fecha aqui.
+dono: o que é operacional ou tático se fecha aqui.
 
 ## O que você NUNCA faz
 
@@ -539,7 +595,7 @@ dono: o que é técnico ou tático se fecha aqui.
   aceite que você publica num card.
 - Publicar plano com questão pendente, seção "Questões ao dono", bloco a preencher ou tarefa cujo
   insumo não existe — a saída certa é campanha (fase 1) ou rodada de decisões (fase 2).
-- Perguntar ao dono o que é técnico ou tático, ou o que ele já respondeu; perguntar em série —
+- Perguntar ao dono o que é operacional ou tático, ou o que ele já respondeu; perguntar em série —
   a rodada é uma.
 - Escrever restrição por ponteiro, passo sem objeto, contingência em aberto ou qualquer item do
   léxico proibido.

@@ -101,10 +101,20 @@ _caminhos = _carregar("caminhos")
 _backlog = _carregar("backlog")
 _rdo = _carregar("rdo")
 _telemetria = _carregar("telemetria")
+_modelo = _carregar("modelo")
 
 
 class EncerramentoError(ValueError):
     """Checagem que recusa o fechamento — a mensagem nomeia o que falta; nada foi escrito."""
+
+
+class ConflitoDePromocao(EncerramentoError):
+    """`--aceita-versao` em conflito com o estado do plano (`RAF-T23`, `DRF-38`) — carrega o
+    dossiê `Ato: emenda` para o modelador, no atributo `dossie`."""
+
+    def __init__(self, mensagem: str, dossie: str) -> None:
+        super().__init__(mensagem)
+        self.dossie = dossie
 
 
 ACHADOS_HEADING_RE = re.compile(r"^## .*Achados da execução")
@@ -232,6 +242,8 @@ def achados_do_plano(plano_path: Path) -> list[tuple[str, str]]:
 
 
 ACHADO_PROCESSO_HEADING = "## Achado de processo"
+_ACHADO_INSTRUMENTO_RE = re.compile(r"achado de processo \(instrumento\):\s*(?P<resto>.+)", re.IGNORECASE)
+_TERMOS_DE_FALHA = ("queda", "traceback", "exceção", "excecao", "exception", "error")
 _ACHADO_LINHA_RE = re.compile(r"^\|\s*(?P<alvo>[^|]+?)\s*\|\s*(?P<achado>.+?)\s*\|\s*$")
 
 
@@ -282,7 +294,7 @@ def _escrever_atomico(caminho: Path, texto: str) -> None:
 
 
 def apensar_achado(plano_path: Path, tarefa_id: str, texto: str, rota: str, data: str,
-                   tiquete_id: str | None = None) -> str:
+                   tiquete_id: str | None = None, origem: str | None = None) -> str:
     """Registro único do achado (`GOVERNANCA.md` §4.2): uma entrada `AE-<n>` com `**Rota:**`, ao
     fim de `## Achados da execução` do plano (a seção nasce se não existir). No diário, o achado
     de um card de tíquete entra no corpo da seção `## TK-<n>` do tíquete-pai, antes do primeiro
@@ -291,6 +303,10 @@ def apensar_achado(plano_path: Path, tarefa_id: str, texto: str, rota: str, data
     numeros = [int(n) for n in AE_ID_RE.findall("\n".join(linhas))]
     ae_id = f"AE-{max(numeros, default=0) + 1}"
     entrada = f"- **{ae_id}** (`{tarefa_id}`, fechamento, {data}) — {texto} **Rota:** {rota}"
+    # Origem do achado, para o fechamento pular o já registrado pela linha do laudo e o
+    # consultor citar a origem ao reescrever (R-19, DRF-21 do P-0755).
+    if origem is not None:
+        entrada += f" **Origem:** `{origem}`"
 
     if tiquete_id is not None:
         ini = next((i for i, l in enumerate(linhas) if l.startswith(f"## {tiquete_id} ")), None)
@@ -552,16 +568,24 @@ def fechar_tarefa(
 
     textos_gravados = {texto.strip() for texto, _ in achados or []}
     entradas_existentes = "\n".join(texto for _, texto in achados_do_plano(plano_path))
-    for texto, rota in achados_do_laudo(texto_laudo):
-        if texto in entradas_existentes or texto in textos_gravados:
+    achados_laudo = achados_do_laudo(texto_laudo)
+    for n, (texto, rota) in enumerate(achados_laudo, start=1):
+        origem = f"laudo:{tarefa_id}#{n}"
+        if f"`{origem}`" in entradas_existentes or texto in entradas_existentes or texto in textos_gravados:
             continue
-        ids_achados.append(apensar_achado(plano_path, tarefa_id, texto, rota, data, tiquete_id=tiquete_id))
+        ids_achados.append(
+            apensar_achado(plano_path, tarefa_id, texto, rota, data, tiquete_id=tiquete_id, origem=origem)
+        )
         textos_gravados.add(texto)
 
     humano = "\n".join(humano_linhas)
     if ids_achados:
         humano += f"\nAchados: {', '.join(ids_achados)}."
     humano += f"\nDetalhe: `{rdo_rel}`."
+    for texto, _rota in achados_laudo:
+        m = _ACHADO_INSTRUMENTO_RE.search(texto)
+        if m and any(termo in m.group("resto").lower() for termo in _TERMOS_DE_FALHA):
+            humano += f"\nencerrar: B1 — achado de instrumento com falha: {m.group('resto')}"
     return destino, humano
 
 
@@ -908,8 +932,200 @@ def fechar_plano(
 
 _MARCO_SECAO0_RE = re.compile(r"^## 0\.")
 _MARCO_HEADING_RE = re.compile(r"^## ")
-_MARCO_VERSAO_PENDENTE_RE = re.compile(r"^## 1A\. Modelo conceitual — versão pendente de validação")
 _MARCO_COLUNA_RE = re.compile(r"(?<!\\)\|")
+_SOMENTE_DIGITOS_RE = re.compile(r"^\d+$")
+
+
+def _dossie_emenda(
+    plano_path: Path, repo: Path, marco: int, frase: str, fato_novo: str, restricao: str,
+    devolver: str,
+) -> str:
+    """O dossiê `Ato: emenda` para o modelador (`OP-12`/`RAF-T23`): motivo do marco, o fato que
+    muda o modelo e a restrição que a emenda tem de respeitar. O `Devolver` difere entre a
+    recusa da versão e o conflito na promoção (`RAF-T23b`)."""
+    return "\n".join([
+        f"Plano: {_rel(plano_path, repo)}",
+        "Ato: emenda",
+        f'Motivo: Marco {marco}, veredito do dono: "{frase}"',
+        f"Fato novo: {fato_novo}",
+        f"Restrição: {restricao}",
+        f"Devolver: {devolver}",
+    ])
+
+
+def _faixa_do_campo_operacao(linhas: list[str], tarefa_id: str) -> tuple[int, int] | None:
+    """O card vai do cabeçalho `### <ID> — ` até a linha antes do próximo `### ` ou `## `.
+    Devolve `(linha do campo Operação do modelo, primeira linha depois dos sub-bullets)`, ou
+    `None` sem card ou sem campo (`RAF-T23`)."""
+    prefixo = f"### {tarefa_id} — "
+    idx_card = next((i for i, l in enumerate(linhas) if l.startswith(prefixo)), None)
+    if idx_card is None:
+        return None
+    fim_card = next(
+        (
+            i
+            for i in range(idx_card + 1, len(linhas))
+            if linhas[i].startswith("### ") or linhas[i].startswith("## ")
+        ),
+        len(linhas),
+    )
+    idx_campo = next(
+        (
+            i
+            for i in range(idx_card + 1, fim_card)
+            if linhas[i].startswith("- **Operação do modelo:**")
+        ),
+        None,
+    )
+    if idx_campo is None:
+        return None
+    fim_campo = idx_campo + 1
+    while fim_campo < fim_card and linhas[fim_campo].startswith("  "):
+        fim_campo += 1
+    return idx_campo, fim_campo
+
+
+def promover_versao(linhas: list[str], k: int, data: str) -> tuple[list[str], int]:
+    """`DRF-38` (`RAF-T23`) — promove a versão pendente (`## 1A`) a vigente (`## 1`): no
+    registro de versões, a linha `vigente` cai a `obsoleta` (com o motivo na célula `por`) e a
+    linha da versão `k` sobe a `vigente`; a `## 1` vira o conteúdo da `## 1A` (cabeçalho
+    `situação: vigente`) e a `## 1A` sai do plano; o campo `Operação do modelo` de cada card
+    citado nas `tarefas:` da pendente é reescrito com as operações e contratos dela. Devolve as
+    linhas e o número de cards distintos reescritos."""
+    linhas = list(linhas)
+
+    modelo_pendente = _modelo.extrair_modelo(linhas, _modelo._HEADING_PENDENTE)
+    obj_por_nome = {o.nome: o for o in modelo_pendente.objetos}
+
+    idx_h1 = linhas.index(_modelo._HEADING_VIGENTE)
+    fim_h1 = next(
+        (i for i in range(idx_h1 + 1, len(linhas)) if linhas[i].startswith("## ")), len(linhas)
+    )
+    idx_h1a = linhas.index(_modelo._HEADING_PENDENTE)
+    fim_h1a = next(
+        (i for i in range(idx_h1a + 1, len(linhas)) if linhas[i].startswith("## ")), len(linhas)
+    )
+
+    tabela_registro = _modelo._extrair_tabela(linhas[idx_h1:fim_h1], "### 1.4 Registro de versões")
+    cabecalho_tab, separador_tab = tabela_registro[0], tabela_registro[1]
+    linhas_dados: list[str] = []
+    for linha_tab in tabela_registro[2:]:
+        celulas = _modelo._parse_linha_tabela(linha_tab)
+        if celulas[2] == "vigente":
+            celulas[2] = "obsoleta"
+            celulas[3] = f"{celulas[3]}; Caiu pelo aceite da versão {k} em {data}"
+        elif celulas[0] == str(k) and celulas[2] == "pendente":
+            celulas[2] = "vigente"
+        linhas_dados.append("| " + " | ".join(celulas) + " |")
+
+    conteudo_1a = linhas[idx_h1a + 1 : fim_h1a]
+    idx_1_4_1a = next(
+        (i for i, l in enumerate(conteudo_1a) if l.startswith("### 1.4")), len(conteudo_1a)
+    )
+    conteudo_1a = conteudo_1a[:idx_1_4_1a]
+    while conteudo_1a and conteudo_1a[-1].strip() == "":
+        conteudo_1a.pop()
+    conteudo_1a = [
+        l.replace("situação: pendente", "situação: vigente")
+        if l.startswith("**Estado do modelo:**")
+        else l
+        for l in conteudo_1a
+    ]
+
+    novo_bloco = (
+        [_modelo._HEADING_VIGENTE]
+        + conteudo_1a
+        + ["", "### 1.4 Registro de versões", "", cabecalho_tab, separador_tab]
+        + linhas_dados
+        + [""]
+    )
+    linhas[idx_h1:fim_h1a] = novo_bloco
+
+    cards: dict[str, list] = {}
+    for operacao in modelo_pendente.operacoes:
+        for tid in operacao.tarefas:
+            cards.setdefault(tid, []).append(operacao)
+
+    cards_reescritos = 0
+    for tid, operacoes in cards.items():
+        campo_idx, fim_idx = _faixa_do_campo_operacao(linhas, tid)
+        ids_op = ", ".join(f"`OP-{op.numero}`" for op in operacoes)
+        novas = [f"- **Operação do modelo:** {ids_op}"]
+        for op in operacoes:
+            novas.append(f"  - OP-{op.numero}: {op.texto}")
+            pares = "; ".join(f"{nome} — {obj_por_nome[nome].contrato}" for nome in op.precisa_de)
+            novas.append(f"  - precisa de: {pares}")
+        linhas[campo_idx:fim_idx] = novas
+        cards_reescritos += 1
+
+    return linhas, cards_reescritos
+
+
+def _checar_promocao(
+    linhas: list[str],
+    plano: "_backlog.Plano",
+    k: str,
+    marco: int,
+    frase: str,
+    plano_path: Path,
+    repo: Path,
+) -> None:
+    """Checagens da promoção da versão aceita (`DRF-38`, `RAF-T23`), todas antes de qualquer
+    escrita: o número da versão, a `## 1A` ser a versão pedida, o registro de versões ter um
+    único vigente e a linha pendente da versão, a versão pendente sem violação e todo card
+    citado com o campo `Operação do modelo` já existente."""
+    if not _SOMENTE_DIGITOS_RE.match(k):
+        raise EncerramentoError(f"--aceita-versao exige o número da versão, recebeu '{k}'")
+
+    fato_novo_base = f"o dono aceitou a versão {k} do modelo no Marco {marco}."
+    restricao = (
+        f"a versão {k} passa a vigente e a anterior a obsoleta; o conteúdo da obsoleta sai "
+        "do plano e o registro de versões guarda a linha (GOVERNANCA.md §3.2)."
+    )
+
+    def _conflito(razao: str) -> ConflitoDePromocao:
+        dossie = _dossie_emenda(
+            plano_path, repo, marco, frase,
+            f"{fato_novo_base} Conflito na promoção: {razao}.",
+            restricao,
+            "a ## 1 e a ## 1A acertadas, com o registro de versões, para o comando do "
+            "marco rodar de novo.",
+        )
+        return ConflitoDePromocao(f"conflito na promoção da versão {k} — {razao}", dossie)
+
+    modelo_vigente = _modelo.extrair_modelo(linhas, _modelo._HEADING_VIGENTE)
+    if modelo_vigente is None:
+        raise _conflito("o plano não tem a ## 1")
+
+    modelo_pendente = _modelo.extrair_modelo(linhas, _modelo._HEADING_PENDENTE)
+    if modelo_pendente.versao != int(k):
+        raise _conflito(f"a ## 1A é a versão {modelo_pendente.versao}")
+
+    linhas_registro = [
+        _modelo._parse_linha_tabela(l) for l in modelo_vigente.versoes if l.strip()
+    ]
+    situacoes = [celulas[2] for celulas in linhas_registro if len(celulas) >= 3]
+    if situacoes.count("vigente") != 1:
+        raise _conflito("o registro de versões não tem uma única linha vigente")
+
+    tem_pendente_k = any(
+        len(celulas) >= 3 and celulas[0] == k and celulas[2] == "pendente"
+        for celulas in linhas_registro
+    )
+    if not tem_pendente_k:
+        raise _conflito(f"o registro de versões não tem a linha pendente da versão {k}")
+
+    violacoes = [f"1A: {v}" for v in _modelo.validar(modelo_pendente, plano, pendente=True)]
+    if violacoes:
+        raise EncerramentoError(f"versão pendente com violação — {'; '.join(violacoes)}")
+
+    for operacao in modelo_pendente.operacoes:
+        for tid in operacao.tarefas:
+            if _faixa_do_campo_operacao(linhas, tid) is None:
+                raise EncerramentoError(
+                    f"card '{tid}' da lista tarefas: da OP-{operacao.numero} sem o campo "
+                    "Operação do modelo no plano"
+                )
 
 
 def gravar_marco(
@@ -922,12 +1138,14 @@ def gravar_marco(
     data: str,
     aceita_versao: str | None = None,
     recusa_versao: str | None = None,
+    consultor: str | None = None,
 ) -> str | None:
-    """OP-12 — grava o veredito do dono nos lugares do marco (`DAF-27`): a última célula da
+    """OP-12/OP-23 — grava o veredito do dono nos lugares do marco (`DAF-27`): a última célula da
     linha `| **Marco <n>** |` da tabela de marcos, o fim da seção `## 0.` e, só quando
-    `--marco 1 --resultado go` encontra o plano em `blocked`, a transição para `ready`. Todas
-    as checagens correm antes de qualquer escrita. Devolve o dossiê `Ato: emenda` (com
-    `--aceita-versao`/`--recusa-versao`) ou `None`."""
+    `--marco 1 --resultado go` encontra o plano em `blocked`, a transição para `ready`. Com
+    `--aceita-versao`, exige `consultor` e promove a versão sozinho (`_checar_promocao`,
+    `promover_versao`, `DRF-38`); com `--recusa-versao`, devolve o dossiê `Ato: emenda` para o
+    modelador. Todas as checagens correm antes de qualquer escrita."""
     plano_path = Path(plano_path)
     if not plano_path.is_file():
         raise EncerramentoError(f"plano: arquivo não encontrado '{plano_path}'")
@@ -943,8 +1161,10 @@ def gravar_marco(
     if idx_secao0 is None:
         raise EncerramentoError("seção ## 0 ausente")
 
+    # A `## 1A` se reconhece pela mesma regra do `modelo.py` (igualdade exata com
+    # `_HEADING_PENDENTE`), não por prefixo — `AE-176`, `RAF-T23a` do `P-0755`.
     if (aceita_versao is not None or recusa_versao is not None) and not any(
-        _MARCO_VERSAO_PENDENTE_RE.match(l) for l in linhas
+        l == _modelo._HEADING_PENDENTE for l in linhas
     ):
         raise EncerramentoError("plano sem versão pendente (## 1A)")
 
@@ -971,13 +1191,28 @@ def gravar_marco(
         if previa is not None:
             raise EncerramentoError(f"status: {previa.mensagem}")
 
+    if aceita_versao is not None:
+        if consultor is None or not consultor.strip():
+            raise EncerramentoError(
+                "--aceita-versao exige --consultor com a linha de validação do consultor"
+            )
+        if len(consultor.strip().splitlines()) > 1:
+            raise EncerramentoError("consultor: aceita no máximo uma linha")
+        _checar_promocao(
+            linhas, plano, aceita_versao.strip(), marco, veredito.strip(), plano_path, repo
+        )
+
     # --- checagens concluídas; escritas a partir daqui -----------------------------------
     frase = veredito.strip()
     frase_celula = frase.replace("|", "\\|")
     # Colunas GFM: `\|` não separa coluna. O verbo emite `\|` e precisa reler o que emite
     # (`DAF-43`: o split ingênuo no `|` deixava resto do veredito velho na célula).
     partes = _MARCO_COLUNA_RE.split(linhas[idx_marco])
-    partes[-2] = f' {resultado} · {data} — "{frase_celula}" '
+    if aceita_versao is not None:
+        consultor_celula = consultor.strip().replace("|", "\\|")
+        partes[-2] = f' {resultado} · {data} — "{frase_celula}" · consultor: "{consultor_celula}" '
+    else:
+        partes[-2] = f' {resultado} · {data} — "{frase_celula}" '
     linhas[idx_marco] = "|".join(partes)
 
     bloco_secao0 = [
@@ -988,6 +1223,10 @@ def gravar_marco(
     ]
     linhas[idx_prox_heading:idx_prox_heading] = bloco_secao0
 
+    cards_reescritos = None
+    if aceita_versao is not None:
+        linhas, cards_reescritos = promover_versao(linhas, int(aceita_versao.strip()), data)
+
     _escrever_atomico(plano_path, "\n".join(linhas) + "\n")
 
     if tira_de_blocked:
@@ -997,31 +1236,27 @@ def gravar_marco(
         if resultado_status.exit_code != 0:
             raise EncerramentoError(f"status: {resultado_status.mensagem}")
 
-    if aceita_versao is None and recusa_versao is None:
+    if aceita_versao is not None:
+        return (
+            f"marco: versão {aceita_versao.strip()} promovida — "
+            f"{cards_reescritos} card(s) com a operação reescrita"
+        )
+
+    if recusa_versao is None:
         return None
 
-    k = aceita_versao if aceita_versao is not None else recusa_versao
-    if aceita_versao is not None:
-        fato_novo = f"o dono aceitou a versão {k} do modelo no Marco {marco}."
-        restricao = (
-            f"a versão {k} passa a vigente e a anterior a obsoleta; o conteúdo da obsoleta sai "
-            "do plano e o registro de versões guarda a linha (GOVERNANCA.md §3.2)."
-        )
-    else:
-        fato_novo = f"o dono recusou a versão {k} do modelo no Marco {marco}."
-        restricao = (
-            f"a versão {k} é eliminada e a vigente permanece, sem marca; o que foi entregue sob "
-            "a versão recusada se refaz por card corretivo da operação afetada (GOVERNANCA.md §3.2)."
-        )
+    k = recusa_versao
+    fato_novo = f"o dono recusou a versão {k} do modelo no Marco {marco}."
+    restricao = (
+        f"a versão {k} é eliminada e a vigente permanece, sem marca; o que foi entregue sob "
+        "a versão recusada se refaz por card corretivo da operação afetada (GOVERNANCA.md §3.2)."
+    )
 
-    return "\n".join([
-        f"Plano: {_rel(plano_path, repo)}",
-        "Ato: emenda",
-        f'Motivo: Marco {marco}, veredito do dono: "{frase}"',
-        f"Fato novo: {fato_novo}",
-        f"Restrição: {restricao}",
-        "Devolver: a seção ## 1 depois do ato e a linha nova do registro de versões.",
-    ])
+    return _dossie_emenda(
+        plano_path, repo, marco, frase, fato_novo, restricao,
+        "a seção ## 1 depois do ato, com o registro de versões sem a linha da versão "
+        "recusada, e o plano sem a ## 1A.",
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -1214,6 +1449,7 @@ def main(argv: list[str] | None = None) -> int:
     p_marco_versao = p_marco.add_mutually_exclusive_group()
     p_marco_versao.add_argument("--aceita-versao", dest="aceita_versao", default=None, help="Versão pendente (## 1A) que o dono aceitou.")
     p_marco_versao.add_argument("--recusa-versao", dest="recusa_versao", default=None, help="Versão pendente (## 1A) que o dono recusou.")
+    p_marco.add_argument("--consultor", default=None, help="Linha de validação do consultor, verbatim; obrigatória com --aceita-versao (R-08).")
 
     p_operacoes = sub.add_parser("operacoes", parents=[comuns], help="Gera (ou confere) o esqueleto do relatório de operações — uma seção por tarefa viva do plano.")
     p_operacoes.add_argument("--checar", action="store_true", help="Não escreve: confere a cobertura do esqueleto já gravado (todo card citado, toda tarefa viva com seção, toda seção com os quatro blocos).")
@@ -1241,6 +1477,7 @@ def main(argv: list[str] | None = None) -> int:
                 repo, Path(args.plano), marco=args.marco, resultado=args.resultado,
                 veredito=args.veredito, data=data,
                 aceita_versao=args.aceita_versao, recusa_versao=args.recusa_versao,
+                consultor=args.consultor,
             )
             if dossie is not None:
                 print(dossie)
@@ -1284,13 +1521,15 @@ def main(argv: list[str] | None = None) -> int:
             )
     except EncerramentoError as exc:
         if args.comando == "marco":
+            if isinstance(exc, ConflitoDePromocao):
+                print(exc.dossie)
             print(f"marco: {exc}", file=sys.stderr)
         else:
             print(f"encerrar: FALHOU - {exc}", file=sys.stderr)
         return 1
 
     print(humano)
-    print(f"encerrar: OK - {args.comando} fechado; relatório em '{destino}'.")
+    print(f"encerrar: OK - comando '{args.comando}' concluído; relatório em '{destino}'.")
     return 0
 
 

@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T27a",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T23:49:30+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/tools/prevoo.py').read_text(encoding='utf-8');print('docstring=%d-%d-%d linhas=%d'%(t.count('ou terminado em'),t.count('de 1 a 5 letras ou dígitos'),t.count('não derruba o exit 0'),len(t.splitlines())))\"",
+      "exit": 0,
+      "saida": "docstring=0-1-1 linhas=227",
+      "bate": true
+    }
+  ]
+}

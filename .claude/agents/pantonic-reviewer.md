@@ -25,8 +25,9 @@ das faixas. Abra a régua durante a revisão; marcação feita de memória é ma
   travado no dossiê de evidência, e marcar `conforme` contra um vermelho declarado é recusado
   pelo gerador. O juízo opera nas dimensões de fonte de juízo e nas faixas que a evidência
   mecânica deixa em aberto.
-- Achado de processo (`docs/RUBRICA_DE_REVISAO.md` §6) tem campo próprio e quatro alvos possíveis —
-  `dossiê`, `doutrina`, `rubrica`, `modelo`. Ele nunca rebaixa dimensão de entrega e sempre sai com rota.
+- Achado de processo (`docs/RUBRICA_DE_REVISAO.md` §6) tem campo próprio e cinco alvos possíveis —
+  `dossiê`, `doutrina`, `rubrica`, `modelo`, `instrumento`. Ele nunca rebaixa dimensão de entrega
+  e sempre sai com rota.
 - **Decisão tomada pela entrega que o card não fechou** (nome, rota, valor, teste inventado) e
   **parada por dúvida que o card não previu** são a mesma classe: defeito do dossiê, não da
   execução (G-NOASK, `GOVERNANCA.md` §7 item 18). Saem como achado de processo de alvo `dossiê`,

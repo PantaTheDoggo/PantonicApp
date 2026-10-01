@@ -1427,3 +1427,124 @@ def test_tr_opcao_do_interpretador_sem_valor_segue_gerando_m2(estado, raiz):
 def test_tf_opcao_do_interpretador_m_e_c():
     assert progresso_hook._programa(["python", "-m", "pytest", "-q"]) == ("pytest", ["-q"])
     assert progresso_hook._programa(["python", "-c", "print(1)"]) is None
+
+
+def test_tf_titulo_do_tiquete_em_curso(tmp_path):
+    diario = tmp_path / "docs" / "DIARIO_DE_OBRAS.md"
+    diario.parent.mkdir(parents=True)
+    diario.write_text(
+        "# Diário\n"
+        "\n"
+        "## TK-9 — Um tíquete de teste\n"
+        "\n"
+        "Corpo do tíquete.\n",
+        encoding="utf-8",
+    )
+
+    assert progresso_hook.localizar_card("TK-9", tmp_path) == ("Um tíquete de teste", "", "")
+
+
+def test_tr_card_de_tiquete_segue_com_o_titulo_do_card(tmp_path):
+    diario = tmp_path / "docs" / "DIARIO_DE_OBRAS.md"
+    diario.parent.mkdir(parents=True)
+    diario.write_text(
+        "## TK-9 — Um tíquete de teste\n"
+        "\n"
+        "### TK-9a — O card do tíquete [Sonnet · classe implementacao]\n"
+        "- **Objetivo:** fixture.\n",
+        encoding="utf-8",
+    )
+
+    assert progresso_hook.localizar_card("TK-9a", tmp_path) == (
+        "O card do tíquete", "fixture.", "Um tíquete de teste",
+    )
+
+
+# --- Testes -----------------------------------------------------------------------
+
+
+def _despachar_agente(estado, raiz, sub, prompt):
+    p = P(hook_event_name="PreToolUse", tool_name="Agent",
+          tool_input={"subagent_type": sub, "prompt": prompt})
+    rodar(p, estado, raiz)
+    return progresso(estado)[-1]
+
+
+def test_tf_tarefa_do_despacho_no_painel_vence_a_corrente(estado, raiz):
+    rodar(payload_next(
+        "=== PRÓXIMA TAREFA: TLG-T9 — Um título de teste [Sonnet · classe redacao]\n"
+        "- **Objetivo:** Fazer x.\n"
+    ), estado, raiz)
+
+    ultima = _despachar_agente(
+        estado, raiz, "pantonic-consultant", "despacho: P-9999 TLG-T10\ncenario=x"
+    )
+
+    assert ultima == 'Agente consultor recebe a tarefa "Outro título" e vai triar.'
+    estado_loop = json.loads((estado / progresso_hook.ESTADO_ARQ).read_text(encoding="utf-8"))
+    assert estado_loop["tarefa"] == "TLG-T9"
+
+
+def test_tr_tarefa_do_despacho_ausente_segue_a_corrente(estado, raiz):
+    rodar(payload_next(
+        "=== PRÓXIMA TAREFA: TLG-T9 — Um título de teste [Sonnet · classe redacao]\n"
+        "- **Objetivo:** Fazer x.\n"
+    ), estado, raiz)
+
+    assert _despachar_agente(estado, raiz, "pantonic-reviewer", "Revise.") == (
+        'Agente revisor recebe a tarefa "Um título de teste" e vai confrontar a entrega com o card.'
+    )
+    assert _despachar_agente(estado, raiz, "pantonic-planner", "despacho: P-9999\nPlaneje.") == (
+        'Agente planejador recebe a tarefa "Um título de teste" e vai replanejar.'
+    )
+
+
+def _devolver_agente(estado, raiz, sub, prompt, resposta, agent_id=None):
+    if agent_id is None:
+        r = {"content": [{"type": "text", "text": resposta}]}
+    else:
+        r = {"status": "completed", "agentId": agent_id, "handback": "send",
+             "content": [{"type": "text", "text": "ptr"}]}
+    rodar(P(hook_event_name="PostToolUse", tool_name="Agent",
+            tool_input={"subagent_type": sub, "prompt": prompt}, tool_response=r), estado, raiz)
+    if agent_id is not None:
+        rodar(P(hook_event_name="UserPromptSubmit", prompt=(
+            f'<agent-message from="{agent_id}">\n'
+            "[Subagent hand-back] The text below is the final report of a subagent this "
+            "session delegated to. The report follows:\n"
+            f"  {resposta}\n"
+            "</agent-message>"
+        )), estado, raiz)
+    return progresso(estado)[-1]
+
+
+def test_tf_retorno_do_despacho_assincrono_mostra_a_tarefa_despachada(estado, raiz):
+    rodar(payload_next(
+        "=== PRÓXIMA TAREFA: TLG-T9 — Um título de teste [Sonnet · classe redacao]\n"
+        "- **Objetivo:** Fazer x.\n"
+    ), estado, raiz)
+
+    ultima = _devolver_agente(
+        estado, raiz, "pantonic-consultant", "despacho: P-9999 TLG-T10\ncenario=x",
+        "rota=resolve", agent_id="c9",
+    )
+
+    assert ultima == 'Agente consultor devolveu a tarefa "Outro título": rota resolve.'
+    estado_loop = json.loads((estado / progresso_hook.ESTADO_ARQ).read_text(encoding="utf-8"))
+    assert estado_loop["tarefa"] == "TLG-T9"
+    assert estado_loop["pendentes"] == {}
+    assert estado_loop.get("titulos_pendentes", {}) == {}
+
+
+def test_tr_retorno_do_despacho_sincrono_mostra_a_tarefa_despachada(estado, raiz):
+    rodar(payload_next(
+        "=== PRÓXIMA TAREFA: TLG-T9 — Um título de teste [Sonnet · classe redacao]\n"
+        "- **Objetivo:** Fazer x.\n"
+    ), estado, raiz)
+
+    assert _devolver_agente(
+        estado, raiz, "pantonic-consultant", "despacho: P-9999 TLG-T10\ncenario=x", "rota=resolve",
+    ) == 'Agente consultor devolveu a tarefa "Outro título": rota resolve.'
+    assert _devolver_agente(
+        estado, raiz, "pantonic-consultant", "cenario=x", "rota=resolve",
+    ) == 'Agente consultor devolveu a tarefa "Um título de teste": rota resolve.'

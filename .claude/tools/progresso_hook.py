@@ -146,6 +146,7 @@ def localizar_card(id_tarefa: str, raiz: Path) -> tuple[str, str, str]:
     if diario.exists():
         arquivos.append(diario)
     padrao = re.compile(r"^### " + re.escape(id_tarefa) + r" — (.+?) \[")
+    padrao_tiquete = re.compile(r"^## " + re.escape(id_tarefa) + r" — (.+?)\s*$")
     padrao_rotulo = re.compile(r"^#+\s*(?:\S+\s+—\s+)?(.*)$")
     for arq in arquivos:
         try:
@@ -153,6 +154,9 @@ def localizar_card(id_tarefa: str, raiz: Path) -> tuple[str, str, str]:
         except OSError:
             continue
         for i, linha in enumerate(linhas):
+            mt = padrao_tiquete.match(linha)
+            if mt:
+                return (mt.group(1).strip(), "", "")
             m = padrao.match(linha)
             if not m:
                 continue
@@ -184,6 +188,28 @@ def frase(id_frase: str, lacunas: dict[str, str]) -> str:
     for k, v in lacunas.items():
         s = s.replace(k, v)
     return s
+
+
+# `R-16`, `DRF-18` do `P-0755`: o painel lê a linha de abertura do despacho (`despacho:
+# P-<n> <ID>`) antes de recorrer à tarefa corrente do loop; a gramática do `ID` é a do
+# `telemetria_hook.py`, sem import cruzado.
+_RE_LINHA_DESPACHO = re.compile(
+    r"^despacho: P-\d+ ([A-Z][A-Z0-9]*-T\d+[a-z]?|TK-\d+[a-z]?) *$",
+    re.MULTILINE,
+)
+
+
+def tarefa_do_despacho(prompt: str, raiz: Path) -> tuple[str, str, str] | None:
+    """`(ID, título, objetivo)` da linha de abertura do despacho no prompt do subagente
+    despachado, pelo `localizar_card`; sem a linha, `None` — o painel recorre então à tarefa
+    corrente do loop (`R-16`, `DRF-18` do `P-0755`). Não escreve em `estado_loop`: só escolhe
+    o título mostrado."""
+    encontrado = _RE_LINHA_DESPACHO.search(prompt)
+    if not encontrado:
+        return None
+    tid = encontrado.group(1)
+    titulo, objetivo, _ = localizar_card(tid, raiz)
+    return (tid, titulo, objetivo)
 
 
 def tarefa_corrente(estado_loop: dict, estado: Path, raiz: Path) -> tuple[str, str, str]:
@@ -440,7 +466,11 @@ def evento(payload: dict, estado_loop: dict, estado: Path, raiz: Path) -> tuple[
 
     elif ev == "PreToolUse" and tool == "Agent" and sub in PAPEIS:
         estado_loop.pop("relatorio", None)
-        _, titulo, objetivo = tarefa_corrente(estado_loop, estado, raiz)
+        despacho = tarefa_do_despacho(str(ti.get("prompt", "")), raiz)
+        if despacho:
+            _, titulo, objetivo = despacho
+        else:
+            _, titulo, objetivo = tarefa_corrente(estado_loop, estado, raiz)
         if sub == "pantonic-executor":
             if objetivo:
                 linhas.append(frase("M-3", {"<título>": titulo, "<objetivo>": objetivo}))
@@ -463,8 +493,16 @@ def evento(payload: dict, estado_loop: dict, estado: Path, raiz: Path) -> tuple[
         r = payload.get("tool_response")
         if isinstance(r, dict) and r.get("handback") == "send" and isinstance(r.get("agentId"), str):
             estado_loop.setdefault("pendentes", {})[r["agentId"]] = sub
+            despacho_pendente = tarefa_do_despacho(str(ti.get("prompt", "")), raiz)
+            if despacho_pendente:
+                _, titulo_pendente, _ = despacho_pendente
+                estado_loop.setdefault("titulos_pendentes", {})[r["agentId"]] = titulo_pendente
         else:
-            _, titulo, _ = tarefa_corrente(estado_loop, estado, raiz)
+            despacho = tarefa_do_despacho(str(ti.get("prompt", "")), raiz)
+            if despacho:
+                _, titulo, _ = despacho
+            else:
+                _, titulo, _ = tarefa_corrente(estado_loop, estado, raiz)
             linhas = de_volta(sub, resp, titulo)
 
     elif ev == "UserPromptSubmit":
@@ -472,6 +510,7 @@ def evento(payload: dict, estado_loop: dict, estado: Path, raiz: Path) -> tuple[
         m = re.match(r'<agent-message from="([^"]+)">', p)
         if m:
             sub2 = estado_loop.get("pendentes", {}).pop(m.group(1), "")
+            titulo_pendente = estado_loop.get("titulos_pendentes", {}).pop(m.group(1), "")
             if sub2 in PAPEIS:
                 marca = "The report follows:"
                 idx = p.find(marca)
@@ -479,7 +518,10 @@ def evento(payload: dict, estado_loop: dict, estado: Path, raiz: Path) -> tuple[
                 fim = corpo.find("</agent-message>")
                 if fim != -1:
                     corpo = corpo[:fim]
-                _, titulo, _ = tarefa_corrente(estado_loop, estado, raiz)
+                if titulo_pendente:
+                    titulo = titulo_pendente
+                else:
+                    _, titulo, _ = tarefa_corrente(estado_loop, estado, raiz)
                 linhas = de_volta(sub2, corpo, titulo)
 
     elif ev == "Stop":

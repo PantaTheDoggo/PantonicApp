@@ -40,6 +40,11 @@ Dez passos, nesta ordem.
   uma linha do relatório de encerramento. O loop nunca para para rebaixar o modelo. Modelo ativo
   **abaixo** do exigido: **PARA e pede ao dono o `/model` do modelo melhor** — a única parada do
   gate.
+- **Janela:** o loop de um plano recém-planejado abre numa janela nova, separada da que o
+  planejou, com o plano gravado como único insumo; a janela do planejamento encerra no Marco 1
+  (`R-01` da auditoria final, `P-0755`). Quem conduz e planejou o plano na janela corrente não
+  despacha tarefa dele: encerra pelo relatório de janela, com a regra "loop de plano
+  recém-planejado abre em janela nova", e o dono abre a janela do loop.
 - **Saída:** modelo conferido, com a divergência anotada quando houver, ou parada com o `/model`
   do modelo melhor pedido.
 
@@ -76,8 +81,10 @@ Dez passos, nesta ordem.
 
   **Por comando** (`R-15`): `python .claude/tools/backlog.py despachar <ID>` roda, nesta ordem, o
   terceiro gate, o quarto e a coleta da suíte (`python -m pytest --co -q`), materializa
-  `in-progress`, grava `.claude/estado/tarefa-corrente.json` com o `<ref>` e imprime o card
-  inteiro, o bloco `HANDOVER` e a linha `ref=<sha>`. Recusa pelo primeiro gate que falhar, sem
+  `in-progress`, grava `.claude/estado/tarefa-corrente.json` com o `<ref>`, grava o pacote da
+  tarefa em `<pasta-do-plano>/despacho/<ID>.md` (fora do versionamento: o card, os handovers e as
+  âncoras conferidas contra a árvore de agora) e imprime só o texto pronto do despacho ao
+  executor e a linha `ref=<sha>`. Recusa pelo primeiro gate que falhar, sem
   escrever nada: exit `1` **não delega**, e a linha de recusa vai à razão de `B3`. `G-PLANREADY` e o
   Gate de delegação continuam com quem conduz, antes do verbo; card de tíquete segue pelos passos
   à mão. Redespacho de tarefa cuja entrega já está na árvore (o consultor manteve o trabalho e a
@@ -89,7 +96,7 @@ Dez passos, nesta ordem.
 ### Passo 4 — Despacho do executor
 
 - **Gatilho:** gates do passo 3 aprovados e tarefa materializada em `in-progress`.
-- **Entrada:** dossiê da tarefa copiado do plano; modelo declarado no cabeçalho.
+- **Entrada:** texto pronto impresso pelo `despachar` (tíquete: dossiê à mão); modelo do cabeçalho.
 - **Ação:** garantir o diretório `.claude/estado/` (ele viaja versionado com `.gitkeep`, `DM-10`
   do `P-0740`; recriá-lo se tiver sido apagado nesta máquina) e gravar
   `.claude/estado/tarefa-corrente.json` (objeto único: `tarefa`, `projeto`,
@@ -101,11 +108,14 @@ Dez passos, nesta ordem.
   desde o despacho. No redespacho da mesma tarefa (retomada depois de `blocked`, ou retentativa),
   o `<ref>` não se recaptura: vale o do primeiro despacho, para a evidência cobrir as duas execuções.
 
-  Despachada pelo verbo `despachar` do passo 3, a tarefa já tem o arquivo gravado e o `<ref>` na
-  linha `ref=<sha>` da saída: este passo só invoca o executor.
+  Despachada pelo verbo `despachar` do passo 3, a tarefa já tem o arquivo gravado, o pacote em
+  `<pasta-do-plano>/despacho/<ID>.md` e o `<ref>` na linha `ref=<sha>` da saída: este passo só
+  invoca o executor.
 
   Invocar `pantonic-executor` com `model` **igual ao do cabeçalho** (vence o `model:` do agente),
-  com o dossiê da tarefa e a instrução de devolver **uma única linha**, domínio fechado (`DP-G`
+  com o texto pronto que o `despachar` imprimiu entre a linha `=== DESPACHO:` e a linha
+  `ref=<sha>`, repassado como está — sem copiar o card nem o handover na conversa —, que já traz
+  a instrução de devolver **uma única linha**, domínio fechado (`DP-G`
   item 2):
 
   ```
@@ -116,9 +126,9 @@ Dez passos, nesta ordem.
 
   Desempate (`DP-G` item 3): na dúvida sobre o motivo, `premissa`. RDO e guardrails de
   arquitetura não vão no despacho.
-  O despacho cola, junto do dossiê, as **âncoras** (arquivo, linha e texto do ponto a editar)
-  re-derivadas no ato e o **range de linhas do bullet de fechamento anterior** quando a tarefa
-  fecha em plano em andamento.
+  As **âncoras** (arquivo, linha e texto do ponto a editar) chegam conferidas no pacote do
+  despacho; nenhum passo as reconfere à mão. Quando a tarefa fecha em plano em andamento, o
+  despacho acrescenta ao texto pronto o **range de linhas do bullet de fechamento anterior**.
 - **Saída:** uma linha de retorno do executor.
 
 ### Passo 5 — Recepção do retorno do executor
@@ -181,7 +191,7 @@ Dez passos, nesta ordem.
 - **Entrada:** `status`, `veredito`, `bloqueante`, `recomendação`, contador de retentativas.
 - **Ação:** aplicar a tabela do bloco A **em ordem de precedência** — a primeira regra que casa
   vence.
-- **Triagem:** toda regra que escala ao consultor (`A3a`, `A3b`, `A3c`, `A6a`, `A7`, `B1` e o gate do modelo do passo 9) recebe de volta a linha `rota=<resolve|modelador|planejador>` — e, quando o consultor classificar o impedimento como estratégico, a linha `estrategico=<uma frase>` logo abaixo dela — e despacha por ela: `estrategico=` presente — **PARA** em qualquer rota, e nas rotas `resolve` e `modelador` **sem executar a ação da rota**: o reparo que o consultor já gravou fica no plano, o modelador **não** é despachado, e a frase, a rota e o dossiê de emenda, se houver, vão ao relatório de encerramento, para o dono decidir antes de qualquer ato sobre o modelo (`G-NOASK`; `P-0747` `DCS-28`); com `rota=planejador` a ação da rota já é a parada e se executa como está — o plano materializado `blocked`, a rodada de replanejamento enfileirada — e a frase vai junto ao relatório; `rota=resolve` sem `estrategico=` — o reparo já está gravado no plano, e a janela segue; quando o reparo é a recusa do impedimento como improcedente (`P-0747` `DCS-35`), a mesma tarefa volta a `ready` com ao menos uma linha nova gravada pelo consultor e é redespachada **sem** consumir retentativa; `rota=modelador` — despacha o `pantonic-model-designer` com o dossiê `Ato de modelo` de `emenda` que o consultor devolveu, sem parar a janela: a versão pendente coexiste com a vigente até o marco, onde o pedido de validar ou recusar o drift sobe ao dono (`GOVERNANCA.md` §3.2), e com a recusa o caso volta ao consultor para resolver preservando o modelo; `rota=planejador` — materializa o plano como `blocked`, e a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17): **PARA**.
+- **Triagem:** toda regra que escala ao consultor (`A3a`, `A3b`, `A3c`, `A6a`, `A7`, `B1` e o gate do modelo do passo 9) recebe de volta a linha `rota=<resolve|modelador|planejador>` — e, quando o consultor classificar o impedimento como estratégico, a linha `estrategico=<uma frase>` logo abaixo dela — e despacha por ela: `estrategico=` presente — **PARA** em qualquer rota, e nas rotas `resolve` e `modelador` **sem executar a ação da rota**: o reparo que o consultor já gravou fica no plano, o modelador **não** é despachado, e a frase, a rota e o dossiê de emenda, se houver, vão ao relatório de encerramento, para o dono decidir antes de qualquer ato sobre o modelo (`G-NOASK`; `P-0747` `DCS-28`); com `rota=planejador` a ação da rota já é a parada e se executa como está — o plano materializado `blocked`, a rodada de replanejamento enfileirada — e a frase vai junto ao relatório; `rota=resolve` sem `estrategico=` — o reparo já está gravado no plano, e a janela segue; quando o reparo é a recusa do impedimento como improcedente (`P-0747` `DCS-35`), a mesma tarefa volta a `ready` com ao menos uma linha nova gravada pelo consultor e é redespachada **sem** consumir retentativa; `rota=modelador` — despacha o `pantonic-model-designer` com o dossiê `Ato de modelo` de `emenda` que o consultor devolveu, sem parar a janela: a versão pendente coexiste com a vigente até o marco, onde o pedido de validar ou recusar o drift sobe ao dono (`GOVERNANCA.md` §3.2), e com a recusa o caso volta ao consultor para resolver preservando o modelo; quando, depois do modelador, `python .claude/tools/modelo.py check --plano <plano>` (sem `--so-vigente`) acusar `1A: V1 OP-<n> — operação sem tarefa`, a emenda criou operação nova, e o loop despacha em seguida o `pantonic-planner` para a rodada de replanejamento, que escreve o card dessa operação `blocked` até o aceite da versão no marco — a janela segue com as tarefas da versão vigente, porque o `despachar` julga só a `## 1` (`modelo.py check --so-vigente`) e a `## 1A` é cobrada no marco (`encerrar.py marco --aceita-versao`, `R-04` da auditoria final, `P-0755`); gravado o marco, quem conduz dá destino a esse card, que o `encerrar.py marco` não tira de `blocked`: com `--aceita-versao <k>`, todo card `blocked` com a nota `aguarda o aceite da versão <k> no marco` passa a `ready` (`python .claude/tools/backlog.py status <ID> ready`); com `--recusa-versao <k>`, o consultor, a quem o caso volta, tira o card do plano junto com a linha dele no `estado.tsv`, porque a operação que ele materializa saiu com a versão recusada e o `modelo.py check` o acusaria `V4` (`AE-178` do `P-0755`); `rota=planejador` — materializa o plano como `blocked`, e a rodada de replanejamento vira a próxima tarefa do plano (`G-REPLAN`, `GOVERNANCA.md` §7 item 17): **PARA**.
 - **Saída:** "segue" (vai ao passo 9) ou "PARA" (vai ao relatório de encerramento). Se a
   linha de retorno do reviewer trouxer um dossiê `Ato de modelo`, despache o
   `pantonic-model-designer` com esse dossiê **antes** de seguir ao passo 9: o texto do modelo
@@ -297,7 +307,7 @@ Avaliado **depois** de `A6`..`A9`, sobre a tarefa já fechada, e só quando o bl
 | # | condição | ação |
 |---|---|---|
 | `B0` | vermelho de verificação, ou item de `pendencia=`, **atribuível a arquivo fora dos `Arquivos-alvo` da tarefa** — atribuição **medida** por `python .claude/tools/review_evidence.py --plano <plano> --tarefa <ID> --desde <ref> --atribuir`, nunca julgada de memória | não é pendência da tarefa: registra `AE-<n>` com a atribuição medida, **não rebaixa** a entrega, não refaz laudo e **segue** por `B4` |
-| `B1` | **pendência substantiva**: `recomendacao=escalar` no laudo, **ou** `pendencia=` cujo texto **não** seja integralmente atribuível a arquivo fora dos alvos por `B0` | registra a pendência como `AE-<n>` em `## Achados da execução` do plano, descarta o laudo e escala ao **consultor de plano** (`pantonic-consultant`, uma instância efêmera por acionamento — seção *Acionamento do consultor*), que devolve a rota (passo 8): na rota `resolve` a janela **segue** com o reparo e na rota `modelador` com o despacho do modelador; **PARA** na rota `planejador` e com `estrategico=`, como o passo 8 manda; ao dono chega só isso (`G-NOASK`, `GOVERNANCA.md` §7 item 18) |
+| `B1` | **pendência substantiva**: `recomendacao=escalar` no laudo, **ou** `pendencia=` cujo texto **não** seja integralmente atribuível a arquivo fora dos alvos por `B0`, **ou** linha `encerrar: B1 — achado de instrumento com falha: <texto>` na saída do `encerrar.py tarefa`, qualquer que seja a recomendação do laudo (`R-20` da auditoria final, `P-0755`) | registra a pendência como `AE-<n>` em `## Achados da execução` do plano, descarta o laudo e escala ao **consultor de plano** (`pantonic-consultant`, uma instância efêmera por acionamento — seção *Acionamento do consultor*), que devolve a rota (passo 8): na rota `resolve` a janela **segue** com o reparo e na rota `modelador` com o despacho do modelador; **PARA** na rota `planejador` e com `estrategico=`, como o passo 8 manda; ao dono chega só isso (`G-NOASK`, `GOVERNANCA.md` §7 item 18) |
 | `B2` | sinal de poluição do contexto do loop (**coesão**) **ou** aviso de ocupação da janela no teto de trabalho, injetado no contexto pelo hook de medida (**capacidade**) — as duas condições do `GOVERNANCA.md` §4.3 | encerra com relatório de janela: **PARA** (encerramento normal, não falha). Por coesão o encerramento **não é gracioso**: nada produzido depois do sinal de poluição se aproveita. Sem o aviso na rodada, valem a coesão e o fim do plano |
 | `B3` | a próxima tarefa é recusada pelo `G-PLANREADY`, pelo gate de delegação, pelo `modelo.py check` ou pelo `card_check` do passo 3 (exit `1`) | não delega: **PARA**, com o que falta fechar |
 | `B4` | nenhuma das anteriores | despacha a próxima tarefa do plano, sempre sequencial |
@@ -321,8 +331,9 @@ fronteira do ponto do dono", e não se redecide aqui.
 
 Forma **efêmera com cenário persistido**, em piloto (`docs/plans/P-0747-consultor-de-plano.md` `DCS-6`, `DCS-7`). O consultor não fica de prontidão: a cada escalonamento das regras `A3a`, `A3b`, `A3c`, `A6a`, `A7` e `B1` e do gate do modelo do passo 9, o loop despacha **uma instância nova** do `pantonic-consultant`, com três entradas — o caminho do cenário do plano, `docs/plans/P-<n>-<slug>/cenario.md` (plano legado: `_CENARIO-<plano>.md` em `docs/plans/`); o identificador do card em causa; e a evidência (a linha de retorno do executor, a pendência do laudo ou o stderr do instrumento). A instância lê o cenário e o card, decide, reescreve o cenário com `Edit` mínimo, apensa a linha dela a `docs/ACIONAMENTOS_CONSULTOR.tsv` e devolve `rota=<resolve|modelador|planejador>` — e, só quando classifica o impedimento como estratégico, a linha `estrategico=<uma frase>` logo abaixo (`DCS-27`) —, que o loop roteia pelo passo 8. Nenhuma instância é retomada por `SendMessage` e nenhuma é reprovisionada por limite: o cenário **é** o handover, e a instância que cai se descarta — a `A1` despacha outra, com as mesmas três entradas, sobre o cenário como ficou. Sem o arquivo de cenário na árvore, o primeiro acionamento do plano o cria, com as decisões vivas, a fila, os achados abertos e a matéria inconclusiva, em no máximo 15k tokens. A linha de telemetria de cada instância é gravada pelo hook `SubagentStop`, com a tarefa `<ID>-consultor-<n>`.
 
-Molde do despacho — as três entradas, e nada além delas:
+Molde do despacho — a linha de abertura com o card em triagem (`GOVERNANCA.md` §4.2, *Linha de abertura do despacho*; `R-16` da auditoria final, `P-0755`) e as três entradas, e nada além delas:
 
+    despacho: P-<n> <ID do card em triagem>
     cenario=docs/plans/P-<n>-<slug>/cenario.md
     card=<ID>
     evidencia=<a linha de retorno do executor, a pendência do laudo ou o stderr do instrumento, verbatim>
@@ -331,7 +342,7 @@ Molde do despacho — as três entradas, e nada além delas:
 ## Relatório de encerramento
 
 Uma vez por janela, na parada. Abre com a saída integral de `python
-.claude/tools/modelo.py show --plano <plano>` — a
+.claude/tools/modelo.py show --plano <plano>` (na parada de marco, logo depois da linha que nomeia a entrega, na subseção abaixo) — a
 única exceção à regra de conteúdo, porque o modelo **é** o que o dono lê
 (`GOVERNANCA.md` §3.2); plano sem modelo, a linha "sem modelo (plano anterior à
 doutrina)". Depois, ponteiros e números, nunca conteúdo:
@@ -341,11 +352,20 @@ doutrina)". Depois, ponteiros e números, nunca conteúdo:
 - Contadores finais: tarefas fechadas na janela e consumo acumulado, como medida para a série —
   pela skill `fatos-frescos`: totais vêm do índice do diário e da série `docs/telemetria.tsv`, nunca de soma à mão.
 - **Pendências ao dono**, uma a uma, com o fato medido que a originou, o que cada opção implica, o
-  que fica bloqueado sem resposta e a recomendação com o motivo.
+  que fica bloqueado sem resposta e a recomendação com o motivo. **Só a questão estratégica entra
+  aqui** — a que altera o modelo que o dono descreveu ou o prompt da demanda (`G-ESCALA`,
+  `GOVERNANCA.md` §7 item 21): sem item estratégico a seção não existe, e relatório sem pendência
+  ao dono é o desfecho esperado, não uma falta. Ponto operacional ou tático (nomenclatura,
+  algoritmo, controle não citado no modelo, lacuna do conceito) não sobe: fecha-se antes do
+  relatório, pelo consultor ou por decisão registrada com id.
 - Próxima tarefa do plano, **sem iniciá-la**, e a recomendação de contexto novo antes da próxima
   janela. No mesmo ato, reescreve a linha `**Fila corrente:**` do cabeçalho de
   `docs/DIARIO_DE_OBRAS.md` (primeiras 15 linhas) — ou, quando o instrumento já mantém o bloco
   gerado, deixa que `status`/`start` a regenerem e **não** a escreve à mão.
+
+### Quando a janela para num marco
+
+A janela para num marco quando a próxima tarefa do plano está `blocked` à espera do veredito do dono sobre um marco da tabela de marcos do cabeçalho do plano (nota `Marco <m>: …`). Nessa parada, a primeira linha do relatório, antes da saída do `modelo.py show`, nomeia a entrega e o pedido do dono que a originou, na forma `"<entrega>", que você pediu em <data> ("<trecho verbatim do pedido, até 15 palavras>")`: a entrega é o nome da etapa na célula *o que o dono lê* da linha do marco na tabela de marcos, o trecho antes dos dois-pontos, sem a lista que os segue (marco cuja célula não nomeia etapa, como o do modelo, que cita o comando `modelo.py show`, ou plano sem tabela de marcos: o título do plano), e o pedido é a data e um trecho verbatim do ato do dono na seção 0 do plano (`R-25` da auditoria final, `P-0755`). Exemplo, no Marco 2 do `P-0755`: `"etapa A, custo da orquestração", que você pediu em 2026-09-28 ("faça double check dos achados, e elabore um plano de atuação")`. Sem essa linha, o dono já leu uma mensagem de marco e perguntou se lhe pediam mais uma auditoria.
 
 ### Quando a janela fecha o PLANO, e não só a janela
 

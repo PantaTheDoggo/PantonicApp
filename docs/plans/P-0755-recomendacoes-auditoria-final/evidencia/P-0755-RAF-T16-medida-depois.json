@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T16",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T10:59:36+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/agents/pantonic-planner.md').read_text(encoding='utf-8');print('arvore=%d'%t.count('só o primeiro card de cada cadeia'))\"",
+      "exit": 0,
+      "saida": "arvore=1",
+      "bate": true
+    }
+  ]
+}

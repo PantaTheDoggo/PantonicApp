@@ -250,3 +250,24 @@ def test_tr_serie_existente_nao_reescrita(tmp_path):
 
     assert exit_code == 3
     assert tsv.read_bytes() == bytes_antes
+
+
+def test_tf_linhas_por_agente_append_sem_agente_em_serie_migrada_leva_traco(tmp_path):
+    """TF (`R-16`, `DRF-39` do `P-0755`): série já migrada para a coluna `agente` (cabeçalho de
+    nove colunas) recebe `append` sem `--agente` — a linha nova ganha `-` na coluna extra, para
+    não desalinhar as colunas. Concorrente (ignorar a coluna nova): a linha sairia com oito
+    colunas, desalinhada com o cabeçalho de nove."""
+    telemetria = _load_telemetria()
+    tsv = tmp_path / "telemetria.tsv"
+    tsv.write_text(_HEADER.rstrip("\n") + "\tagente\n", encoding="utf-8")
+
+    exit_code = telemetria.main(
+        _args(
+            tsv, data="2026-09-28", tarefa="RAF-T1", modelo="sonnet",
+            tool_uses="3", tokens_k="10.0", duracao_s="5.0",
+        )
+    )
+
+    assert exit_code == 0
+    linhas = tsv.read_text(encoding="utf-8").splitlines()
+    assert linhas[-1] == "2026-09-28\tPantonicApp\tRAF-T1\tsonnet\t3\t10.0\t5.0\tusage\t-"

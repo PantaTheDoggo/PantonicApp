@@ -1,0 +1,15 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T14",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T15:20:59+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;c=[('docs/plans/P-0753-auditoria-estagio-1/plano.md','AE-21'),('docs/plans/P-0753-auditoria-estagio-1/plano.md','AE-22'),('docs/plans/P-0752-fato-no-ponto-de-uso.md','AE-51'),('docs/DIARIO_DE_OBRAS.md','AE-89')];print('[%s]'%'-'.join(str(sum(1 for l in Path(a).read_text(encoding='utf-8').splitlines() if l[4:9]==n and not l[9].isdigit() and 'Desfecho (P-0754, AUF-T14, 2026-09-28)' in l)) for a,n in c))\"",
+      "exit": 0,
+      "saida": "[1-1-1-1]",
+      "bate": true
+    }
+  ]
+}

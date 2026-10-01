@@ -1,0 +1,22 @@
+{
+  "plano": "docs/plans/P-0755-recomendacoes-auditoria-final/plano.md",
+  "tarefa": "RAF-T4",
+  "mundo": "depois",
+  "gerado_em": "2026-09-29T02:24:09+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print('entrega=%d-%d'%(t.count('com o dossiê da tarefa e a instrução de devolver'),t.count('repassado como está — sem copiar o card nem o handover na conversa')))\"",
+      "exit": 0,
+      "saida": "entrega=0-1",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;t=Path('.claude/skills/scrum-master/SKILL.md').read_text(encoding='utf-8');print('ancoras=%d-%d'%(t.count('re-derivadas no ato'),t.count('nenhum passo as reconfere à mão')))\"",
+      "exit": 0,
+      "saida": "ancoras=0-1",
+      "bate": true
+    }
+  ]
+}

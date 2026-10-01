@@ -1,0 +1,50 @@
+{
+  "plano": "docs/plans/P-0754-auditoria-final/plano.md",
+  "tarefa": "AUF-T16",
+  "mundo": "depois",
+  "gerado_em": "2026-09-28T17:53:16+00:00",
+  "itens": [
+    {
+      "indice": 1,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;H=['## 0. O pedido, verbatim','## 1. Modelo conceitual da auditoria','## 2. Cláusulas do kit exercitadas','## 3. Registros — um por teste','## 4. Conclusão por dimensão','## 5. Recomendações — um tíquete por registro viável','## 6. Custo medido da execução do plano fictício','## 7. O que ficou na árvore e o que foi descartado','## 8. As ações mecânicas do gerente do loop'];print('ausente' if L is None else '[%d]'%sum(1 for h in H if h in L))\"",
+      "exit": 0,
+      "saida": "[9]",
+      "bate": true
+    },
+    {
+      "indice": 2,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;D=['Integração ponta a ponta','Lacunas (L)','Erros de execução (E)','Confiabilidade (C)','Custo evitável','Qualidade da entrega (Q)','Mecanização (M)','Fluxo (F)'];print('ausente' if L is None else '[%d]'%sum(1 for d in D if any(l.startswith('| ') and d in l for l in L)))\"",
+      "exit": 0,
+      "saida": "[8]",
+      "bate": true
+    },
+    {
+      "indice": 3,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;print('ausente' if L is None else '[%d]'%sum(1 for n in range(1,11) if any(l.startswith('| P%d |'%n) for l in L)))\"",
+      "exit": 0,
+      "saida": "[10]",
+      "bate": true
+    },
+    {
+      "indice": 4,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');L=p.read_text(encoding='utf-8').splitlines() if p.exists() else None;print('ausente' if L is None else '[%d]'%sum(1 for l in L if l.startswith('| K-') and 'rodada de replanejamento grava a medida' in l))\"",
+      "exit": 0,
+      "saida": "[1]",
+      "bate": true
+    },
+    {
+      "indice": 5,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');t=p.read_text(encoding='utf-8') if p.exists() else None;print('ausente' if t is None else '[%d-%d]'%(t.count('As recomendações deste relatório não se aplicam no P-0754'),min(1,t.count('### R-'))))\"",
+      "exit": 0,
+      "saida": "[1-1]",
+      "bate": true
+    },
+    {
+      "indice": 6,
+      "comando": "python -c \"from pathlib import Path;p=Path('docs/audits/AUDITORIA_FINAL_KIT.md');t=p.read_text(encoding='utf-8') if p.exists() else None;print('ausente' if t is None else '[%d]'%min(1,t.count('-sonda-auditoria-final')))\"",
+      "exit": 0,
+      "saida": "[1]",
+      "bate": true
+    }
+  ]
+}
